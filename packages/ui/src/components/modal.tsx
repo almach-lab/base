@@ -22,7 +22,10 @@ function ModalRoot({ open, onOpenChange, children }: ModalRootProps) {
 	const Root = isMobile ? Drawer : Dialog;
 	return (
 		<ModalCtx.Provider value={isMobile}>
-			<Root open={open} onOpenChange={onOpenChange}>
+			<Root
+				{...(open !== undefined && { open })}
+				{...(onOpenChange !== undefined && { onOpenChange })}
+			>
 				{children}
 			</Root>
 		</ModalCtx.Provider>
@@ -38,7 +41,7 @@ interface ModalTriggerProps {
 function ModalTrigger({ asChild, children }: ModalTriggerProps) {
 	const isMobile = useModal();
 	const Trigger = isMobile ? Drawer.Trigger : Dialog.Trigger;
-	return <Trigger asChild={asChild}>{children}</Trigger>;
+	return <Trigger {...(asChild !== undefined && { asChild })}>{children}</Trigger>;
 }
 
 /* ── Content ─────────────────────────────────────────────────────────────── */
@@ -109,7 +112,10 @@ function ModalClose({ asChild, children, className }: ModalCloseProps) {
 	const isMobile = useModal();
 	const Close = isMobile ? Drawer.Close : Dialog.Close;
 	return (
-		<Close asChild={asChild} className={className}>
+		<Close
+			{...(asChild !== undefined && { asChild })}
+			{...(className !== undefined && { className })}
+		>
 			{children}
 		</Close>
 	);

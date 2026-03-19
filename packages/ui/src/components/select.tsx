@@ -237,7 +237,7 @@ function SelectSearchable({
 								<CommandPrimitive.Item
 									key={opt.value}
 									value={opt.value}
-									disabled={opt.disabled}
+									{...(opt.disabled !== undefined && { disabled: opt.disabled })}
 									onSelect={handleSelect}
 									role="option"
 									aria-selected={value === opt.value}
