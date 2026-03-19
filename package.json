@@ -11,7 +11,7 @@
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules",
     "docs": "bun --filter docs dev",
-    "deploy": "turbo run deploy --filter=docs",
+    "deploy": "wrangler deploy",
     "release": "turbo run build --filter=!docs && changeset publish"
   },
   "devDependencies": {
@@ -19,7 +19,8 @@
     "@types/bun": "^1.2.2",
     "@types/node": "^22.13.4",
     "turbo": "^2.3.3",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "wrangler": "^3.109.2"
   },
   "packageManager": "bun@1.3.9",
   "engines": {

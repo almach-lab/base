@@ -1,3 +1,5 @@
-name = "based-ui-docs"
+name = "base"
 compatibility_date = "2024-01-01"
-pages_build_output_dir = "apps/docs/dist"
+
+[assets]
+directory = "apps/docs/dist"
