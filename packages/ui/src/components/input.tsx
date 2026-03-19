@@ -62,16 +62,31 @@ export interface InputDateProps {
 	error?: boolean;
 	/** Show calendar picker button inside the input */
 	withCalendar?: boolean;
+	/**
+	 * Date format controlling segment order and separator.
+	 * Tokens: MM (month), DD (day), YYYY (year).
+	 * @example "MM/DD/YYYY" | "DD/MM/YYYY" | "YYYY-MM-DD" | "DD-MM-YYYY"
+	 * @default "MM/DD/YYYY"
+	 */
+	format?: string;
 	className?: string;
 }
 
 type SegKey = "month" | "day" | "year";
-const SEG_ORDER: SegKey[] = ["month", "day", "year"];
 const SEG_LIMITS: Record<SegKey, { min: number; max: number; len: number }> = {
 	month: { min: 1, max: 12, len: 2 },
 	day: { min: 1, max: 31, len: 2 },
 	year: { min: 1900, max: 2100, len: 4 },
 };
+
+/** Supported tokens: MM, DD, YYYY. Separator = first non-token char. */
+function parseFormat(fmt: string): { order: SegKey[]; sep: string } {
+	const sep = fmt.replace(/MM|DD|YYYY/g, "")[0] ?? "/";
+	const order: SegKey[] = fmt.split(sep).map((p) =>
+		p === "MM" ? "month" : p === "DD" ? "day" : "year"
+	);
+	return { order, sep };
+}
 
 function dateToSegments(date: Date) {
 	return {
@@ -81,6 +96,8 @@ function dateToSegments(date: Date) {
 	};
 }
 
+const SEG_PLACEHOLDER: Record<SegKey, string> = { month: "MM", day: "DD", year: "YYYY" };
+
 function InputDate({
 	id,
 	value,
@@ -88,8 +105,11 @@ function InputDate({
 	disabled,
 	error,
 	withCalendar = false,
+	format = "MM/DD/YYYY",
 	className,
 }: InputDateProps) {
+	const { order: SEG_ORDER, sep } = React.useMemo(() => parseFormat(format), [format]);
+
 	const [seg, setSeg] = React.useState(() =>
 		value && !isNaN(value.getTime())
 			? dateToSegments(value)
@@ -131,6 +151,9 @@ function InputDate({
 	const focusNext = (key: SegKey) => { const n = SEG_ORDER[SEG_ORDER.indexOf(key) + 1]; if (n) focus(n); };
 	const focusPrev = (key: SegKey) => { const p = SEG_ORDER[SEG_ORDER.indexOf(key) - 1]; if (p) focus(p); };
 
+	// When format changes, move focus to first segment
+	React.useEffect(() => { focus(SEG_ORDER[0]!); }, [format]); // eslint-disable-line react-hooks/exhaustive-deps
+
 	const handleKeyDown = (key: SegKey, e: React.KeyboardEvent<HTMLInputElement>) => {
 		const { min, max, len } = SEG_LIMITS[key];
 		if (e.key === "ArrowUp" || e.key === "ArrowDown") {
@@ -141,7 +164,7 @@ function InputDate({
 			setSeg(nextSeg); emit(nextSeg); return;
 		}
 		if (e.key === "ArrowLeft") { e.preventDefault(); focusPrev(key); }
-		if (e.key === "ArrowRight" || e.key === "/" || e.key === "-") { e.preventDefault(); focusNext(key); }
+		if (e.key === "ArrowRight" || e.key === sep) { e.preventDefault(); focusNext(key); }
 		if (e.key === "Backspace" && !seg[key]) focusPrev(key);
 	};
 
@@ -215,13 +238,18 @@ function InputDate({
 				disabled && "cursor-not-allowed opacity-50",
 				className,
 			)}
-			onClick={() => !active && refs.month.current?.focus()}
+			onClick={() => !active && focus(SEG_ORDER[0]!)}
 		>
-			<input {...mkProps("month", "M")} />
-			<span className="mx-0.5 select-none text-muted-foreground/40" aria-hidden="true">/</span>
-			<input {...mkProps("day", "D")} />
-			<span className="mx-0.5 select-none text-muted-foreground/40" aria-hidden="true">/</span>
-			<input {...mkProps("year", "YYYY")} />
+			{SEG_ORDER.map((key, i) => (
+				<React.Fragment key={key}>
+					{i > 0 && (
+						<span className="mx-0.5 select-none text-muted-foreground/40" aria-hidden="true">
+							{sep}
+						</span>
+					)}
+					<input {...mkProps(key, SEG_PLACEHOLDER[key])} />
+				</React.Fragment>
+			))}
 
 			{withCalendar && (
 				<PopoverPrimitive.Root open={calOpen} onOpenChange={setCalOpen}>
