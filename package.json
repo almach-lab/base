@@ -11,6 +11,7 @@
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules",
     "docs": "bun --filter docs dev",
+    "deploy": "turbo run deploy --filter=docs",
     "release": "turbo run build --filter=!docs && changeset publish"
   },
   "devDependencies": {
