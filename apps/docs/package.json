@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check",
-    "deploy": "wrangler pages deploy dist --project-name=based-ui-docs"
+    "deploy": "echo 'Deployment handled automatically by Cloudflare Pages git integration'"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.2",
