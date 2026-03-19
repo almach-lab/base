@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 won't auto-scan packages outside the app directory.
+ * @source explicitly adds those paths so component class names are
+ * included in the CSS build.
+ */
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../../../../packages/forms/src/**/*.{ts,tsx}";
+
+/* Component library base tokens */
+@import "@almach/ui/styles";
+
+/* ── Almach docs theme ────────────────────────────────────────────────────── */
+/* Golden primary — inspired by Sandy (γ And), the bright golden-yellow star  */
+:root {
+  --primary: 43 90% 44%;
+  --primary-foreground: 30 40% 6%;
+  --ring: 43 90% 44%;
+}
+
+.dark {
+  /* Deep space — the night sky backdrop for the Andromeda constellation */
+  --background: 224 30% 5%;
+  --foreground: 210 20% 96%;
+  --card: 224 25% 8%;
+  --card-foreground: 210 20% 96%;
+  --popover: 224 25% 8%;
+  --popover-foreground: 210 20% 96%;
+  --muted: 224 20% 11%;
+  --muted-foreground: 224 12% 55%;
+  --accent: 224 22% 14%;
+  --accent-foreground: 210 20% 96%;
+  --border: 224 18% 13%;
+  --input: 224 18% 13%;
+
+  /* Bright gold in the dark sky */
+  --primary: 43 92% 58%;
+  --primary-foreground: 30 40% 6%;
+  --ring: 43 92% 58%;
+}
+
+/* ── View transition: animate only page content, not the shell ────────────── */
+/* The main content area has transition:name="page-content" in Layout.astro.  */
+/* Header/sidebar have no transition:name so they get the instant root swap.  */
+::view-transition-old(page-content) {
+  animation: 120ms ease-out both vt-fade-out;
+}
+
+::view-transition-new(page-content) {
+  animation: 160ms ease-in both vt-fade-in;
+}
+
+/* Suppress the default root animation so shell never flickers */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ── Star field twinkle ───────────────────────────────────────────────────── */
+@keyframes star-twinkle {
+
+  0%,
+  100% {
+    opacity: var(--star-o);
+  }
+
+  50% {
+    opacity: calc(var(--star-o) * 0.15);
+  }
+}
+
+/* ── Shiki dual-theme ─────────────────────────────────────────────────────── */
+/*
+ * Token colours come from per-span CSS vars (--shiki-light / --shiki-dark).
+ * All background-color values are forced transparent so the outer code-block
+ * container controls the background — this prevents the white-row artifact
+ * caused by Shiki writing background-color: #fff on the <pre> and spans.
+ */
+.shiki-dual-theme .shiki,
+.shiki-dual-theme .shiki code,
+.shiki-dual-theme .shiki .line,
+.shiki-dual-theme .shiki span {
+  background-color: transparent !important;
+}
+
+.shiki-dual-theme .shiki span {
+  color: var(--shiki-light) !important;
+}
+
+.dark .shiki-dual-theme .shiki span {
+  color: var(--shiki-dark) !important;
+}

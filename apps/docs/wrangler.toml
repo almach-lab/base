@@ -1,0 +1,9 @@
+name = "based-ui-docs"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "based-ui-docs"
+
+[[env.production.routes]]
+pattern = "based-ui-docs.pages.dev/*"
+zone_name = "pages.dev"

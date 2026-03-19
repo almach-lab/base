@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Release packages to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # to create release tags and commits
+      pull-requests: write  # to create the "Version Packages" PR
+      id-token: write       # for npm provenance
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Use a GitHub token with write permissions for changesets
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build all packages
+        run: bun run build --filter=!docs
+
+      - name: Create Release PR or Publish to npm
+        uses: changesets/action@v1
+        with:
+          # This command bumps versions and updates changelogs
+          version: bun changeset version
+          # This command publishes to npm
+          publish: bun release
+          title: "chore: release packages"
+          commit: "chore: release packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # NPM token — add this secret in repo Settings → Secrets → Actions
+          # Create at https://www.npmjs.com/settings/<username>/tokens (Automation token)
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Enable npm provenance (OIDC-signed attestations)
+          NPM_CONFIG_PROVENANCE: "true"

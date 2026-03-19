@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "paths": {
+      "@almach/utils": [
+        "../utils/src/index.ts"
+      ],
+      "@almach/ui": [
+        "../ui/src/index.ts"
+      ]
+    }
+  },
+  "references": [
+    {
+      "path": "../utils"
+    },
+    {
+      "path": "../ui"
+    }
+  ],
+  "include": [
+    "src"
+  ]
+}

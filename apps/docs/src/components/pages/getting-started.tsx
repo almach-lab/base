@@ -1,0 +1,331 @@
+import React from "react";
+import { ArrowRight, Info } from "lucide-react";
+import { CodeBlock } from "../code-block";
+import { PkgTabs } from "../pkg-tabs";
+
+/* ── Small reusable layout pieces ─────────────────────────────────────────── */
+
+function Note({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex gap-3 rounded-lg border bg-muted/30 px-4 py-3 text-sm">
+      <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+      <div className="leading-relaxed text-muted-foreground">{children}</div>
+    </div>
+  );
+}
+
+function TokenGrid({ tokens }: { tokens: string[] }) {
+  return (
+    <div className="rounded-lg border bg-muted/20 p-4">
+      <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+        Available tokens
+      </p>
+      <div className="flex flex-wrap gap-1.5">
+        {tokens.map((t) => (
+          <code
+            key={t}
+            className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground"
+          >
+            {t}
+          </code>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PackageSection({
+  label,
+  pkg,
+  required,
+}: {
+  label: string;
+  pkg: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="space-y-2">
+      <p className="flex items-center gap-2 text-sm font-medium">
+        {label}
+        {required && (
+          <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
+            required
+          </span>
+        )}
+      </p>
+      <PkgTabs packages={pkg} />
+    </div>
+  );
+}
+
+interface StepProps {
+  n: number;
+  title: string;
+  description?: string;
+  last?: boolean;
+  children?: React.ReactNode;
+}
+
+function Step({ n, title, description, last = false, children }: StepProps) {
+  return (
+    <div className="relative flex gap-5">
+      {/* Connector line */}
+      {!last && <div className="absolute left-[17px] top-9 bottom-0 w-px bg-border" />}
+
+      {/* Step number */}
+      <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+        {n}
+      </div>
+
+      {/* Content */}
+      <div className="min-w-0 flex-1 pb-12 pt-1.5">
+        <h2 className="text-lg font-bold tracking-tight">{title}</h2>
+        {description && (
+          <p className="mb-4 mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
+        )}
+        {children && <div className="space-y-4">{!description && <div className="mt-4" />}{children}</div>}
+      </div>
+    </div>
+  );
+}
+
+/* ── Page ─────────────────────────────────────────────────────────────────── */
+
+const CSS_TOKENS = [
+  "--background", "--foreground", "--card", "--popover",
+  "--primary", "--secondary", "--muted", "--accent",
+  "--destructive", "--success", "--warning",
+  "--border", "--input", "--ring", "--radius",
+  "--switch-on", "--switch-off",
+];
+
+export function GettingStartedPage() {
+  return (
+    <div className="mx-auto max-w-3xl px-4 py-12 md:px-8">
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <div className="mb-12 border-b pb-10">
+        <div className="mb-4 inline-flex items-center rounded-full border border-primary/30 bg-primary/8 px-3 py-1 text-xs font-medium text-primary">
+          Quick start
+        </div>
+        <h1 className="mb-3 text-4xl font-black tracking-tight">Getting Started</h1>
+        <p className="mb-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
+          Set up Almach in minutes. Each package is independently installable and
+          tree-shakable — install only what you need.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {["React 18+", "TypeScript", "Tailwind CSS v4", "Vite / Next.js"].map((req) => (
+            <span
+              key={req}
+              className="rounded-full border bg-muted/50 px-2.5 py-0.5 text-xs text-muted-foreground"
+            >
+              {req}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Steps ──────────────────────────────────────────────────────────── */}
+      <div>
+        {/* Step 1 */}
+        <Step
+          n={1}
+          title="Install packages"
+          description="Install only what you need. Every package is independently versioned and zero-dependency from each other."
+        >
+          <PackageSection label="UI components" pkg="@almach/ui" required />
+          <PackageSection label="Form handling — TanStack Form + Zod" pkg="@almach/forms" />
+          <PackageSection label="Data fetching — TanStack Query" pkg="@almach/query" />
+        </Step>
+
+        {/* Step 2 */}
+        <Step
+          n={2}
+          title="Add styles"
+          description="Import Tailwind and the Almach design tokens in your root CSS file. Then tell Tailwind where to scan for class names inside the packages."
+        >
+          <CodeBlock
+            filename="globals.css"
+            lang="css"
+            code={`@import "tailwindcss";
+
+/* Tell Tailwind v4 to scan component source for class names.
+ * Without this, classes inside @almach/ui are stripped from the build. */
+@source "../node_modules/@almach/ui/dist/**/*.js";
+
+@import "@almach/ui/styles";`}
+          />
+          <Note>
+            <strong className="text-foreground">Monorepo?</strong> Point{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              @source
+            </code>{" "}
+            at the workspace source instead of dist:{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              @source "../../packages/ui/src/**/*.{"{ts,tsx}"}";
+            </code>
+          </Note>
+        </Step>
+
+        {/* Step 3 */}
+        <Step
+          n={3}
+          title="Customize colors"
+          description="Override any CSS variable to apply your brand. Every component responds automatically — no config files, no build steps."
+        >
+          <CodeBlock
+            filename="globals.css"
+            lang="css"
+            code={`:root {
+  --primary:    43 90% 44%;           /* golden — Almach theme */
+  --ring:       43 90% 44%;           /* focus rings           */
+  --radius:     0.625rem;             /* border radius         */
+
+  --switch-on:  hsl(43 90% 44%);
+  --switch-off: hsl(240 3.8% 46.1% / 0.35);
+}
+
+.dark {
+  --primary:    43 92% 58%;
+  --ring:       43 92% 58%;
+  --switch-on:  hsl(43 92% 58%);
+}`}
+          />
+          <TokenGrid tokens={CSS_TOKENS} />
+        </Step>
+
+        {/* Step 4 */}
+        <Step
+          n={4}
+          title="Wrap with providers"
+          description="Add BasedQueryProvider and Toaster at your app root. Skip if you're not using @almach/query."
+        >
+          <CodeBlock
+            filename="main.tsx"
+            lang="tsx"
+            code={`import { BasedQueryProvider } from "@almach/query";
+import { Toaster } from "@almach/ui";
+
+ReactDOM.createRoot(root).render(
+  <BasedQueryProvider>
+    <App />
+    <Toaster />
+  </BasedQueryProvider>
+);`}
+          />
+          <Note>
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              BasedQueryProvider
+            </code>{" "}
+            wraps TanStack QueryClient with sensible defaults. Skip it if you manage your own
+            QueryClient.
+          </Note>
+        </Step>
+
+        {/* Step 5 */}
+        <Step
+          n={5}
+          title="Use components"
+          description="Import and compose components directly. Compound APIs keep related parts together."
+        >
+          <CodeBlock
+            filename="my-component.tsx"
+            lang="tsx"
+            code={`import { Button, Card, Input, Select, Switch } from "@almach/ui";
+
+// Date input with built-in calendar picker
+<Input.Date withCalendar value={date} onChange={setDate} />
+
+// Settings-panel style layered card
+<Card.Layers>
+  <Card.LayerHeader>Preferences</Card.LayerHeader>
+  <Card.LayerRow action={<Switch defaultChecked size="sm" />}>
+    Dark mode
+  </Card.LayerRow>
+</Card.Layers>
+
+// Searchable select
+<Select.Searchable
+  options={[{ value: "react", label: "React" }]}
+  value={value}
+  onChange={setValue}
+  placeholder="Pick a framework…"
+/>`}
+          />
+        </Step>
+
+        {/* Step 6 */}
+        <Step
+          n={6}
+          title="Handle forms"
+          description="useBasedForm gives you TanStack Form with Zod validation, type-safe field names, and automatic error display."
+          last
+        >
+          <CodeBlock
+            filename="login-form.tsx"
+            lang="tsx"
+            code={`import { useBasedForm, TextField, z } from "@almach/forms";
+import { Button } from "@almach/ui";
+
+const schema = z.object({
+  email:    z.string().email("Invalid email"),
+  password: z.string().min(8, "At least 8 characters"),
+});
+
+export function LoginForm() {
+  const form = useBasedForm({
+    defaultValues: { email: "", password: "" },
+    validators: { onChange: schema },
+    onSubmit: async ({ value }) => console.log(value),
+  });
+
+  return (
+    <form
+      onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}
+      className="space-y-4"
+    >
+      <form.AppField name="email">
+        {() => <TextField label="Email" type="email" required />}
+      </form.AppField>
+      <form.AppField name="password">
+        {() => <TextField label="Password" type="password" required />}
+      </form.AppField>
+      <form.Subscribe selector={(s) => s.isSubmitting}>
+        {(submitting) => (
+          <Button type="submit" loading={submitting} className="w-full">
+            Sign in
+          </Button>
+        )}
+      </form.Subscribe>
+    </form>
+  );
+}`}
+          />
+        </Step>
+      </div>
+
+      {/* ── What's next ────────────────────────────────────────────────────── */}
+      <div className="border-t pt-10">
+        <h2 className="mb-5 text-xl font-bold tracking-tight">What's next?</h2>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {[
+            { href: "/components", label: "Components", desc: "Browse 30+ interactive component demos" },
+            { href: "/forms", label: "Forms", desc: "Type-safe form patterns with Zod" },
+            { href: "/query", label: "Query", desc: "Data fetching and mutation helpers" },
+          ].map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="group flex flex-col gap-1.5 rounded-xl border p-4 transition-colors hover:border-primary/40 hover:bg-primary/4"
+            >
+              <span className="flex items-center gap-1.5 text-sm font-semibold">
+                {link.label}
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </span>
+              <span className="text-xs leading-relaxed text-muted-foreground">{link.desc}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

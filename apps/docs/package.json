@@ -1,0 +1,38 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
+    "deploy": "wrangler pages deploy dist --project-name=based-ui-docs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.2",
+    "@astrojs/react": "^5.0.1",
+    "@almach/forms": "workspace:*",
+    "@almach/query": "workspace:*",
+    "@almach/ui": "workspace:*",
+    "@almach/utils": "workspace:*",
+    "@tanstack/react-query": "^5.67.2",
+    "astro": "^6.0.6",
+    "lucide-react": "^0.479.0",
+    "react": "^19.0.0",
+    "react-day-picker": "^9.14.0",
+    "react-dom": "^19.0.0",
+    "shiki": "^4.0.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "@tailwindcss/vite": "^4.0.6",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "tailwindcss": "^4.0.6",
+    "typescript": "^5.7.3",
+    "wrangler": "^3.109.2"
+  }
+}

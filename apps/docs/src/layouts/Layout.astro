@@ -1,0 +1,493 @@
+---
+import "../styles/globals.css";
+import ClientRouter from "astro/components/ClientRouter.astro";
+import { ThemeCustomizer } from "../components/ThemeCustomizer";
+import Logo from "../components/Logo.astro";
+
+interface Props {
+  title?: string;
+  currentPath?: string;
+}
+
+const { title = "Almach", currentPath = Astro.url.pathname } = Astro.props;
+
+const sidebarGroups = [
+  {
+    title: "Introduction",
+    items: [{ name: "Getting Started", href: "/getting-started" }],
+  },
+  {
+    title: "Components",
+    items: [
+      { name: "Overview", href: "/components" },
+      { name: "Alert", href: "/components/alert" },
+      { name: "Avatar", href: "/components/avatar" },
+      { name: "Badge", href: "/components/badge" },
+      { name: "Button", href: "/components/button" },
+      { name: "Calendar", href: "/components/calendar" },
+      { name: "Card", href: "/components/card" },
+      { name: "Carousel", href: "/components/carousel" },
+      { name: "Checkbox", href: "/components/checkbox" },
+      { name: "Collapsible", href: "/components/collapsible" },
+      { name: "Command", href: "/components/command" },
+      { name: "Combobox", href: "/components/combobox" },
+      { name: "Date Input", href: "/components/date-input" },
+      { name: "Dialog", href: "/components/dialog" },
+      { name: "Drawer", href: "/components/drawer" },
+      { name: "Dropdown Menu", href: "/components/dropdown-menu" },
+      { name: "Group", href: "/components/group" },
+      { name: "Input", href: "/components/input" },
+      { name: "Label", href: "/components/label" },
+      { name: "Layered Card", href: "/components/layered-card" },
+      { name: "Modal", href: "/components/modal" },
+      { name: "Progress", href: "/components/progress" },
+      { name: "Radio", href: "/components/radio" },
+      { name: "Select", href: "/components/select" },
+      { name: "Separator", href: "/components/separator" },
+      { name: "Skeleton", href: "/components/skeleton" },
+      { name: "Switch", href: "/components/switch" },
+      { name: "Table", href: "/components/table" },
+      { name: "Tabs", href: "/components/tabs" },
+      { name: "Tag Input", href: "/components/tag-input" },
+      { name: "Textarea", href: "/components/textarea" },
+      { name: "Toast", href: "/components/toast" },
+      { name: "Tooltip", href: "/components/tooltip" },
+    ],
+  },
+  {
+    title: "Packages",
+    items: [
+      { name: "Forms", href: "/forms" },
+      { name: "Query", href: "/query" },
+    ],
+  },
+];
+
+const isHome = currentPath === "/";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} · Almach</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ClientRouter />
+
+    <!--
+      Inline FOUC prevention: runs synchronously before first paint.
+      Applies dark class and any custom theme variables from localStorage
+      so there is never a flash of the wrong theme.
+    -->
+    <script is:inline>
+      (function () {
+        var stored = localStorage.getItem("theme");
+        var prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        var dark = stored === "dark" || (!stored && prefersDark);
+        if (dark) document.documentElement.classList.add("dark");
+
+        try {
+          var t = localStorage.getItem("almach-theme");
+          if (t) {
+            var v = JSON.parse(t);
+            var root = document.documentElement;
+            var primary = dark ? v.primaryDark : v.primaryLight;
+            if (primary) {
+              root.style.setProperty("--primary", primary);
+              root.style.setProperty("--ring", primary);
+            }
+            if (v.radius) root.style.setProperty("--radius", v.radius);
+          }
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+
+  <body class="bg-background text-foreground">
+    <div class="flex min-h-screen flex-col bg-background">
+      <!-- ── Header ─────────────────────────────────────────────────────── -->
+      <header
+        class="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur-sm"
+      >
+        <div
+          class="h-px w-full bg-gradient-to-r from-transparent via-primary/60 to-transparent"
+        >
+        </div>
+
+        <div
+          class="mx-auto flex h-13 max-w-screen-xl items-center gap-4 px-4 md:px-6"
+        >
+          {
+            !isHome && (
+              <button
+                id="sidebar-toggle"
+                class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
+                aria-label="Open navigation"
+              >
+                <svg
+                  class="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                </svg>
+              </button>
+            )
+          }
+
+          <a
+            href="/"
+            class="flex items-center gap-2.5"
+            aria-label="Almach home"
+          >
+            <Logo class="h-6 w-6 text-foreground" />
+            <span class="text-sm font-bold tracking-tight">Almach</span>
+          </a>
+
+          <div class="ml-auto flex items-center gap-1">
+            <!-- Customize button -->
+            <button
+              id="customizer-toggle"
+              class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              aria-label="Customize theme"
+            >
+              <!-- Paintbrush icon (hand-drawn SVG, no external dependency) -->
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"
+                ></path>
+                <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"></path>
+                <path d="M14.5 17.5 4.5 15"></path>
+              </svg>
+            </button>
+
+            <!-- Theme toggle -->
+            <button
+              id="theme-toggle"
+              class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              aria-label="Toggle theme"
+            >
+              <svg
+                id="icon-sun"
+                class="hidden h-[15px] w-[15px]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="5"></circle><line
+                  x1="12"
+                  y1="1"
+                  x2="12"
+                  y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line
+                  x1="18.36"
+                  y1="18.36"
+                  x2="19.78"
+                  y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line><line
+                  x1="21"
+                  y1="12"
+                  x2="23"
+                  y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line
+                  x1="18.36"
+                  y1="5.64"
+                  x2="19.78"
+                  y2="4.22"></line>
+              </svg>
+              <svg
+                id="icon-moon"
+                class="h-[15px] w-[15px]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+                ></path>
+              </svg>
+            </button>
+
+            <a
+              href="https://github.com/almach-lab/base"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              aria-label="View on GitHub"
+            >
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+                ></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </header>
+
+      <!-- ── Mobile sidebar overlay ──────────────────────────────────────── -->
+      <div
+        id="mobile-overlay"
+        class="fixed inset-0 z-50 hidden lg:hidden"
+        role="dialog"
+        aria-modal="true"
+      >
+        <div
+          id="mobile-backdrop"
+          class="absolute inset-0 bg-background/80 backdrop-blur-sm"
+        >
+        </div>
+        <aside
+          id="mobile-sidebar"
+          class="absolute inset-y-0 left-0 w-60 border-r bg-background p-5 shadow-lg"
+        >
+          <div class="mb-5 flex items-center justify-between">
+            <span class="flex items-center gap-2">
+              <Logo class="h-4 w-4 text-foreground" />
+              <span class="text-sm font-bold">Almach</span>
+            </span>
+            <button
+              id="sidebar-close"
+              class="flex h-7 w-7 items-center justify-center rounded-md hover:bg-accent"
+              aria-label="Close navigation"
+            >
+              <svg
+                class="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <nav aria-label="Mobile navigation">
+            {
+              sidebarGroups.map((group) => (
+                <div class="mb-6">
+                  <p class="mb-2 px-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                    {group.title}
+                  </p>
+                  <div class="space-y-0.5">
+                    {group.items.map((item) => (
+                      <a
+                        href={item.href}
+                        data-nav-href={item.href}
+                        class={`flex items-center rounded-md px-2 py-1.5 text-sm transition-colors ${
+                          currentPath === item.href
+                            ? "bg-primary/10 font-medium text-primary"
+                            : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                        }`}
+                        aria-current={
+                          currentPath === item.href ? "page" : undefined
+                        }
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))
+            }
+          </nav>
+        </aside>
+      </div>
+
+      <!-- ── Page content ────────────────────────────────────────────────── -->
+      {
+        isHome ? (
+          <main class="flex-1" id="main-content" transition:name="page-content">
+            <slot />
+          </main>
+        ) : (
+          <div class="mx-auto flex w-full max-w-screen-xl flex-1">
+            <aside
+              class="hidden w-56 shrink-0 border-r lg:block"
+              aria-label="Documentation navigation"
+            >
+              <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto py-8 pl-5 pr-3">
+                <nav aria-label="Documentation navigation">
+                  {sidebarGroups.map((group) => (
+                    <div class="mb-6">
+                      <p class="mb-2 px-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                        {group.title}
+                      </p>
+                      <div class="space-y-0.5">
+                        {group.items.map((item) => (
+                          <a
+                            href={item.href}
+                            data-nav-href={item.href}
+                            class={`flex items-center rounded-md px-2 py-1.5 text-sm transition-colors ${
+                              currentPath === item.href
+                                ? "bg-primary/10 font-medium text-primary"
+                                : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                            }`}
+                            aria-current={
+                              currentPath === item.href ? "page" : undefined
+                            }
+                          >
+                            {item.name}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </nav>
+              </div>
+            </aside>
+            <main
+              class="min-w-0 flex-1"
+              id="main-content"
+              transition:name="page-content"
+            >
+              <slot />
+            </main>
+          </div>
+        )
+      }
+
+      <!-- ── Footer ─────────────────────────────────────────────────────── -->
+      <footer class="border-t">
+        <div
+          class="mx-auto flex max-w-screen-xl flex-col items-center justify-between gap-3 px-4 py-4 text-xs text-muted-foreground sm:flex-row md:px-6"
+        >
+          <div class="flex items-center gap-2">
+            <Logo class="h-3.5 w-3.5 text-foreground" />
+            <span>Almach · MIT License</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span>React · Astro · Tailwind CSS v4</span>
+            <a
+              href="https://github.com/almach-lab/base"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="transition-colors hover:text-foreground"
+            >
+              GitHub ↗
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Theme customizer panel (React island, persists open state across transitions) -->
+    <ThemeCustomizer client:only="react" />
+
+    <script>
+      // ── Helpers ───────────────────────────────────────────────────────────
+      function getCustomTheme() {
+        try {
+          return JSON.parse(localStorage.getItem("almach-theme") || "null");
+        } catch (_) {
+          return null;
+        }
+      }
+
+      function applyCustomTheme(dark: boolean) {
+        const t = getCustomTheme();
+        if (!t) return;
+        const primary = dark ? t.primaryDark : t.primaryLight;
+        if (primary) {
+          document.documentElement.style.setProperty("--primary", primary);
+          document.documentElement.style.setProperty("--ring", primary);
+        }
+        if (t.radius)
+          document.documentElement.style.setProperty("--radius", t.radius);
+      }
+
+      // ── Theme toggle ──────────────────────────────────────────────────────
+      function setupThemeToggle() {
+        const toggle = document.getElementById("theme-toggle");
+        const iconSun = document.getElementById("icon-sun");
+        const iconMoon = document.getElementById("icon-moon");
+
+        const dark = document.documentElement.classList.contains("dark");
+        iconSun?.classList.toggle("hidden", !dark);
+        iconMoon?.classList.toggle("hidden", dark);
+
+        toggle?.addEventListener("click", () => {
+          const isDark = document.documentElement.classList.contains("dark");
+          const next = !isDark;
+          localStorage.setItem("theme", next ? "dark" : "light");
+          document.documentElement.classList.toggle("dark", next);
+          iconSun?.classList.toggle("hidden", !next);
+          iconMoon?.classList.toggle("hidden", next);
+          // Re-apply custom primary for the new mode
+          applyCustomTheme(next);
+          // Notify React customizer so it re-reads state
+          window.dispatchEvent(new CustomEvent("almach-theme-mode-changed"));
+        });
+      }
+
+      // ── Mobile sidebar ────────────────────────────────────────────────────
+      function setupMobileSidebar() {
+        const sidebarToggle = document.getElementById("sidebar-toggle");
+        const overlay = document.getElementById("mobile-overlay");
+        const backdrop = document.getElementById("mobile-backdrop");
+        const closeBtn = document.getElementById("sidebar-close");
+
+        const open = () => overlay?.classList.remove("hidden");
+        const close = () => overlay?.classList.add("hidden");
+
+        sidebarToggle?.addEventListener("click", open);
+        backdrop?.addEventListener("click", close);
+        closeBtn?.addEventListener("click", close);
+      }
+
+      // ── Customizer toggle → dispatches event the React component hears ───
+      function setupCustomizerToggle() {
+        document
+          .getElementById("customizer-toggle")
+          ?.addEventListener("click", () => {
+            window.dispatchEvent(new CustomEvent("almach-customizer-toggle"));
+          });
+      }
+
+      // ── Restore dark class + custom vars after page swap ─────────────────
+      // Astro's ClientRouter replaces the <html> element with the new page's
+      // server-rendered version (no `dark` class), so we must re-apply it.
+      function restoreTheme() {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        const dark = stored === "dark" || (!stored && prefersDark);
+        document.documentElement.classList.toggle("dark", dark);
+        applyCustomTheme(dark);
+      }
+
+      // ── Run on initial load and after every View Transition swap ──────────
+      function setup() {
+        setupThemeToggle();
+        setupMobileSidebar();
+        setupCustomizerToggle();
+      }
+
+      setup();
+      document.addEventListener("astro:after-swap", () => {
+        restoreTheme(); // must run before setup() so icon state reads the correct class
+        setup();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { AppShell } from "../components/AppShell";
+---
+
+<Layout title="Home" currentPath="/">
+  <AppShell page="home" client:only="react" />
+</Layout>

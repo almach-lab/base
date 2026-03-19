@@ -1,0 +1,26 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { AppShell } from "../../components/AppShell";
+
+export function getStaticPaths() {
+  const components = [
+    "alert", "avatar", "badge", "button", "calendar", "card",
+    "carousel", "checkbox", "collapsible", "command", "combobox",
+    "date-input", "dialog", "drawer", "dropdown-menu", "group",
+    "input", "label", "layered-card", "modal", "progress", "radio",
+    "select", "separator", "skeleton", "switch", "table", "tabs",
+    "tag-input", "textarea", "toast", "tooltip",
+  ];
+  return components.map((component) => ({ params: { component } }));
+}
+
+const { component } = Astro.params;
+const title = component
+  .split("-")
+  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+  .join(" ");
+---
+
+<Layout title={title} currentPath={`/components/${component}`}>
+  <AppShell page="component" componentSlug={component} client:only="react" />
+</Layout>
