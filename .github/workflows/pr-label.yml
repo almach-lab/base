@@ -9,7 +9,7 @@ name: PR Labels
 on:
   pull_request:
     types: [opened, reopened]
-    branches: [main]
+    branches: [dev]
 
 permissions:
   pull-requests: write
@@ -18,7 +18,7 @@ jobs:
   default-label:
     name: Apply default bump label
     # Skip the automated "Version Packages" PR from Changesets
-    if: github.event.pull_request.head.ref != 'changeset-release/main'
+    if: github.event.pull_request.head.ref != 'changeset-release/dev'
     runs-on: ubuntu-latest
 
     steps:
