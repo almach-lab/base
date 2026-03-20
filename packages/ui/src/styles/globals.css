@@ -128,6 +128,13 @@
   /* Switch — override to change switch colors */
   --switch-on: hsl(142.1 76.2% 36.3%);
   --switch-off: hsl(240 3.8% 46.1% / 0.35);
+
+  /* Chart palette */
+  --chart-1: 221 83% 53%;
+  --chart-2: 142 76% 36%;
+  --chart-3: 38 92% 50%;
+  --chart-4: 0 84% 60%;
+  --chart-5: 271 91% 65%;
 }
 
 
@@ -163,6 +170,13 @@
 
   --switch-on: hsl(142.1 70.6% 45.3%);
   --switch-off: hsl(240 5% 64.9% / 0.3);
+
+  /* Chart palette */
+  --chart-1: 217 91% 60%;
+  --chart-2: 142 69% 58%;
+  --chart-3: 38 92% 55%;
+  --chart-4: 0 72% 51%;
+  --chart-5: 271 91% 72%;
 }
 
 

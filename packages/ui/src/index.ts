@@ -17,6 +17,40 @@ export type { CalendarProps } from "./components/calendar";
 
 export { Card } from "./components/card";
 
+export {
+	Chart,
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
+	ChartGrid,
+	ChartXAxis,
+	ChartYAxis,
+	ChartLegend,
+	ChartPolarGrid,
+	ChartPolarAxis,
+	CHART_COLORS,
+	// Chart roots
+	LineChart,
+	BarChart,
+	AreaChart,
+	PieChart,
+	RadarChart,
+	ScatterChart,
+	// Series
+	Line,
+	Bar,
+	Area,
+	Pie,
+	Radar,
+	Scatter,
+	// Helpers
+	Cell,
+	ResponsiveContainer,
+	PolarGrid,
+	PolarAngleAxis,
+	PolarRadiusAxis,
+} from "./components/chart";
+
 export { Carousel } from "./components/carousel";
 
 export { Checkbox } from "./components/checkbox";
