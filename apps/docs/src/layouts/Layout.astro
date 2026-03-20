@@ -14,7 +14,10 @@ const { title = "Almach", currentPath = Astro.url.pathname } = Astro.props;
 const sidebarGroups = [
   {
     title: "Introduction",
-    items: [{ name: "Getting Started", href: "/getting-started" }],
+    items: [
+      { name: "Getting Started", href: "/getting-started" },
+      { name: "For LLMs", href: "/llms" },
+    ],
   },
   {
     title: "Components",
@@ -154,6 +157,38 @@ const isHome = currentPath === "/";
           </a>
 
           <div class="ml-auto flex items-center gap-1">
+            <!-- LLM copy button -->
+            <button
+              id="llm-copy-btn"
+              class="flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              aria-label="Copy llms.txt for LLM"
+              title="Copy full API reference for LLM"
+            >
+              <svg
+                id="llm-copy-icon"
+                class="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
+              </svg>
+              <svg
+                id="llm-check-icon"
+                class="hidden h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+              </svg>
+              <span id="llm-copy-label" class="hidden sm:inline">LLMs</span>
+            </button>
+
             <!-- Customize button -->
             <button
               id="customizer-toggle"
@@ -454,6 +489,31 @@ const isHome = currentPath === "/";
         closeBtn?.addEventListener("click", close);
       }
 
+      // ── LLM copy button → fetches /llms.txt and copies to clipboard ──────
+      function setupLLMCopyButton() {
+        const btn = document.getElementById("llm-copy-btn");
+        const copyIcon = document.getElementById("llm-copy-icon");
+        const checkIcon = document.getElementById("llm-check-icon");
+        const label = document.getElementById("llm-copy-label");
+        if (!btn) return;
+
+        btn.addEventListener("click", async () => {
+          try {
+            const res = await fetch("/llms.txt");
+            const text = await res.text();
+            await navigator.clipboard.writeText(text);
+            copyIcon?.classList.add("hidden");
+            checkIcon?.classList.remove("hidden");
+            if (label) label.textContent = "Copied!";
+            setTimeout(() => {
+              copyIcon?.classList.remove("hidden");
+              checkIcon?.classList.add("hidden");
+              if (label) label.textContent = "LLMs";
+            }, 2000);
+          } catch (_) {}
+        });
+      }
+
       // ── Customizer toggle → dispatches event the React component hears ───
       function setupCustomizerToggle() {
         document
@@ -481,6 +541,7 @@ const isHome = currentPath === "/";
         setupThemeToggle();
         setupMobileSidebar();
         setupCustomizerToggle();
+        setupLLMCopyButton();
       }
 
       setup();
