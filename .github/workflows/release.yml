@@ -17,6 +17,12 @@ name: Release
 on:
   push:
     branches: [main]
+    # Only run when changeset files change:
+    #   • auto-changeset adds  .changeset/auto-*.md  → opens/updates "Version Packages" PR
+    #   • "Version Packages" PR merge removes them   → publishes to npm
+    paths:
+      - ".changeset/**"
+      - "packages/**/package.json"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
