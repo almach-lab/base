@@ -1,0 +1,97 @@
+name: Bootstrap Labels
+
+# Run once via Actions → "Bootstrap Labels" → "Run workflow"
+# Creates the standard labels used by the release automation.
+# Safe to re-run — existing labels are updated, not duplicated.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+jobs:
+  labels:
+    name: Create / update labels
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sync labels
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = [
+              // ── Bump type (used by auto-changeset.yml) ─────────────────
+              {
+                name: 'patch',
+                color: '0075ca',
+                description: 'Bug fix or non-breaking improvement (semver patch bump)',
+              },
+              {
+                name: 'minor',
+                color: '0e8a16',
+                description: 'New feature, backwards-compatible (semver minor bump)',
+              },
+              {
+                name: 'major',
+                color: 'e4e669',
+                description: 'Breaking change (semver major bump)',
+              },
+              {
+                name: 'skip-changeset',
+                color: 'ededed',
+                description: 'Skip auto-changeset generation (docs-only, CI, etc.)',
+              },
+              // ── PR type ────────────────────────────────────────────────
+              {
+                name: 'bug',
+                color: 'd73a4a',
+                description: 'Something is not working',
+              },
+              {
+                name: 'feature',
+                color: 'a2eeef',
+                description: 'New feature or request',
+              },
+              {
+                name: 'docs',
+                color: 'f9d0c4',
+                description: 'Documentation only',
+              },
+              {
+                name: 'chore',
+                color: 'fef2c0',
+                description: 'Build, CI, tooling, or maintenance',
+              },
+              {
+                name: 'dependencies',
+                color: '0366d6',
+                description: 'Dependency updates',
+              },
+            ];
+
+            for (const label of labels) {
+              try {
+                // Try to update first (label exists)
+                await github.rest.issues.updateLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  color: label.color,
+                  description: label.description,
+                });
+                core.info(`Updated: ${label.name}`);
+              } catch {
+                // Label doesn't exist — create it
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label.name,
+                  color: label.color,
+                  description: label.description,
+                });
+                core.info(`Created: ${label.name}`);
+              }
+            }
+
+            core.info('All labels synced.');
