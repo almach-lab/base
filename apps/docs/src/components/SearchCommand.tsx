@@ -54,7 +54,7 @@ const NAV_GROUPS = [
 		items: [
 			{ label: "Card", href: "/components/card" },
 			{ label: "Carousel", href: "/components/carousel" },
-{ label: "Separator", href: "/components/separator" },
+			{ label: "Separator", href: "/components/separator" },
 		],
 	},
 	{
