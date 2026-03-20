@@ -73,6 +73,7 @@ const sidebarGroups = [
       { name: "Drawer", href: "/components/drawer" },
       { name: "Dropdown Menu", href: "/components/dropdown-menu" },
       { name: "Modal", href: "/components/modal" },
+      { name: "Popover", href: "/components/popover" },
       { name: "Tabs", href: "/components/tabs" },
     ],
   },
@@ -138,59 +139,45 @@ const isHome = currentPath === "/";
 
   <body class="bg-background text-foreground">
     <div class="flex min-h-screen flex-col bg-background">
+
       <!-- ── Header ─────────────────────────────────────────────────────── -->
-      <header
-        class="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur-sm"
-      >
-        <div
-          class="h-px w-full bg-gradient-to-r from-transparent via-primary/60 to-transparent"
-        >
-        </div>
+      <header class="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur-sm">
+        <!-- accent gradient line -->
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
 
-        <div
-          class="mx-auto flex h-13 max-w-screen-xl items-center gap-4 px-4 md:px-6"
-        >
-          {
-            !isHome && (
-              <button
-                id="sidebar-toggle"
-                class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
-                aria-label="Open navigation"
-              >
-                <svg
-                  class="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              </button>
-            )
-          }
+        <div class="mx-auto flex h-14 max-w-screen-xl items-center gap-3 px-4 md:px-6">
 
-          <a
-            href="/"
-            class="flex items-center gap-2.5"
-            aria-label="Almach home"
-          >
+          <!-- Mobile menu button (only shown on non-home pages on small screens) -->
+          {!isHome && (
+            <button
+              id="sidebar-toggle"
+              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
+              aria-label="Open navigation"
+            >
+              <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="18" x2="14" y2="18" />
+              </svg>
+            </button>
+          )}
+
+          <!-- Logo / wordmark -->
+          <a href="/" class="flex shrink-0 items-center gap-2" aria-label="Almach home">
             <Logo class="h-6 w-6 text-foreground" />
             <span class="text-sm font-bold tracking-tight">Almach</span>
           </a>
 
+          <!-- Right-side actions -->
           <div class="ml-auto flex items-center gap-1">
+
             <!-- Global search / command palette -->
             <SearchCommand client:only="react" />
 
             <!-- LLM copy button -->
             <button
               id="llm-copy-btn"
-              class="flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              class="hidden sm:flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               aria-label="Copy llms.txt for LLM"
               title="Copy full API reference for LLM"
             >
@@ -216,28 +203,20 @@ const isHome = currentPath === "/";
               >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
               </svg>
-              <span id="llm-copy-label" class="hidden sm:inline">LLMs</span>
+              <span id="llm-copy-label">LLMs</span>
             </button>
+
+            <!-- Divider -->
+            <div class="mx-1 hidden h-4 w-px bg-border sm:block" aria-hidden="true"></div>
 
             <!-- Customize button -->
             <button
               id="customizer-toggle"
-              class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               aria-label="Customize theme"
             >
-              <!-- Paintbrush icon (hand-drawn SVG, no external dependency) -->
-              <svg
-                class="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"
-                ></path>
+              <svg class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"></path>
                 <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"></path>
                 <path d="M14.5 17.5 4.5 15"></path>
               </svg>
@@ -246,60 +225,35 @@ const isHome = currentPath === "/";
             <!-- Theme toggle -->
             <button
               id="theme-toggle"
-              class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               aria-label="Toggle theme"
             >
-              <svg
-                id="icon-sun"
-                class="hidden h-[15px] w-[15px]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="5"></circle><line
-                  x1="12"
-                  y1="1"
-                  x2="12"
-                  y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line
-                  x1="18.36"
-                  y1="18.36"
-                  x2="19.78"
-                  y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line><line
-                  x1="21"
-                  y1="12"
-                  x2="23"
-                  y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line
-                  x1="18.36"
-                  y1="5.64"
-                  x2="19.78"
-                  y2="4.22"></line>
+              <svg id="icon-sun" class="hidden h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
               </svg>
-              <svg
-                id="icon-moon"
-                class="h-[15px] w-[15px]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
-                ></path>
+              <svg id="icon-moon" class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
               </svg>
             </button>
 
+            <!-- GitHub link -->
             <a
               href="https://github.com/almach-lab/base"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               aria-label="View on GitHub"
             >
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
-                ></path>
+              <svg class="h-[15px] w-[15px]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"></path>
               </svg>
             </a>
           </div>
@@ -312,45 +266,42 @@ const isHome = currentPath === "/";
         class="fixed inset-0 z-50 hidden lg:hidden"
         role="dialog"
         aria-modal="true"
+        aria-label="Navigation menu"
       >
+        <!-- Backdrop -->
         <div
           id="mobile-backdrop"
           class="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        >
-        </div>
+        ></div>
+
+        <!-- Panel -->
         <aside
           id="mobile-sidebar"
-          class="absolute inset-y-0 left-0 w-60 border-r bg-background p-5 shadow-lg"
+          class="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r bg-background shadow-xl"
         >
-          <div class="mb-5 flex items-center justify-between">
-            <span class="flex items-center gap-2">
-              <Logo class="h-4 w-4 text-foreground" />
+          <!-- Panel header -->
+          <div class="flex h-14 shrink-0 items-center justify-between border-b px-4">
+            <a href="/" class="flex items-center gap-2" aria-label="Almach home">
+              <Logo class="h-5 w-5 text-foreground" />
               <span class="text-sm font-bold">Almach</span>
-            </span>
+            </a>
             <button
               id="sidebar-close"
-              class="flex h-7 w-7 items-center justify-center rounded-md hover:bg-accent"
+              class="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               aria-label="Close navigation"
             >
-              <svg
-                class="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"></path>
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
           </div>
-          <nav aria-label="Mobile navigation">
-            {
-              sidebarGroups.map((group) => (
-                <div class="mb-6">
-                  <p class="mb-2 px-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+
+          <!-- Nav items -->
+          <div class="flex-1 overflow-y-auto py-4 px-3">
+            <nav aria-label="Mobile navigation">
+              {sidebarGroups.map((group) => (
+                <div class="mb-5">
+                  <p class="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
                     {group.title}
                   </p>
                   <div class="space-y-0.5">
@@ -358,23 +309,24 @@ const isHome = currentPath === "/";
                       <a
                         href={item.href}
                         data-nav-href={item.href}
-                        class={`flex items-center rounded-md px-2 py-1.5 text-sm transition-colors ${
+                        class={`group relative flex items-center rounded-lg px-2 py-1.5 text-sm transition-colors ${
                           currentPath === item.href
                             ? "bg-primary/10 font-medium text-primary"
-                            : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                            : "text-muted-foreground hover:bg-accent hover:text-foreground"
                         }`}
-                        aria-current={
-                          currentPath === item.href ? "page" : undefined
-                        }
+                        aria-current={currentPath === item.href ? "page" : undefined}
                       >
+                        {currentPath === item.href && (
+                          <span class="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-primary"></span>
+                        )}
                         {item.name}
                       </a>
                     ))}
                   </div>
                 </div>
-              ))
-            }
-          </nav>
+              ))}
+            </nav>
+          </div>
         </aside>
       </div>
 
@@ -386,15 +338,17 @@ const isHome = currentPath === "/";
           </main>
         ) : (
           <div class="mx-auto flex w-full max-w-screen-xl flex-1">
+
+            <!-- Desktop sidebar -->
             <aside
-              class="hidden w-56 shrink-0 border-r lg:block"
+              class="hidden w-60 shrink-0 border-r lg:block"
               aria-label="Documentation navigation"
             >
-              <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto py-8 pl-5 pr-3">
+              <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto py-6 pl-4 pr-3">
                 <nav aria-label="Documentation navigation">
                   {sidebarGroups.map((group) => (
-                    <div class="mb-6">
-                      <p class="mb-2 px-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60">
+                    <div class="mb-5">
+                      <p class="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
                         {group.title}
                       </p>
                       <div class="space-y-0.5">
@@ -402,15 +356,16 @@ const isHome = currentPath === "/";
                           <a
                             href={item.href}
                             data-nav-href={item.href}
-                            class={`flex items-center rounded-md px-2 py-1.5 text-sm transition-colors ${
+                            class={`relative flex items-center rounded-lg px-2 py-1.5 text-sm transition-colors ${
                               currentPath === item.href
                                 ? "bg-primary/10 font-medium text-primary"
-                                : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                                : "text-muted-foreground hover:bg-accent hover:text-foreground"
                             }`}
-                            aria-current={
-                              currentPath === item.href ? "page" : undefined
-                            }
+                            aria-current={currentPath === item.href ? "page" : undefined}
                           >
+                            {currentPath === item.href && (
+                              <span class="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-full bg-primary"></span>
+                            )}
                             {item.name}
                           </a>
                         ))}
@@ -420,6 +375,7 @@ const isHome = currentPath === "/";
                 </nav>
               </div>
             </aside>
+
             <main
               class="min-w-0 flex-1"
               id="main-content"
@@ -433,11 +389,9 @@ const isHome = currentPath === "/";
 
       <!-- ── Footer ─────────────────────────────────────────────────────── -->
       <footer class="border-t">
-        <div
-          class="mx-auto flex max-w-screen-xl flex-col items-center justify-between gap-3 px-4 py-4 text-xs text-muted-foreground sm:flex-row md:px-6"
-        >
+        <div class="mx-auto flex max-w-screen-xl flex-col items-center justify-between gap-3 px-4 py-5 text-xs text-muted-foreground sm:flex-row md:px-6">
           <div class="flex items-center gap-2">
-            <Logo class="h-3.5 w-3.5 text-foreground" />
+            <Logo class="h-3.5 w-3.5 text-muted-foreground" />
             <span>Almach · MIT License</span>
           </div>
           <div class="flex items-center gap-4">
@@ -447,6 +401,7 @@ const isHome = currentPath === "/";
               target="_blank"
               rel="noopener noreferrer"
               class="transition-colors hover:text-foreground"
+              aria-label="GitHub repository (opens in new tab)"
             >
               GitHub ↗
             </a>
@@ -497,9 +452,7 @@ const isHome = currentPath === "/";
           document.documentElement.classList.toggle("dark", next);
           iconSun?.classList.toggle("hidden", !next);
           iconMoon?.classList.toggle("hidden", next);
-          // Re-apply custom primary for the new mode
           applyCustomTheme(next);
-          // Notify React customizer so it re-reads state
           window.dispatchEvent(new CustomEvent("almach-theme-mode-changed"));
         });
       }
@@ -510,13 +463,32 @@ const isHome = currentPath === "/";
         const overlay = document.getElementById("mobile-overlay");
         const backdrop = document.getElementById("mobile-backdrop");
         const closeBtn = document.getElementById("sidebar-close");
+        const panel = document.getElementById("mobile-sidebar");
 
-        const open = () => overlay?.classList.remove("hidden");
-        const close = () => overlay?.classList.add("hidden");
+        const open = () => {
+          overlay?.classList.remove("hidden");
+          panel?.classList.remove("-translate-x-full");
+        };
+        const close = () => {
+          overlay?.classList.add("hidden");
+          panel?.classList.add("-translate-x-full");
+        };
 
         sidebarToggle?.addEventListener("click", open);
         backdrop?.addEventListener("click", close);
         closeBtn?.addEventListener("click", close);
+
+        // close on nav link click
+        panel?.querySelectorAll("a[data-nav-href]").forEach((link) => {
+          link.addEventListener("click", close);
+        });
+
+        // close on Escape key
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && !overlay?.classList.contains("hidden")) {
+            close();
+          }
+        });
       }
 
       // ── LLM copy button → fetches /llms.txt and copies to clipboard ──────
@@ -554,8 +526,6 @@ const isHome = currentPath === "/";
       }
 
       // ── Restore dark class + custom vars after page swap ─────────────────
-      // Astro's ClientRouter replaces the <html> element with the new page's
-      // server-rendered version (no `dark` class), so we must re-apply it.
       function restoreTheme() {
         const stored = localStorage.getItem("theme");
         const prefersDark = window.matchMedia(
@@ -576,7 +546,7 @@ const isHome = currentPath === "/";
 
       setup();
       document.addEventListener("astro:after-swap", () => {
-        restoreTheme(); // must run before setup() so icon state reads the correct class
+        restoreTheme();
         setup();
       });
     </script>

@@ -71,6 +71,7 @@ const NAV_GROUPS = [
 			{ label: "Drawer", href: "/components/drawer" },
 			{ label: "Dropdown Menu", href: "/components/dropdown-menu" },
 			{ label: "Modal", href: "/components/modal" },
+			{ label: "Popover", href: "/components/popover" },
 			{ label: "Tabs", href: "/components/tabs" },
 		],
 	},

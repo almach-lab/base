@@ -40,6 +40,7 @@ const componentPages: Record<string, React.LazyExoticComponent<() => React.JSX.E
     import("./pages/components/layered-card").then((m) => ({ default: m.LayeredCardPage }))
   ),
   modal: lazy(() => import("./pages/components/modal").then((m) => ({ default: m.ModalPage }))),
+  popover: lazy(() => import("./pages/components/popover").then((m) => ({ default: m.PopoverPage }))),
   progress: lazy(() => import("./pages/components/progress").then((m) => ({ default: m.ProgressPage }))),
   radio: lazy(() => import("./pages/components/radio").then((m) => ({ default: m.RadioPage }))),
   select: lazy(() => import("./pages/components/select").then((m) => ({ default: m.SelectPage }))),
