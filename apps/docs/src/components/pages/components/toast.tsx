@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Button, Toaster, useToast } from "@almach/ui";
+import { Button, Toaster, toast } from "@almach/ui";
 import { ComponentDoc } from "../../component-doc";
 
 export function ToastPage() {
@@ -7,66 +7,41 @@ export function ToastPage() {
 		<>
 			<ComponentDoc
 				name="Toast"
-				description="Transient notifications that auto-dismiss. Use the useToast hook to fire them from anywhere in the component tree."
+				description="Transient notifications powered by Sonner. Call toast() from anywhere — no provider wiring needed beyond placing <Toaster /> once at the app root."
 				examples={[
 					{
 						title: "Variants",
-						description:
-							"Three semantic variants. Click each button to trigger a toast.",
+						description: "Four semantic variants. Click each button to trigger a toast.",
 						preview: <ToastVariantsDemo />,
-						code: `import { useToast } from "@almach/ui";
+						code: `import { toast } from "@almach/ui";
 
-function Demo() {
-  const { toast } = useToast();
-
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Button
-        variant="outline"
-        onClick={() =>
-          toast({ title: "Notification", description: "You have a new message." })
-        }
-      >
-        Default
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() =>
-          toast({ title: "Saved!", description: "Your changes have been saved.", variant: "success" })
-        }
-      >
-        Success
-      </Button>
-      <Button
-        variant="destructive"
-        onClick={() =>
-          toast({ title: "Error", description: "Something went wrong.", variant: "destructive" })
-        }
-      >
-        Destructive
-      </Button>
-    </div>
-  );
-}`,
+toast("Notification", { description: "You have a new message." });
+toast.success("Saved!", { description: "Your changes have been saved." });
+toast.error("Error", { description: "Something went wrong." });
+toast.warning("Warning", { description: "Check your input." });`,
 					},
 					{
 						title: "With action",
-						description: "Toasts can include a single action button.",
+						description: "Pass an action button via the action option.",
 						preview: <ToastActionDemo />,
-						code: `const { toast } = useToast();
-
-toast({
-  title: "File deleted",
+						code: `toast("File deleted", {
   description: "report-q4.pdf has been moved to trash.",
-  action: (
-    <ToastAction altText="Undo deletion">Undo</ToastAction>
-  ),
+  action: { label: "Undo", onClick: () => console.log("Undo") },
+});`,
+					},
+					{
+						title: "Promise",
+						description: "Tracks async state with loading → success / error.",
+						preview: <ToastPromiseDemo />,
+						code: `toast.promise(saveData(), {
+  loading: "Saving…",
+  success: "Saved successfully!",
+  error: "Failed to save.",
 });`,
 					},
 					{
 						title: "Setup",
-						description:
-							"Add <Toaster /> once at the app root to render toasts.",
+						description: "Add <Toaster /> once at the app root.",
 						preview: (
 							<div className="w-full max-w-sm rounded-lg border bg-muted/30 p-4 font-mono text-xs leading-relaxed text-muted-foreground">
 								{"// main.tsx or App.tsx"}<br />
@@ -82,48 +57,47 @@ toast({
 								{"}"}
 							</div>
 						),
-						code: `// main.tsx or App.tsx
-import { Toaster } from "@almach/ui";
+						code: `import { Toaster, toast } from "@almach/ui";
 
-export default function App() {
-  return (
-    <>
-      <YourRoutes />
-      <Toaster />
-    </>
-  );
-}`,
+// Place once at the root:
+<Toaster />
+
+// Call from anywhere:
+toast.success("Done!");`,
 						centered: false,
 					},
 				]}
 				props={[
 					{
-						name: "title",
-						type: "ReactNode",
-						required: true,
-						description: "Short notification title.",
+						name: "toast(message, options?)",
+						type: "function",
+						description: "Default (info) toast.",
 					},
 					{
-						name: "description",
-						type: "ReactNode",
-						description: "Optional secondary text below the title.",
+						name: "toast.success / .error / .warning / .info",
+						type: "function",
+						description: "Semantic variant helpers.",
 					},
 					{
-						name: "variant",
-						type: '"default" | "success" | "destructive"',
-						default: '"default"',
-						description: "Controls the color scheme of the toast.",
+						name: "toast.promise(promise, messages)",
+						type: "function",
+						description: "Tracks loading → success / error state.",
 					},
 					{
-						name: "action",
-						type: "ReactElement",
-						description: "A single action button (ToastAction element).",
+						name: "options.description",
+						type: "string",
+						description: "Secondary text below the title.",
 					},
 					{
-						name: "duration",
+						name: "options.duration",
 						type: "number",
 						default: "4000",
 						description: "Auto-dismiss delay in milliseconds.",
+					},
+					{
+						name: "options.action",
+						type: "{ label: string; onClick: () => void }",
+						description: "Inline action button.",
 					},
 				]}
 			/>
@@ -133,65 +107,56 @@ export default function App() {
 }
 
 function ToastVariantsDemo() {
-	const { toast } = useToast();
 	return (
 		<div className="flex flex-wrap gap-2">
-			<Button
-				variant="outline"
-				size="sm"
-				onClick={() =>
-					toast({
-						title: "Notification",
-						description: "You have a new message in your inbox.",
-					})
-				}
-			>
+			<Button variant="outline" size="sm" onClick={() => toast("Notification", { description: "You have a new message in your inbox." })}>
 				Default
 			</Button>
-			<Button
-				variant="outline"
-				size="sm"
-				onClick={() =>
-					toast({
-						title: "Saved!",
-						description: "Your changes have been saved successfully.",
-						variant: "success",
-					})
-				}
-			>
+			<Button variant="outline" size="sm" onClick={() => toast.success("Saved!", { description: "Your changes have been saved successfully." })}>
 				Success
 			</Button>
-			<Button
-				size="sm"
-				variant="destructive"
-				onClick={() =>
-					toast({
-						title: "Error",
-						description: "Something went wrong. Please try again.",
-						variant: "destructive",
-					})
-				}
-			>
-				Destructive
+			<Button variant="destructive" size="sm" onClick={() => toast.error("Error", { description: "Something went wrong. Please try again." })}>
+				Error
+			</Button>
+			<Button variant="outline" size="sm" onClick={() => toast.warning("Warning", { description: "Please review your input before submitting." })}>
+				Warning
 			</Button>
 		</div>
 	);
 }
 
 function ToastActionDemo() {
-	const { toast } = useToast();
 	return (
 		<Button
 			variant="outline"
 			size="sm"
 			onClick={() =>
-				toast({
-					title: "File deleted",
+				toast("File deleted", {
 					description: "report-q4.pdf has been moved to trash.",
+					action: { label: "Undo", onClick: () => toast("Restored", { description: "File restored successfully." }) },
 				})
 			}
 		>
 			Delete file
+		</Button>
+	);
+}
+
+function ToastPromiseDemo() {
+	const fakeAsync = () => new Promise<void>((res) => setTimeout(res, 1500));
+	return (
+		<Button
+			variant="outline"
+			size="sm"
+			onClick={() =>
+				toast.promise(fakeAsync(), {
+					loading: "Saving changes…",
+					success: "Changes saved!",
+					error: "Failed to save.",
+				})
+			}
+		>
+			Save with promise
 		</Button>
 	);
 }

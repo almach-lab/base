@@ -32,12 +32,8 @@ const componentPages: Record<string, React.LazyExoticComponent<() => React.JSX.E
   "dropdown-menu": lazy(() =>
     import("./pages/components/dropdown-menu").then((m) => ({ default: m.DropdownMenuPage }))
   ),
-  group: lazy(() => import("./pages/components/group").then((m) => ({ default: m.GroupPage }))),
   input: lazy(() => import("./pages/components/input").then((m) => ({ default: m.InputPage }))),
   label: lazy(() => import("./pages/components/label").then((m) => ({ default: m.LabelPage }))),
-  "layered-card": lazy(() =>
-    import("./pages/components/layered-card").then((m) => ({ default: m.LayeredCardPage }))
-  ),
   modal: lazy(() => import("./pages/components/modal").then((m) => ({ default: m.ModalPage }))),
   popover: lazy(() => import("./pages/components/popover").then((m) => ({ default: m.PopoverPage }))),
   progress: lazy(() => import("./pages/components/progress").then((m) => ({ default: m.ProgressPage }))),

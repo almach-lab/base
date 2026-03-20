@@ -36,9 +36,7 @@ const GROUPS = [
 		items: [
 			{ name: "Card", href: "/components/card", description: "Surface container with sections." },
 			{ name: "Carousel", href: "/components/carousel", description: "Touch-friendly slide carousel." },
-			{ name: "Group", href: "/components/group", description: "Grouped form and navigation rows." },
-			{ name: "Layered Card", href: "/components/layered-card", description: "Settings panel with layered rows." },
-			{ name: "Separator", href: "/components/separator", description: "Horizontal or vertical divider." },
+{ name: "Separator", href: "/components/separator", description: "Horizontal or vertical divider." },
 		],
 	},
 	{

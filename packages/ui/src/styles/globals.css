@@ -126,7 +126,7 @@
   --radius: 0.625rem;
 
   /* Switch — override to change switch colors */
-  --switch-on: hsl(142.1 76.2% 36.3%);
+  --switch-on: hsl(var(--primary));
   --switch-off: hsl(240 3.8% 46.1% / 0.35);
 
   /* Chart palette */
@@ -168,7 +168,7 @@
   --input: 240 3.7% 15.9%;
   --ring: 240 4.9% 83.9%;
 
-  --switch-on: hsl(142.1 70.6% 45.3%);
+  --switch-on: hsl(var(--primary));
   --switch-off: hsl(240 5% 64.9% / 0.3);
 
   /* Chart palette */

@@ -98,16 +98,8 @@ export { Tabs, tabsListVariants, tabsTriggerVariants } from "./components/tabs";
 export { TagInput } from "./components/tag-input";
 export type { TagInputProps } from "./components/tag-input";
 
-export {
-	Toast,
-	ToastAction,
-	ToastClose,
-	ToastDescription,
-	ToastProvider,
-	ToastTitle,
-	ToastViewport,
-} from "./components/toast";
-export type { ToastProps, ToastActionElement } from "./components/toast";
+export { toast } from "./components/toast";
+export type { ToastOptions } from "./components/toast";
 
 export { Toaster } from "./components/toaster";
 
@@ -117,6 +109,6 @@ export type { TextareaProps } from "./components/textarea";
 export { Tooltip } from "./components/tooltip";
 
 /* ─── Hooks ───────────────────────────────────────────────────────────────── */
-export { toast, useToast } from "./hooks/use-toast";
+export { useToast } from "./hooks/use-toast";
 export { useMediaQuery, useIsMobile } from "./hooks/use-media-query";
 export { useCopyToClipboard } from "./hooks/use-copy-to-clipboard";

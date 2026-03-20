@@ -8,8 +8,7 @@ import {
   useBasedForm,
   z,
 } from "@almach/forms";
-import { Badge, Button, Card, Separator, Tabs } from "@almach/ui";
-import { useToast } from "@almach/ui";
+import { Badge, Button, Card, Separator, Tabs, toast } from "@almach/ui";
 import { CodeBlock } from "../code-block";
 
 const loginSchema = z.object({
@@ -19,17 +18,12 @@ const loginSchema = z.object({
 });
 
 function LoginForm() {
-  const { toast: showToast } = useToast();
   const form = useBasedForm({
     defaultValues: { email: "", password: "", rememberMe: false },
     validators: { onChange: loginSchema },
     onSubmit: async ({ value }) => {
       await new Promise((r) => setTimeout(r, 800));
-      showToast({
-        title: "Signed in!",
-        description: `Welcome back, ${value.email}`,
-        variant: "success",
-      });
+      toast.success("Signed in!", { description: `Welcome back, ${value.email}` });
     },
   });
 
@@ -73,7 +67,6 @@ const registerSchema = z.object({
 });
 
 function RegisterForm() {
-  const { toast: showToast } = useToast();
   const form = useBasedForm({
     defaultValues: {
       firstName: "",
@@ -87,7 +80,7 @@ function RegisterForm() {
     validators: { onChange: registerSchema },
     onSubmit: async () => {
       await new Promise((r) => setTimeout(r, 1000));
-      showToast({ title: "Account created!", description: "Welcome to Almach.", variant: "success" });
+      toast.success("Account created!", { description: "Welcome to Almach." });
       form.reset();
     },
   });
