@@ -106,20 +106,12 @@ const isHome = currentPath === "/";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <ClientRouter />
 
-    <!--
-      Inline FOUC prevention: runs synchronously before first paint.
-      Applies dark class and any custom theme variables from localStorage
-      so there is never a flash of the wrong theme.
-    -->
     <script is:inline>
       (function () {
         var stored = localStorage.getItem("theme");
-        var prefersDark = window.matchMedia(
-          "(prefers-color-scheme: dark)",
-        ).matches;
+        var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         var dark = stored === "dark" || (!stored && prefersDark);
         if (dark) document.documentElement.classList.add("dark");
-
         try {
           var t = localStorage.getItem("almach-theme");
           if (t) {
@@ -142,120 +134,202 @@ const isHome = currentPath === "/";
 
       <!-- ── Header ─────────────────────────────────────────────────────── -->
       <header class="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur-sm">
-        <!-- accent gradient line -->
-        <div class="h-px w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+        <div class="h-px w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
 
-        <div class="mx-auto flex h-14 max-w-screen-xl items-center gap-3 px-4 md:px-6">
+        <div class="mx-auto flex h-14 max-w-screen-xl items-center gap-2 px-4 md:px-6">
 
-          <!-- Mobile menu button (only shown on non-home pages on small screens) -->
-          {!isHome && (
-            <button
-              id="sidebar-toggle"
-              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
-              aria-label="Open navigation"
-            >
-              <svg class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="4" y1="6" x2="20" y2="6" />
-                <line x1="4" y1="12" x2="20" y2="12" />
-                <line x1="4" y1="18" x2="14" y2="18" />
-              </svg>
-            </button>
-          )}
+          <!-- Left: sidebar toggle (mobile, non-home) + logo -->
+          <div class="flex shrink-0 items-center gap-2">
+            {!isHome && (
+              <button
+                id="sidebar-toggle"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
+                aria-label="Open navigation"
+              >
+                <!-- Hamburger -->
+                <svg class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24">
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <line x1="3" y1="12" x2="21" y2="12"/>
+                  <line x1="3" y1="18" x2="15" y2="18"/>
+                </svg>
+              </button>
+            )}
 
-          <!-- Logo / wordmark -->
-          <a href="/" class="flex shrink-0 items-center gap-2" aria-label="Almach home">
-            <Logo class="h-6 w-6 text-foreground" />
-            <span class="text-sm font-bold tracking-tight">Almach</span>
-          </a>
+            <a href="/" class="flex items-center gap-2" aria-label="Almach home">
+              <Logo class="h-6 w-6 text-foreground" />
+              <span class="text-sm font-bold tracking-tight">Almach</span>
+            </a>
+          </div>
 
-          <!-- Right-side actions -->
-          <div class="ml-auto flex items-center gap-1">
+          <!-- Center/Right: search + actions -->
+          <div class="flex flex-1 items-center justify-end gap-1">
 
-            <!-- Global search / command palette -->
+            <!-- Search (icon on mobile, expanded bar on desktop) -->
             <SearchCommand client:only="react" />
 
-            <!-- LLM copy button -->
-            <button
-              id="llm-copy-btn"
-              class="hidden sm:flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              aria-label="Copy llms.txt for LLM"
-              title="Copy full API reference for LLM"
-            >
-              <svg
-                id="llm-copy-icon"
-                class="h-3.5 w-3.5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+            <!-- ── Desktop-only actions ─────────────────────────────────── -->
+            <div class="hidden items-center gap-1 lg:flex">
+              <div class="mx-1.5 h-4 w-px bg-border" aria-hidden="true"></div>
+
+              <!-- LLMs copy -->
+              <button
+                id="llm-copy-btn"
+                class="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Copy llms.txt for LLM"
+                title="Copy full API reference for LLM"
               >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
-              </svg>
-              <svg
-                id="llm-check-icon"
-                class="hidden h-3.5 w-3.5"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.5"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+                <svg id="llm-copy-icon" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
+                </svg>
+                <svg id="llm-check-icon" class="hidden h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                </svg>
+                <span id="llm-copy-label">LLMs</span>
+              </button>
+
+              <div class="mx-0.5 h-4 w-px bg-border" aria-hidden="true"></div>
+
+              <!-- Customize -->
+              <button
+                id="customizer-toggle"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Customize theme"
+                title="Customize theme"
               >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
-              </svg>
-              <span id="llm-copy-label">LLMs</span>
-            </button>
+                <svg class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"/>
+                  <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/>
+                  <path d="M14.5 17.5 4.5 15"/>
+                </svg>
+              </button>
 
-            <!-- Divider -->
-            <div class="mx-1 hidden h-4 w-px bg-border sm:block" aria-hidden="true"></div>
+              <!-- Theme toggle -->
+              <button
+                id="theme-toggle"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="Toggle theme"
+              >
+                <svg id="icon-sun" class="hidden h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="5"/>
+                  <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                  <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+                <svg id="icon-moon" class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+              </button>
 
-            <!-- Customize button -->
-            <button
-              id="customizer-toggle"
-              class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              aria-label="Customize theme"
-            >
-              <svg class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"></path>
-                <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"></path>
-                <path d="M14.5 17.5 4.5 15"></path>
-              </svg>
-            </button>
+              <!-- GitHub -->
+              <a
+                href="https://github.com/almach-lab/base"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="View on GitHub"
+              >
+                <svg class="h-[15px] w-[15px]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+              </a>
+            </div>
 
-            <!-- Theme toggle -->
-            <button
-              id="theme-toggle"
-              class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              aria-label="Toggle theme"
-            >
-              <svg id="icon-sun" class="hidden h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-              </svg>
-              <svg id="icon-moon" class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-              </svg>
-            </button>
+            <!-- ── Mobile-only: one "more" menu button ─────────────────── -->
+            <div class="relative lg:hidden" id="more-menu-wrapper">
+              <button
+                id="more-btn"
+                class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                aria-label="More actions"
+                aria-haspopup="true"
+                aria-expanded="false"
+                aria-controls="more-dropdown"
+              >
+                <!-- Three dots / ellipsis -->
+                <svg class="h-[15px] w-[15px]" fill="currentColor" viewBox="0 0 20 20">
+                  <circle cx="4" cy="10" r="1.5"/>
+                  <circle cx="10" cy="10" r="1.5"/>
+                  <circle cx="16" cy="10" r="1.5"/>
+                </svg>
+              </button>
 
-            <!-- GitHub link -->
-            <a
-              href="https://github.com/almach-lab/base"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              aria-label="View on GitHub"
-            >
-              <svg class="h-[15px] w-[15px]" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"></path>
-              </svg>
-            </a>
+              <!-- Dropdown panel -->
+              <div
+                id="more-dropdown"
+                class="absolute right-0 top-full z-50 mt-1.5 hidden w-52 origin-top-right rounded-xl border bg-background p-1 shadow-lg ring-1 ring-black/5 dark:ring-white/5"
+                role="menu"
+              >
+                <!-- LLMs copy -->
+                <button
+                  id="llm-copy-btn-mobile"
+                  class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  role="menuitem"
+                >
+                  <svg id="llm-copy-icon-m" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
+                  </svg>
+                  <svg id="llm-check-icon-m" class="hidden h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                  </svg>
+                  <span id="llm-copy-label-m">Copy for LLMs</span>
+                </button>
+
+                <div class="my-1 h-px bg-border" role="separator"></div>
+
+                <!-- Customize -->
+                <button
+                  id="customizer-toggle-mobile"
+                  class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  role="menuitem"
+                >
+                  <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"/>
+                    <path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/>
+                    <path d="M14.5 17.5 4.5 15"/>
+                  </svg>
+                  Customize theme
+                </button>
+
+                <!-- Theme toggle -->
+                <button
+                  id="theme-toggle-mobile"
+                  class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  role="menuitem"
+                >
+                  <svg id="icon-sun-m" class="hidden h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                    <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                  </svg>
+                  <svg id="icon-moon-m" class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                  </svg>
+                  <span id="theme-toggle-label-m">Toggle theme</span>
+                </button>
+
+                <div class="my-1 h-px bg-border" role="separator"></div>
+
+                <!-- GitHub -->
+                <a
+                  href="https://github.com/almach-lab/base"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  role="menuitem"
+                >
+                  <svg class="h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                  </svg>
+                  GitHub
+                  <svg class="ml-auto h-3 w-3 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M7 17L17 7M7 7h10v10"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
           </div>
         </div>
       </header>
@@ -268,18 +342,10 @@ const isHome = currentPath === "/";
         aria-modal="true"
         aria-label="Navigation menu"
       >
-        <!-- Backdrop -->
-        <div
-          id="mobile-backdrop"
-          class="absolute inset-0 bg-background/80 backdrop-blur-sm"
-        ></div>
+        <div id="mobile-backdrop" class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
 
-        <!-- Panel -->
-        <aside
-          id="mobile-sidebar"
-          class="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r bg-background shadow-xl"
-        >
-          <!-- Panel header -->
+        <aside id="mobile-sidebar" class="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r bg-background shadow-2xl">
+          <!-- Sidebar header -->
           <div class="flex h-14 shrink-0 items-center justify-between border-b px-4">
             <a href="/" class="flex items-center gap-2" aria-label="Almach home">
               <Logo class="h-5 w-5 text-foreground" />
@@ -291,7 +357,7 @@ const isHome = currentPath === "/";
               aria-label="Close navigation"
             >
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
               </svg>
             </button>
           </div>
@@ -309,7 +375,7 @@ const isHome = currentPath === "/";
                       <a
                         href={item.href}
                         data-nav-href={item.href}
-                        class={`group relative flex items-center rounded-lg px-2 py-1.5 text-sm transition-colors ${
+                        class={`relative flex items-center rounded-lg px-3 py-1.5 text-sm transition-colors ${
                           currentPath === item.href
                             ? "bg-primary/10 font-medium text-primary"
                             : "text-muted-foreground hover:bg-accent hover:text-foreground"
@@ -338,12 +404,8 @@ const isHome = currentPath === "/";
           </main>
         ) : (
           <div class="mx-auto flex w-full max-w-screen-xl flex-1">
-
             <!-- Desktop sidebar -->
-            <aside
-              class="hidden w-60 shrink-0 border-r lg:block"
-              aria-label="Documentation navigation"
-            >
+            <aside class="hidden w-60 shrink-0 border-r lg:block" aria-label="Documentation navigation">
               <div class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto py-6 pl-4 pr-3">
                 <nav aria-label="Documentation navigation">
                   {sidebarGroups.map((group) => (
@@ -356,7 +418,7 @@ const isHome = currentPath === "/";
                           <a
                             href={item.href}
                             data-nav-href={item.href}
-                            class={`relative flex items-center rounded-lg px-2 py-1.5 text-sm transition-colors ${
+                            class={`relative flex items-center rounded-lg px-3 py-1.5 text-sm transition-colors ${
                               currentPath === item.href
                                 ? "bg-primary/10 font-medium text-primary"
                                 : "text-muted-foreground hover:bg-accent hover:text-foreground"
@@ -376,11 +438,7 @@ const isHome = currentPath === "/";
               </div>
             </aside>
 
-            <main
-              class="min-w-0 flex-1"
-              id="main-content"
-              transition:name="page-content"
-            >
+            <main class="min-w-0 flex-1" id="main-content" transition:name="page-content">
               <slot />
             </main>
           </div>
@@ -401,7 +459,6 @@ const isHome = currentPath === "/";
               target="_blank"
               rel="noopener noreferrer"
               class="transition-colors hover:text-foreground"
-              aria-label="GitHub repository (opens in new tab)"
             >
               GitHub ↗
             </a>
@@ -410,17 +467,13 @@ const isHome = currentPath === "/";
       </footer>
     </div>
 
-    <!-- Theme customizer panel (React island, persists open state across transitions) -->
     <ThemeCustomizer client:only="react" />
 
     <script>
       // ── Helpers ───────────────────────────────────────────────────────────
       function getCustomTheme() {
-        try {
-          return JSON.parse(localStorage.getItem("almach-theme") || "null");
-        } catch (_) {
-          return null;
-        }
+        try { return JSON.parse(localStorage.getItem("almach-theme") || "null"); }
+        catch (_) { return null; }
       }
 
       function applyCustomTheme(dark: boolean) {
@@ -431,79 +484,117 @@ const isHome = currentPath === "/";
           document.documentElement.style.setProperty("--primary", primary);
           document.documentElement.style.setProperty("--ring", primary);
         }
-        if (t.radius)
-          document.documentElement.style.setProperty("--radius", t.radius);
+        if (t.radius) document.documentElement.style.setProperty("--radius", t.radius);
+      }
+
+      // ── Sync all theme icon states ────────────────────────────────────────
+      function syncThemeIcons(dark: boolean) {
+        // desktop
+        document.getElementById("icon-sun")?.classList.toggle("hidden", !dark);
+        document.getElementById("icon-moon")?.classList.toggle("hidden", dark);
+        // mobile dropdown
+        document.getElementById("icon-sun-m")?.classList.toggle("hidden", !dark);
+        document.getElementById("icon-moon-m")?.classList.toggle("hidden", dark);
+        const label = document.getElementById("theme-toggle-label-m");
+        if (label) label.textContent = dark ? "Light mode" : "Dark mode";
+      }
+
+      function toggleTheme() {
+        const isDark = document.documentElement.classList.contains("dark");
+        const next = !isDark;
+        localStorage.setItem("theme", next ? "dark" : "light");
+        document.documentElement.classList.toggle("dark", next);
+        syncThemeIcons(next);
+        applyCustomTheme(next);
+        window.dispatchEvent(new CustomEvent("almach-theme-mode-changed"));
       }
 
       // ── Theme toggle ──────────────────────────────────────────────────────
       function setupThemeToggle() {
-        const toggle = document.getElementById("theme-toggle");
-        const iconSun = document.getElementById("icon-sun");
-        const iconMoon = document.getElementById("icon-moon");
-
         const dark = document.documentElement.classList.contains("dark");
-        iconSun?.classList.toggle("hidden", !dark);
-        iconMoon?.classList.toggle("hidden", dark);
+        syncThemeIcons(dark);
+        document.getElementById("theme-toggle")?.addEventListener("click", toggleTheme);
+        document.getElementById("theme-toggle-mobile")?.addEventListener("click", () => {
+          closeMoreMenu();
+          toggleTheme();
+        });
+      }
 
-        toggle?.addEventListener("click", () => {
-          const isDark = document.documentElement.classList.contains("dark");
-          const next = !isDark;
-          localStorage.setItem("theme", next ? "dark" : "light");
-          document.documentElement.classList.toggle("dark", next);
-          iconSun?.classList.toggle("hidden", !next);
-          iconMoon?.classList.toggle("hidden", next);
-          applyCustomTheme(next);
-          window.dispatchEvent(new CustomEvent("almach-theme-mode-changed"));
+      // ── More menu (mobile) ────────────────────────────────────────────────
+      function openMoreMenu() {
+        const dropdown = document.getElementById("more-dropdown");
+        const btn = document.getElementById("more-btn");
+        dropdown?.classList.remove("hidden");
+        btn?.setAttribute("aria-expanded", "true");
+      }
+
+      function closeMoreMenu() {
+        const dropdown = document.getElementById("more-dropdown");
+        const btn = document.getElementById("more-btn");
+        dropdown?.classList.add("hidden");
+        btn?.setAttribute("aria-expanded", "false");
+      }
+
+      function setupMoreMenu() {
+        const btn = document.getElementById("more-btn");
+        const wrapper = document.getElementById("more-menu-wrapper");
+
+        btn?.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const isOpen = document.getElementById("more-dropdown")?.classList.contains("hidden") === false;
+          isOpen ? closeMoreMenu() : openMoreMenu();
+        });
+
+        // close on outside click
+        document.addEventListener("click", (e) => {
+          if (!wrapper?.contains(e.target as Node)) closeMoreMenu();
+        });
+
+        // close on Escape
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") closeMoreMenu();
         });
       }
 
       // ── Mobile sidebar ────────────────────────────────────────────────────
       function setupMobileSidebar() {
-        const sidebarToggle = document.getElementById("sidebar-toggle");
+        const toggle = document.getElementById("sidebar-toggle");
         const overlay = document.getElementById("mobile-overlay");
         const backdrop = document.getElementById("mobile-backdrop");
         const closeBtn = document.getElementById("sidebar-close");
-        const panel = document.getElementById("mobile-sidebar");
 
-        const open = () => {
-          overlay?.classList.remove("hidden");
-          panel?.classList.remove("-translate-x-full");
-        };
-        const close = () => {
-          overlay?.classList.add("hidden");
-          panel?.classList.add("-translate-x-full");
-        };
+        const open = () => overlay?.classList.remove("hidden");
+        const close = () => overlay?.classList.add("hidden");
 
-        sidebarToggle?.addEventListener("click", open);
+        toggle?.addEventListener("click", open);
         backdrop?.addEventListener("click", close);
         closeBtn?.addEventListener("click", close);
-
-        // close on nav link click
-        panel?.querySelectorAll("a[data-nav-href]").forEach((link) => {
-          link.addEventListener("click", close);
+        document.getElementById("mobile-sidebar")?.querySelectorAll("a[data-nav-href]").forEach((a) => {
+          a.addEventListener("click", close);
         });
-
-        // close on Escape key
         document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && !overlay?.classList.contains("hidden")) {
-            close();
-          }
+          if (e.key === "Escape" && !overlay?.classList.contains("hidden")) close();
         });
       }
 
-      // ── LLM copy button → fetches /llms.txt and copies to clipboard ──────
+      // ── LLM copy ──────────────────────────────────────────────────────────
+      async function copyLLMs() {
+        try {
+          const text = await fetch("/llms.txt").then((r) => r.text());
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (_) { return false; }
+      }
+
       function setupLLMCopyButton() {
+        // desktop
         const btn = document.getElementById("llm-copy-btn");
         const copyIcon = document.getElementById("llm-copy-icon");
         const checkIcon = document.getElementById("llm-check-icon");
         const label = document.getElementById("llm-copy-label");
-        if (!btn) return;
 
-        btn.addEventListener("click", async () => {
-          try {
-            const res = await fetch("/llms.txt");
-            const text = await res.text();
-            await navigator.clipboard.writeText(text);
+        btn?.addEventListener("click", async () => {
+          if (await copyLLMs()) {
             copyIcon?.classList.add("hidden");
             checkIcon?.classList.remove("hidden");
             if (label) label.textContent = "Copied!";
@@ -512,33 +603,52 @@ const isHome = currentPath === "/";
               checkIcon?.classList.add("hidden");
               if (label) label.textContent = "LLMs";
             }, 2000);
-          } catch (_) {}
+          }
+        });
+
+        // mobile
+        const btnM = document.getElementById("llm-copy-btn-mobile");
+        const copyIconM = document.getElementById("llm-copy-icon-m");
+        const checkIconM = document.getElementById("llm-check-icon-m");
+        const labelM = document.getElementById("llm-copy-label-m");
+
+        btnM?.addEventListener("click", async () => {
+          if (await copyLLMs()) {
+            copyIconM?.classList.add("hidden");
+            checkIconM?.classList.remove("hidden");
+            if (labelM) labelM.textContent = "Copied!";
+            setTimeout(() => {
+              copyIconM?.classList.remove("hidden");
+              checkIconM?.classList.add("hidden");
+              if (labelM) labelM.textContent = "Copy for LLMs";
+              closeMoreMenu();
+            }, 1500);
+          }
         });
       }
 
-      // ── Customizer toggle → dispatches event the React component hears ───
+      // ── Customizer toggle ─────────────────────────────────────────────────
       function setupCustomizerToggle() {
-        document
-          .getElementById("customizer-toggle")
-          ?.addEventListener("click", () => {
-            window.dispatchEvent(new CustomEvent("almach-customizer-toggle"));
-          });
+        const dispatch = () => window.dispatchEvent(new CustomEvent("almach-customizer-toggle"));
+        document.getElementById("customizer-toggle")?.addEventListener("click", dispatch);
+        document.getElementById("customizer-toggle-mobile")?.addEventListener("click", () => {
+          closeMoreMenu();
+          dispatch();
+        });
       }
 
-      // ── Restore dark class + custom vars after page swap ─────────────────
+      // ── Restore theme after page swap ─────────────────────────────────────
       function restoreTheme() {
         const stored = localStorage.getItem("theme");
-        const prefersDark = window.matchMedia(
-          "(prefers-color-scheme: dark)",
-        ).matches;
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
         const dark = stored === "dark" || (!stored && prefersDark);
         document.documentElement.classList.toggle("dark", dark);
         applyCustomTheme(dark);
       }
 
-      // ── Run on initial load and after every View Transition swap ──────────
       function setup() {
         setupThemeToggle();
+        setupMoreMenu();
         setupMobileSidebar();
         setupCustomizerToggle();
         setupLLMCopyButton();
