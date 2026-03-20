@@ -15,7 +15,7 @@ delete pkg.packageManager;
 fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
 "
 
-changeset publish
+npx changeset publish
 
 # Restore
 mv bun.lock.bak bun.lock
