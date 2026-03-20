@@ -3,7 +3,7 @@
 A modern, accessible React UI component library monorepo.
 Built on Radix UI · Tailwind CSS v4 · TanStack Query · Zod · Astro.
 
-**Docs:** [almach.pages.dev](https://based-ui-docs.pages.dev)
+**Docs:** [almach.kita.blue](https://almach.kita.blue)
 
 ---
 
