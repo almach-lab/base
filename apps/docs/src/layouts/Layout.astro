@@ -17,7 +17,7 @@ const {
   currentPath = Astro.url.pathname,
 } = Astro.props;
 
-const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://almach.dev";
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://almach.kita.blue";
 const canonicalUrl = `${siteUrl}${currentPath}`;
 const ogImage = `${siteUrl}/og.png`;
 const pageTitle = title === "Almach" ? "Almach — UI Components for React" : `${title} · Almach`;
