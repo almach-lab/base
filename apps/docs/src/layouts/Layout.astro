@@ -7,10 +7,20 @@ import Logo from "../components/Logo.astro";
 
 interface Props {
   title?: string;
+  description?: string;
   currentPath?: string;
 }
 
-const { title = "Almach", currentPath = Astro.url.pathname } = Astro.props;
+const {
+  title = "Almach",
+  description = "Accessible, themeable UI components for React built on Radix UI and Tailwind CSS.",
+  currentPath = Astro.url.pathname,
+} = Astro.props;
+
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://almach.dev";
+const canonicalUrl = `${siteUrl}${currentPath}`;
+const ogImage = `${siteUrl}/og.png`;
+const pageTitle = title === "Almach" ? "Almach — UI Components for React" : `${title} · Almach`;
 
 const sidebarGroups = [
   {
@@ -102,7 +112,27 @@ const isHome = currentPath === "/";
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} · Almach</title>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Almach" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Almach — UI Components for React" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <ClientRouter />
 
