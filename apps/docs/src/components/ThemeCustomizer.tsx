@@ -170,6 +170,7 @@ export function ThemeCustomizer() {
       <div
         role="dialog"
         aria-label="Theme customizer"
+        aria-modal="true"
         className={`
           fixed inset-y-0 right-0 z-50 flex w-72 flex-col border-l bg-background shadow-xl
           transition-transform duration-200 ease-in-out
@@ -184,7 +185,7 @@ export function ThemeCustomizer() {
           </div>
           <button
             onClick={() => setOpen(false)}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
             aria-label="Close customizer"
           >
             <X className="h-4 w-4" />
@@ -207,9 +208,11 @@ export function ThemeCustomizer() {
                     key={preset.name}
                     onClick={() => selectPreset(preset)}
                     title={preset.name}
+                    aria-pressed={isActive}
+                    aria-label={`${preset.name} color theme`}
                     className={`
-                      group relative flex flex-col items-center gap-1.5 rounded-lg border p-2 text-[10px] font-medium
-                      transition-colors
+                      group relative flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border p-2 text-[10px] font-medium
+                      transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1
                       ${isActive
                         ? "border-primary bg-primary/6 text-primary"
                         : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
@@ -247,8 +250,11 @@ export function ThemeCustomizer() {
                   <button
                     key={r.value}
                     onClick={() => selectRadius(r)}
+                    aria-pressed={isActive}
+                    aria-label={`${r.name} border radius`}
                     className={`
-                      rounded-md border px-3 py-1.5 text-xs font-medium transition-colors
+                      cursor-pointer rounded-md border px-3 py-1.5 text-xs font-medium transition-colors
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1
                       ${isActive
                         ? "border-primary bg-primary/10 text-primary"
                         : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
@@ -264,12 +270,15 @@ export function ThemeCustomizer() {
             {/* Radius preview */}
             <div className="mt-4 grid grid-cols-5 gap-2">
               {RADIUS_PRESETS.map((r) => (
-                <div
+                <button
                   key={r.value}
                   onClick={() => selectRadius(r)}
                   title={r.name}
+                  aria-pressed={activeRadius === r.value}
+                  aria-label={`${r.name} border radius preview`}
                   className={`
                     h-8 w-full cursor-pointer border-2 transition-colors
+                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1
                     ${activeRadius === r.value ? "border-primary bg-primary/10" : "border-border bg-muted/30 hover:border-primary/30"}
                   `}
                   style={{ borderRadius: r.value }}
@@ -311,10 +320,10 @@ export function ThemeCustomizer() {
           {/* Action buttons */}
           <button
             onClick={copyCSS}
-            className={`flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+            className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
               copied
                 ? "border-primary bg-primary/10 text-primary"
-                : "hover:bg-accent hover:text-foreground text-muted-foreground"
+                : "text-muted-foreground hover:bg-accent hover:text-foreground"
             }`}
           >
             {copied ? (
@@ -326,7 +335,7 @@ export function ThemeCustomizer() {
 
           <button
             onClick={reset}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
           >
             <RotateCcw className="h-3.5 w-3.5" />
             Reset to defaults

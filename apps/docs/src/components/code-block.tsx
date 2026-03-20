@@ -47,8 +47,8 @@ export function CodeBlock({ code, filename, lang = "bash", className }: CodeBloc
     <button
       onClick={copy}
       className={cn(
-        "flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground",
-        !inHeader && "absolute right-3 top-3 z-10 rounded border bg-background/90 px-2 py-1 opacity-0 group-hover:opacity-100",
+        "flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+        !inHeader && "absolute right-3 top-3 z-10 rounded border bg-background/90 px-2 py-1 opacity-0 group-hover:opacity-100 focus-visible:opacity-100",
       )}
       aria-label={copied ? "Copied" : "Copy code"}
     >

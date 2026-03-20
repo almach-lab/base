@@ -93,7 +93,9 @@ function HeroInstall() {
           <button
             key={m}
             onClick={() => setPm(m)}
-            className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${m === pm
+            aria-pressed={m === pm}
+            aria-label={`Use ${m}`}
+            className={`cursor-pointer rounded px-2 py-0.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${m === pm
               ? "bg-foreground/10 text-foreground dark:bg-white/15 dark:text-white"
               : "text-foreground/35 hover:bg-foreground/8 hover:text-foreground/60 dark:text-white/35 dark:hover:bg-white/[0.08] dark:hover:text-white/60"
               }`}
@@ -199,7 +201,7 @@ function LLMSection() {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleCopy}
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {copied ? (
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
@@ -304,14 +306,14 @@ export function HomePage() {
             <div className="mb-10 flex flex-wrap items-center gap-3">
               <a
                 href="/getting-started"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Get started
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a
                 href="/components"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent dark:border-white/15 dark:text-white/75 dark:hover:border-white/25 dark:hover:bg-white/[0.08]"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:border-white/15 dark:text-white/75 dark:hover:border-white/25 dark:hover:bg-white/[0.08]"
               >
                 Browse components
               </a>
@@ -439,14 +441,14 @@ export function HomePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
                 href="/getting-started"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Read the docs
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a
                 href="/components"
-                className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
+                className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 View components
               </a>
