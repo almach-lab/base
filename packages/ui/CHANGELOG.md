@@ -1,5 +1,12 @@
 # @almach/ui
 
+## 0.1.2
+
+### Patch Changes
+
+- 3944560: fix: improve the components (#13)
+- fa4f200: fix: improve the ui components to be more clean and smooth
+
 ## 0.1.1
 
 ### Patch Changes
