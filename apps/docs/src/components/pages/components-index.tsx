@@ -15,7 +15,7 @@ const GROUPS = [
 			{ name: "Label", href: "/components/label", description: "Accessible form label." },
 			{ name: "Radio", href: "/components/radio", description: "Single-selection radio group." },
 			{ name: "Select", href: "/components/select", description: "Dropdown + searchable select." },
-			{ name: "Switch", href: "/components/switch", description: "iOS-style toggle." },
+			{ name: "Switch", href: "/components/switch", description: "Toggle control with three sizes." },
 			{ name: "Tag Input", href: "/components/tag-input", description: "Multi-value tag input field." },
 			{ name: "Textarea", href: "/components/textarea", description: "Multi-line text input." },
 		],

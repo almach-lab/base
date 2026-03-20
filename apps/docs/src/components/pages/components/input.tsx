@@ -105,7 +105,7 @@ export function InputPage() {
 				{
 					title: "Disabled",
 					description:
-						"Disabled inputs are non-interactive and render at 50% opacity per HIG.",
+						"Disabled inputs are non-interactive and render at 50% opacity.",
 					preview: (
 						<div className="w-full max-w-sm space-y-1.5 opacity-50">
 							<Label htmlFor="dis-demo" className="cursor-not-allowed">

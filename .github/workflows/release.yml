@@ -1,5 +1,19 @@
 name: Release
 
+# Triggered on every push to main (including the auto-changeset commit).
+#
+# Two possible outcomes on each run:
+#
+#   A) Changeset files are present  →  opens / updates the "Version Packages" PR.
+#      Bumps versions in package.json files, updates CHANGELOG.md files, and
+#      waits for a human to merge.
+#
+#   B) "Version Packages" PR was just merged  →  publishes all changed packages
+#      to npm AND creates a GitHub Release per package with CHANGELOG notes.
+#
+# Bump type is controlled by PR labels (major / minor / patch) — see
+# .github/workflows/auto-changeset.yml and pr-label.yml.
+
 on:
   push:
     branches: [main]
@@ -10,12 +24,12 @@ concurrency:
 
 jobs:
   release:
-    name: Release packages to npm
+    name: Release packages
     runs-on: ubuntu-latest
     permissions:
-      contents: write       # to create release tags and commits
-      pull-requests: write  # to create the "Version Packages" PR
-      id-token: write       # for npm provenance
+      contents: write       # create tags, commits, and GitHub Releases
+      pull-requests: write  # open / update the "Version Packages" PR
+      id-token: write       # npm provenance attestation
 
     steps:
       - uses: actions/checkout@v4
@@ -35,17 +49,44 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Create Release PR or Publish to npm
+      # changesets/action does one of two things depending on repo state:
+      #   • changeset files exist  →  opens/updates "Version Packages" PR
+      #   • "Version Packages" PR was merged  →  publishes + creates releases
+      - name: Version or publish
+        id: changesets
         uses: changesets/action@v1
         with:
+          # Bump versions and regenerate CHANGELOG.md files
           version: bun changeset version
-          # scripts/release.sh builds with bun (needs bun.lock for turbo), then
-          # temporarily hides bun.lock + strips packageManager so changeset falls
-          # back to npm publish (bun publish rejects non-JS exports like ./styles).
+
+          # Build packages then publish to npm.
+          # scripts/release.sh works around a bun limitation: bun publish
+          # rejects non-JS exports (e.g. @almach/ui's ./styles CSS export),
+          # so the script temporarily hides bun.lock and strips packageManager
+          # so changeset falls back to `npm publish`.
           publish: bash scripts/release.sh
+
+          # PR / commit copy
           title: "chore: release packages"
           commit: "chore: release packages"
+
+          # Create a GitHub Release for every published package using its
+          # CHANGELOG section as the release body
+          createGithubReleases: true
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # ── Post-publish summary ───────────────────────────────────────────────
+      - name: Publish summary
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          echo "## Published" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '${{ steps.changesets.outputs.publishedPackages }}' \
+            | node -e "
+                const pkgs = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
+                pkgs.forEach(p => console.log('- **' + p.name + '** → ' + p.version));
+              " >> "$GITHUB_STEP_SUMMARY"

@@ -105,7 +105,7 @@ export function ButtonPage() {
 				{
 					title: "Disabled",
 					description:
-						"Disabled buttons are non-interactive and rendered at 40% opacity per HIG guidelines.",
+						"Disabled buttons are non-interactive and rendered at 40% opacity.",
 					preview: (
 						<div className="flex flex-wrap gap-2">
 							<Button disabled>Disabled</Button>

@@ -72,7 +72,7 @@ const [text, setText] = React.useState("");
 				},
 				{
 					title: "Disabled",
-					description: "Non-interactive at 50% opacity per HIG.",
+					description: "Non-interactive at 50% opacity.",
 					preview: (
 						<div className="w-full max-w-sm space-y-1.5 opacity-50">
 							<Label htmlFor="ta-dis" className="cursor-not-allowed">

@@ -20,7 +20,7 @@ const tabsListVariants = cva(
 );
 
 const tabsTriggerVariants = cva(
-	"inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all outline-none",
+	"inline-flex cursor-pointer items-center justify-center whitespace-nowrap text-sm font-medium transition-all outline-none",
 	{
 		variants: {
 			variant: {

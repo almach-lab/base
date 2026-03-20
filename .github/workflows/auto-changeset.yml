@@ -1,0 +1,123 @@
+name: Auto Changeset
+
+# Runs when a PR is merged into main.
+# Detects which publishable packages changed and writes a .changeset/*.md
+# file, then commits it to main — which triggers the Release workflow to
+# create (or update) the "Version Packages" PR automatically.
+#
+# Bump type is controlled by PR labels:
+#   major  →  breaking change
+#   minor  →  new feature
+#   patch  →  bug fix / default (applied automatically by pr-label.yml)
+#
+# Add the label  skip-changeset  to a PR to skip this entirely
+# (e.g. docs-only PRs that touch no publishable package).
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    name: Generate changeset
+    # Only on merged PRs; skip the "Version Packages" PR Changesets itself creates
+    if: |
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.ref != 'changeset-release/main' &&
+      !contains(github.event.pull_request.labels.*.name, 'skip-changeset')
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history so we can diff between base and merge commit
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 1. Resolve bump type ───────────────────────────────────────────────
+      - name: Resolve bump type from PR labels
+        id: bump
+        run: |
+          LABELS='${{ toJson(github.event.pull_request.labels.*.name) }}'
+          if echo "$LABELS" | grep -q '"major"'; then
+            echo "type=major" >> "$GITHUB_OUTPUT"
+          elif echo "$LABELS" | grep -q '"minor"'; then
+            echo "type=minor" >> "$GITHUB_OUTPUT"
+          else
+            echo "type=patch" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── 2. Detect which publishable packages changed ───────────────────────
+      - name: Detect changed publishable packages
+        id: pkgs
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.merge_commit_sha }}"
+          CHANGED=$(git diff --name-only "$BASE" "$HEAD")
+          echo "Changed files:"
+          echo "$CHANGED"
+
+          PKGS=""
+          for dir in packages/*/; do
+            # Read package name from package.json (skip private packages)
+            name=$(node -e "
+              const p = require('./${dir}package.json');
+              if (!p.private) process.stdout.write(p.name);
+            " 2>/dev/null || true)
+            short="${dir%/}"
+            if [ -n "$name" ] && echo "$CHANGED" | grep -q "^${short}/"; then
+              PKGS="${PKGS}${name},"
+            fi
+          done
+
+          PKGS="${PKGS%,}"
+          echo "list=${PKGS}" >> "$GITHUB_OUTPUT"
+          if [ -n "$PKGS" ]; then
+            echo "Affected packages: $PKGS"
+          else
+            echo "No publishable packages changed — skipping changeset"
+          fi
+
+      # ── 3. Write the .changeset file ──────────────────────────────────────
+      - name: Write changeset file
+        if: steps.pkgs.outputs.list != ''
+        env:
+          BUMP: ${{ steps.bump.outputs.type }}
+          PKGS: ${{ steps.pkgs.outputs.list }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          ID=$(openssl rand -hex 4)
+          FILE=".changeset/auto-${ID}.md"
+
+          {
+            echo "---"
+            IFS=',' read -ra LIST <<< "$PKGS"
+            for pkg in "${LIST[@]}"; do
+              [ -n "$pkg" ] && echo "\"${pkg}\": ${BUMP}"
+            done
+            echo "---"
+            echo ""
+            echo "${PR_TITLE} (#${PR_NUMBER})"
+          } > "$FILE"
+
+          echo "=== Generated: $FILE ==="
+          cat "$FILE"
+
+      # ── 4. Commit and push ─────────────────────────────────────────────────
+      - name: Commit and push changeset
+        if: steps.pkgs.outputs.list != ''
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .changeset/
+          if git diff --staged --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "chore: auto-changeset for PR #${{ github.event.pull_request.number }}"
+            git push
+          fi
