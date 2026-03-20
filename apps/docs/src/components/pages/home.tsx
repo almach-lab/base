@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
 import { CodeBlock } from "../code-block";
 
@@ -162,6 +162,96 @@ const packages = [
     href: "/getting-started",
   },
 ];
+
+/* ── LLM Section ──────────────────────────────────────────────────────────── */
+
+function LLMSection() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(async () => {
+    try {
+      const res = await fetch("/llms.txt");
+      const text = await res.text();
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (_) {}
+  }, []);
+
+  return (
+    <section className="border-t bg-muted/20">
+      <div className="mx-auto max-w-screen-xl px-4 py-24 md:px-6">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
+
+          {/* Text */}
+          <div className="flex-1">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">
+              For LLMs
+            </p>
+            <h2 className="mb-3 text-2xl font-bold tracking-tight">
+              AI-ready context
+            </h2>
+            <p className="mb-6 text-muted-foreground leading-relaxed">
+              Copy the full API reference as Markdown and paste it directly into
+              any LLM context window — ChatGPT, Claude, Gemini, and more.
+              Covers every component, hook, form field, query factory, and utility.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handleCopy}
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                {copied ? (
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                  </svg>
+                )}
+                {copied ? "Copied!" : "Copy llms.txt"}
+              </button>
+              <a
+                href="/llms"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent"
+              >
+                View reference
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+
+          {/* Visual card */}
+          <div className="w-full max-w-sm shrink-0 overflow-hidden rounded-xl border bg-card shadow-sm lg:w-80">
+            <div className="flex items-center gap-2 border-b bg-muted/50 px-4 py-2.5">
+              <svg className="h-3.5 w-3.5 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
+              </svg>
+              <span className="font-mono text-xs text-muted-foreground">llms.txt</span>
+            </div>
+            <div className="space-y-1.5 p-4 font-mono text-[11px] leading-relaxed text-muted-foreground/70">
+              <p className="text-foreground font-semibold text-xs"># Almach</p>
+              <p className="text-primary/70">{">"} A modern, accessible React UI component library.</p>
+              <p className="opacity-50">{">"} Built on Radix UI, Tailwind CSS v4, TanStack.</p>
+              <div className="my-2 border-t border-dashed border-border/50" />
+              <p className="text-foreground/60">## Installation</p>
+              <p className="pl-2">```bash</p>
+              <p className="pl-2">bun add @almach/ui</p>
+              <p className="pl-2">```</p>
+              <div className="my-2 border-t border-dashed border-border/50" />
+              <p className="text-foreground/60">## @almach/ui</p>
+              <p className="pl-2">### Button</p>
+              <p className="opacity-40 italic">…32 components, hooks, forms, query, utils</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 
@@ -334,6 +424,9 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── For LLMs ──────────────────────────────────────────────────────── */}
+      <LLMSection />
 
       {/* ── CTA ───────────────────────────────────────────────────────────── */}
       <section className="border-t">
