@@ -6,8 +6,7 @@ import {
   keepPreviousData,
 } from "@almach/query";
 import {
-  Badge, Button, Card, Separator, Skeleton,
-  Tabs,
+  Badge, Button, Card, Separator, Skeleton, Tabs,
 } from "@almach/ui";
 import { useToast } from "@almach/ui";
 import { Plus, RefreshCw, Trash2 } from "lucide-react";
@@ -123,6 +122,7 @@ function PostList() {
             <Button
               variant="ghost" size="icon-sm"
               className="text-muted-foreground hover:text-destructive"
+              aria-label={`Delete "${post.title}"`}
               loading={deletePost.isPending && deletePost.variables === post.id}
               onClick={() =>
                 deletePost.mutate(post.id, {
@@ -130,7 +130,7 @@ function PostList() {
                 })
               }
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
             </Button>
           </div>
         ))}
@@ -242,9 +242,7 @@ export function QueryPage() {
   return (
     <div className="px-4 py-10 md:px-8">
       <div className="mb-10 border-b pb-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          @almach/query
-        </p>
+        <Badge variant="outline" className="mb-2 font-mono">@almach/query</Badge>
         <h1 className="mb-3 text-3xl font-bold tracking-tight sm:text-4xl">Data Fetching</h1>
         <p className="text-lg text-muted-foreground leading-relaxed">
           Typed query factories and mutation builders powered by TanStack Query.

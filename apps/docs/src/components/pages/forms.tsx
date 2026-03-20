@@ -8,7 +8,7 @@ import {
   useBasedForm,
   z,
 } from "@almach/forms";
-import { Button, Card, Separator, Tabs } from "@almach/ui";
+import { Badge, Button, Card, Separator, Tabs } from "@almach/ui";
 import { useToast } from "@almach/ui";
 import { CodeBlock } from "../code-block";
 
@@ -241,9 +241,7 @@ export function FormsPage() {
   return (
     <div className="px-4 py-10 md:px-8">
       <div className="mb-10 border-b pb-8">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          @almach/forms
-        </p>
+        <Badge variant="outline" className="mb-2 font-mono">@almach/forms</Badge>
         <h1 className="mb-3 text-3xl font-bold tracking-tight sm:text-4xl">Form Handling</h1>
         <p className="text-lg text-muted-foreground leading-relaxed">
           Type-safe forms powered by TanStack Form and Zod. Inline validation,

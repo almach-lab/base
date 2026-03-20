@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ArrowRight, Search } from "lucide-react";
-import { cn } from "@almach/utils";
+import { Badge, Input } from "@almach/ui";
 
 // ── Component registry ──────────────────────────────────────────────────────
 const GROUPS = [
@@ -84,9 +84,9 @@ export function ComponentsIndexPage() {
 		<div className="mx-auto max-w-4xl px-4 py-10 md:px-8">
 			{/* Header */}
 			<div className="mb-8 border-b pb-8">
-				<span className="mb-2 inline-flex items-center rounded-md border bg-muted/50 px-2 py-0.5 font-mono text-xs text-muted-foreground">
+				<Badge variant="outline" className="mb-2 font-mono">
 					@almach/ui
-				</span>
+				</Badge>
 				<h1 className="mt-2 text-3xl font-bold tracking-tight">Components</h1>
 				<p className="mt-2 text-base text-muted-foreground leading-relaxed max-w-xl">
 					{TOTAL} accessible, composable components built on Radix UI primitives with Tailwind CSS v4.
@@ -94,23 +94,15 @@ export function ComponentsIndexPage() {
 			</div>
 
 			{/* Search */}
-			<div className="relative mb-8">
-				<Search
-					className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-					aria-hidden="true"
-				/>
-				<input
+			<div className="mb-8">
+				<Input
 					type="search"
 					placeholder="Search components…"
 					value={query}
 					onChange={(e) => setQuery(e.target.value)}
-					className={cn(
-						"flex h-10 w-full rounded-lg border border-input bg-background pl-9 pr-3 text-sm",
-						"placeholder:text-muted-foreground",
-						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-						"transition-all duration-150",
-					)}
 					aria-label="Search components"
+					className="h-10"
+					leftElement={<Search className="h-4 w-4" aria-hidden="true" />}
 				/>
 			</div>
 
@@ -159,7 +151,8 @@ function ComponentCard({ name, href, description }: { name: string; href: string
 	return (
 		<a
 			href={href}
-			className="group flex items-center justify-between rounded-xl border px-4 py-3.5 transition-colors hover:bg-accent/50 hover:border-foreground/20"
+			aria-label={`${name} — ${description}`}
+			className="group flex items-center justify-between rounded-xl border px-4 py-3.5 transition-colors hover:bg-accent/50 hover:border-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 		>
 			<div className="min-w-0">
 				<p className="text-sm font-medium">{name}</p>
