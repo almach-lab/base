@@ -71,6 +71,7 @@ const NAV_GROUPS = [
 			{ label: "Drawer", href: "/components/drawer" },
 			{ label: "Dropdown Menu", href: "/components/dropdown-menu" },
 			{ label: "Modal", href: "/components/modal" },
+			{ label: "Popover", href: "/components/popover" },
 			{ label: "Tabs", href: "/components/tabs" },
 		],
 	},
@@ -79,6 +80,7 @@ const NAV_GROUPS = [
 		icon: BarChart2,
 		items: [
 			{ label: "Chart", href: "/components/chart" },
+			{ label: "Calendar", href: "/components/calendar" },
 			{ label: "Table", href: "/components/table" },
 		],
 	},
@@ -115,10 +117,29 @@ export function SearchCommand() {
 
 	return (
 		<>
-			{/* Search trigger button in header */}
+			{/* Mobile: icon-only button */}
 			<button
 				onClick={() => setOpen(true)}
-				className="flex h-8 items-center gap-2 rounded-md border border-input bg-background px-2.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+				className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
+				aria-label="Search documentation"
+			>
+				<svg
+					className="h-[15px] w-[15px]"
+					fill="none"
+					stroke="currentColor"
+					strokeWidth={2}
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+				>
+					<circle cx="11" cy="11" r="8" />
+					<path d="m21 21-4.35-4.35" />
+				</svg>
+			</button>
+
+			{/* Desktop: expanded search bar */}
+			<button
+				onClick={() => setOpen(true)}
+				className="hidden h-9 items-center gap-2.5 rounded-lg border border-input bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:flex"
 				aria-label="Search documentation"
 			>
 				<svg
@@ -132,10 +153,10 @@ export function SearchCommand() {
 					<circle cx="11" cy="11" r="8" />
 					<path d="m21 21-4.35-4.35" />
 				</svg>
-				<span className="hidden sm:inline">Search</span>
-				<span className="hidden items-center gap-0.5 rounded border bg-muted px-1 py-0.5 font-mono text-[10px] leading-none text-muted-foreground sm:flex">
+				<span className="flex-1 text-left">Search docs…</span>
+				<kbd className="flex items-center gap-0.5 rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] leading-none text-muted-foreground">
 					⌘K
-				</span>
+				</kbd>
 			</button>
 
 			{/* Command dialog */}

@@ -74,6 +74,8 @@ export { Label } from "./components/label";
 
 export { Modal } from "./components/modal";
 
+export { Popover } from "./components/popover";
+
 export { Progress } from "./components/progress";
 
 export { Radio } from "./components/radio";
