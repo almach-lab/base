@@ -69,17 +69,10 @@
   }
 }
 
-/* ── Star field twinkle ───────────────────────────────────────────────────── */
+/* ── Star field twinkle (used by home.tsx StarField) ─────────────────────── */
 @keyframes star-twinkle {
-
-  0%,
-  100% {
-    opacity: var(--star-o);
-  }
-
-  50% {
-    opacity: calc(var(--star-o) * 0.15);
-  }
+  0%, 100% { opacity: var(--star-o); }
+  50%       { opacity: calc(var(--star-o) * 0.15); }
 }
 
 /* ── Shiki dual-theme ─────────────────────────────────────────────────────── */

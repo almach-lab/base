@@ -56,13 +56,15 @@ export function PkgTabs({ packages, className }: PkgTabsProps) {
 
   return (
     <div className={className}>
-      <div className="mb-1 flex gap-1">
+      <div role="tablist" aria-label="Package manager" className="mb-1 flex gap-1">
         {MANAGERS.map((m) => (
           <button
             key={m}
+            role="tab"
+            aria-selected={m === pm}
             onClick={() => setPm(m)}
             className={cn(
-              "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
+              "cursor-pointer rounded-md px-2.5 py-1 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
               m === pm
                 ? "bg-foreground text-background"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground",

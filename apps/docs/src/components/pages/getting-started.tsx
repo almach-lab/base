@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowRight, Info } from "lucide-react";
+import { Alert, Badge } from "@almach/ui";
 import { CodeBlock } from "../code-block";
 import { PkgTabs } from "../pkg-tabs";
 
@@ -7,10 +8,12 @@ import { PkgTabs } from "../pkg-tabs";
 
 function Note({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex gap-3 rounded-lg border bg-muted/30 px-4 py-3 text-sm">
-      <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
-      <div className="leading-relaxed text-muted-foreground">{children}</div>
-    </div>
+    <Alert variant="default" className="text-sm">
+      <Alert.Icon><Info /></Alert.Icon>
+      <Alert.Body>
+        <Alert.Description className="leading-relaxed">{children}</Alert.Description>
+      </Alert.Body>
+    </Alert>
   );
 }
 
@@ -104,9 +107,7 @@ export function GettingStartedPage() {
     <div className="mx-auto max-w-3xl px-4 py-12 md:px-8">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div className="mb-12 border-b pb-10">
-        <div className="mb-4 inline-flex items-center rounded-full border border-primary/30 bg-primary/8 px-3 py-1 text-xs font-medium text-primary">
-          Quick start
-        </div>
+        <Badge className="mb-4">Quick start</Badge>
         <h1 className="mb-3 text-4xl font-black tracking-tight">Getting Started</h1>
         <p className="mb-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
           Set up Almach in minutes. Each package is independently installable and
@@ -114,12 +115,7 @@ export function GettingStartedPage() {
         </p>
         <div className="flex flex-wrap gap-2">
           {["React 18+", "TypeScript", "Tailwind CSS v4", "Vite / Next.js"].map((req) => (
-            <span
-              key={req}
-              className="rounded-full border bg-muted/50 px-2.5 py-0.5 text-xs text-muted-foreground"
-            >
-              {req}
-            </span>
+            <Badge key={req} variant="ghost">{req}</Badge>
           ))}
         </div>
       </div>
@@ -315,7 +311,8 @@ export function LoginForm() {
             <a
               key={link.href}
               href={link.href}
-              className="group flex flex-col gap-1.5 rounded-xl border p-4 transition-colors hover:border-primary/40 hover:bg-primary/4"
+              aria-label={`${link.label} — ${link.desc}`}
+              className="group flex flex-col gap-1.5 rounded-xl border p-4 transition-colors hover:border-primary/40 hover:bg-primary/4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <span className="flex items-center gap-1.5 text-sm font-semibold">
                 {link.label}

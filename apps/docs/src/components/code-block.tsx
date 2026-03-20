@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { cn } from "@almach/utils";
+import { Button } from "@almach/ui";
 import { Check, Copy } from "lucide-react";
 import { codeToHtml } from "shiki";
 
@@ -44,17 +45,19 @@ export function CodeBlock({ code, filename, lang = "bash", className }: CodeBloc
   };
 
   const CopyButton = ({ inHeader }: { inHeader?: boolean }) => (
-    <button
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={copy}
-      className={cn(
-        "flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground",
-        !inHeader && "absolute right-3 top-3 z-10 rounded border bg-background/90 px-2 py-1 opacity-0 group-hover:opacity-100",
-      )}
       aria-label={copied ? "Copied" : "Copy code"}
+      className={cn(
+        "h-7 gap-1.5 px-2 text-xs text-muted-foreground",
+        !inHeader && "absolute right-2 top-2 z-10 border bg-background/90 opacity-0 group-hover:opacity-100 focus-visible:opacity-100",
+      )}
     >
       {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
       {copied ? "Copied" : "Copy"}
-    </button>
+    </Button>
   );
 
   return (

@@ -120,8 +120,9 @@ export function SearchCommand() {
 			{/* Mobile: icon-only button */}
 			<button
 				onClick={() => setOpen(true)}
-				className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:hidden"
+				className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 lg:hidden"
 				aria-label="Search documentation"
+				aria-haspopup="dialog"
 			>
 				<svg
 					className="h-[15px] w-[15px]"
@@ -139,8 +140,9 @@ export function SearchCommand() {
 			{/* Desktop: expanded search bar */}
 			<button
 				onClick={() => setOpen(true)}
-				className="hidden h-9 items-center gap-2.5 rounded-lg border border-input bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground lg:flex"
+				className="hidden h-9 cursor-pointer items-center gap-2.5 rounded-lg border border-input bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 lg:flex"
 				aria-label="Search documentation"
+				aria-haspopup="dialog"
 			>
 				<svg
 					className="h-3.5 w-3.5 shrink-0"

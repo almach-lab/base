@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn } from "@almach/utils";
-import { Card } from "@almach/ui";
+import { Badge, Card } from "@almach/ui";
 import { CodeBlock } from "./code-block";
 
 /* ── Example card (gallery tile) ────────────────────────────────────────── */
@@ -26,7 +26,9 @@ function VariantTile({
 	return (
 		<button
 			onClick={onClick}
-			className="group text-left outline-none rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-all block w-full"
+			aria-pressed={selected}
+			aria-label={`View ${example.title} example`}
+			className="group block w-full cursor-pointer rounded-xl text-left outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 		>
 			<Card
 				className={cn(
@@ -72,13 +74,17 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
 	return (
 		<div className="rounded-xl border overflow-hidden">
 			{/* Tab bar */}
-			<div className="flex items-center gap-1 border-b bg-muted/20 px-3">
+			<div role="tablist" aria-label="Example view" className="flex items-center gap-1 border-b bg-muted/20 px-3">
 				{(["preview", "code"] as const).map((t) => (
 					<button
 						key={t}
+						role="tab"
+						aria-selected={tab === t}
+						aria-controls={`tabpanel-${t}`}
+						id={`tab-${t}`}
 						onClick={() => setTab(t)}
 						className={cn(
-							"relative px-3 py-2.5 text-xs font-medium capitalize transition-colors",
+							"relative cursor-pointer px-3 py-2.5 text-xs font-medium capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
 							tab === t
 								? "text-foreground after:absolute after:inset-x-3 after:bottom-0 after:h-px after:bg-foreground"
 								: "text-muted-foreground hover:text-foreground",
@@ -87,11 +93,13 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
 						{t === "preview" ? "Preview" : "Code"}
 					</button>
 				))}
-
 			</div>
 
 			{tab === "preview" ? (
 				<div
+					id="tabpanel-preview"
+					role="tabpanel"
+					aria-labelledby="tab-preview"
 					className={cn(
 						"min-h-40 bg-[radial-gradient(hsl(var(--border))_1px,transparent_1px)] bg-[size:20px_20px] bg-background p-8",
 						example.centered !== false && "flex items-center justify-center",
@@ -100,11 +108,13 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
 					{example.preview}
 				</div>
 			) : (
-				<CodeBlock
-					code={example.code}
-					lang={example.lang ?? "tsx"}
-					className="rounded-none border-0"
-				/>
+				<div id="tabpanel-code" role="tabpanel" aria-labelledby="tab-code">
+					<CodeBlock
+						code={example.code}
+						lang={example.lang ?? "tsx"}
+						className="rounded-none border-0"
+					/>
+				</div>
 			)}
 		</div>
 	);
@@ -184,9 +194,9 @@ export function ComponentDoc({
 		<div className="mx-auto max-w-4xl px-4 py-10 md:px-8 space-y-10">
 			{/* Header */}
 			<div className="border-b pb-8 space-y-2">
-				<span className="inline-flex items-center rounded-md border bg-muted/50 px-2 py-0.5 font-mono text-xs text-muted-foreground">
+				<Badge variant="outline" className="font-mono">
 					{pkg}
-				</span>
+				</Badge>
 				<h1 className="text-3xl font-bold tracking-tight">{name}</h1>
 				<p className="text-base text-muted-foreground leading-relaxed max-w-xl">
 					{description}

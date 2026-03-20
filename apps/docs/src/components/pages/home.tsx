@@ -1,5 +1,6 @@
 import React, { useMemo, useState, useCallback } from "react";
 import { ArrowRight } from "lucide-react";
+import { Card } from "@almach/ui";
 import { CodeBlock } from "../code-block";
 
 /* ── Deterministic star field ─────────────────────────────────────────────── *
@@ -93,7 +94,9 @@ function HeroInstall() {
           <button
             key={m}
             onClick={() => setPm(m)}
-            className={`rounded px-2 py-0.5 text-xs font-medium transition-colors ${m === pm
+            aria-pressed={m === pm}
+            aria-label={`Use ${m}`}
+            className={`cursor-pointer rounded px-2 py-0.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${m === pm
               ? "bg-foreground/10 text-foreground dark:bg-white/15 dark:text-white"
               : "text-foreground/35 hover:bg-foreground/8 hover:text-foreground/60 dark:text-white/35 dark:hover:bg-white/[0.08] dark:hover:text-white/60"
               }`}
@@ -199,7 +202,7 @@ function LLMSection() {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={handleCopy}
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {copied ? (
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
@@ -215,7 +218,7 @@ function LLMSection() {
               </button>
               <a
                 href="/llms"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 View reference
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -224,14 +227,14 @@ function LLMSection() {
           </div>
 
           {/* Visual card */}
-          <div className="w-full max-w-sm shrink-0 overflow-hidden rounded-xl border bg-card shadow-sm lg:w-80">
-            <div className="flex items-center gap-2 border-b bg-muted/50 px-4 py-2.5">
+          <Card className="w-full max-w-sm shrink-0 overflow-hidden shadow-sm lg:w-80">
+            <Card.Header className="flex-row items-center gap-2 border-b bg-muted/50 px-4 py-2.5 space-y-0">
               <svg className="h-3.5 w-3.5 text-primary" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/>
               </svg>
               <span className="font-mono text-xs text-muted-foreground">llms.txt</span>
-            </div>
-            <div className="space-y-1.5 p-4 font-mono text-[11px] leading-relaxed text-muted-foreground/70">
+            </Card.Header>
+            <Card.Content className="space-y-1.5 p-4 font-mono text-[11px] leading-relaxed text-muted-foreground/70">
               <p className="text-foreground font-semibold text-xs"># Almach</p>
               <p className="text-primary/70">{">"} A modern, accessible React UI component library.</p>
               <p className="opacity-50">{">"} Built on Radix UI, Tailwind CSS v4, TanStack.</p>
@@ -244,8 +247,8 @@ function LLMSection() {
               <p className="text-foreground/60">## @almach/ui</p>
               <p className="pl-2">### Button</p>
               <p className="opacity-40 italic">…32 components, hooks, forms, query, utils</p>
-            </div>
-          </div>
+            </Card.Content>
+          </Card>
 
         </div>
       </div>
@@ -304,14 +307,14 @@ export function HomePage() {
             <div className="mb-10 flex flex-wrap items-center gap-3">
               <a
                 href="/getting-started"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Get started
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a
                 href="/components"
-                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent dark:border-white/15 dark:text-white/75 dark:hover:border-white/25 dark:hover:bg-white/[0.08]"
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-foreground/75 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 dark:border-white/15 dark:text-white/75 dark:hover:border-white/25 dark:hover:bg-white/[0.08]"
               >
                 Browse components
               </a>
@@ -343,13 +346,10 @@ export function HomePage() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {highlights.map((h) => (
-            <div
-              key={h.title}
-              className="group rounded-xl border bg-card p-5 transition-colors hover:border-primary/40"
-            >
+            <Card key={h.title} className="p-5 transition-colors hover:border-primary/40">
               <p className="mb-2 font-semibold">{h.title}</p>
               <p className="text-sm leading-relaxed text-muted-foreground">{h.description}</p>
-            </div>
+            </Card>
           ))}
         </div>
       </section>
@@ -375,7 +375,8 @@ export function HomePage() {
               <a
                 key={pkg.name}
                 href={pkg.href}
-                className="group flex flex-col gap-4 rounded-xl border bg-card p-5 transition-colors hover:border-primary/40 hover:bg-primary/[0.025]"
+                aria-label={`${pkg.name} — ${pkg.description}`}
+                className="group flex flex-col gap-4 rounded-xl border bg-card p-5 transition-colors hover:border-primary/40 hover:bg-primary/[0.025] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <div className="flex items-start justify-between gap-2">
                   <p className="font-mono text-sm font-semibold">{pkg.name}</p>
@@ -439,14 +440,14 @@ export function HomePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
                 href="/getting-started"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 Read the docs
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
               <a
                 href="/components"
-                className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent"
+                className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 View components
               </a>
