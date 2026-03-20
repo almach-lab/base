@@ -9,8 +9,6 @@ const GROUPS = [
 		items: [
 			{ name: "Button", href: "/components/button", description: "Triggers an action or event." },
 			{ name: "Checkbox", href: "/components/checkbox", description: "Boolean selection control." },
-			{ name: "Combobox", href: "/components/combobox", description: "Searchable select with custom options." },
-			{ name: "Date Input", href: "/components/date-input", description: "Segmented MM/DD/YYYY field." },
 			{ name: "Input", href: "/components/input", description: "Text field with icon slots." },
 			{ name: "Label", href: "/components/label", description: "Accessible form label." },
 			{ name: "Radio", href: "/components/radio", description: "Single-selection radio group." },
@@ -37,9 +35,7 @@ const GROUPS = [
 		items: [
 			{ name: "Card", href: "/components/card", description: "Surface container with sections." },
 			{ name: "Carousel", href: "/components/carousel", description: "Touch-friendly slide carousel." },
-			{ name: "Group", href: "/components/group", description: "Grouped form and navigation rows." },
-			{ name: "Layered Card", href: "/components/layered-card", description: "Settings panel with layered rows." },
-			{ name: "Separator", href: "/components/separator", description: "Horizontal or vertical divider." },
+{ name: "Separator", href: "/components/separator", description: "Horizontal or vertical divider." },
 		],
 	},
 	{

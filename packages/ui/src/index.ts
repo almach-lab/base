@@ -15,7 +15,7 @@ export type { ButtonProps } from "./components/button";
 export { Calendar } from "./components/calendar";
 export type { CalendarProps } from "./components/calendar";
 
-export { Card } from "./components/card";
+export { Card, Group } from "./components/card";
 
 export {
 	Chart,
@@ -65,10 +65,8 @@ export { Drawer } from "./components/drawer";
 
 export { DropdownMenu } from "./components/dropdown-menu";
 
-export { Group } from "./components/group";
-
-export { Input, DateInput } from "./components/input";
-export type { InputProps, DateInputProps } from "./components/input";
+export { Input } from "./components/input";
+export type { InputProps } from "./components/input";
 
 export { Label } from "./components/label";
 
@@ -98,16 +96,8 @@ export { Tabs, tabsListVariants, tabsTriggerVariants } from "./components/tabs";
 export { TagInput } from "./components/tag-input";
 export type { TagInputProps } from "./components/tag-input";
 
-export {
-	Toast,
-	ToastAction,
-	ToastClose,
-	ToastDescription,
-	ToastProvider,
-	ToastTitle,
-	ToastViewport,
-} from "./components/toast";
-export type { ToastProps, ToastActionElement } from "./components/toast";
+export { toast } from "./components/toast";
+export type { ToastOptions } from "./components/toast";
 
 export { Toaster } from "./components/toaster";
 
@@ -117,6 +107,6 @@ export type { TextareaProps } from "./components/textarea";
 export { Tooltip } from "./components/tooltip";
 
 /* ─── Hooks ───────────────────────────────────────────────────────────────── */
-export { toast, useToast } from "./hooks/use-toast";
+export { useToast } from "./hooks/use-toast";
 export { useMediaQuery, useIsMobile } from "./hooks/use-media-query";
 export { useCopyToClipboard } from "./hooks/use-copy-to-clipboard";

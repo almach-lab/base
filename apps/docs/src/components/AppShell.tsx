@@ -26,19 +26,13 @@ const componentPages: Record<string, React.LazyExoticComponent<() => React.JSX.E
   checkbox: lazy(() => import("./pages/components/checkbox").then((m) => ({ default: m.CheckboxPage }))),
   collapsible: lazy(() => import("./pages/components/collapsible").then((m) => ({ default: m.CollapsiblePage }))),
   command: lazy(() => import("./pages/components/command").then((m) => ({ default: m.CommandPage }))),
-  combobox: lazy(() => import("./pages/components/combobox").then((m) => ({ default: m.ComboboxPage }))),
-  "date-input": lazy(() => import("./pages/components/date-input").then((m) => ({ default: m.DateInputPage }))),
   dialog: lazy(() => import("./pages/components/dialog").then((m) => ({ default: m.DialogPage }))),
   drawer: lazy(() => import("./pages/components/drawer").then((m) => ({ default: m.DrawerPage }))),
   "dropdown-menu": lazy(() =>
     import("./pages/components/dropdown-menu").then((m) => ({ default: m.DropdownMenuPage }))
   ),
-  group: lazy(() => import("./pages/components/group").then((m) => ({ default: m.GroupPage }))),
   input: lazy(() => import("./pages/components/input").then((m) => ({ default: m.InputPage }))),
   label: lazy(() => import("./pages/components/label").then((m) => ({ default: m.LabelPage }))),
-  "layered-card": lazy(() =>
-    import("./pages/components/layered-card").then((m) => ({ default: m.LayeredCardPage }))
-  ),
   modal: lazy(() => import("./pages/components/modal").then((m) => ({ default: m.ModalPage }))),
   popover: lazy(() => import("./pages/components/popover").then((m) => ({ default: m.PopoverPage }))),
   progress: lazy(() => import("./pages/components/progress").then((m) => ({ default: m.ProgressPage }))),

@@ -217,7 +217,7 @@ import { Badge } from "@almach/ui";
 
 ### Card
 
-Compound component with sub-components: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Content`, `Card.Section`, `Card.Row`, `Card.Footer`, `Card.Layers`, `Card.LayerHeader`, `Card.LayerBody`, `Card.LayerRow`.
+Compound component with sub-components: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Content`, `Card.Section`, `Card.Row`, `Card.Footer`, `Card.Layers`, `Card.LayerHeader`, `Card.LayerBody`, `Card.LayerRow`, `Card.Group`, `Card.GroupRow`.
 
 ```tsx
 import { Card } from "@almach/ui";
@@ -483,22 +483,24 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 
 ---
 
-### Combobox
+### Select.Searchable (Combobox)
+
+Searchable select with a popover and built-in search input. Replaces the standalone Combobox.
 
 ```tsx
-import { Combobox } from "@almach/ui";
+import { Select } from "@almach/ui";
 
 const options = [
   { label: "React", value: "react" },
   { label: "Vue", value: "vue" },
 ];
 
-<Combobox
+<Select.Searchable
   options={options}
   value={value}
-  onValueChange={setValue}
-  placeholder="Select framework..."
-  searchPlaceholder="Search..."
+  onChange={setValue}
+  placeholder="Select framework…"
+  searchPlaceholder="Search…"
 />
 ```
 
@@ -623,19 +625,39 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@almach/ui"
 
 ---
 
-### Group
+### Card.Group
 
-A flex group for grouping related elements (e.g., button groups):
+Grouped rows with an optional label and hint. Merged into Card — use `Card.Group` and `Card.GroupRow`.
 
 ```tsx
-import { Group } from "@almach/ui";
+import { Card } from "@almach/ui";
 
-<Group>
-  <Button variant="outline">A</Button>
-  <Button variant="outline">B</Button>
-  <Button variant="outline">C</Button>
-</Group>
+// Navigation list
+<Card.Group>
+  <Card.GroupRow action={<ArrowRightIcon />}>Get started</Card.GroupRow>
+  <Card.GroupRow action={<ArrowRightIcon />}>Documentation</Card.GroupRow>
+</Card.Group>
+
+// Settings with label + hint
+<Card.Group label="Notifications" hint="These apply to your account.">
+  <Card.GroupRow
+    label="Email alerts"
+    description="Receive summaries and digests."
+    action={<Switch defaultChecked />}
+  />
+  <Card.GroupRow label="Push notifications" action={<Switch />} />
+</Card.Group>
+
+// Form fields
+<Card.Group label="Account">
+  <Card.GroupRow label="Display name" htmlFor="name">
+    <Input id="name" defaultValue="Alice" className="w-40" />
+  </Card.GroupRow>
+</Card.Group>
 ```
+
+**Card.Group Props:** `label?: string`, `hint?: string`, plus all div props.
+**Card.GroupRow Props:** `label?: string`, `description?: string`, `htmlFor?: string`, `required?: boolean`, `action?: React.ReactNode`, `onClick?: () => void`.
 
 ---
 
@@ -655,19 +677,24 @@ import { TagInput } from "@almach/ui";
 
 ### Toast & Toaster
 
-Add `<Toaster />` once at the app root. Then use `toast()` or `useToast()` anywhere:
+Powered by Sonner. Add `<Toaster />` once at the app root. Call `toast()` from anywhere.
 
 ```tsx
-import { toast } from "@almach/ui";
+import { Toaster, toast } from "@almach/ui";
 
-// Imperative API
-toast({ title: "Saved!", description: "Your changes were saved." });
-toast({ title: "Error", description: "Something failed.", variant: "destructive" });
+// App root
+<Toaster />
 
-// Hook API
-import { useToast } from "@almach/ui";
-const { toast } = useToast();
-toast({ title: "Done" });
+// Anywhere in your app
+toast("Notification", { description: "You have a new message." });
+toast.success("Saved!", { description: "Your changes were saved." });
+toast.error("Error", { description: "Something failed." });
+toast.warning("Warning", { description: "Please review your input." });
+toast.promise(saveData(), {
+  loading: "Saving…",
+  success: "Saved!",
+  error: "Failed to save.",
+});
 ```
 
 ---

@@ -26,8 +26,6 @@ const NAV_GROUPS = [
 		items: [
 			{ label: "Button", href: "/components/button" },
 			{ label: "Checkbox", href: "/components/checkbox" },
-			{ label: "Combobox", href: "/components/combobox" },
-			{ label: "Date Input", href: "/components/date-input" },
 			{ label: "Input", href: "/components/input" },
 			{ label: "Label", href: "/components/label" },
 			{ label: "Radio", href: "/components/radio" },
@@ -56,9 +54,7 @@ const NAV_GROUPS = [
 		items: [
 			{ label: "Card", href: "/components/card" },
 			{ label: "Carousel", href: "/components/carousel" },
-			{ label: "Group", href: "/components/group" },
-			{ label: "Layered Card", href: "/components/layered-card" },
-			{ label: "Separator", href: "/components/separator" },
+{ label: "Separator", href: "/components/separator" },
 		],
 	},
 	{

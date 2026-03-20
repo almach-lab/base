@@ -15,12 +15,12 @@ const SelectTrigger = React.forwardRef<
 		ref={ref}
 		className={cn(
 			"flex h-9 w-full cursor-pointer items-center justify-between gap-2 rounded-lg border border-input bg-background",
-			"px-3 text-sm transition-all outline-none",
-			"hover:border-ring/50 focus:ring-2 focus:ring-ring focus:ring-offset-2",
+			"px-3 text-sm transition-all outline-none ring-offset-background",
+			"hover:border-ring/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 			"placeholder:text-muted-foreground",
 			"disabled:cursor-not-allowed disabled:opacity-50",
 			"[&>span]:line-clamp-1",
-			error && "border-destructive focus:ring-destructive",
+			error && "border-destructive focus-visible:ring-destructive",
 			className
 		)}
 		aria-invalid={error}
