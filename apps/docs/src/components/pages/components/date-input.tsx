@@ -6,14 +6,52 @@ export function DateInputPage() {
 	return (
 		<ComponentDoc
 			name="Input.Date"
-			description="Segmented date field (MM / DD / YYYY) with keyboard navigation, auto-advance, and an optional calendar popover picker. Available as Input.Date — part of the Input compound component."
+			description="Segmented date field with keyboard navigation, auto-advance, and an optional calendar popover picker. Supports any format via the format prop — e.g. MM/DD/YYYY, DD-MM-YYYY, YYYY-MM-DD."
 			pkg="@almach/ui"
 			examples={[
 				{
-					title: "Default",
+					title: "Default (MM/DD/YYYY)",
 					description: "Click a segment and type, or use ↑ ↓ arrow keys. Press / or → to advance between segments.",
 					preview: <Input.Date />,
 					code: `<Input.Date />`,
+				},
+				{
+					title: "Format: DD/MM/YYYY",
+					description: "Day-first format common in Europe and most of the world.",
+					preview: <Input.Date format="DD/MM/YYYY" />,
+					code: `<Input.Date format="DD/MM/YYYY" />`,
+				},
+				{
+					title: "Format: DD-MM-YYYY",
+					description: "Dash-separated day-first format.",
+					preview: <Input.Date format="DD-MM-YYYY" />,
+					code: `<Input.Date format="DD-MM-YYYY" />`,
+				},
+				{
+					title: "Format: YYYY-MM-DD",
+					description: "ISO 8601 format — year first, dash separator.",
+					preview: <Input.Date format="YYYY-MM-DD" />,
+					code: `<Input.Date format="YYYY-MM-DD" />`,
+				},
+				{
+					title: "Format switcher",
+					description: "Switch format at runtime — segments reorder accordingly.",
+					preview: <FormatSwitcher />,
+					code: `const FORMATS = ["MM/DD/YYYY", "DD/MM/YYYY", "YYYY-MM-DD", "DD-MM-YYYY"];
+const [fmt, setFmt] = React.useState("MM/DD/YYYY");
+const [date, setDate] = React.useState<Date>();
+
+<div className="flex flex-col gap-3">
+  <div className="flex flex-wrap gap-2">
+    {FORMATS.map((f) => (
+      <button key={f} onClick={() => setFmt(f)}
+        className={fmt === f ? "font-bold underline" : "text-muted-foreground"}>
+        {f}
+      </button>
+    ))}
+  </div>
+  <Input.Date format={fmt} value={date} onChange={setDate} withCalendar />
+</div>`,
 				},
 				{
 					title: "With calendar",
@@ -27,7 +65,7 @@ export function DateInputPage() {
 					title: "Controlled",
 					description: "Bind value and onChange to manage the date in state.",
 					preview: <ControlledDateInput />,
-					code: `const [date, setDate] = React.useState<Date>();
+					code: `const [date, setDate] = React.useState<Date>(new Date());
 
 <Input.Date value={date} onChange={setDate} />
 {date && <p className="text-sm">{date.toLocaleDateString()}</p>}`,
@@ -67,6 +105,12 @@ export function DateInputPage() {
 			]}
 			props={[
 				{
+					name: "format",
+					type: "string",
+					default: '"MM/DD/YYYY"',
+					description: 'Controls segment order and separator. Tokens: MM, DD, YYYY. Examples: "DD/MM/YYYY" | "YYYY-MM-DD" | "DD-MM-YYYY".',
+				},
+				{
 					name: "value",
 					type: "Date",
 					description: "Controlled date value.",
@@ -74,7 +118,7 @@ export function DateInputPage() {
 				{
 					name: "onChange",
 					type: "(date: Date | undefined) => void",
-					description: "Called when all three segments form a valid date, or undefined when incomplete.",
+					description: "Called when all segments form a valid date, or undefined when incomplete.",
 				},
 				{
 					name: "withCalendar",
@@ -97,18 +141,50 @@ export function DateInputPage() {
 	);
 }
 
+// ── Demos ───────────────────────────────────────────────────────────────────
+
+const FORMATS = ["MM/DD/YYYY", "DD/MM/YYYY", "YYYY-MM-DD", "DD-MM-YYYY"] as const;
+
+function FormatSwitcher() {
+	const [fmt, setFmt] = React.useState<string>("MM/DD/YYYY");
+	const [date, setDate] = React.useState<Date | undefined>();
+	return (
+		<div className="flex flex-col gap-3 w-full max-w-xs">
+			<div className="flex flex-wrap gap-1.5">
+				{FORMATS.map((f) => (
+					<button
+						key={f}
+						onClick={() => setFmt(f)}
+						className={
+							fmt === f
+								? "rounded-md bg-primary px-2 py-1 text-xs font-medium text-primary-foreground"
+								: "rounded-md border px-2 py-1 text-xs text-muted-foreground hover:bg-accent"
+						}
+					>
+						{f}
+					</button>
+				))}
+			</div>
+			<Input.Date format={fmt} value={date} onChange={setDate} withCalendar />
+			{date && (
+				<p className="text-xs text-muted-foreground">
+					{date.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })}
+				</p>
+			)}
+		</div>
+	);
+}
+
 function CalendarDateInput() {
 	const [date, setDate] = React.useState<Date | undefined>();
 	return (
 		<div className="flex flex-col gap-2 items-start">
 			<Input.Date withCalendar value={date} onChange={setDate} />
-			{date ? (
-				<p className="text-sm text-muted-foreground">
-					{date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-				</p>
-			) : (
-				<p className="text-sm text-muted-foreground">No date selected</p>
-			)}
+			<p className="text-sm text-muted-foreground">
+				{date
+					? date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+					: "No date selected"}
+			</p>
 		</div>
 	);
 }
@@ -118,16 +194,18 @@ function ControlledDateInput() {
 	return (
 		<div className="flex flex-col gap-2 items-center">
 			<Input.Date value={date} onChange={setDate} />
-			{date ? (
-				<p className="text-sm text-muted-foreground">
-					Selected:{" "}
-					<span className="font-medium text-foreground">
-						{date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-					</span>
-				</p>
-			) : (
-				<p className="text-sm text-muted-foreground">No date selected</p>
-			)}
+			<p className="text-sm text-muted-foreground">
+				{date ? (
+					<>
+						Selected:{" "}
+						<span className="font-medium text-foreground">
+							{date.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
+						</span>
+					</>
+				) : (
+					"No date selected"
+				)}
+			</p>
 		</div>
 	);
 }

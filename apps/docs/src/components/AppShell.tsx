@@ -52,6 +52,7 @@ const componentPages: Record<string, React.LazyExoticComponent<() => React.JSX.E
   textarea: lazy(() => import("./pages/components/textarea").then((m) => ({ default: m.TextareaPage }))),
   toast: lazy(() => import("./pages/components/toast").then((m) => ({ default: m.ToastPage }))),
   tooltip: lazy(() => import("./pages/components/tooltip").then((m) => ({ default: m.TooltipPage }))),
+  chart: lazy(() => import("./pages/components/chart").then((m) => ({ default: m.ChartPage }))),
 };
 
 interface AppShellProps {
