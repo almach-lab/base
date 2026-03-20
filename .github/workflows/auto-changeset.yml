@@ -16,7 +16,7 @@ name: Auto Changeset
 on:
   pull_request:
     types: [closed]
-    branches: [main]
+    branches: [dev]
 
 permissions:
   contents: write
@@ -27,7 +27,7 @@ jobs:
     # Only on merged PRs; skip the "Version Packages" PR Changesets itself creates
     if: |
       github.event.pull_request.merged == true &&
-      github.event.pull_request.head.ref != 'changeset-release/main' &&
+      github.event.pull_request.head.ref != 'changeset-release/dev' &&
       !contains(github.event.pull_request.labels.*.name, 'skip-changeset')
     runs-on: ubuntu-latest
 
