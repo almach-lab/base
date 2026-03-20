@@ -35,5 +35,11 @@
     "type": "git",
     "url": "https://github.com/almach-lab/base",
     "directory": "packages/utils"
-  }
+  },
+  "contributors": [
+    {
+      "name": "rafaalrazzak",
+      "url": "https://github.com/rafaalrazzak"
+    }
+  ]
 }
