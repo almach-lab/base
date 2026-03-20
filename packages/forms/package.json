@@ -1,6 +1,6 @@
 {
   "name": "@almach/forms",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Form handling with TanStack Form and Zod validation for Based UI",
   "type": "module",
   "main": "./dist/index.js",
