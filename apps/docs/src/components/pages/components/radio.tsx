@@ -56,7 +56,7 @@ export function RadioPage() {
 				{
 					title: "Disabled",
 					description:
-						"Pass disabled to Radio.Item. The entire row dims and loses interactivity (HIG).",
+						"Pass disabled to Radio.Item. The entire row dims and loses interactivity.",
 					preview: (
 						<Radio defaultValue="b" aria-label="Options">
 							<Radio.Item value="a" label="Option A" />

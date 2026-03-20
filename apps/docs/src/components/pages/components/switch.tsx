@@ -6,12 +6,12 @@ export function SwitchPage() {
 	return (
 		<ComponentDoc
 			name="Switch"
-			description="iOS-style toggle built on Radix Switch. Three sizes, smooth animation, HIG-compliant disabled state."
+			description="Toggle control built on Radix Switch. Three sizes, smooth animation, accessible disabled state."
 			pkg="@almach/ui"
 			examples={[
 				{
 					title: "Sizes",
-					description: "sm, default, and lg sizes — all follow Apple HIG proportions.",
+					description: "sm, default, and lg sizes.",
 					preview: (
 						<div className="flex items-center gap-8">
 							{(["sm", "default", "lg"] as const).map((size) => (
@@ -45,9 +45,9 @@ export function SwitchPage() {
 <Switch />`,
 				},
 				{
-					title: "With label — HIG disabled",
+					title: "With label",
 					description:
-						"HIG standard: wrap switch + label in a row div. Disabled → entire row opacity-50.",
+						"Wrap the switch and label in a row. Disabled → entire row renders at reduced opacity.",
 					preview: (
 						<div className="flex w-full max-w-xs flex-col gap-3">
 							{[
@@ -111,7 +111,7 @@ export function SwitchPage() {
 					name: "disabled",
 					type: "boolean",
 					description:
-						"Disables the switch. For HIG compliance, add opacity-50 to the whole row.",
+						"Disables the switch. Add opacity-50 to the whole row for a consistent disabled look.",
 				},
 			]}
 		/>

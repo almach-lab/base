@@ -49,7 +49,7 @@ export function CheckboxPage() {
 				{
 					title: "Disabled",
 					description:
-						"Disabled checkboxes are non-interactive. The entire row — label included — renders at reduced opacity per HIG.",
+						"Disabled checkboxes are non-interactive. The entire row — label included — renders at reduced opacity.",
 					preview: (
 						<div className="flex flex-col gap-3">
 							<div className="flex items-center gap-2.5 opacity-50">
