@@ -26,7 +26,6 @@ const componentPages: Record<string, React.LazyExoticComponent<() => React.JSX.E
   checkbox: lazy(() => import("./pages/components/checkbox").then((m) => ({ default: m.CheckboxPage }))),
   collapsible: lazy(() => import("./pages/components/collapsible").then((m) => ({ default: m.CollapsiblePage }))),
   command: lazy(() => import("./pages/components/command").then((m) => ({ default: m.CommandPage }))),
-"date-input": lazy(() => import("./pages/components/date-input").then((m) => ({ default: m.DateInputPage }))),
   dialog: lazy(() => import("./pages/components/dialog").then((m) => ({ default: m.DialogPage }))),
   drawer: lazy(() => import("./pages/components/drawer").then((m) => ({ default: m.DrawerPage }))),
   "dropdown-menu": lazy(() =>

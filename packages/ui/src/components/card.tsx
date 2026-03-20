@@ -209,6 +209,78 @@ const CardLayerRow = React.forwardRef<HTMLDivElement, CardLayerRowProps>(
 );
 CardLayerRow.displayName = "Card.LayerRow";
 
+// ── Group.Root ─────────────────────────────────────────────────────────────────
+interface CardGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+	/** Small-caps label shown above the group */
+	label?: string;
+	/** Helper text shown below the group */
+	hint?: string;
+}
+
+const CardGroup = React.forwardRef<HTMLDivElement, CardGroupProps>(
+	({ label, hint, className, children, ...props }, ref) => (
+		<div ref={ref} className={cn("space-y-1.5", className)} {...props}>
+			{label && (
+				<p className="px-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+					{label}
+				</p>
+			)}
+			<div className="overflow-hidden rounded-xl border bg-card divide-y">{children}</div>
+			{hint && <p className="px-1 text-xs text-muted-foreground">{hint}</p>}
+		</div>
+	),
+);
+CardGroup.displayName = "Card.Group";
+
+// ── Group.Row ──────────────────────────────────────────────────────────────────
+interface CardGroupRowProps extends React.HTMLAttributes<HTMLDivElement> {
+	/** Left-side primary label */
+	label?: string;
+	/** Left-side secondary text under label */
+	description?: string;
+	/** Associates label with a form control */
+	htmlFor?: string;
+	/** Marks the field as required (adds red asterisk) */
+	required?: boolean;
+	/** Right-side element: toggle, badge, arrow, input, etc. */
+	action?: React.ReactNode;
+}
+
+const CardGroupRow = React.forwardRef<HTMLDivElement, CardGroupRowProps>(
+	({ label, description, htmlFor, required, action, children, className, onClick, ...props }, ref) => (
+		<div
+			ref={ref}
+			className={cn(
+				"flex items-center gap-3 px-4 py-3 bg-card transition-colors",
+				onClick && "cursor-pointer hover:bg-accent/50",
+				className,
+			)}
+			onClick={onClick}
+			{...props}
+		>
+			{label ? (
+				<div className="min-w-0 flex-1">
+					<label
+						htmlFor={htmlFor}
+						className={cn("text-sm font-medium leading-none", htmlFor && "cursor-pointer")}
+					>
+						{label}
+						{required && <span className="ml-1 text-destructive" aria-hidden>*</span>}
+					</label>
+					{description && (
+						<p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{description}</p>
+					)}
+				</div>
+			) : (
+				<div className="min-w-0 flex-1 text-sm">{children}</div>
+			)}
+			{label && children && <div className="shrink-0">{children}</div>}
+			{action && <div className="shrink-0 text-muted-foreground">{action}</div>}
+		</div>
+	),
+);
+CardGroupRow.displayName = "Card.GroupRow";
+
 // ── Compound ───────────────────────────────────────────────────────────────────
 const Card = Object.assign(CardRoot, {
 	Header: CardHeader,
@@ -218,11 +290,17 @@ const Card = Object.assign(CardRoot, {
 	Section: CardSection,
 	Row: CardRow,
 	Footer: CardFooter,
-	/** Layered card root — stacked sections divided by borders (Claude-style) */
+	/** Layered card root — stacked sections divided by borders */
 	Layers: CardLayers,
 	LayerHeader: CardLayerHeader,
 	LayerBody: CardLayerBody,
 	LayerRow: CardLayerRow,
+	/** Grouped rows with optional label/hint — for settings, nav, and forms */
+	Group: CardGroup,
+	GroupRow: CardGroupRow,
 });
 
 export { Card };
+
+// Backward-compat: Group was previously a standalone export
+export const Group = Object.assign(CardGroup, { Row: CardGroupRow });

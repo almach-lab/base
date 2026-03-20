@@ -15,7 +15,7 @@ export type { ButtonProps } from "./components/button";
 export { Calendar } from "./components/calendar";
 export type { CalendarProps } from "./components/calendar";
 
-export { Card } from "./components/card";
+export { Card, Group } from "./components/card";
 
 export {
 	Chart,
@@ -65,10 +65,8 @@ export { Drawer } from "./components/drawer";
 
 export { DropdownMenu } from "./components/dropdown-menu";
 
-export { Group } from "./components/group";
-
-export { Input, DateInput } from "./components/input";
-export type { InputProps, DateInputProps } from "./components/input";
+export { Input } from "./components/input";
+export type { InputProps } from "./components/input";
 
 export { Label } from "./components/label";
 
