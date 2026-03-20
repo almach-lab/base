@@ -67,6 +67,7 @@ function VariantTile({
 /* ── Main example viewer ─────────────────────────────────────────────────── */
 function ExampleViewer({ example }: { example: ExampleProps }) {
 	const [tab, setTab] = React.useState<"preview" | "code">("preview");
+	const uid = React.useId();
 
 	// Reset to preview when example changes
 	React.useEffect(() => { setTab("preview"); }, [example.title]);
@@ -80,8 +81,8 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
 						key={t}
 						role="tab"
 						aria-selected={tab === t}
-						aria-controls={`tabpanel-${t}`}
-						id={`tab-${t}`}
+						aria-controls={`${uid}-tabpanel-${t}`}
+						id={`${uid}-tab-${t}`}
 						onClick={() => setTab(t)}
 						className={cn(
 							"relative cursor-pointer px-3 py-2.5 text-xs font-medium capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
@@ -97,9 +98,9 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
 
 			{tab === "preview" ? (
 				<div
-					id="tabpanel-preview"
+					id={`${uid}-tabpanel-preview`}
 					role="tabpanel"
-					aria-labelledby="tab-preview"
+					aria-labelledby={`${uid}-tab-preview`}
 					className={cn(
 						"min-h-40 bg-[radial-gradient(hsl(var(--border))_1px,transparent_1px)] bg-[size:20px_20px] bg-background p-8",
 						example.centered !== false && "flex items-center justify-center",
@@ -108,7 +109,7 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
 					{example.preview}
 				</div>
 			) : (
-				<div id="tabpanel-code" role="tabpanel" aria-labelledby="tab-code">
+				<div id={`${uid}-tabpanel-code`} role="tabpanel" aria-labelledby={`${uid}-tab-code`}>
 					<CodeBlock
 						code={example.code}
 						lang={example.lang ?? "tsx"}
@@ -189,6 +190,12 @@ export function ComponentDoc({
 }: ComponentDocProps) {
 	const [selected, setSelected] = React.useState(0);
 	const activeExample = (examples[selected] ?? examples[0])!;
+	const viewerRef = React.useRef<HTMLDivElement>(null);
+
+	const handleSelect = (i: number) => {
+		setSelected(i);
+		viewerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+	};
 
 	return (
 		<div className="mx-auto max-w-4xl px-4 py-10 md:px-8 space-y-10">
@@ -206,13 +213,18 @@ export function ComponentDoc({
 			{children}
 
 			{/* Main viewer */}
-			<div className="space-y-4">
-				<div className="flex items-center justify-between gap-3">
-					<h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-						{activeExample.title}
-					</h2>
+			<div ref={viewerRef} className="space-y-4 scroll-mt-20">
+				<div>
+					<div className="flex items-center justify-between gap-3">
+						<h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+							{activeExample.title}
+						</h2>
+						{activeExample.description && (
+							<p className="hidden text-sm text-muted-foreground md:block">{activeExample.description}</p>
+						)}
+					</div>
 					{activeExample.description && (
-						<p className="text-sm text-muted-foreground hidden md:block">{activeExample.description}</p>
+						<p className="mt-1 text-sm text-muted-foreground md:hidden">{activeExample.description}</p>
 					)}
 				</div>
 				<ExampleViewer example={activeExample} />
@@ -230,7 +242,7 @@ export function ComponentDoc({
 								key={i}
 								example={ex}
 								selected={i === selected}
-								onClick={() => setSelected(i)}
+								onClick={() => handleSelect(i)}
 							/>
 						))}
 					</div>
