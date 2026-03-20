@@ -15,6 +15,7 @@ name: Release
 # .github/workflows/auto-changeset.yml and pr-label.yml.
 
 on:
+  workflow_dispatch: # allow manual runs from the GitHub Actions UI
   push:
     branches: [main]
     # Only run when changeset files change:
