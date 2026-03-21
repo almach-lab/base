@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.1.4
+
+### Patch Changes
+
+- 1f2c712: feat: implement input for currency
+
 ## 0.1.3
 
 ### Patch Changes

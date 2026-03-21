@@ -16,7 +16,8 @@ const cache = new Map<string, string>();
 
 async function highlight(code: string, lang: string): Promise<string> {
   const key = `${lang}:${code}`;
-  if (cache.has(key)) return cache.get(key)!;
+  const cached = cache.get(key);
+  if (cached !== undefined) return cached;
   const html = await codeToHtml(code.trim(), {
     lang,
     themes: { light: "github-light", dark: "github-dark" },
