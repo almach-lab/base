@@ -70,6 +70,16 @@ export function CurrencyInputPage() {
 					code: `<Input.Currency value={{ amount: 9999, currency: "GBP" }} disabled />`,
 				},
 				{
+					title: "Read-only currency",
+					description: "Pass readOnlyCurrency to lock the selector — only the amount remains editable.",
+					preview: (
+						<div className="w-full max-w-xs">
+							<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />
+						</div>
+					),
+					code: `<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />`,
+				},
+				{
 					title: "Currency search",
 					description: "Open the selector and type to filter by code, name, or symbol.",
 					preview: <SearchExample />,
@@ -111,6 +121,12 @@ const LIMITED = CURRENCIES.filter((c) =>
 					type: "string",
 					default: '"0.00"',
 					description: "Placeholder shown in the amount field when empty.",
+				},
+				{
+					name: "readOnlyCurrency",
+					type: "boolean",
+					default: "false",
+					description: "Locks the currency selector. Shows the code as static text — no dropdown, no chevron. Amount field remains editable.",
 				},
 				{
 					name: "error",

@@ -207,6 +207,7 @@ import { Input } from "@almach/ui";
 | `onChange` | `(value: { amount: number \| null; currency: string }) => void` | — | Change handler |
 | `currencies` | `CurrencyDef[]` | built-in 36 | Override currency list. Set `popular: true` to show in Popular group |
 | `placeholder` | `string` | `"0.00"` | Amount field placeholder |
+| `readOnlyCurrency` | `boolean` | `false` | Lock the currency selector — shows code as static text, no dropdown |
 | `error` | `boolean` | `false` | Applies destructive ring; sets `aria-invalid` |
 | `disabled` | `boolean` | `false` | Disables amount input and currency selector |
 

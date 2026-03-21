@@ -267,6 +267,17 @@ const [date, setDate] = React.useState<Date>();
 					centered: false,
 				},
 				{
+					title: "Input.Currency — Read-only currency",
+					description: "Pass readOnlyCurrency to lock the currency selector — only the amount is editable.",
+					preview: (
+						<div className="w-full max-w-xs">
+							<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />
+						</div>
+					),
+					code: `<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />`,
+					centered: false,
+				},
+				{
 					title: "Input.Currency — Disabled",
 					description: "Disables both the amount input and the currency selector.",
 					preview: (
@@ -362,6 +373,12 @@ const [date, setDate] = React.useState<Date>();
 					type: "string",
 					default: '"0.00"',
 					description: "Placeholder shown in the amount field when empty.",
+				},
+				{
+					name: "Input.Currency — readOnlyCurrency",
+					type: "boolean",
+					default: "false",
+					description: "Locks the currency selector — shows the code as static text with no dropdown. The amount field remains editable.",
 				},
 				{
 					name: "Input.Currency — error",

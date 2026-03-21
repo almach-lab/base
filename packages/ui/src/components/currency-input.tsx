@@ -28,6 +28,8 @@ export interface InputCurrencyProps {
 	/** Override the full currency list. Defaults to built-in CURRENCIES. */
 	currencies?: CurrencyDef[];
 	placeholder?: string;
+	/** Prevent the user from changing the selected currency. */
+	readOnlyCurrency?: boolean;
 	disabled?: boolean;
 	error?: boolean;
 	className?: string;
@@ -79,6 +81,7 @@ export const CURRENCIES: CurrencyDef[] = [
 
 /* ── Helpers ──────────────────────────────────────────────────────────────── */
 
+/** Strip formatting, parse to number or null. */
 function parseAmount(raw: string): number | null {
 	const str = raw.trim().replace(/,/g, "");
 	if (!str) return null;
@@ -86,11 +89,26 @@ function parseAmount(raw: string): number | null {
 	return isNaN(n) ? null : n;
 }
 
+/** Final format via Intl (used on blur and for controlled-value sync). */
 function formatAmount(amount: number): string {
 	return new Intl.NumberFormat(undefined, {
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 2,
 	}).format(amount);
+}
+
+/**
+ * Live formatting while the user types.
+ * Adds thousand-separators to the integer part; preserves trailing decimal.
+ * Input must already be sanitized (digits + at most one dot).
+ */
+function applyThousandSeparator(raw: string): string {
+	if (!raw) return "";
+	const dotIdx = raw.indexOf(".");
+	const intPart = dotIdx >= 0 ? raw.slice(0, dotIdx) : raw;
+	const decPart = dotIdx >= 0 ? raw.slice(dotIdx) : ""; // includes the "."
+	const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	return formattedInt + decPart;
 }
 
 /* ── CurrencyOption ───────────────────────────────────────────────────────── */
@@ -143,15 +161,15 @@ export function InputCurrency({
 	onChange,
 	currencies = CURRENCIES,
 	placeholder = "0.00",
+	readOnlyCurrency = false,
 	disabled,
 	error,
 	className,
 }: InputCurrencyProps) {
 	const [currency, setCurrency] = React.useState(value?.currency ?? "USD");
-	const [rawValue, setRawValue] = React.useState<string>(() =>
+	const [displayValue, setDisplayValue] = React.useState<string>(() =>
 		value?.amount != null ? formatAmount(value.amount) : "",
 	);
-	const [focused, setFocused] = React.useState(false);
 	const [selectorOpen, setSelectorOpen] = React.useState(false);
 	const [search, setSearch] = React.useState("");
 
@@ -165,12 +183,10 @@ export function InputCurrency({
 		}
 	}, [value?.currency]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	/* Sync controlled amount — only when input is not focused */
+	/* Sync controlled amount */
 	React.useEffect(() => {
-		if (!focused) {
-			setRawValue(value?.amount != null ? formatAmount(value.amount) : "");
-		}
-	}, [value?.amount, focused]);
+		setDisplayValue(value?.amount != null ? formatAmount(value.amount) : "");
+	}, [value?.amount]);
 
 	const selectedCurrency = currencies.find((c) => c.code === currency) ?? currencies[0]!;
 
@@ -198,29 +214,25 @@ export function InputCurrency({
 		setCurrency(code);
 		setSelectorOpen(false);
 		setSearch("");
-		onChange?.({ amount: parseAmount(rawValue), currency: code });
+		onChange?.({ amount: parseAmount(displayValue), currency: code });
 		setTimeout(() => inputRef.current?.focus(), 0);
 	};
 
 	const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const sanitized = e.target.value
+		// Strip commas and non-numeric chars (keep one decimal point)
+		const raw = e.target.value
 			.replace(/[^\d.]/g, "")
-			.replace(/(\..*)\./g, "$1"); // keep only first decimal
-		setRawValue(sanitized);
-		onChange?.({ amount: parseAmount(sanitized), currency });
-	};
-
-	const handleFocus = () => {
-		setFocused(true);
-		/* Show plain number for easy editing (strips thousand separators) */
-		const parsed = parseAmount(rawValue);
-		setRawValue(parsed !== null ? String(parsed) : "");
+			.replace(/(\..*)\./g, "$1");
+		// Apply live thousand-separator formatting
+		const formatted = applyThousandSeparator(raw);
+		setDisplayValue(formatted);
+		onChange?.({ amount: parseAmount(raw), currency });
 	};
 
 	const handleBlur = () => {
-		setFocused(false);
-		const parsed = parseAmount(rawValue);
-		if (parsed !== null) setRawValue(formatAmount(parsed));
+		// Final precise format via Intl on blur
+		const parsed = parseAmount(displayValue);
+		if (parsed !== null) setDisplayValue(formatAmount(parsed));
 	};
 
 	return (
@@ -234,140 +246,154 @@ export function InputCurrency({
 				className,
 			)}
 		>
-			{/* ── Currency selector ─────────────────────────────────────────── */}
-			<PopoverPrimitive.Root
-				open={selectorOpen}
-				onOpenChange={(open) => {
-					if (disabled) return;
-					setSelectorOpen(open);
-					if (!open) setSearch("");
-					else setTimeout(() => searchRef.current?.focus(), 50);
-				}}
-			>
-				<PopoverPrimitive.Trigger asChild>
-					<button
-						type="button"
-						disabled={disabled}
-						aria-label={`Currency: ${selectedCurrency.name}. Click to change.`}
-						aria-haspopup="listbox"
-						aria-expanded={selectorOpen}
-						className={cn(
-							"flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3",
-							"font-medium transition-colors duration-150",
-							"hover:bg-accent hover:text-accent-foreground",
-							"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
-							"disabled:pointer-events-none",
-						)}
-					>
-						{selectedCurrency.flag && (
-							<span className="text-base leading-none" aria-hidden="true">
-								{selectedCurrency.flag}
-							</span>
-						)}
-						<span>{selectedCurrency.code}</span>
-						<ChevronDown
+			{/* ── Currency selector or static badge ─────────────────────────── */}
+			{readOnlyCurrency ? (
+				<div
+					className="flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3 font-medium text-foreground"
+					aria-label={selectedCurrency.name}
+				>
+					{selectedCurrency.flag && (
+						<span className="text-base leading-none" aria-hidden="true">
+							{selectedCurrency.flag}
+						</span>
+					)}
+					<span>{selectedCurrency.code}</span>
+				</div>
+			) : (
+				<PopoverPrimitive.Root
+					open={selectorOpen}
+					onOpenChange={(open) => {
+						if (disabled) return;
+						setSelectorOpen(open);
+						if (!open) setSearch("");
+						else setTimeout(() => searchRef.current?.focus(), 50);
+					}}
+				>
+					<PopoverPrimitive.Trigger asChild>
+						<button
+							type="button"
+							disabled={disabled}
+							aria-label={`Currency: ${selectedCurrency.name}. Click to change.`}
+							aria-haspopup="listbox"
+							aria-expanded={selectorOpen}
 							className={cn(
-								"h-3 w-3 shrink-0 text-muted-foreground transition-transform duration-150",
-								selectorOpen && "rotate-180",
+								"flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3",
+								"font-medium transition-colors duration-150",
+								"hover:bg-accent hover:text-accent-foreground",
+								"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+								"disabled:pointer-events-none",
 							)}
-							aria-hidden="true"
-						/>
-					</button>
-				</PopoverPrimitive.Trigger>
-
-				<PopoverPrimitive.Portal>
-					<PopoverPrimitive.Content
-						align="start"
-						sideOffset={6}
-						onOpenAutoFocus={(e) => e.preventDefault()}
-						className={cn(
-							"z-50 w-64 overflow-hidden rounded-xl border bg-popover shadow-xl",
-							"data-[state=open]:animate-in data-[state=closed]:animate-out",
-							"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-							"data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-							"data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
-						)}
-					>
-						{/* Search bar */}
-						<div className="flex items-center gap-2 border-b px-3 py-2">
-							<Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
-							<input
-								ref={searchRef}
-								type="text"
-								value={search}
-								onChange={(e) => setSearch(e.target.value)}
-								placeholder="Search currency…"
-								aria-label="Search currencies"
-								className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-							/>
-							{search && (
-								<button
-									type="button"
-									onClick={() => setSearch("")}
-									aria-label="Clear search"
-									className="text-muted-foreground transition-colors hover:text-foreground"
-								>
-									<X className="h-3.5 w-3.5" />
-								</button>
-							)}
-						</div>
-
-						{/* Currency list */}
-						<div
-							role="listbox"
-							aria-label="Select currency"
-							className="max-h-60 overflow-y-auto py-1.5"
 						>
-							{noResults && (
-								<p className="py-6 text-center text-sm text-muted-foreground">
-									No currencies found.
-								</p>
+							{selectedCurrency.flag && (
+								<span className="text-base leading-none" aria-hidden="true">
+									{selectedCurrency.flag}
+								</span>
 							)}
+							<span>{selectedCurrency.code}</span>
+							<ChevronDown
+								className={cn(
+									"h-3 w-3 shrink-0 text-muted-foreground transition-transform duration-150",
+									selectorOpen && "rotate-180",
+								)}
+								aria-hidden="true"
+							/>
+						</button>
+					</PopoverPrimitive.Trigger>
 
-							{/* Popular group */}
-							{popularList.length > 0 && (
-								<>
-									<div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-										Popular
-									</div>
-									{popularList.map((c) => (
-										<CurrencyOption
-											key={c.code}
-											currency={c}
-											selected={c.code === currency}
-											onSelect={selectCurrency}
-										/>
-									))}
-								</>
+					<PopoverPrimitive.Portal>
+						<PopoverPrimitive.Content
+							align="start"
+							sideOffset={6}
+							onOpenAutoFocus={(e) => e.preventDefault()}
+							className={cn(
+								"z-50 w-64 overflow-hidden rounded-xl border bg-popover shadow-xl",
+								"data-[state=open]:animate-in data-[state=closed]:animate-out",
+								"data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+								"data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+								"data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
 							)}
+						>
+							{/* Search bar */}
+							<div className="flex items-center gap-2 border-b px-3 py-2">
+								<Search className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+								<input
+									ref={searchRef}
+									type="text"
+									value={search}
+									onChange={(e) => setSearch(e.target.value)}
+									placeholder="Search currency…"
+									aria-label="Search currencies"
+									className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+								/>
+								{search && (
+									<button
+										type="button"
+										onClick={() => setSearch("")}
+										aria-label="Clear search"
+										className="text-muted-foreground transition-colors hover:text-foreground"
+									>
+										<X className="h-3.5 w-3.5" />
+									</button>
+								)}
+							</div>
 
-							{/* Divider between groups */}
-							{popularList.length > 0 && otherList.length > 0 && (
-								<div className="mx-2 my-1.5 h-px bg-border" aria-hidden="true" />
-							)}
+							{/* Currency list */}
+							<div
+								role="listbox"
+								aria-label="Select currency"
+								className="max-h-60 overflow-y-auto py-1.5"
+							>
+								{noResults && (
+									<p className="py-6 text-center text-sm text-muted-foreground">
+										No currencies found.
+									</p>
+								)}
 
-							{/* All currencies group */}
-							{otherList.length > 0 && (
-								<>
-									{!search && (
+								{/* Popular group */}
+								{popularList.length > 0 && (
+									<>
 										<div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-											All currencies
+											Popular
 										</div>
-									)}
-									{otherList.map((c) => (
-										<CurrencyOption
-											key={c.code}
-											currency={c}
-											selected={c.code === currency}
-											onSelect={selectCurrency}
-										/>
-									))}
-								</>
-							)}
-						</div>
-					</PopoverPrimitive.Content>
-				</PopoverPrimitive.Portal>
-			</PopoverPrimitive.Root>
+										{popularList.map((c) => (
+											<CurrencyOption
+												key={c.code}
+												currency={c}
+												selected={c.code === currency}
+												onSelect={selectCurrency}
+											/>
+										))}
+									</>
+								)}
+
+								{/* Divider between groups */}
+								{popularList.length > 0 && otherList.length > 0 && (
+									<div className="mx-2 my-1.5 h-px bg-border" aria-hidden="true" />
+								)}
+
+								{/* All currencies group */}
+								{otherList.length > 0 && (
+									<>
+										{!search && (
+											<div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+												All currencies
+											</div>
+										)}
+										{otherList.map((c) => (
+											<CurrencyOption
+												key={c.code}
+												currency={c}
+												selected={c.code === currency}
+												onSelect={selectCurrency}
+											/>
+										))}
+									</>
+								)}
+							</div>
+						</PopoverPrimitive.Content>
+					</PopoverPrimitive.Portal>
+				</PopoverPrimitive.Root>
+			)}
 
 			{/* ── Currency symbol ───────────────────────────────────────────── */}
 			<span
@@ -384,9 +410,8 @@ export function InputCurrency({
 				type="text"
 				inputMode="decimal"
 				placeholder={placeholder}
-				value={rawValue}
+				value={displayValue}
 				onChange={handleAmountChange}
-				onFocus={handleFocus}
 				onBlur={handleBlur}
 				disabled={disabled}
 				aria-label="Amount"
