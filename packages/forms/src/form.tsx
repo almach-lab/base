@@ -34,7 +34,9 @@ const useFormField = () => {
   const errorMessage = hasError
     ? typeof errors[0] === "string"
       ? errors[0]
-      : (errors[0] as { message?: string })?.message ?? String(errors[0])
+      : typeof errors[0] === "object" && errors[0] !== null && "message" in errors[0]
+        ? String(errors[0].message)
+        : String(errors[0])
     : undefined;
 
   return {

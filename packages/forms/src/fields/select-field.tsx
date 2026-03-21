@@ -36,8 +36,7 @@ export function SelectField({
   disabled,
 }: SelectFieldProps) {
   const field = useFieldContext<string>();
-  const errors = field.state.meta.errors as string[];
-  const hasError = field.state.meta.isTouched && errors.length > 0;
+  const hasError = field.state.meta.isTouched && field.state.meta.errors.length > 0;
 
   return (
     <FormItem>
@@ -45,7 +44,7 @@ export function SelectField({
       <FormControl>
         <Select
           value={field.state.value}
-          onValueChange={(value) => field.handleChange(value)}
+          onValueChange={field.handleChange}
           disabled={disabled ?? false}
         >
           <Select.Trigger error={hasError} onBlur={field.handleBlur}>
