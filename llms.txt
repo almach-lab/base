@@ -177,6 +177,7 @@ import { Input } from "@almach/ui";
 
 // Currency sub-component
 <Input.Currency />
+<Input.Currency defaultCurrency="EUR" />
 <Input.Currency value={{ amount: 1234.56, currency: "EUR" }} onChange={setVal} />
 
 // Custom flag renderer (CDN images, SVG libraries, etc.)
@@ -213,14 +214,19 @@ import { Input } from "@almach/ui";
 |------|------|---------|-------------|
 | `value` | `{ amount: number \| null; currency: string }` | — | Controlled value |
 | `onChange` | `(value: { amount: number \| null; currency: string }) => void` | — | Change handler |
+| `defaultCurrency` | `string` | `"USD"` | Initial currency code (uncontrolled). Ignored when `value` is supplied |
 | `currencies` | `CurrencyDef[]` | built-in 36 | Override the currency list. Set `popular: true` to show in Popular group |
 | `renderFlag` | `(countryCode: string, currency: CurrencyDef) => ReactNode` | `<CurrencyFlagBadge />` | Custom flag renderer. See examples below. |
 | `placeholder` | `string` | `"0.00"` | Amount field placeholder |
 | `currencySelector` | `"editable" \| "readonly" \| "hidden"` | `"editable"` | `"editable"` = dropdown; `"readonly"` = static badge; `"hidden"` = selector removed |
 | `error` | `boolean` | `false` | Applies destructive ring; sets `aria-invalid` |
 | `disabled` | `boolean` | `false` | Disables amount input and currency selector |
+| `id` | `string` | — | Forwarded to the inner `<input>` for `<Label htmlFor>` association |
+| `className` | `string` | — | Extra classes on the outer wrapper div |
 
 `CurrencyDef`: `{ code: string; symbol: string; name: string; countryCode?: string; popular?: boolean }`
+
+`CurrencySelectorMode`: `"editable" | "readonly" | "hidden"`
 
 `countryCode` is ISO 3166-1 alpha-2 (e.g. "US", "EU", "ID"). Used by `renderFlag`.
 
@@ -228,6 +234,17 @@ Built-in popular currencies: USD, EUR, GBP, JPY, CHF, AUD, CAD, CNY. 28 addition
 
 ```tsx
 import { CURRENCIES, CurrencyFlagBadge } from "@almach/ui";
+
+// Set default currency (uncontrolled — no value prop)
+<Input.Currency defaultCurrency="EUR" />
+
+// Controlled value
+<Input.Currency value={{ amount: 1234.56, currency: "EUR" }} onChange={setVal} />
+
+// Currency selector modes
+<Input.Currency currencySelector="editable" />   // default — user can open dropdown
+<Input.Currency currencySelector="readonly" />   // fixed badge, no dropdown
+<Input.Currency currencySelector="hidden" />     // only symbol + amount shown
 
 // Restrict currency list
 const limited = CURRENCIES.filter((c) => ["USD", "EUR", "GBP"].includes(c.code));

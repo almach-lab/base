@@ -137,6 +137,12 @@ const LIMITED = CURRENCIES.filter((c) =>
 					description: "Called on every amount keystroke and on currency change.",
 				},
 				{
+					name: "defaultCurrency",
+					type: "string",
+					default: '"USD"',
+					description: "Initial currency code when uncontrolled (no value prop). Ignored when value is supplied — use value.currency instead.",
+				},
+				{
 					name: "currencies",
 					type: "CurrencyDef[]",
 					description:

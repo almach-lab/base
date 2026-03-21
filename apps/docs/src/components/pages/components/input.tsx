@@ -366,6 +366,12 @@ const [date, setDate] = React.useState<Date>();
 					description: "Called on every amount keystroke and on currency change.",
 				},
 				{
+					name: "Input.Currency — defaultCurrency",
+					type: "string",
+					default: '"USD"',
+					description: "Initial currency code when uncontrolled (no value prop). Ignored when value is supplied.",
+				},
+				{
 					name: "Input.Currency — renderFlag",
 					type: "(countryCode: string, currency: CurrencyDef) => ReactNode",
 					default: "<CurrencyFlagBadge />",

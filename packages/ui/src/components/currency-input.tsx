@@ -42,6 +42,12 @@ export interface InputCurrencyProps {
 	id?: string;
 	value?: CurrencyValue;
 	onChange?: (value: CurrencyValue) => void;
+	/**
+	 * Default currency code used when no `value` is provided (uncontrolled).
+	 * Ignored when `value` is supplied — use `value.currency` instead.
+	 * @default "USD"
+	 */
+	defaultCurrency?: string;
 	/** Override the full currency list. Defaults to the built-in CURRENCIES (36 entries). */
 	currencies?: CurrencyDef[];
 	placeholder?: string;
@@ -218,6 +224,7 @@ export function InputCurrency({
 	id,
 	value,
 	onChange,
+	defaultCurrency = "USD",
 	currencies = CURRENCIES,
 	placeholder = "0.00",
 	renderFlag = defaultRenderFlag,
@@ -226,7 +233,7 @@ export function InputCurrency({
 	error,
 	className,
 }: InputCurrencyProps) {
-	const [currency, setCurrency] = React.useState(value?.currency ?? "USD");
+	const [currency, setCurrency] = React.useState(value?.currency ?? defaultCurrency);
 	const [displayValue, setDisplayValue] = React.useState<string>(() =>
 		value?.amount != null ? formatAmount(value.amount) : "",
 	);
