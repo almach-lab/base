@@ -65,8 +65,8 @@ export { Drawer } from "./components/drawer";
 
 export { DropdownMenu } from "./components/dropdown-menu";
 
-export { Input } from "./components/input";
-export type { InputProps } from "./components/input";
+export { Input, DateInput } from "./components/input";
+export type { InputProps, InputDateProps, DateInputProps } from "./components/input";
 
 export { InputCurrency, CURRENCIES, CurrencyFlagBadge } from "./components/currency-input";
 export type { CurrencyDef, CurrencyValue, InputCurrencyProps, CurrencySelectorMode } from "./components/currency-input";

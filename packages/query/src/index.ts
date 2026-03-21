@@ -9,6 +9,7 @@ export { useOptimisticUpdate } from "./use-optimistic-update";
 
 // Provider
 export { BasedQueryProvider } from "./provider";
+export type { BasedQueryProviderProps } from "./provider";
 
 // Types
 export type {
@@ -18,6 +19,8 @@ export type {
   ActionResult,
   ActionError,
 } from "./types";
+export type { CreateMutationOptions } from "./create-mutation";
+export type { ServerActionOptions } from "./create-server-action";
 
 // Re-export TanStack Query for convenience
 export {

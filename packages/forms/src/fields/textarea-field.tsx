@@ -24,8 +24,7 @@ export function TextareaField({
   ...props
 }: TextareaFieldProps) {
   const field = useFieldContext<string>();
-  const errors = field.state.meta.errors as string[];
-  const hasError = field.state.meta.isTouched && errors.length > 0;
+  const hasError = field.state.meta.isTouched && field.state.meta.errors.length > 0;
 
   return (
     <FormItem>

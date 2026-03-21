@@ -255,7 +255,9 @@ export function InputCurrency({
 		setDisplayValue(value?.amount != null ? formatAmount(value.amount) : "");
 	}, [value?.amount]);
 
-	const selectedCurrency = currencies.find((c) => c.code === currency) ?? currencies[0]!;
+	const selectedCurrency = currencies.find((c) => c.code === currency)
+		?? currencies[0]
+		?? { code: "USD", symbol: "$", name: "US Dollar" } satisfies CurrencyDef;
 
 	const filterList = React.useCallback(
 		(list: CurrencyDef[]) => {

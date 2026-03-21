@@ -153,7 +153,7 @@ function InputDate({
 	const focusPrev = (key: SegKey) => { const p = SEG_ORDER[SEG_ORDER.indexOf(key) - 1]; if (p) focus(p); };
 
 	// When format changes, move focus to first segment
-	React.useEffect(() => { focus(SEG_ORDER[0]!); }, [format]); // eslint-disable-line react-hooks/exhaustive-deps
+	React.useEffect(() => { const first = SEG_ORDER[0]; if (first) focus(first); }, [format]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const handleKeyDown = (key: SegKey, e: React.KeyboardEvent<HTMLInputElement>) => {
 		const { min, max, len } = SEG_LIMITS[key];
@@ -239,7 +239,7 @@ function InputDate({
 				disabled && "cursor-not-allowed opacity-50",
 				className,
 			)}
-			onClick={() => !active && focus(SEG_ORDER[0]!)}
+			onClick={() => { if (!active) { const first = SEG_ORDER[0]; if (first) focus(first); } }}
 		>
 			{SEG_ORDER.map((key, i) => (
 				<React.Fragment key={key}>
