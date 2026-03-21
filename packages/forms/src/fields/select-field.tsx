@@ -45,7 +45,7 @@ export function SelectField({
       <FormControl>
         <Select
           value={field.state.value}
-          onValueChange={(value) => field.handleChange(value)}
+          onValueChange={(value: string) => field.handleChange(value)}
           disabled={disabled ?? false}
         >
           <Select.Trigger error={hasError} onBlur={field.handleBlur}>
