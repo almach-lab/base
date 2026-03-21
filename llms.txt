@@ -178,6 +178,14 @@ import { Input } from "@almach/ui";
 // Currency sub-component
 <Input.Currency />
 <Input.Currency value={{ amount: 1234.56, currency: "EUR" }} onChange={setVal} />
+
+// Custom flag renderer (CDN images, SVG libraries, etc.)
+<Input.Currency
+  renderFlag={(code) => (
+    <img src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
+         width={20} height={15} alt={code} className="rounded-sm object-cover" />
+  )}
+/>
 ```
 
 **Input Props:**
@@ -205,22 +213,42 @@ import { Input } from "@almach/ui";
 |------|------|---------|-------------|
 | `value` | `{ amount: number \| null; currency: string }` | — | Controlled value |
 | `onChange` | `(value: { amount: number \| null; currency: string }) => void` | — | Change handler |
-| `currencies` | `CurrencyDef[]` | built-in 36 | Override currency list. Set `popular: true` to show in Popular group |
+| `currencies` | `CurrencyDef[]` | built-in 36 | Override the currency list. Set `popular: true` to show in Popular group |
+| `renderFlag` | `(countryCode: string, currency: CurrencyDef) => ReactNode` | `<CurrencyFlagBadge />` | Custom flag renderer. See examples below. |
 | `placeholder` | `string` | `"0.00"` | Amount field placeholder |
 | `readOnlyCurrency` | `boolean` | `false` | Lock the currency selector — shows code as static text, no dropdown |
 | `error` | `boolean` | `false` | Applies destructive ring; sets `aria-invalid` |
 | `disabled` | `boolean` | `false` | Disables amount input and currency selector |
 
-`CurrencyDef`: `{ code: string; symbol: string; name: string; flag?: string; popular?: boolean }`
+`CurrencyDef`: `{ code: string; symbol: string; name: string; countryCode?: string; popular?: boolean }`
 
-Built-in popular currencies: USD, EUR, GBP, JPY, CHF, AUD, CAD, CNY. 28 additional currencies available (INR, BRL, MXN, KRW, SGD, HKD, NOK, SEK, DKK, NZD, ZAR, TRY, AED, SAR, PLN, CZK, HUF, THB, IDR, MYR, PHP, VND, ILS, EGP, NGN, UAH, CLP, COP, PEN).
+`countryCode` is ISO 3166-1 alpha-2 (e.g. "US", "EU", "ID"). Used by `renderFlag`.
+
+Built-in popular currencies: USD, EUR, GBP, JPY, CHF, AUD, CAD, CNY. 28 additional currencies (INR, BRL, MXN, KRW, SGD, HKD, NOK, SEK, DKK, NZD, ZAR, TRY, AED, SAR, PLN, CZK, HUF, THB, IDR, MYR, PHP, VND, ILS, EGP, NGN, UAH, CLP, COP, PEN).
 
 ```tsx
-// Custom currency list
-import { CURRENCIES } from "@almach/ui";
+import { CURRENCIES, CurrencyFlagBadge } from "@almach/ui";
 
+// Restrict currency list
 const limited = CURRENCIES.filter((c) => ["USD", "EUR", "GBP"].includes(c.code));
 <Input.Currency currencies={limited} />
+
+// CDN image flags (flagcdn.com)
+<Input.Currency
+  renderFlag={(code) => (
+    <img src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
+         width={20} height={15} alt={code} className="rounded-sm object-cover" />
+  )}
+/>
+
+// country-flag-icons SVG library (npm i country-flag-icons)
+import Flags from "country-flag-icons/react/3x2";
+<Input.Currency
+  renderFlag={(code) => {
+    const Flag = Flags[code as keyof typeof Flags];
+    return Flag ? <Flag className="h-3.5 w-5 rounded-sm" /> : <CurrencyFlagBadge countryCode={code} />;
+  }}
+/>
 ```
 
 ---

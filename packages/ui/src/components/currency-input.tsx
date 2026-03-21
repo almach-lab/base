@@ -9,10 +9,19 @@ import { cn } from "@almach/utils";
 /* ── Types ────────────────────────────────────────────────────────────────── */
 
 export interface CurrencyDef {
+	/** ISO 4217 currency code — e.g. "USD", "EUR" */
 	code: string;
+	/** Localised symbol — e.g. "$", "€", "Rp" */
 	symbol: string;
+	/** Human-readable name — e.g. "US Dollar" */
 	name: string;
-	flag?: string;
+	/**
+	 * ISO 3166-1 alpha-2 country / region code used to render the flag.
+	 * e.g. "US", "GB", "EU", "ID"
+	 * Pass to `renderFlag` or the built-in `CurrencyFlagBadge`.
+	 */
+	countryCode?: string;
+	/** Show this currency first in the "Popular" section. */
 	popular?: boolean;
 }
 
@@ -25,10 +34,30 @@ export interface InputCurrencyProps {
 	id?: string;
 	value?: CurrencyValue;
 	onChange?: (value: CurrencyValue) => void;
-	/** Override the full currency list. Defaults to built-in CURRENCIES. */
+	/** Override the full currency list. Defaults to the built-in CURRENCIES (36 entries). */
 	currencies?: CurrencyDef[];
 	placeholder?: string;
-	/** Prevent the user from changing the selected currency. */
+	/**
+	 * Custom flag renderer. Receives the ISO country code and the full currency definition.
+	 * Defaults to `<CurrencyFlagBadge />` — a styled two-letter code badge.
+	 *
+	 * @example
+	 * // CDN image flags
+	 * renderFlag={(code) => (
+	 *   <img src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
+	 *        width={20} height={15} alt={code} className="rounded-sm object-cover" />
+	 * )}
+	 *
+	 * @example
+	 * // country-flag-icons (npm i country-flag-icons)
+	 * import Flags from "country-flag-icons/react/3x2";
+	 * renderFlag={(code) => {
+	 *   const Flag = Flags[code as keyof typeof Flags];
+	 *   return Flag ? <Flag className="h-3.5 w-5 rounded-sm" /> : null;
+	 * }}
+	 */
+	renderFlag?: (countryCode: string, currency: CurrencyDef) => React.ReactNode;
+	/** Lock the currency selector — only the amount field is editable. */
 	readOnlyCurrency?: boolean;
 	disabled?: boolean;
 	error?: boolean;
@@ -39,65 +68,74 @@ export interface InputCurrencyProps {
 
 export const CURRENCIES: CurrencyDef[] = [
 	/* ── Popular ── */
-	{ code: "USD", symbol: "$",    name: "US Dollar",          flag: "🇺🇸", popular: true },
-	{ code: "EUR", symbol: "€",    name: "Euro",               flag: "🇪🇺", popular: true },
-	{ code: "GBP", symbol: "£",    name: "British Pound",      flag: "🇬🇧", popular: true },
-	{ code: "JPY", symbol: "¥",    name: "Japanese Yen",       flag: "🇯🇵", popular: true },
-	{ code: "CHF", symbol: "Fr",   name: "Swiss Franc",        flag: "🇨🇭", popular: true },
-	{ code: "AUD", symbol: "A$",   name: "Australian Dollar",  flag: "🇦🇺", popular: true },
-	{ code: "CAD", symbol: "C$",   name: "Canadian Dollar",    flag: "🇨🇦", popular: true },
-	{ code: "CNY", symbol: "¥",    name: "Chinese Yuan",       flag: "🇨🇳", popular: true },
+	{ code: "USD", symbol: "$",    name: "US Dollar",          countryCode: "US", popular: true },
+	{ code: "EUR", symbol: "€",    name: "Euro",               countryCode: "EU", popular: true },
+	{ code: "GBP", symbol: "£",    name: "British Pound",      countryCode: "GB", popular: true },
+	{ code: "JPY", symbol: "¥",    name: "Japanese Yen",       countryCode: "JP", popular: true },
+	{ code: "CHF", symbol: "Fr",   name: "Swiss Franc",        countryCode: "CH", popular: true },
+	{ code: "AUD", symbol: "A$",   name: "Australian Dollar",  countryCode: "AU", popular: true },
+	{ code: "CAD", symbol: "C$",   name: "Canadian Dollar",    countryCode: "CA", popular: true },
+	{ code: "CNY", symbol: "¥",    name: "Chinese Yuan",       countryCode: "CN", popular: true },
 	/* ── All ── */
-	{ code: "INR", symbol: "₹",    name: "Indian Rupee",       flag: "🇮🇳" },
-	{ code: "BRL", symbol: "R$",   name: "Brazilian Real",     flag: "🇧🇷" },
-	{ code: "MXN", symbol: "$",    name: "Mexican Peso",       flag: "🇲🇽" },
-	{ code: "KRW", symbol: "₩",    name: "South Korean Won",   flag: "🇰🇷" },
-	{ code: "SGD", symbol: "S$",   name: "Singapore Dollar",   flag: "🇸🇬" },
-	{ code: "HKD", symbol: "HK$",  name: "Hong Kong Dollar",   flag: "🇭🇰" },
-	{ code: "NOK", symbol: "kr",   name: "Norwegian Krone",    flag: "🇳🇴" },
-	{ code: "SEK", symbol: "kr",   name: "Swedish Krona",      flag: "🇸🇪" },
-	{ code: "DKK", symbol: "kr",   name: "Danish Krone",       flag: "🇩🇰" },
-	{ code: "NZD", symbol: "NZ$",  name: "New Zealand Dollar", flag: "🇳🇿" },
-	{ code: "ZAR", symbol: "R",    name: "South African Rand", flag: "🇿🇦" },
-	{ code: "TRY", symbol: "₺",    name: "Turkish Lira",       flag: "🇹🇷" },
-	{ code: "AED", symbol: "د.إ",  name: "UAE Dirham",         flag: "🇦🇪" },
-	{ code: "SAR", symbol: "﷼",    name: "Saudi Riyal",        flag: "🇸🇦" },
-	{ code: "PLN", symbol: "zł",   name: "Polish Złoty",       flag: "🇵🇱" },
-	{ code: "CZK", symbol: "Kč",   name: "Czech Koruna",       flag: "🇨🇿" },
-	{ code: "HUF", symbol: "Ft",   name: "Hungarian Forint",   flag: "🇭🇺" },
-	{ code: "THB", symbol: "฿",    name: "Thai Baht",          flag: "🇹🇭" },
-	{ code: "IDR", symbol: "Rp",   name: "Indonesian Rupiah",  flag: "🇮🇩" },
-	{ code: "MYR", symbol: "RM",   name: "Malaysian Ringgit",  flag: "🇲🇾" },
-	{ code: "PHP", symbol: "₱",    name: "Philippine Peso",    flag: "🇵🇭" },
-	{ code: "VND", symbol: "₫",    name: "Vietnamese Dong",    flag: "🇻🇳" },
-	{ code: "ILS", symbol: "₪",    name: "Israeli Shekel",     flag: "🇮🇱" },
-	{ code: "EGP", symbol: "E£",   name: "Egyptian Pound",     flag: "🇪🇬" },
-	{ code: "NGN", symbol: "₦",    name: "Nigerian Naira",     flag: "🇳🇬" },
-	{ code: "UAH", symbol: "₴",    name: "Ukrainian Hryvnia",  flag: "🇺🇦" },
-	{ code: "CLP", symbol: "$",    name: "Chilean Peso",       flag: "🇨🇱" },
-	{ code: "COP", symbol: "$",    name: "Colombian Peso",     flag: "🇨🇴" },
-	{ code: "PEN", symbol: "S/",   name: "Peruvian Sol",       flag: "🇵🇪" },
+	{ code: "INR", symbol: "₹",    name: "Indian Rupee",       countryCode: "IN" },
+	{ code: "BRL", symbol: "R$",   name: "Brazilian Real",     countryCode: "BR" },
+	{ code: "MXN", symbol: "$",    name: "Mexican Peso",       countryCode: "MX" },
+	{ code: "KRW", symbol: "₩",    name: "South Korean Won",   countryCode: "KR" },
+	{ code: "SGD", symbol: "S$",   name: "Singapore Dollar",   countryCode: "SG" },
+	{ code: "HKD", symbol: "HK$",  name: "Hong Kong Dollar",   countryCode: "HK" },
+	{ code: "NOK", symbol: "kr",   name: "Norwegian Krone",    countryCode: "NO" },
+	{ code: "SEK", symbol: "kr",   name: "Swedish Krona",      countryCode: "SE" },
+	{ code: "DKK", symbol: "kr",   name: "Danish Krone",       countryCode: "DK" },
+	{ code: "NZD", symbol: "NZ$",  name: "New Zealand Dollar", countryCode: "NZ" },
+	{ code: "ZAR", symbol: "R",    name: "South African Rand", countryCode: "ZA" },
+	{ code: "TRY", symbol: "₺",    name: "Turkish Lira",       countryCode: "TR" },
+	{ code: "AED", symbol: "د.إ",  name: "UAE Dirham",         countryCode: "AE" },
+	{ code: "SAR", symbol: "﷼",    name: "Saudi Riyal",        countryCode: "SA" },
+	{ code: "PLN", symbol: "zł",   name: "Polish Złoty",       countryCode: "PL" },
+	{ code: "CZK", symbol: "Kč",   name: "Czech Koruna",       countryCode: "CZ" },
+	{ code: "HUF", symbol: "Ft",   name: "Hungarian Forint",   countryCode: "HU" },
+	{ code: "THB", symbol: "฿",    name: "Thai Baht",          countryCode: "TH" },
+	{ code: "IDR", symbol: "Rp",   name: "Indonesian Rupiah",  countryCode: "ID" },
+	{ code: "MYR", symbol: "RM",   name: "Malaysian Ringgit",  countryCode: "MY" },
+	{ code: "PHP", symbol: "₱",    name: "Philippine Peso",    countryCode: "PH" },
+	{ code: "VND", symbol: "₫",    name: "Vietnamese Dong",    countryCode: "VN" },
+	{ code: "ILS", symbol: "₪",    name: "Israeli Shekel",     countryCode: "IL" },
+	{ code: "EGP", symbol: "E£",   name: "Egyptian Pound",     countryCode: "EG" },
+	{ code: "NGN", symbol: "₦",    name: "Nigerian Naira",     countryCode: "NG" },
+	{ code: "UAH", symbol: "₴",    name: "Ukrainian Hryvnia",  countryCode: "UA" },
+	{ code: "CLP", symbol: "$",    name: "Chilean Peso",       countryCode: "CL" },
+	{ code: "COP", symbol: "$",    name: "Colombian Peso",     countryCode: "CO" },
+	{ code: "PEN", symbol: "S/",   name: "Peruvian Sol",       countryCode: "PE" },
 ];
 
-/* ── Helpers ──────────────────────────────────────────────────────────────── */
+/* ── Default flag renderer ────────────────────────────────────────────────── */
 
 /**
- * Derive the 2-letter ISO country code from a regional-indicator flag emoji.
- * "🇮🇩" → "ID", "🇺🇸" → "US", "🇪🇺" → "EU"
- * Used to render a reliable cross-platform badge instead of the emoji itself.
+ * Built-in flag renderer — a compact styled badge showing the ISO country code.
+ * Works on every platform with no external assets.
+ * Export it if you want to compose with it in a custom `renderFlag`.
  */
-function flagToCode(flag: string): string {
-	return [...flag]
-		.map((char) => {
-			const cp = char.codePointAt(0);
-			return cp && cp >= 0x1f1e6 && cp <= 0x1f1ff
-				? String.fromCharCode(cp - 0x1f1e6 + 65)
-				: "";
-		})
-		.join("");
+export function CurrencyFlagBadge({ countryCode }: { countryCode: string }) {
+	return (
+		<span
+			className={cn(
+				"inline-flex h-[1.125rem] min-w-[1.5rem] items-center justify-center",
+				"rounded-sm bg-muted px-0.5",
+				"font-mono text-[9px] font-bold uppercase leading-none tracking-tight text-muted-foreground",
+			)}
+			aria-hidden="true"
+		>
+			{countryCode}
+		</span>
+	);
 }
 
-/** Strip formatting, parse to number or null. */
+function defaultRenderFlag(countryCode: string): React.ReactNode {
+	return <CurrencyFlagBadge countryCode={countryCode} />;
+}
+
+/* ── Number helpers ───────────────────────────────────────────────────────── */
+
 function parseAmount(raw: string): number | null {
 	const str = raw.trim().replace(/,/g, "");
 	if (!str) return null;
@@ -105,7 +143,6 @@ function parseAmount(raw: string): number | null {
 	return isNaN(n) ? null : n;
 }
 
-/** Final format via Intl (used on blur and for controlled-value sync). */
 function formatAmount(amount: number): string {
 	return new Intl.NumberFormat(undefined, {
 		minimumFractionDigits: 0,
@@ -113,18 +150,13 @@ function formatAmount(amount: number): string {
 	}).format(amount);
 }
 
-/**
- * Live formatting while the user types.
- * Adds thousand-separators to the integer part; preserves trailing decimal.
- * Input must already be sanitized (digits + at most one dot).
- */
+/** Apply thousand-separator to the integer part while the user types. */
 function applyThousandSeparator(raw: string): string {
 	if (!raw) return "";
 	const dotIdx = raw.indexOf(".");
 	const intPart = dotIdx >= 0 ? raw.slice(0, dotIdx) : raw;
-	const decPart = dotIdx >= 0 ? raw.slice(dotIdx) : ""; // includes the "."
-	const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	return formattedInt + decPart;
+	const decPart = dotIdx >= 0 ? raw.slice(dotIdx) : "";
+	return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + decPart;
 }
 
 /* ── CurrencyOption ───────────────────────────────────────────────────────── */
@@ -133,9 +165,10 @@ interface CurrencyOptionProps {
 	currency: CurrencyDef;
 	selected: boolean;
 	onSelect: (code: string) => void;
+	renderFlag: (countryCode: string, currency: CurrencyDef) => React.ReactNode;
 }
 
-function CurrencyOption({ currency, selected, onSelect }: CurrencyOptionProps) {
+function CurrencyOption({ currency, selected, onSelect, renderFlag }: CurrencyOptionProps) {
 	return (
 		<button
 			type="button"
@@ -149,9 +182,9 @@ function CurrencyOption({ currency, selected, onSelect }: CurrencyOptionProps) {
 				selected && "bg-primary/10 text-primary",
 			)}
 		>
-			{currency.flag && (
-				<span className="shrink-0 text-base leading-none" aria-hidden="true">
-					{currency.flag}
+			{currency.countryCode && (
+				<span className="shrink-0">
+					{renderFlag(currency.countryCode, currency)}
 				</span>
 			)}
 			<span className="w-10 shrink-0 font-mono text-xs font-semibold tabular-nums text-muted-foreground">
@@ -177,6 +210,7 @@ export function InputCurrency({
 	onChange,
 	currencies = CURRENCIES,
 	placeholder = "0.00",
+	renderFlag = defaultRenderFlag,
 	readOnlyCurrency = false,
 	disabled,
 	error,
@@ -206,7 +240,6 @@ export function InputCurrency({
 
 	const selectedCurrency = currencies.find((c) => c.code === currency) ?? currencies[0]!;
 
-	/* Filtered lists */
 	const filterList = React.useCallback(
 		(list: CurrencyDef[]) => {
 			if (!search) return list;
@@ -215,7 +248,8 @@ export function InputCurrency({
 				(c) =>
 					c.code.toLowerCase().includes(q) ||
 					c.name.toLowerCase().includes(q) ||
-					c.symbol.toLowerCase().includes(q),
+					c.symbol.toLowerCase().includes(q) ||
+					(c.countryCode?.toLowerCase().includes(q) ?? false),
 			);
 		},
 		[search],
@@ -225,7 +259,6 @@ export function InputCurrency({
 	const otherList = filterList(currencies.filter((c) => !c.popular));
 	const noResults = popularList.length === 0 && otherList.length === 0;
 
-	/* Handlers */
 	const selectCurrency = (code: string) => {
 		setCurrency(code);
 		setSelectorOpen(false);
@@ -235,21 +268,22 @@ export function InputCurrency({
 	};
 
 	const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		// Strip commas and non-numeric chars (keep one decimal point)
 		const raw = e.target.value
 			.replace(/[^\d.]/g, "")
 			.replace(/(\..*)\./g, "$1");
-		// Apply live thousand-separator formatting
-		const formatted = applyThousandSeparator(raw);
-		setDisplayValue(formatted);
+		setDisplayValue(applyThousandSeparator(raw));
 		onChange?.({ amount: parseAmount(raw), currency });
 	};
 
 	const handleBlur = () => {
-		// Final precise format via Intl on blur
 		const parsed = parseAmount(displayValue);
 		if (parsed !== null) setDisplayValue(formatAmount(parsed));
 	};
+
+	/* Shared currency badge (trigger + readonly) */
+	const flagNode = selectedCurrency.countryCode
+		? renderFlag(selectedCurrency.countryCode, selectedCurrency)
+		: null;
 
 	return (
 		<div
@@ -265,17 +299,10 @@ export function InputCurrency({
 			{/* ── Currency selector or static badge ─────────────────────────── */}
 			{readOnlyCurrency ? (
 				<div
-					className="flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3 font-medium text-foreground"
+					className="flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3 font-medium"
 					aria-label={selectedCurrency.name}
 				>
-					{selectedCurrency.flag && (
-						<span
-							className="inline-flex h-[1.125rem] min-w-[1.5rem] items-center justify-center rounded-sm bg-muted px-0.5 font-mono text-[9px] font-bold uppercase leading-none tracking-tight text-muted-foreground"
-							aria-hidden="true"
-						>
-							{flagToCode(selectedCurrency.flag)}
-						</span>
-					)}
+					{flagNode}
 					<span>{selectedCurrency.code}</span>
 				</div>
 			) : (
@@ -303,14 +330,7 @@ export function InputCurrency({
 								"disabled:pointer-events-none",
 							)}
 						>
-							{selectedCurrency.flag && (
-								<span
-									className="inline-flex h-[1.125rem] min-w-[1.5rem] items-center justify-center rounded-sm bg-muted px-0.5 font-mono text-[9px] font-bold uppercase leading-none tracking-tight text-muted-foreground"
-									aria-hidden="true"
-								>
-									{flagToCode(selectedCurrency.flag)}
-								</span>
-							)}
+							{flagNode}
 							<span>{selectedCurrency.code}</span>
 							<ChevronDown
 								className={cn(
@@ -383,12 +403,13 @@ export function InputCurrency({
 												currency={c}
 												selected={c.code === currency}
 												onSelect={selectCurrency}
+												renderFlag={renderFlag}
 											/>
 										))}
 									</>
 								)}
 
-								{/* Divider between groups */}
+								{/* Divider */}
 								{popularList.length > 0 && otherList.length > 0 && (
 									<div className="mx-2 my-1.5 h-px bg-border" aria-hidden="true" />
 								)}
@@ -407,6 +428,7 @@ export function InputCurrency({
 												currency={c}
 												selected={c.code === currency}
 												onSelect={selectCurrency}
+												renderFlag={renderFlag}
 											/>
 										))}
 									</>
@@ -418,10 +440,7 @@ export function InputCurrency({
 			)}
 
 			{/* ── Currency symbol ───────────────────────────────────────────── */}
-			<span
-				className="shrink-0 select-none pl-2.5 text-muted-foreground"
-				aria-hidden="true"
-			>
+			<span className="shrink-0 select-none pl-2.5 text-muted-foreground" aria-hidden="true">
 				{selectedCurrency.symbol}
 			</span>
 

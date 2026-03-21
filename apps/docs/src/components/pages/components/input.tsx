@@ -364,6 +364,12 @@ const [date, setDate] = React.useState<Date>();
 					description: "Called on every amount keystroke and on currency change.",
 				},
 				{
+					name: "Input.Currency — renderFlag",
+					type: "(countryCode: string, currency: CurrencyDef) => ReactNode",
+					default: "<CurrencyFlagBadge />",
+					description: "Custom flag renderer — use CDN images, SVG libraries, or any React node. countryCode is ISO 3166-1 alpha-2.",
+				},
+				{
 					name: "Input.Currency — currencies",
 					type: "CurrencyDef[]",
 					description: "Override the currency list. Defaults to the built-in CURRENCIES (36 entries). Mark entries with popular: true to show them in the Popular group.",

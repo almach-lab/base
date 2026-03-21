@@ -1,12 +1,12 @@
 import * as React from "react";
-import { Input, Label } from "@almach/ui";
+import { Input, Label, CurrencyFlagBadge } from "@almach/ui";
 import { ComponentDoc } from "../../component-doc";
 
 export function CurrencyInputPage() {
 	return (
 		<ComponentDoc
 			name="Input.Currency"
-			description="A currency input with an inline currency selector. Pick from 36 currencies (8 popular, searchable), with a flag + code trigger, vertical divider, symbol prefix, and right-aligned amount that formats on blur."
+			description="Currency input with an inline selector. 36 currencies, searchable with Popular / All groups. Fully customisable flag display via renderFlag — plug in CDN images, SVG libraries, or any React node."
 			examples={[
 				{
 					title: "Default",
@@ -80,6 +80,22 @@ export function CurrencyInputPage() {
 					code: `<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />`,
 				},
 				{
+					title: "CDN image flags",
+					description: "Pass renderFlag to use real flag images from flagcdn.com (or any source).",
+					preview: <CdnFlagExample />,
+					code: `<Input.Currency
+  renderFlag={(code) => (
+    <img
+      src={\`https://flagcdn.com/w20/\${code.toLowerCase()}.png\`}
+      width={20}
+      height={15}
+      alt={code}
+      className="rounded-sm object-cover"
+    />
+  )}
+/>`,
+				},
+				{
 					title: "Currency search",
 					description: "Open the selector and type to filter by code, name, or symbol.",
 					preview: <SearchExample />,
@@ -121,6 +137,12 @@ const LIMITED = CURRENCIES.filter((c) =>
 					type: "string",
 					default: '"0.00"',
 					description: "Placeholder shown in the amount field when empty.",
+				},
+				{
+					name: "renderFlag",
+					type: "(countryCode: string, currency: CurrencyDef) => ReactNode",
+					default: "<CurrencyFlagBadge />",
+					description: "Custom flag renderer. Receives the ISO 3166-1 alpha-2 country code and the full CurrencyDef. Use for CDN images, SVG flag libraries, or any React node. Return null to hide.",
 				},
 				{
 					name: "readOnlyCurrency",
@@ -190,9 +212,9 @@ function CustomCurrenciesExample() {
 	const [val, setVal] = React.useState({ amount: null as number | null, currency: "USD" });
 	const limited = React.useMemo(
 		() => [
-			{ code: "USD", symbol: "$", name: "US Dollar", flag: "🇺🇸", popular: true },
-			{ code: "EUR", symbol: "€", name: "Euro", flag: "🇪🇺", popular: true },
-			{ code: "GBP", symbol: "£", name: "British Pound", flag: "🇬🇧", popular: true },
+			{ code: "USD", symbol: "$", name: "US Dollar", countryCode: "US", popular: true },
+			{ code: "EUR", symbol: "€", name: "Euro", countryCode: "EU", popular: true },
+			{ code: "GBP", symbol: "£", name: "British Pound", countryCode: "GB", popular: true },
 		],
 		[],
 	);
@@ -200,6 +222,30 @@ function CustomCurrenciesExample() {
 		<div className="flex w-full max-w-xs flex-col gap-2">
 			<Input.Currency value={val} onChange={setVal} currencies={limited} />
 			<p className="text-xs text-muted-foreground">Only USD, EUR, GBP available.</p>
+		</div>
+	);
+}
+
+function CdnFlagExample() {
+	const [val, setVal] = React.useState({ amount: null as number | null, currency: "USD" });
+	return (
+		<div className="flex w-full max-w-xs flex-col gap-2">
+			<Input.Currency
+				value={val}
+				onChange={setVal}
+				renderFlag={(code) => (
+					<img
+						src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
+						width={20}
+						height={15}
+						alt={code}
+						className="rounded-sm object-cover"
+					/>
+				)}
+			/>
+			<p className="text-xs text-muted-foreground">
+				Flags via flagcdn.com — swap for any SVG library.
+			</p>
 		</div>
 	);
 }

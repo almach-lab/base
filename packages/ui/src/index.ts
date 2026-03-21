@@ -68,7 +68,7 @@ export { DropdownMenu } from "./components/dropdown-menu";
 export { Input } from "./components/input";
 export type { InputProps } from "./components/input";
 
-export { InputCurrency, CURRENCIES } from "./components/currency-input";
+export { InputCurrency, CURRENCIES, CurrencyFlagBadge } from "./components/currency-input";
 export type { CurrencyDef, CurrencyValue, InputCurrencyProps } from "./components/currency-input";
 
 export { Label } from "./components/label";
