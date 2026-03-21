@@ -6,8 +6,6 @@ import { cn } from "@almach/utils";
 
 /* ── Types ─────────────────────────────────────────────────────────────── */
 type DialogRootProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root>;
-type DialogTriggerProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger>;
-type DialogPortalProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Portal>;
 
 interface DialogOverlayProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> { }
 interface DialogContentProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> { }
@@ -110,8 +108,8 @@ const DialogRoot = (props: DialogRootProps) => <DialogPrimitive.Root {...props} 
 DialogRoot.displayName = "Dialog";
 
 const Dialog = Object.assign(DialogRoot, {
-	Trigger: DialogPrimitive.Trigger as React.FC<DialogTriggerProps>,
-	Portal: DialogPrimitive.Portal as React.FC<DialogPortalProps>,
+	Trigger: DialogPrimitive.Trigger,
+	Portal: DialogPrimitive.Portal,
 	Overlay: DialogOverlay,
 	Content: DialogContent,
 	Header: DialogHeader,

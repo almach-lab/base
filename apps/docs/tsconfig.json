@@ -3,7 +3,14 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "noUncheckedIndexedAccess": true,
+    // ── Extra strict options (beyond astro/tsconfigs/strict) ───────────────
+    // Recommended for all apps to catch bugs at compile time.
+    "noUncheckedIndexedAccess": true,   // Array[i] returns T | undefined — prevents off-by-one runtime crashes
+    "noImplicitReturns": true,          // Every code path in a function must return a value
+    "noFallthroughCasesInSwitch": true, // Prevents silent fall-through in switch statements
+    "noImplicitOverride": true,         // Class method overrides must be explicit with `override`
+    "exactOptionalPropertyTypes": true, // `{ x?: string }` won't accept `{ x: undefined }` — catches subtle bugs
+    // ── Workspace package aliases (resolved by Vite/Astro at dev/build time) ─
     "paths": {
       "@almach/utils": [
         "../../packages/utils/src/index.ts"

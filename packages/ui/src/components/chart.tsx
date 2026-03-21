@@ -106,9 +106,7 @@ ChartTooltipContent.displayName = "Chart.TooltipContent";
 
 // ── Pre-styled primitives ───────────────────────────────────────────────────
 
-type AnyProps = Record<string, unknown>;
-
-const ChartTooltip = (props: AnyProps) => (
+const ChartTooltip = (props: React.ComponentProps<typeof Tooltip>) => (
 	<Tooltip
 		content={<ChartTooltipContent />}
 		cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
@@ -117,7 +115,7 @@ const ChartTooltip = (props: AnyProps) => (
 );
 ChartTooltip.displayName = "Chart.Tooltip";
 
-const ChartGrid = (props: AnyProps) => (
+const ChartGrid = (props: React.ComponentProps<typeof CartesianGrid>) => (
 	<CartesianGrid
 		strokeDasharray="3 3"
 		stroke="hsl(var(--border))"
@@ -126,7 +124,7 @@ const ChartGrid = (props: AnyProps) => (
 );
 ChartGrid.displayName = "Chart.Grid";
 
-const ChartXAxis = (props: AnyProps) => (
+const ChartXAxis = (props: React.ComponentProps<typeof XAxis>) => (
 	<XAxis
 		tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
 		tickLine={false}
@@ -136,7 +134,7 @@ const ChartXAxis = (props: AnyProps) => (
 );
 ChartXAxis.displayName = "Chart.XAxis";
 
-const ChartYAxis = (props: AnyProps) => (
+const ChartYAxis = (props: React.ComponentProps<typeof YAxis>) => (
 	<YAxis
 		tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
 		tickLine={false}
@@ -146,7 +144,7 @@ const ChartYAxis = (props: AnyProps) => (
 );
 ChartYAxis.displayName = "Chart.YAxis";
 
-const ChartLegend = (props: AnyProps) => (
+const ChartLegend = (props: React.ComponentProps<typeof Legend>) => (
 	<Legend
 		wrapperStyle={{ fontSize: 12, color: "hsl(var(--muted-foreground))" }}
 		{...props}
@@ -154,12 +152,12 @@ const ChartLegend = (props: AnyProps) => (
 );
 ChartLegend.displayName = "Chart.Legend";
 
-const ChartPolarGrid = (props: AnyProps) => (
+const ChartPolarGrid = (props: React.ComponentProps<typeof PolarGrid>) => (
 	<PolarGrid stroke="hsl(var(--border))" {...props} />
 );
 ChartPolarGrid.displayName = "Chart.PolarGrid";
 
-const ChartPolarAxis = (props: AnyProps) => (
+const ChartPolarAxis = (props: React.ComponentProps<typeof PolarAngleAxis>) => (
 	<PolarAngleAxis
 		tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
 		{...props}
