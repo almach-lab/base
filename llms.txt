@@ -216,7 +216,7 @@ import { Input } from "@almach/ui";
 | `currencies` | `CurrencyDef[]` | built-in 36 | Override the currency list. Set `popular: true` to show in Popular group |
 | `renderFlag` | `(countryCode: string, currency: CurrencyDef) => ReactNode` | `<CurrencyFlagBadge />` | Custom flag renderer. See examples below. |
 | `placeholder` | `string` | `"0.00"` | Amount field placeholder |
-| `readOnlyCurrency` | `boolean` | `false` | Lock the currency selector — shows code as static text, no dropdown |
+| `currencySelector` | `"editable" \| "readonly" \| "hidden"` | `"editable"` | `"editable"` = dropdown; `"readonly"` = static badge; `"hidden"` = selector removed |
 | `error` | `boolean` | `false` | Applies destructive ring; sets `aria-invalid` |
 | `disabled` | `boolean` | `false` | Disables amount input and currency selector |
 

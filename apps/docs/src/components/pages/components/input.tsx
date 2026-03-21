@@ -267,14 +267,16 @@ const [date, setDate] = React.useState<Date>();
 					centered: false,
 				},
 				{
-					title: "Input.Currency — Read-only currency",
-					description: "Pass readOnlyCurrency to lock the currency selector — only the amount is editable.",
+					title: 'Input.Currency — Selector modes',
+					description: 'currencySelector controls the left side: "editable" (default), "readonly" (static badge), or "hidden" (removed).',
 					preview: (
-						<div className="w-full max-w-xs">
-							<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />
+						<div className="w-full max-w-xs space-y-2">
+							<Input.Currency value={{ amount: 100000, currency: "IDR" }} currencySelector="readonly" />
+							<Input.Currency value={{ amount: 100000, currency: "IDR" }} currencySelector="hidden" />
 						</div>
 					),
-					code: `<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />`,
+					code: `<Input.Currency currencySelector="readonly" />
+<Input.Currency currencySelector="hidden" />`,
 					centered: false,
 				},
 				{
@@ -381,10 +383,10 @@ const [date, setDate] = React.useState<Date>();
 					description: "Placeholder shown in the amount field when empty.",
 				},
 				{
-					name: "Input.Currency — readOnlyCurrency",
-					type: "boolean",
-					default: "false",
-					description: "Locks the currency selector — shows the code as static text with no dropdown. The amount field remains editable.",
+					name: "Input.Currency — currencySelector",
+					type: '"editable" | "readonly" | "hidden"',
+					default: '"editable"',
+					description: 'Controls the left selector. "editable" = dropdown; "readonly" = static badge, no dropdown; "hidden" = entire selector removed.',
 				},
 				{
 					name: "Input.Currency — error",

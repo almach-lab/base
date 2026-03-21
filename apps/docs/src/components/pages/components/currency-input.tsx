@@ -70,14 +70,24 @@ export function CurrencyInputPage() {
 					code: `<Input.Currency value={{ amount: 9999, currency: "GBP" }} disabled />`,
 				},
 				{
-					title: "Read-only currency",
-					description: "Pass readOnlyCurrency to lock the selector — only the amount remains editable.",
+					title: 'currencySelector="readonly"',
+					description: "Currency is fixed — shows as a static badge with no dropdown. Amount remains editable.",
 					preview: (
 						<div className="w-full max-w-xs">
-							<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />
+							<Input.Currency value={{ amount: 100000, currency: "IDR" }} currencySelector="readonly" />
 						</div>
 					),
-					code: `<Input.Currency value={{ amount: 100000, currency: "IDR" }} readOnlyCurrency />`,
+					code: `<Input.Currency value={{ amount: 100000, currency: "IDR" }} currencySelector="readonly" />`,
+				},
+				{
+					title: 'currencySelector="hidden"',
+					description: "Entire selector hidden — only the symbol and amount are shown.",
+					preview: (
+						<div className="w-full max-w-xs">
+							<Input.Currency value={{ amount: 100000, currency: "IDR" }} currencySelector="hidden" />
+						</div>
+					),
+					code: `<Input.Currency value={{ amount: 100000, currency: "IDR" }} currencySelector="hidden" />`,
 				},
 				{
 					title: "CDN image flags",
@@ -145,10 +155,10 @@ const LIMITED = CURRENCIES.filter((c) =>
 					description: "Custom flag renderer. Receives the ISO 3166-1 alpha-2 country code and the full CurrencyDef. Use for CDN images, SVG flag libraries, or any React node. Return null to hide.",
 				},
 				{
-					name: "readOnlyCurrency",
-					type: "boolean",
-					default: "false",
-					description: "Locks the currency selector. Shows the code as static text — no dropdown, no chevron. Amount field remains editable.",
+					name: "currencySelector",
+					type: '"editable" | "readonly" | "hidden"',
+					default: '"editable"',
+					description: 'Controls the left selector. "editable" = dropdown; "readonly" = static badge, no dropdown; "hidden" = selector removed entirely.',
 				},
 				{
 					name: "error",

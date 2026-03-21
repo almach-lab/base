@@ -30,6 +30,14 @@ export interface CurrencyValue {
 	currency: string;
 }
 
+/**
+ * Controls the left-hand currency selector section.
+ * - `"editable"`  — (default) dropdown trigger; user can change currency
+ * - `"readonly"`  — static badge; currency is fixed, no dropdown
+ * - `"hidden"`    — selector is completely hidden; only symbol + amount shown
+ */
+export type CurrencySelectorMode = "editable" | "readonly" | "hidden";
+
 export interface InputCurrencyProps {
 	id?: string;
 	value?: CurrencyValue;
@@ -41,24 +49,26 @@ export interface InputCurrencyProps {
 	 * Custom flag renderer. Receives the ISO country code and the full currency definition.
 	 * Defaults to `<CurrencyFlagBadge />` — a styled two-letter code badge.
 	 *
-	 * @example
-	 * // CDN image flags
+	 * @example CDN image flags
 	 * renderFlag={(code) => (
 	 *   <img src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
 	 *        width={20} height={15} alt={code} className="rounded-sm object-cover" />
 	 * )}
 	 *
-	 * @example
-	 * // country-flag-icons (npm i country-flag-icons)
-	 * import Flags from "country-flag-icons/react/3x2";
+	 * @example country-flag-icons SVGs (npm i country-flag-icons)
 	 * renderFlag={(code) => {
 	 *   const Flag = Flags[code as keyof typeof Flags];
 	 *   return Flag ? <Flag className="h-3.5 w-5 rounded-sm" /> : null;
 	 * }}
 	 */
 	renderFlag?: (countryCode: string, currency: CurrencyDef) => React.ReactNode;
-	/** Lock the currency selector — only the amount field is editable. */
-	readOnlyCurrency?: boolean;
+	/**
+	 * Controls the currency selector.
+	 * - `"editable"` (default) — dropdown, user can change currency
+	 * - `"readonly"` — static badge, no dropdown
+	 * - `"hidden"`   — entire selector hidden, only symbol + amount shown
+	 */
+	currencySelector?: CurrencySelectorMode;
 	disabled?: boolean;
 	error?: boolean;
 	className?: string;
@@ -211,7 +221,7 @@ export function InputCurrency({
 	currencies = CURRENCIES,
 	placeholder = "0.00",
 	renderFlag = defaultRenderFlag,
-	readOnlyCurrency = false,
+	currencySelector = "editable",
 	disabled,
 	error,
 	className,
@@ -296,8 +306,8 @@ export function InputCurrency({
 				className,
 			)}
 		>
-			{/* ── Currency selector or static badge ─────────────────────────── */}
-			{readOnlyCurrency ? (
+			{/* ── Currency selector ─────────────────────────────────────────── */}
+			{currencySelector === "readonly" && (
 				<div
 					className="flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3 font-medium"
 					aria-label={selectedCurrency.name}
@@ -305,7 +315,9 @@ export function InputCurrency({
 					{flagNode}
 					<span>{selectedCurrency.code}</span>
 				</div>
-			) : (
+			)}
+
+			{currencySelector === "editable" && (
 				<PopoverPrimitive.Root
 					open={selectorOpen}
 					onOpenChange={(open) => {
