@@ -1,11 +1,11 @@
 "use client";
 
-import {
-  InputCurrency,
-  type CurrencyDef,
-  type CurrencySelectorMode,
-  type CurrencyValue,
-  type InputCurrencyProps,
+import { Input } from "@almach/ui";
+import type {
+  CurrencyDef,
+  CurrencySelectorMode,
+  CurrencyValue,
+  InputCurrencyProps,
 } from "@almach/ui";
 import { useFieldContext } from "../form-context";
 import {
@@ -36,7 +36,7 @@ export function CurrencyField({
     <FormItem>
       {label && <FormLabel required={required ?? false}>{label}</FormLabel>}
       <FormControl>
-        <InputCurrency
+        <Input.Currency
           {...inputProps}
           value={field.state.value}
           onChange={(value) => field.handleChange(value)}
