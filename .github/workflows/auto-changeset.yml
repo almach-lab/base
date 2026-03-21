@@ -1,9 +1,9 @@
 name: Auto Changeset
 
-# Runs when a PR is merged into main.
+# Runs when a feature PR is merged into dev.
 # Detects which publishable packages changed and writes a .changeset/*.md
-# file, then commits it to main — which triggers the Release workflow to
-# create (or update) the "Version Packages" PR automatically.
+# file, then commits it to dev — those changesets are later included in the
+# dev → main "release:" PR that triggers the Release workflow.
 #
 # Bump type is controlled by PR labels:
 #   major  →  breaking change
@@ -27,7 +27,7 @@ jobs:
     # Only on merged PRs; skip the "Version Packages" PR Changesets itself creates
     if: |
       github.event.pull_request.merged == true &&
-      github.event.pull_request.head.ref != 'changeset-release/dev' &&
+      github.event.pull_request.head.ref != 'changeset-release/main' &&
       !contains(github.event.pull_request.labels.*.name, 'skip-changeset')
     runs-on: ubuntu-latest
 
