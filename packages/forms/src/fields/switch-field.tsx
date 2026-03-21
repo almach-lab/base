@@ -42,7 +42,7 @@ export function SwitchField({
       <FormControl>
         <Switch
           checked={field.state.value ?? false}
-          onCheckedChange={(checked) => field.handleChange(checked)}
+          onCheckedChange={field.handleChange}
           onBlur={field.handleBlur}
           disabled={disabled ?? false}
         />
