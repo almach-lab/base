@@ -298,7 +298,7 @@ export function InputCurrency({
 	return (
 		<div
 			className={cn(
-				"flex h-9 w-full items-center overflow-hidden rounded-lg border border-input bg-background text-sm",
+				"flex h-9 w-full min-w-0 items-center overflow-hidden rounded-lg border border-input bg-background text-sm",
 				"ring-offset-background transition-all duration-150",
 				"focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
 				error && "border-destructive focus-within:ring-destructive",
@@ -470,7 +470,7 @@ export function InputCurrency({
 				aria-label="Amount"
 				aria-invalid={error}
 				className={cn(
-					"h-full flex-1 bg-transparent px-2.5 text-right tabular-nums outline-none",
+					"h-full min-w-0 flex-1 bg-transparent px-2.5 text-right tabular-nums outline-none",
 					"placeholder:text-muted-foreground/60",
 					"disabled:cursor-not-allowed",
 				)}
