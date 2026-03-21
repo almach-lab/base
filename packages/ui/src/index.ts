@@ -68,6 +68,9 @@ export { DropdownMenu } from "./components/dropdown-menu";
 export { Input } from "./components/input";
 export type { InputProps } from "./components/input";
 
+export { InputCurrency, CURRENCIES, CurrencyFlagBadge } from "./components/currency-input";
+export type { CurrencyDef, CurrencyValue, InputCurrencyProps, CurrencySelectorMode } from "./components/currency-input";
+
 export { Label } from "./components/label";
 
 export { Modal } from "./components/modal";

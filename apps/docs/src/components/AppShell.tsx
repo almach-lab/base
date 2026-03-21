@@ -48,6 +48,9 @@ const componentPages: Record<string, React.LazyExoticComponent<() => React.JSX.E
   toast: lazy(() => import("./pages/components/toast").then((m) => ({ default: m.ToastPage }))),
   tooltip: lazy(() => import("./pages/components/tooltip").then((m) => ({ default: m.TooltipPage }))),
   chart: lazy(() => import("./pages/components/chart").then((m) => ({ default: m.ChartPage }))),
+  "currency-input": lazy(() =>
+    import("./pages/components/currency-input").then((m) => ({ default: m.CurrencyInputPage }))
+  ),
 };
 
 interface AppShellProps {

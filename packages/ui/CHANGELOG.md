@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.1.3
+
+### Patch Changes
+
+- 80076c1: fix: better dx and grouing the components, merge components
+
 ## 0.1.2
 
 ### Patch Changes

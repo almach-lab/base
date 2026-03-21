@@ -9,6 +9,7 @@ const GROUPS = [
 		items: [
 			{ name: "Button", href: "/components/button", description: "Triggers an action or event." },
 			{ name: "Checkbox", href: "/components/checkbox", description: "Boolean selection control." },
+			{ name: "Currency Input", href: "/components/currency-input", description: "Amount field with currency selector." },
 			{ name: "Input", href: "/components/input", description: "Text field with icon slots." },
 			{ name: "Label", href: "/components/label", description: "Accessible form label." },
 			{ name: "Radio", href: "/components/radio", description: "Single-selection radio group." },
