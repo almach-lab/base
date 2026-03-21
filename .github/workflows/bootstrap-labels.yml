@@ -42,6 +42,29 @@ jobs:
                 color: 'ededed',
                 description: 'Skip auto-changeset generation (docs-only, CI, etc.)',
               },
+              // ── Package scope (used by auto-changeset.yml) ─────────────
+              // Apply one or more to restrict which packages get a changeset.
+              // Without any pkg:* label, auto-detection from git diff is used.
+              {
+                name: 'pkg:ui',
+                color: 'bfd4f2',
+                description: 'Explicitly include @almach/ui in the changeset',
+              },
+              {
+                name: 'pkg:forms',
+                color: 'bfd4f2',
+                description: 'Explicitly include @almach/forms in the changeset',
+              },
+              {
+                name: 'pkg:query',
+                color: 'bfd4f2',
+                description: 'Explicitly include @almach/query in the changeset',
+              },
+              {
+                name: 'pkg:utils',
+                color: 'bfd4f2',
+                description: 'Explicitly include @almach/utils in the changeset',
+              },
               // ── PR type ────────────────────────────────────────────────
               {
                 name: 'bug',
