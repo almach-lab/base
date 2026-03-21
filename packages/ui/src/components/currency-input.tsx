@@ -81,6 +81,22 @@ export const CURRENCIES: CurrencyDef[] = [
 
 /* ── Helpers ──────────────────────────────────────────────────────────────── */
 
+/**
+ * Derive the 2-letter ISO country code from a regional-indicator flag emoji.
+ * "🇮🇩" → "ID", "🇺🇸" → "US", "🇪🇺" → "EU"
+ * Used to render a reliable cross-platform badge instead of the emoji itself.
+ */
+function flagToCode(flag: string): string {
+	return [...flag]
+		.map((char) => {
+			const cp = char.codePointAt(0);
+			return cp && cp >= 0x1f1e6 && cp <= 0x1f1ff
+				? String.fromCharCode(cp - 0x1f1e6 + 65)
+				: "";
+		})
+		.join("");
+}
+
 /** Strip formatting, parse to number or null. */
 function parseAmount(raw: string): number | null {
 	const str = raw.trim().replace(/,/g, "");
@@ -253,8 +269,11 @@ export function InputCurrency({
 					aria-label={selectedCurrency.name}
 				>
 					{selectedCurrency.flag && (
-						<span className="text-base leading-none" aria-hidden="true">
-							{selectedCurrency.flag}
+						<span
+							className="inline-flex h-[1.125rem] min-w-[1.5rem] items-center justify-center rounded-sm bg-muted px-0.5 font-mono text-[9px] font-bold uppercase leading-none tracking-tight text-muted-foreground"
+							aria-hidden="true"
+						>
+							{flagToCode(selectedCurrency.flag)}
 						</span>
 					)}
 					<span>{selectedCurrency.code}</span>
@@ -285,8 +304,11 @@ export function InputCurrency({
 							)}
 						>
 							{selectedCurrency.flag && (
-								<span className="text-base leading-none" aria-hidden="true">
-									{selectedCurrency.flag}
+								<span
+									className="inline-flex h-[1.125rem] min-w-[1.5rem] items-center justify-center rounded-sm bg-muted px-0.5 font-mono text-[9px] font-bold uppercase leading-none tracking-tight text-muted-foreground"
+									aria-hidden="true"
+								>
+									{flagToCode(selectedCurrency.flag)}
 								</span>
 							)}
 							<span>{selectedCurrency.code}</span>
