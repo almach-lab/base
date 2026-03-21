@@ -88,7 +88,12 @@ jobs:
             git push
           fi
 
-      # ── 4. Publish to npm + create GitHub Releases ────────────────────────
+      # ── 4. Build packages ─────────────────────────────────────────────────
+      - name: Build packages
+        if: steps.check.outputs.has_changesets == 'true'
+        run: bun run build --filter=!docs
+
+      # ── 5. Publish to npm + create GitHub Releases ────────────────────────
       # changesets/action sees no .changeset/*.md → publish mode only.
       # scripts/release.sh works around a bun limitation: bun publish rejects
       # non-JS exports (e.g. @almach/ui's ./styles CSS export), so the script
@@ -106,7 +111,7 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # ── 5. Job summary ────────────────────────────────────────────────────
+      # ── 6. Job summary ────────────────────────────────────────────────────
       - name: Summary
         if: steps.publish.outputs.published == 'true'
         run: |
