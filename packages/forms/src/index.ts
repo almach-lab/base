@@ -17,7 +17,9 @@ export { TextareaField } from "./fields/textarea-field";
 export { SelectField } from "./fields/select-field";
 export { CheckboxField } from "./fields/checkbox-field";
 export { SwitchField } from "./fields/switch-field";
+export { CurrencyField } from "./fields/currency-field";
 export type { SelectOption } from "./fields/select-field";
+export type { CurrencyFieldProps } from "./fields/currency-field";
 
 // Form builder hook
 export { useBasedForm } from "./use-based-form";
