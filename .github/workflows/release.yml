@@ -2,28 +2,17 @@ name: Release
 
 # Triggered when a PR from dev → main with title starting "release:" is merged.
 #
-# Also handles the follow-up "Version Packages" PR that changesets/action creates
-# (branch: changeset-release/main) after bumping versions — that merge is the
-# actual publish step.
+# Fully automatic single-run flow — no intermediate "Version Packages" PR:
+#   1. changeset version  — bumps package.json, updates CHANGELOG.md, removes .changeset/*.md
+#   2. git commit + push  — locks version bumps on main
+#   3. changeset publish  — publishes new versions to npm (skips already-published)
+#   4. GitHub Releases    — one release per package, body from CHANGELOG
 #
-# Two possible outcomes on each run:
-#
-#   A) Changeset files are present  →  opens / updates the "Version Packages" PR.
-#      Bumps versions in package.json files, updates CHANGELOG.md files, and
-#      waits for a human to merge.
-#
-#   B) "Version Packages" PR was just merged  →  publishes all changed packages
-#      to npm AND creates a GitHub Release per package with CHANGELOG notes.
-#
-# Bump type is controlled by PR labels (major / minor / patch) — see
-# .github/workflows/auto-changeset.yml and pr-label.yml.
-#
-# Release flow:
-#   feature/* → dev   (auto-changeset adds .changeset/*.md)
-#   dev → main        PR title must start with "release:" to trigger this workflow
+# Bump type is controlled by PR labels (major / minor / patch).
+# Package scope is controlled by pkg:* labels — see auto-changeset.yml.
 
 on:
-  workflow_dispatch: # allow manual runs from the GitHub Actions UI
+  workflow_dispatch:
   pull_request:
     types: [closed]
     branches: [main]
@@ -36,22 +25,16 @@ jobs:
   release:
     name: Release packages
     runs-on: ubuntu-latest
-    # Run only when:
-    #   • manually dispatched, OR
-    #   • a "release:" PR from dev is merged, OR
-    #   • the "Version Packages" PR (changeset-release/main) is merged
     if: |
       github.event_name == 'workflow_dispatch' ||
       (
-        github.event.pull_request.merged == true && (
-          (startsWith(github.event.pull_request.title, 'release:') && github.event.pull_request.head.ref == 'dev') ||
-          github.event.pull_request.head.ref == 'changeset-release/main'
-        )
+        github.event.pull_request.merged == true &&
+        startsWith(github.event.pull_request.title, 'release:') &&
+        github.event.pull_request.head.ref == 'dev'
       )
     permissions:
-      contents: write       # create tags, commits, and GitHub Releases
-      pull-requests: write  # open / update the "Version Packages" PR
-      id-token: write       # npm provenance attestation
+      contents: write   # push version-bump commit, create tags + GitHub Releases
+      id-token: write   # npm provenance attestation
 
     steps:
       - uses: actions/checkout@v4
@@ -66,7 +49,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.3.9
+          bun-version: "1.3.9"
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -78,44 +61,59 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      # changesets/action does one of two things depending on repo state:
-      #   • changeset files exist  →  opens/updates "Version Packages" PR
-      #   • "Version Packages" PR was merged  →  publishes + creates releases
-      - name: Version or publish
-        id: changesets
+      # ── 1. Guard — nothing to do if no changesets are pending ─────────────
+      - name: Check for pending changesets
+        id: check
+        run: |
+          COUNT=$(find .changeset -name '*.md' ! -name 'README.md' | wc -l)
+          echo "has_changesets=$([ "$COUNT" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          echo "Pending changesets: $COUNT"
+
+      # ── 2. Bump versions + regenerate CHANGELOGs ──────────────────────────
+      # Removes .changeset/*.md files so the publish step below goes straight
+      # to publish mode (no intermediate "Version Packages" PR needed).
+      - name: Version packages
+        if: steps.check.outputs.has_changesets == 'true'
+        run: bun changeset version
+
+      # ── 3. Commit version bumps to main ───────────────────────────────────
+      - name: Commit version bumps
+        if: steps.check.outputs.has_changesets == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: version packages"
+            git push
+          fi
+
+      # ── 4. Publish to npm + create GitHub Releases ────────────────────────
+      # changesets/action sees no .changeset/*.md → publish mode only.
+      # scripts/release.sh works around a bun limitation: bun publish rejects
+      # non-JS exports (e.g. @almach/ui's ./styles CSS export), so the script
+      # temporarily hides bun.lock and strips packageManager so changeset
+      # falls back to `npm publish`. Already-published versions are skipped.
+      - name: Publish packages & create GitHub Releases
+        if: steps.check.outputs.has_changesets == 'true'
+        id: publish
         uses: changesets/action@v1
         with:
-          # Bump versions and regenerate CHANGELOG.md files
-          version: bun changeset version
-
-          # Build packages then publish to npm.
-          # scripts/release.sh works around a bun limitation: bun publish
-          # rejects non-JS exports (e.g. @almach/ui's ./styles CSS export),
-          # so the script temporarily hides bun.lock and strips packageManager
-          # so changeset falls back to `npm publish`.
           publish: bash scripts/release.sh
-
-          # PR / commit copy
-          title: "chore: release packages"
-          commit: "chore: release packages"
-
-          # Create a GitHub Release for every published package using its
-          # CHANGELOG section as the release body
           createGithubReleases: true
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # ── Post-publish summary ───────────────────────────────────────────────
-      - name: Publish summary
-        if: steps.changesets.outputs.published == 'true'
+      # ── 5. Job summary ────────────────────────────────────────────────────
+      - name: Summary
+        if: steps.publish.outputs.published == 'true'
         run: |
           echo "## Published" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo '${{ steps.changesets.outputs.publishedPackages }}' \
+          echo '${{ steps.publish.outputs.publishedPackages }}' \
             | node -e "
                 const pkgs = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
-                pkgs.forEach(p => console.log('- **' + p.name + '** → ' + p.version));
+                pkgs.forEach(p => console.log('- **' + p.name + '** → v' + p.version));
               " >> "$GITHUB_STEP_SUMMARY"
