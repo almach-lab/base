@@ -7,7 +7,7 @@ export function InputPage() {
 	return (
 		<ComponentDoc
 			name="Input"
-			description="Text field with left/right element slots and a segmented date sub-component. Use Input.Date for MM/DD/YYYY-style date entry with optional calendar picker."
+			description="Text field with left/right element slots, a segmented date sub-component, and a multi-currency amount input. Use Input.Date for date entry and Input.Currency for currency amounts."
 			examples={[
 				{
 					title: "Default",
@@ -217,6 +217,66 @@ const [date, setDate] = React.useState<Date>();
 					preview: <Input.Date value={new Date(1990, 5, 15)} disabled />,
 					code: `<Input.Date value={new Date(1990, 5, 15)} disabled />`,
 				},
+				// ── Input.Currency ──────────────────────────────────────────
+				{
+					title: "Input.Currency — Default",
+					description: "Defaults to USD. Click the flag/code button to open the currency selector.",
+					preview: (
+						<div className="w-full max-w-xs">
+							<Input.Currency />
+						</div>
+					),
+					code: `<Input.Currency />`,
+					centered: false,
+				},
+				{
+					title: "Input.Currency — Controlled",
+					description: "Bind value and onChange to manage amount and currency in state.",
+					preview: <CurrencyControlled />,
+					code: `const [val, setVal] = React.useState({ amount: 1234.5, currency: "EUR" });
+
+<Input.Currency value={val} onChange={setVal} />`,
+					centered: false,
+				},
+				{
+					title: "Input.Currency — With label",
+					description: "Pair with Label using a matching id for accessibility.",
+					preview: (
+						<div className="w-full max-w-xs space-y-1.5">
+							<Label htmlFor="price-demo">Price</Label>
+							<Input.Currency id="price-demo" />
+						</div>
+					),
+					code: `<Label htmlFor="price">Price</Label>
+<Input.Currency id="price" />`,
+					centered: false,
+				},
+				{
+					title: "Input.Currency — Error state",
+					description: "Pass error to show a destructive border and focus ring.",
+					preview: (
+						<div className="w-full max-w-xs space-y-1.5">
+							<Label htmlFor="price-err" required>Amount</Label>
+							<Input.Currency id="price-err" error />
+							<p className="text-xs text-destructive">Please enter a valid amount.</p>
+						</div>
+					),
+					code: `<Label htmlFor="price" required>Amount</Label>
+<Input.Currency id="price" error />
+<p className="text-xs text-destructive">Please enter a valid amount.</p>`,
+					centered: false,
+				},
+				{
+					title: "Input.Currency — Disabled",
+					description: "Disables both the amount input and the currency selector.",
+					preview: (
+						<div className="w-full max-w-xs">
+							<Input.Currency value={{ amount: 9999, currency: "GBP" }} disabled />
+						</div>
+					),
+					code: `<Input.Currency value={{ amount: 9999, currency: "GBP" }} disabled />`,
+					centered: false,
+				},
 			]}
 			props={[
 				{
@@ -281,6 +341,39 @@ const [date, setDate] = React.useState<Date>();
 					name: "Input.Date — error",
 					type: "boolean",
 					description: "Applies destructive border and focus ring.",
+				},
+				{
+					name: "Input.Currency — value",
+					type: "{ amount: number | null; currency: string }",
+					description: "Controlled value — the numeric amount and ISO currency code.",
+				},
+				{
+					name: "Input.Currency — onChange",
+					type: "(value: { amount: number | null; currency: string }) => void",
+					description: "Called on every amount keystroke and on currency change.",
+				},
+				{
+					name: "Input.Currency — currencies",
+					type: "CurrencyDef[]",
+					description: "Override the currency list. Defaults to the built-in CURRENCIES (36 entries). Mark entries with popular: true to show them in the Popular group.",
+				},
+				{
+					name: "Input.Currency — placeholder",
+					type: "string",
+					default: '"0.00"',
+					description: "Placeholder shown in the amount field when empty.",
+				},
+				{
+					name: "Input.Currency — error",
+					type: "boolean",
+					default: "false",
+					description: "Applies destructive border and focus ring; sets aria-invalid on the amount input.",
+				},
+				{
+					name: "Input.Currency — disabled",
+					type: "boolean",
+					default: "false",
+					description: "Disables both the amount input and the currency selector button.",
 				},
 			]}
 		/>
@@ -377,6 +470,25 @@ function ControlledDateInput() {
 					"No date selected"
 				)}
 			</p>
+		</div>
+	);
+}
+
+// ── Input.Currency Demos ──────────────────────────────────────────────────────
+
+function CurrencyControlled() {
+	const [val, setVal] = React.useState({ amount: 1234.5 as number | null, currency: "EUR" });
+	return (
+		<div className="flex w-full max-w-xs flex-col gap-2">
+			<Input.Currency value={val} onChange={setVal} />
+			{val.amount !== null && (
+				<p className="text-sm text-muted-foreground">
+					{val.currency}{" "}
+					<span className="font-medium text-foreground tabular-nums">
+						{val.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+					</span>
+				</p>
+			)}
 		</div>
 	);
 }

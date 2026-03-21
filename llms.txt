@@ -12,7 +12,7 @@
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| `@almach/ui` | 0.1.0 | 30+ accessible components (Radix UI + Tailwind CSS v4) |
+| `@almach/ui` | 0.1.0 | 31+ accessible components (Radix UI + Tailwind CSS v4) |
 | `@almach/forms` | 0.1.0 | Type-safe form builder (TanStack Form + Zod) |
 | `@almach/query` | 0.1.0 | Query/mutation factories (TanStack Query v5) |
 | `@almach/utils` | 0.1.0 | Tree-shakable utilities and TypeScript type helpers |
@@ -171,9 +171,13 @@ import { Input } from "@almach/ui";
 <Input rightElement={<EyeIcon />} type="password" />
 <Input error placeholder="Invalid field" />
 
-// Date input sub-component
+// Date sub-component
 <Input.Date value={date} onChange={setDate} />
 <Input.Date withCalendar format="DD/MM/YYYY" value={date} onChange={setDate} />
+
+// Currency sub-component
+<Input.Currency />
+<Input.Currency value={{ amount: 1234.56, currency: "EUR" }} onChange={setVal} />
 ```
 
 **Input Props:**
@@ -194,6 +198,29 @@ import { Input } from "@almach/ui";
 | `withCalendar` | `boolean` | `false` | Show calendar popover button |
 | `error` | `boolean` | `false` | Applies destructive ring |
 | `disabled` | `boolean` | `false` | Disables all segments |
+
+**Input.Currency Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `{ amount: number \| null; currency: string }` | — | Controlled value |
+| `onChange` | `(value: { amount: number \| null; currency: string }) => void` | — | Change handler |
+| `currencies` | `CurrencyDef[]` | built-in 36 | Override currency list. Set `popular: true` to show in Popular group |
+| `placeholder` | `string` | `"0.00"` | Amount field placeholder |
+| `error` | `boolean` | `false` | Applies destructive ring; sets `aria-invalid` |
+| `disabled` | `boolean` | `false` | Disables amount input and currency selector |
+
+`CurrencyDef`: `{ code: string; symbol: string; name: string; flag?: string; popular?: boolean }`
+
+Built-in popular currencies: USD, EUR, GBP, JPY, CHF, AUD, CAD, CNY. 28 additional currencies available (INR, BRL, MXN, KRW, SGD, HKD, NOK, SEK, DKK, NZD, ZAR, TRY, AED, SAR, PLN, CZK, HUF, THB, IDR, MYR, PHP, VND, ILS, EGP, NGN, UAH, CLP, COP, PEN).
+
+```tsx
+// Custom currency list
+import { CURRENCIES } from "@almach/ui";
+
+const limited = CURRENCIES.filter((c) => ["USD", "EUR", "GBP"].includes(c.code));
+<Input.Currency currencies={limited} />
+```
 
 ---
 
