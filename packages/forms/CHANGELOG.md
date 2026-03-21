@@ -1,5 +1,13 @@
 # @almach/forms
 
+## 0.1.5
+
+### Patch Changes
+
+- f08efc8: improve typings
+- Updated dependencies [f08efc8]
+  - @almach/ui@0.1.5
+
 ## 0.1.4
 
 ### Patch Changes

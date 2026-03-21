@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.1.5
+
+### Patch Changes
+
+- f08efc8: improve typings
+
 ## 0.1.4
 
 ### Patch Changes
