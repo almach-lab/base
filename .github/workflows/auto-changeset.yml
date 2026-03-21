@@ -10,6 +10,16 @@ name: Auto Changeset
 #   minor  →  new feature
 #   patch  →  bug fix / default (applied automatically by pr-label.yml)
 #
+# Package scope is controlled by pkg:* labels:
+#   pkg:ui     →  include @almach/ui
+#   pkg:forms  →  include @almach/forms
+#   pkg:query  →  include @almach/query
+#   pkg:utils  →  include @almach/utils
+#
+# Without any pkg:* label, affected packages are auto-detected from git diff.
+# pkg:* labels always override auto-detection (useful for cross-cutting changes
+# that touch shared files not under packages/*).
+#
 # Add the label  skip-changeset  to a PR to skip this entirely
 # (e.g. docs-only PRs that touch no publishable package).
 
@@ -51,28 +61,60 @@ jobs:
             echo "type=patch" >> "$GITHUB_OUTPUT"
           fi
 
-      # ── 2. Detect which publishable packages changed ───────────────────────
-      - name: Detect changed publishable packages
+      # ── 2. Detect which publishable packages to include ────────────────────
+      # Priority: pkg:* labels > git diff auto-detection
+      - name: Detect packages for changeset
         id: pkgs
+        env:
+          LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
           BASE="${{ github.event.pull_request.base.sha }}"
           HEAD="${{ github.event.pull_request.merge_commit_sha }}"
-          CHANGED=$(git diff --name-only "$BASE" "$HEAD")
-          echo "Changed files:"
-          echo "$CHANGED"
+
+          # Extract any pkg:* label overrides (e.g. pkg:ui → "ui")
+          PKG_OVERRIDES=$(node -e "
+            const labels = JSON.parse(process.env.LABELS);
+            labels
+              .filter(l => l.startsWith('pkg:'))
+              .forEach(l => process.stdout.write(l.slice(4) + '\n'));
+          ")
 
           PKGS=""
-          for dir in packages/*/; do
-            # Read package name from package.json (skip private packages)
-            name=$(node -e "
-              const p = require('./${dir}package.json');
-              if (!p.private) process.stdout.write(p.name);
-            " 2>/dev/null || true)
-            short="${dir%/}"
-            if [ -n "$name" ] && echo "$CHANGED" | grep -q "^${short}/"; then
-              PKGS="${PKGS}${name},"
-            fi
-          done
+
+          if [ -n "$PKG_OVERRIDES" ]; then
+            # ── Label override: use only the labelled packages ───────────────
+            echo "pkg:* labels present — using override: $(echo "$PKG_OVERRIDES" | tr '\n' ' ')"
+            while IFS= read -r short; do
+              [ -z "$short" ] && continue
+              dir="packages/${short}"
+              name=$(node -e "
+                try {
+                  const p = require('./${dir}/package.json');
+                  if (!p.private) process.stdout.write(p.name);
+                } catch {}
+              " 2>/dev/null || true)
+              if [ -n "$name" ]; then
+                PKGS="${PKGS}${name},"
+              else
+                echo "Warning: pkg:${short} has no matching publishable package — skipped"
+              fi
+            done <<< "$PKG_OVERRIDES"
+          else
+            # ── Auto-detect: diff between base and merge commit ──────────────
+            CHANGED=$(git diff --name-only "$BASE" "$HEAD")
+            echo "Changed files:"
+            echo "$CHANGED"
+            for dir in packages/*/; do
+              name=$(node -e "
+                const p = require('./${dir}package.json');
+                if (!p.private) process.stdout.write(p.name);
+              " 2>/dev/null || true)
+              short="${dir%/}"
+              if [ -n "$name" ] && echo "$CHANGED" | grep -q "^${short}/"; then
+                PKGS="${PKGS}${name},"
+              fi
+            done
+          fi
 
           PKGS="${PKGS%,}"
           echo "list=${PKGS}" >> "$GITHUB_OUTPUT"
