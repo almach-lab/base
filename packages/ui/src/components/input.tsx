@@ -6,6 +6,7 @@ import * as React from "react";
 
 import { cn } from "@almach/utils";
 import { Calendar } from "./calendar";
+import { InputCurrency } from "./currency-input";
 
 /* ── Base Input ───────────────────────────────────────────────────────────── */
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -300,7 +301,10 @@ function InputDate({
 InputDate.displayName = "Input.Date";
 
 /* ── Compound export ──────────────────────────────────────────────────────── */
-const InputCompound = Object.assign(Input, { Date: InputDate });
+const InputCompound = Object.assign(Input, {
+	Date: InputDate,
+	Currency: InputCurrency,
+});
 
 export { InputCompound as Input };
 
