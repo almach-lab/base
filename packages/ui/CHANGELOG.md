@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.1.6
+
+### Patch Changes
+
+- de27734: feat: add currency on the text fields form
+
 ## 0.1.5
 
 ### Patch Changes
