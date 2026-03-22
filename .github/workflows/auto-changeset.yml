@@ -40,6 +40,8 @@ jobs:
       !contains(github.event.pull_request.labels.*.name, 'skip-changeset')
     runs-on: ubuntu-latest
 
+    timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -60,10 +62,32 @@ jobs:
             echo "type=patch" >> "$GITHUB_OUTPUT"
           fi
 
+      # ── 1.5. Check for manual changesets already in the PR ────────────────
+      # If the PR itself added .changeset/*.md files, trust them and skip
+      # auto-generation to avoid creating duplicate changesets.
+      - name: Check for manual changesets in PR diff
+        id: manual
+        run: |
+          BASE="${{ github.event.pull_request.base.sha }}"
+          HEAD="${{ github.event.pull_request.merge_commit_sha }}"
+          MANUAL=$(git diff --name-only "$BASE" "$HEAD" \
+            | grep '^\.changeset/.*\.md$' \
+            | grep -v '^\.changeset/README\.md$' || true)
+          if [ -n "$MANUAL" ]; then
+            echo "Manual changesets found in PR — skipping auto-generation:"
+            echo "$MANUAL"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No manual changesets — proceeding with auto-detection"
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
       # ── 2. Detect which publishable packages to include ────────────────────
       # Priority: pkg:* labels > git diff auto-detection
+      # Skipped when the PR already contains manual changeset files.
       - name: Detect packages for changeset
         id: pkgs
+        if: steps.manual.outputs.found == 'false'
         env:
           LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
@@ -125,7 +149,7 @@ jobs:
 
       # ── 3. Write the .changeset file ──────────────────────────────────────
       - name: Write changeset file
-        if: steps.pkgs.outputs.list != ''
+        if: steps.manual.outputs.found == 'false' && steps.pkgs.outputs.list != ''
         env:
           BUMP: ${{ steps.bump.outputs.type }}
           PKGS: ${{ steps.pkgs.outputs.list }}
@@ -151,7 +175,7 @@ jobs:
 
       # ── 4. Commit and push ─────────────────────────────────────────────────
       - name: Commit and push changeset
-        if: steps.pkgs.outputs.list != ''
+        if: steps.manual.outputs.found == 'false' && steps.pkgs.outputs.list != ''
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
