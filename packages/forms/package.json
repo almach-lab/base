@@ -22,16 +22,18 @@
     "clean": "rm -rf dist *.tsbuildinfo"
   },
   "peerDependencies": {
+    "@almach/ui": "*",
+    "@almach/utils": "*",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@almach/ui": "workspace:*",
-    "@almach/utils": "workspace:*",
     "@tanstack/react-form": "^1.0.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@almach/ui": "workspace:*",
+    "@almach/utils": "workspace:*",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "typescript": "^5.7.3"
