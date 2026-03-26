@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.1.9
+
+### Patch Changes
+
+- a4da144: feat: add modal family views
+
 ## 0.1.8
 
 ### Patch Changes
