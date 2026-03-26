@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.1.8
+
+### Patch Changes
+
+- 0940bb8: fix: make the modal responsives based on max height
+
 ## 0.1.7
 
 ### Patch Changes
