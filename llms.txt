@@ -490,15 +490,60 @@ import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from 
 
 ### Modal
 
-A simpler dialog alternative without the full Dialog API:
+Responsive modal — renders as a centered dialog on desktop and a bottom sheet drawer on mobile. Accepts shorthand props for quick use, or sub-components for full control.
 
 ```tsx
 import { Modal } from "@almach/ui";
 
-<Modal open={open} onOpenChange={setOpen} title="Confirm" description="Are you sure?">
-  <Button onClick={() => setOpen(false)}>Cancel</Button>
+// Quick usage — title, description, and trigger as props
+<Modal
+  trigger={<Button>Open</Button>}
+  title="Confirm deletion"
+  description="This action cannot be undone."
+>
+  <Modal.Footer>
+    <Modal.Close asChild><Button variant="outline">Cancel</Button></Modal.Close>
+    <Button variant="destructive">Delete</Button>
+  </Modal.Footer>
+</Modal>
+
+// Controlled (no trigger prop needed)
+<Modal open={open} onOpenChange={setOpen} title="Settings">
+  <p>Settings content</p>
+  <Modal.Footer>
+    <Button onClick={save}>Save</Button>
+  </Modal.Footer>
+</Modal>
+
+// Full compound pattern for custom layouts
+<Modal>
+  <Modal.Trigger asChild><Button>Open</Button></Modal.Trigger>
+  <Modal.Content>
+    <Modal.Header>
+      <Modal.Title>Custom title</Modal.Title>
+      <Modal.Description>Custom description.</Modal.Description>
+    </Modal.Header>
+    <p>Body content</p>
+    <Modal.Footer>
+      <Modal.Close asChild><Button variant="outline">Cancel</Button></Modal.Close>
+      <Button>Confirm</Button>
+    </Modal.Footer>
+  </Modal.Content>
 </Modal>
 ```
+
+**Root Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `trigger` | `ReactNode` | — | Shorthand: wraps element in Modal.Trigger |
+| `title` | `string` | — | Shorthand: renders Modal.Header + Modal.Title |
+| `description` | `string` | — | Shorthand: renders Modal.Description (requires `title`) |
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled default open |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+
+**Sub-components:** `Modal.Trigger`, `Modal.Content`, `Modal.Header`, `Modal.Footer`, `Modal.Title`, `Modal.Description`, `Modal.Close` — all accept `asChild` where applicable and `className` for styling.
 
 ---
 

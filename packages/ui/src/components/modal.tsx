@@ -8,25 +8,65 @@ import { Drawer } from "./drawer";
 
 /* ── Context ─────────────────────────────────────────────────────────────── */
 const ModalCtx = React.createContext(false);
-const useModal = () => React.useContext(ModalCtx);
+const useModalCtx = () => React.useContext(ModalCtx);
 
-/* ── Root ────────────────────────────────────────────────────────────────── */
+/* ── Root ─────────────────────────────────────────────────────────────────── */
 interface ModalRootProps {
-	open?: boolean;
-	onOpenChange?: (open: boolean) => void;
 	children: React.ReactNode;
+	open?: boolean;
+	defaultOpen?: boolean;
+	onOpenChange?: (open: boolean) => void;
+	/** Shorthand: renders a trigger without needing Modal.Trigger */
+	trigger?: React.ReactNode;
+	/** Shorthand: renders a title without needing Modal.Header + Modal.Title */
+	title?: string;
+	/** Shorthand: renders a description below the title */
+	description?: string;
 }
 
-function ModalRoot({ open, onOpenChange, children }: ModalRootProps) {
+function ModalRoot({
+	children,
+	open,
+	defaultOpen,
+	onOpenChange,
+	trigger,
+	title,
+	description,
+}: ModalRootProps) {
 	const isMobile = useIsMobile();
 	const Root = isMobile ? Drawer : Dialog;
+
+	const rootProps = {
+		...(open !== undefined && { open }),
+		...(defaultOpen !== undefined && { defaultOpen }),
+		...(onOpenChange !== undefined && { onOpenChange }),
+	};
+
+	const hasShorthand = trigger !== undefined || title !== undefined;
+
 	return (
 		<ModalCtx.Provider value={isMobile}>
-			<Root
-				{...(open !== undefined && { open })}
-				{...(onOpenChange !== undefined && { onOpenChange })}
-			>
-				{children}
+			<Root {...rootProps}>
+				{hasShorthand ? (
+					<>
+						{trigger !== undefined && (
+							<ModalTrigger asChild>{trigger}</ModalTrigger>
+						)}
+						<ModalContent>
+							{title !== undefined && (
+								<ModalHeader>
+									<ModalTitle>{title}</ModalTitle>
+									{description && (
+										<ModalDescription>{description}</ModalDescription>
+									)}
+								</ModalHeader>
+							)}
+							{children}
+						</ModalContent>
+					</>
+				) : (
+					children
+				)}
 			</Root>
 		</ModalCtx.Provider>
 	);
@@ -39,7 +79,7 @@ interface ModalTriggerProps {
 }
 
 function ModalTrigger({ asChild, children }: ModalTriggerProps) {
-	const isMobile = useModal();
+	const isMobile = useModalCtx();
 	const Trigger = isMobile ? Drawer.Trigger : Dialog.Trigger;
 	return <Trigger {...(asChild !== undefined && { asChild })}>{children}</Trigger>;
 }
@@ -51,7 +91,7 @@ interface ModalContentProps {
 }
 
 function ModalContent({ className, children }: ModalContentProps) {
-	const isMobile = useModal();
+	const isMobile = useModalCtx();
 	if (isMobile)
 		return <Drawer.Content className={className}>{children}</Drawer.Content>;
 	return <Dialog.Content className={className}>{children}</Dialog.Content>;
@@ -62,7 +102,7 @@ function ModalHeader({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-	const isMobile = useModal();
+	const isMobile = useModalCtx();
 	if (isMobile) return <Drawer.Header className={className} {...props} />;
 	return <Dialog.Header className={className} {...props} />;
 }
@@ -72,7 +112,7 @@ function ModalFooter({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-	const isMobile = useModal();
+	const isMobile = useModalCtx();
 	if (isMobile) return <Drawer.Footer className={className} {...props} />;
 	return <Dialog.Footer className={className} {...props} />;
 }
@@ -82,7 +122,7 @@ const ModalTitle = React.forwardRef<
 	HTMLHeadingElement,
 	React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => {
-	const isMobile = useModal();
+	const isMobile = useModalCtx();
 	if (isMobile)
 		return <Drawer.Title ref={ref} className={className} {...props} />;
 	return <Dialog.Title ref={ref} className={className} {...props} />;
@@ -94,7 +134,7 @@ const ModalDescription = React.forwardRef<
 	HTMLParagraphElement,
 	React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => {
-	const isMobile = useModal();
+	const isMobile = useModalCtx();
 	if (isMobile)
 		return <Drawer.Description ref={ref} className={className} {...props} />;
 	return <Dialog.Description ref={ref} className={className} {...props} />;
@@ -109,7 +149,7 @@ interface ModalCloseProps {
 }
 
 function ModalClose({ asChild, children, className }: ModalCloseProps) {
-	const isMobile = useModal();
+	const isMobile = useModalCtx();
 	const Close = isMobile ? Drawer.Close : Dialog.Close;
 	return (
 		<Close
