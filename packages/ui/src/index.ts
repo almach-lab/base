@@ -74,9 +74,9 @@ export type { CurrencyDef, CurrencyValue, InputCurrencyProps, CurrencySelectorMo
 export { Label } from "./components/label";
 
 export { FamilyModal, useFamilyModal } from "./components/family-modal";
-export type { ViewsRegistry, ViewComponent } from "./components/family-modal";
 
-export { Modal } from "./components/modal";
+export { Modal, useModal } from "./components/modal";
+export type { ViewsRegistry, ViewComponent } from "./components/modal";
 
 export { Popover } from "./components/popover";
 
