@@ -12,7 +12,7 @@
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| `@almach/ui` | 0.1.0 | 30+ accessible components (Radix UI + Tailwind CSS v4) |
+| `@almach/ui` | 0.1.0 | 32+ accessible components (Radix UI + Tailwind CSS v4) |
 | `@almach/forms` | 0.1.0 | Type-safe form builder (TanStack Form + Zod) |
 | `@almach/query` | 0.1.0 | Query/mutation factories (TanStack Query v5) |
 | `@almach/utils` | 0.1.0 | Tree-shakable utilities and TypeScript type helpers |
@@ -171,9 +171,22 @@ import { Input } from "@almach/ui";
 <Input rightElement={<EyeIcon />} type="password" />
 <Input error placeholder="Invalid field" />
 
-// Date input sub-component
+// Date sub-component
 <Input.Date value={date} onChange={setDate} />
 <Input.Date withCalendar format="DD/MM/YYYY" value={date} onChange={setDate} />
+
+// Currency sub-component
+<Input.Currency />
+<Input.Currency defaultCurrency="EUR" />
+<Input.Currency value={{ amount: 1234.56, currency: "EUR" }} onChange={setVal} />
+
+// Custom flag renderer (CDN images, SVG libraries, etc.)
+<Input.Currency
+  renderFlag={(code) => (
+    <img src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
+         width={20} height={15} alt={code} className="rounded-sm object-cover" />
+  )}
+/>
 ```
 
 **Input Props:**
@@ -194,6 +207,66 @@ import { Input } from "@almach/ui";
 | `withCalendar` | `boolean` | `false` | Show calendar popover button |
 | `error` | `boolean` | `false` | Applies destructive ring |
 | `disabled` | `boolean` | `false` | Disables all segments |
+
+**Input.Currency Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `{ amount: number \| null; currency: string }` | — | Controlled value |
+| `onChange` | `(value: { amount: number \| null; currency: string }) => void` | — | Change handler |
+| `defaultCurrency` | `string` | `"USD"` | Initial currency code (uncontrolled). Ignored when `value` is supplied |
+| `currencies` | `CurrencyDef[]` | built-in 36 | Override the currency list. Set `popular: true` to show in Popular group |
+| `renderFlag` | `(countryCode: string, currency: CurrencyDef) => ReactNode` | `<CurrencyFlagBadge />` | Custom flag renderer. See examples below. |
+| `placeholder` | `string` | `"0.00"` | Amount field placeholder |
+| `currencySelector` | `"editable" \| "readonly" \| "hidden"` | `"editable"` | `"editable"` = dropdown; `"readonly"` = static badge; `"hidden"` = selector removed |
+| `error` | `boolean` | `false` | Applies destructive ring; sets `aria-invalid` |
+| `disabled` | `boolean` | `false` | Disables amount input and currency selector |
+| `id` | `string` | — | Forwarded to the inner `<input>` for `<Label htmlFor>` association |
+| `className` | `string` | — | Extra classes on the outer wrapper div |
+
+`CurrencyDef`: `{ code: string; symbol: string; name: string; countryCode?: string; popular?: boolean }`
+
+`CurrencySelectorMode`: `"editable" | "readonly" | "hidden"`
+
+`countryCode` is ISO 3166-1 alpha-2 (e.g. "US", "EU", "ID"). Used by `renderFlag`.
+
+Built-in popular currencies: USD, EUR, GBP, JPY, CHF, AUD, CAD, CNY. 28 additional currencies (INR, BRL, MXN, KRW, SGD, HKD, NOK, SEK, DKK, NZD, ZAR, TRY, AED, SAR, PLN, CZK, HUF, THB, IDR, MYR, PHP, VND, ILS, EGP, NGN, UAH, CLP, COP, PEN).
+
+```tsx
+import { CURRENCIES, CurrencyFlagBadge } from "@almach/ui";
+
+// Set default currency (uncontrolled — no value prop)
+<Input.Currency defaultCurrency="EUR" />
+
+// Controlled value
+<Input.Currency value={{ amount: 1234.56, currency: "EUR" }} onChange={setVal} />
+
+// Currency selector modes
+<Input.Currency currencySelector="editable" />   // default — user can open dropdown
+<Input.Currency currencySelector="readonly" />   // fixed badge, no dropdown
+<Input.Currency currencySelector="hidden" />     // only symbol + amount shown
+
+// Restrict currency list
+const limited = CURRENCIES.filter((c) => ["USD", "EUR", "GBP"].includes(c.code));
+<Input.Currency currencies={limited} />
+
+// CDN image flags (flagcdn.com)
+<Input.Currency
+  renderFlag={(code) => (
+    <img src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
+         width={20} height={15} alt={code} className="rounded-sm object-cover" />
+  )}
+/>
+
+// country-flag-icons SVG library (npm i country-flag-icons)
+import Flags from "country-flag-icons/react/3x2";
+<Input.Currency
+  renderFlag={(code) => {
+    const Flag = Flags[code as keyof typeof Flags];
+    return Flag ? <Flag className="h-3.5 w-5 rounded-sm" /> : <CurrencyFlagBadge countryCode={code} />;
+  }}
+/>
+```
 
 ---
 
@@ -217,7 +290,7 @@ import { Badge } from "@almach/ui";
 
 ### Card
 
-Compound component with sub-components: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Content`, `Card.Section`, `Card.Row`, `Card.Footer`, `Card.Layers`, `Card.LayerHeader`, `Card.LayerBody`, `Card.LayerRow`.
+Compound component with sub-components: `Card.Header`, `Card.Title`, `Card.Description`, `Card.Content`, `Card.Section`, `Card.Row`, `Card.Footer`, `Card.Layers`, `Card.LayerHeader`, `Card.LayerBody`, `Card.LayerRow`, `Card.Group`, `Card.GroupRow`.
 
 ```tsx
 import { Card } from "@almach/ui";
@@ -429,6 +502,104 @@ import { Modal } from "@almach/ui";
 
 ---
 
+### FamilyModal
+
+A multi-view modal with smooth animated view transitions and auto-animated height. Inspired by the Family app's drawer pattern, adapted as a centered modal.
+
+```tsx
+import { FamilyModal, useFamilyModal } from "@almach/ui";
+import type { ViewsRegistry } from "@almach/ui";
+
+// Define views
+function DefaultView() {
+  const { setView } = useFamilyModal();
+  return (
+    <>
+      <header className="mb-4 flex h-[72px] items-center border-b border-border pl-2">
+        <h2 className="text-[19px] font-semibold">Menu</h2>
+      </header>
+      <div className="space-y-3">
+        <FamilyModal.Button onClick={() => setView("settings")}>Settings</FamilyModal.Button>
+        <FamilyModal.Button onClick={() => setView("profile")}>Profile</FamilyModal.Button>
+      </div>
+    </>
+  );
+}
+
+function SettingsView() {
+  const { setView } = useFamilyModal();
+  return (
+    <div>
+      <FamilyModal.Header title="Settings" description="Configure your preferences." />
+      <div className="mt-7 flex gap-4">
+        <FamilyModal.SecondaryButton onClick={() => setView("default")} className="bg-secondary text-secondary-foreground">
+          Back
+        </FamilyModal.SecondaryButton>
+        <FamilyModal.SecondaryButton onClick={() => setView("default")} className="bg-primary text-primary-foreground">
+          Save
+        </FamilyModal.SecondaryButton>
+      </div>
+    </div>
+  );
+}
+
+const views: ViewsRegistry = { default: DefaultView, settings: SettingsView };
+
+// Usage
+<FamilyModal views={views}>
+  <FamilyModal.Trigger asChild>
+    <Button>Open</Button>
+  </FamilyModal.Trigger>
+  <FamilyModal.Content>
+    <FamilyModal.Close />
+    <FamilyModal.AnimatedWrapper>
+      <FamilyModal.AnimatedContent>
+        <FamilyModal.ViewContent />
+      </FamilyModal.AnimatedContent>
+    </FamilyModal.AnimatedWrapper>
+  </FamilyModal.Content>
+</FamilyModal>
+```
+
+**FamilyModal (root) Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `views` | `ViewsRegistry` | — | Object mapping view name → component |
+| `defaultView` | `string` | `"default"` | Initial view |
+| `onViewChange` | `(view: string) => void` | — | Called when view changes |
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled default open |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+
+**Sub-components:**
+
+| Component | Description |
+|-----------|-------------|
+| `FamilyModal.Trigger` | Radix Dialog trigger — use `asChild` to compose with your own button |
+| `FamilyModal.Content` | Centered modal container with height animation (includes portal + overlay) |
+| `FamilyModal.Close` | Floating close button (top-right). Pass children to override the icon |
+| `FamilyModal.AnimatedWrapper` | Inner wrapper that measures content height — place this inside Content |
+| `FamilyModal.AnimatedContent` | Handles fade+scale transition between views — wrap ViewContent with this |
+| `FamilyModal.ViewContent` | Renders the currently active view component |
+| `FamilyModal.Header` | Styled header with optional icon, title, and description |
+| `FamilyModal.Button` | Full-width muted navigation button |
+| `FamilyModal.SecondaryButton` | Full-width pill action button (pass `className` for bg/text color) |
+
+**FamilyModal.Header Props:** `icon?: ReactNode`, `title: string`, `description?: string`, `className?: string`
+
+**useFamilyModal Hook** (use inside any view component):
+
+```tsx
+const { view, setView } = useFamilyModal();
+```
+
+Returns `view: string` (current view name) and `setView: (view: string) => void`.
+
+**ViewsRegistry type:** `{ [viewName: string]: React.ComponentType<Record<string, unknown>> }`
+
+---
+
 ### Popover
 
 ```tsx
@@ -483,22 +654,24 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 
 ---
 
-### Combobox
+### Select.Searchable (Combobox)
+
+Searchable select with a popover and built-in search input. Replaces the standalone Combobox.
 
 ```tsx
-import { Combobox } from "@almach/ui";
+import { Select } from "@almach/ui";
 
 const options = [
   { label: "React", value: "react" },
   { label: "Vue", value: "vue" },
 ];
 
-<Combobox
+<Select.Searchable
   options={options}
   value={value}
-  onValueChange={setValue}
-  placeholder="Select framework..."
-  searchPlaceholder="Search..."
+  onChange={setValue}
+  placeholder="Select framework…"
+  searchPlaceholder="Search…"
 />
 ```
 
@@ -623,19 +796,39 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@almach/ui"
 
 ---
 
-### Group
+### Card.Group
 
-A flex group for grouping related elements (e.g., button groups):
+Grouped rows with an optional label and hint. Merged into Card — use `Card.Group` and `Card.GroupRow`.
 
 ```tsx
-import { Group } from "@almach/ui";
+import { Card } from "@almach/ui";
 
-<Group>
-  <Button variant="outline">A</Button>
-  <Button variant="outline">B</Button>
-  <Button variant="outline">C</Button>
-</Group>
+// Navigation list
+<Card.Group>
+  <Card.GroupRow action={<ArrowRightIcon />}>Get started</Card.GroupRow>
+  <Card.GroupRow action={<ArrowRightIcon />}>Documentation</Card.GroupRow>
+</Card.Group>
+
+// Settings with label + hint
+<Card.Group label="Notifications" hint="These apply to your account.">
+  <Card.GroupRow
+    label="Email alerts"
+    description="Receive summaries and digests."
+    action={<Switch defaultChecked />}
+  />
+  <Card.GroupRow label="Push notifications" action={<Switch />} />
+</Card.Group>
+
+// Form fields
+<Card.Group label="Account">
+  <Card.GroupRow label="Display name" htmlFor="name">
+    <Input id="name" defaultValue="Alice" className="w-40" />
+  </Card.GroupRow>
+</Card.Group>
 ```
+
+**Card.Group Props:** `label?: string`, `hint?: string`, plus all div props.
+**Card.GroupRow Props:** `label?: string`, `description?: string`, `htmlFor?: string`, `required?: boolean`, `action?: React.ReactNode`, `onClick?: () => void`.
 
 ---
 
@@ -655,19 +848,24 @@ import { TagInput } from "@almach/ui";
 
 ### Toast & Toaster
 
-Add `<Toaster />` once at the app root. Then use `toast()` or `useToast()` anywhere:
+Powered by Sonner. Add `<Toaster />` once at the app root. Call `toast()` from anywhere.
 
 ```tsx
-import { toast } from "@almach/ui";
+import { Toaster, toast } from "@almach/ui";
 
-// Imperative API
-toast({ title: "Saved!", description: "Your changes were saved." });
-toast({ title: "Error", description: "Something failed.", variant: "destructive" });
+// App root
+<Toaster />
 
-// Hook API
-import { useToast } from "@almach/ui";
-const { toast } = useToast();
-toast({ title: "Done" });
+// Anywhere in your app
+toast("Notification", { description: "You have a new message." });
+toast.success("Saved!", { description: "Your changes were saved." });
+toast.error("Error", { description: "Something failed." });
+toast.warning("Warning", { description: "Please review your input." });
+toast.promise(saveData(), {
+  loading: "Saving…",
+  success: "Saved!",
+  error: "Failed to save.",
+});
 ```
 
 ---
