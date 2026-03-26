@@ -12,7 +12,7 @@
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| `@almach/ui` | 0.1.0 | 31+ accessible components (Radix UI + Tailwind CSS v4) |
+| `@almach/ui` | 0.1.0 | 32+ accessible components (Radix UI + Tailwind CSS v4) |
 | `@almach/forms` | 0.1.0 | Type-safe form builder (TanStack Form + Zod) |
 | `@almach/query` | 0.1.0 | Query/mutation factories (TanStack Query v5) |
 | `@almach/utils` | 0.1.0 | Tree-shakable utilities and TypeScript type helpers |
@@ -490,15 +490,146 @@ import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle } from 
 
 ### Modal
 
-A simpler dialog alternative without the full Dialog API:
+Responsive modal — dialog on desktop, bottom sheet on mobile. Supports both a simple regular mode and a family multi-view mode (animated view switching with height transitions) via a single `views` prop.
 
 ```tsx
-import { Modal } from "@almach/ui";
+import { Modal, useModal } from "@almach/ui";
+import type { ViewsRegistry } from "@almach/ui";
 
-<Modal open={open} onOpenChange={setOpen} title="Confirm" description="Are you sure?">
-  <Button onClick={() => setOpen(false)}>Cancel</Button>
+// ── Regular modal ─────────────────────────────────────────────────────────
+// Shorthand: trigger + title as props
+<Modal
+  trigger={<Button>Open</Button>}
+  title="Confirm deletion"
+  description="This action cannot be undone."
+>
+  <Modal.Footer>
+    <Modal.Close asChild><Button variant="outline">Cancel</Button></Modal.Close>
+    <Button variant="destructive">Delete</Button>
+  </Modal.Footer>
 </Modal>
+
+// Controlled (no trigger needed)
+<Modal open={open} onOpenChange={setOpen} title="Settings">
+  <p>Settings content</p>
+  <Modal.Footer><Button onClick={save}>Save</Button></Modal.Footer>
+</Modal>
+
+// Compound (full control)
+<Modal>
+  <Modal.Trigger asChild><Button>Open</Button></Modal.Trigger>
+  <Modal.Content>
+    <Modal.Header>
+      <Modal.Title>Custom title</Modal.Title>
+      <Modal.Description>Custom description.</Modal.Description>
+    </Modal.Header>
+    <p>Body</p>
+    <Modal.Footer>
+      <Modal.Close asChild><Button variant="outline">Cancel</Button></Modal.Close>
+      <Button>Confirm</Button>
+    </Modal.Footer>
+  </Modal.Content>
+</Modal>
+
+// ── Family multi-view modal ───────────────────────────────────────────────
+// Define views — call useModal() inside each to navigate
+function DefaultView() {
+  const { setView } = useModal();
+  return (
+    <>
+      <header className="mb-4 flex h-[72px] items-center border-b border-border pl-2">
+        <h2 className="text-[19px] font-semibold">Menu</h2>
+      </header>
+      <div className="space-y-3">
+        <Modal.NavButton onClick={() => setView("settings")}>Settings</Modal.NavButton>
+        <Modal.NavButton onClick={() => setView("profile")}>Profile</Modal.NavButton>
+      </div>
+    </>
+  );
+}
+
+function SettingsView() {
+  const { setView } = useModal();
+  return (
+    <div>
+      <Modal.ViewHeader title="Settings" description="Configure your preferences." />
+      <div className="mt-7 flex gap-4">
+        <Modal.ActionButton onClick={() => setView("default")} className="bg-secondary text-secondary-foreground">
+          Back
+        </Modal.ActionButton>
+        <Modal.ActionButton onClick={() => setView("default")} className="bg-primary text-primary-foreground">
+          Save
+        </Modal.ActionButton>
+      </div>
+    </div>
+  );
+}
+
+const views: ViewsRegistry = { default: DefaultView, settings: SettingsView };
+
+// Shorthand: trigger prop auto-wires everything
+<Modal views={views} trigger={<Button>Open</Button>} />
+
+// Compound family mode
+<Modal views={views}>
+  <Modal.Trigger asChild><Button>Open</Button></Modal.Trigger>
+  <Modal.Content />
+</Modal>
+
+// Controlled family mode
+<Modal views={views} open={open} onOpenChange={setOpen} defaultView="settings" />
 ```
+
+**Root Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `trigger` | `ReactNode` | — | Shorthand: wraps element in Modal.Trigger |
+| `title` | `string` | — | Shorthand: renders Modal.Header + Modal.Title (regular mode) |
+| `description` | `string` | — | Shorthand: renders Modal.Description below the title |
+| `views` | `ViewsRegistry` | — | Enables family mode: map of view name → component |
+| `defaultView` | `string` | `"default"` | Starting view for family mode |
+| `onViewChange` | `(view: string) => void` | — | Called when the active view changes |
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled default open |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when open state changes |
+
+**Sub-components:**
+
+| Component | Mode | Description |
+|-----------|------|-------------|
+| `Modal.Trigger` | both | Opens the modal — use `asChild` to compose |
+| `Modal.Content` | both | Container. With no children in family mode, auto-renders everything |
+| `Modal.Header` | regular | Styled header div |
+| `Modal.Title` | regular | Modal title |
+| `Modal.Description` | regular | Modal description |
+| `Modal.Footer` | regular | Footer div with responsive layout |
+| `Modal.Close` | both | Close button — use `asChild` to wrap your own element |
+| `Modal.ViewHeader` | family | Header with optional `icon`, `title`, `description` |
+| `Modal.NavButton` | family | Full-width muted navigation button |
+| `Modal.ActionButton` | family | Full-width pill action button (`className` required for color) |
+| `Modal.ViewContent` | family | Renders the active view (advanced) |
+| `Modal.AnimatedWrapper` | family | Measures content height (advanced) |
+| `Modal.AnimatedContent` | family | Handles fade+scale view transitions (advanced) |
+
+**`useModal` hook** — call inside any view component to navigate:
+```tsx
+const { view, setView } = useModal();
+```
+
+**`ViewsRegistry` type:** `{ [viewName: string]: React.ComponentType<Record<string, unknown>> }`
+
+---
+
+### FamilyModal
+
+Standalone Dialog-only multi-view modal (desktop-only, no responsive behavior). For most use cases prefer `Modal` with a `views` prop instead.
+
+```tsx
+import { FamilyModal, useFamilyModal } from "@almach/ui";
+```
+
+Same API as `Modal` family mode but always renders as a centered dialog. See FamilyModal sub-components: `FamilyModal.Trigger`, `FamilyModal.Content`, `FamilyModal.Close`, `FamilyModal.Header`, `FamilyModal.Button`, `FamilyModal.SecondaryButton`, and `useFamilyModal` hook.
 
 ---
 
