@@ -77,7 +77,7 @@ function FamilyModalRoot({
 
 /* ── Content ─────────────────────────────────────────────────────────────── */
 interface FamilyModalContentProps {
-	children: React.ReactNode;
+	children?: React.ReactNode;
 	className?: string;
 }
 
@@ -112,7 +112,16 @@ const FamilyModalContent = React.forwardRef<
 					transition: "height 0.27s cubic-bezier(0.25, 1, 0.5, 1)",
 				}}
 			>
-				{children}
+				{children ?? (
+					<>
+						<FamilyModalClose />
+						<FamilyModalAnimatedWrapper>
+							<FamilyModalAnimatedContent>
+								<FamilyModalViewContent />
+							</FamilyModalAnimatedContent>
+						</FamilyModalAnimatedWrapper>
+					</>
+				)}
 			</DialogPrimitive.Content>
 		</DialogPrimitive.Portal>
 	);

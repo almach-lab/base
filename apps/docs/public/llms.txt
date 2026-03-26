@@ -545,7 +545,15 @@ function SettingsView() {
 
 const views: ViewsRegistry = { default: DefaultView, settings: SettingsView };
 
-// Usage
+// FamilyModal.Content renders close button + animated view stack automatically
+<FamilyModal views={views}>
+  <FamilyModal.Trigger asChild>
+    <Button>Open</Button>
+  </FamilyModal.Trigger>
+  <FamilyModal.Content />
+</FamilyModal>
+
+// Pass children to FamilyModal.Content for a fully custom layout
 <FamilyModal views={views}>
   <FamilyModal.Trigger asChild>
     <Button>Open</Button>
@@ -577,11 +585,11 @@ const views: ViewsRegistry = { default: DefaultView, settings: SettingsView };
 | Component | Description |
 |-----------|-------------|
 | `FamilyModal.Trigger` | Radix Dialog trigger — use `asChild` to compose with your own button |
-| `FamilyModal.Content` | Centered modal container with height animation (includes portal + overlay) |
+| `FamilyModal.Content` | Centered modal with animated height. Renders close + views automatically when no children passed |
 | `FamilyModal.Close` | Floating close button (top-right). Pass children to override the icon |
-| `FamilyModal.AnimatedWrapper` | Inner wrapper that measures content height — place this inside Content |
-| `FamilyModal.AnimatedContent` | Handles fade+scale transition between views — wrap ViewContent with this |
-| `FamilyModal.ViewContent` | Renders the currently active view component |
+| `FamilyModal.AnimatedWrapper` | Inner wrapper that measures content height (advanced use) |
+| `FamilyModal.AnimatedContent` | Handles fade+scale transition between views (advanced use) |
+| `FamilyModal.ViewContent` | Renders the currently active view component (advanced use) |
 | `FamilyModal.Header` | Styled header with optional icon, title, and description |
 | `FamilyModal.Button` | Full-width muted navigation button |
 | `FamilyModal.SecondaryButton` | Full-width pill action button (pass `className` for bg/text color) |
