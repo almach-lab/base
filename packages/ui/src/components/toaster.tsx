@@ -6,7 +6,13 @@ export function Toaster() {
 	return (
 		<SonnerToaster
 			position="bottom-right"
+			theme="system"
 			toastOptions={{
+				style: {
+					background: "hsl(var(--background))",
+					border: "1px solid hsl(var(--border))",
+					color: "hsl(var(--foreground))",
+				},
 				classNames: {
 					toast:
 						"!bg-background !border !border-border !text-foreground !rounded-2xl !shadow-lg font-sans",
