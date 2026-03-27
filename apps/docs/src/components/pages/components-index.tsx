@@ -48,6 +48,7 @@ const GROUPS = [
 			{ name: "Drawer", href: "/components/drawer", description: "Bottom sheet with drag-to-dismiss." },
 			{ name: "Dropdown Menu", href: "/components/dropdown-menu", description: "Contextual floating menu." },
 			{ name: "Modal", href: "/components/modal", description: "Dialog on desktop, Drawer on mobile." },
+			{ name: "Family Modal", href: "/components/family-modal", description: "Animated multi-view dialog with height transitions." },
 			{ name: "Popover", href: "/components/popover", description: "Floating panel anchored to a trigger." },
 			{ name: "Tabs", href: "/components/tabs", description: "Pill and underline tab variants." },
 		],

@@ -34,6 +34,9 @@ const componentPages: Record<string, React.LazyExoticComponent<() => React.JSX.E
   input: lazy(() => import("./pages/components/input").then((m) => ({ default: m.InputPage }))),
   label: lazy(() => import("./pages/components/label").then((m) => ({ default: m.LabelPage }))),
   modal: lazy(() => import("./pages/components/modal").then((m) => ({ default: m.ModalPage }))),
+  "family-modal": lazy(() =>
+    import("./pages/components/modal").then((m) => ({ default: m.FamilyModalPage }))
+  ),
   popover: lazy(() => import("./pages/components/popover").then((m) => ({ default: m.PopoverPage }))),
   progress: lazy(() => import("./pages/components/progress").then((m) => ({ default: m.ProgressPage }))),
   radio: lazy(() => import("./pages/components/radio").then((m) => ({ default: m.RadioPage }))),
