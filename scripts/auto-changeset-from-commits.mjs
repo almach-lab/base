@@ -2,15 +2,12 @@ import { execSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const [, , fromSha, toSha] = process.argv;
+const [, , fromArg, toArg] = process.argv;
+const toSha = (toArg && toArg.trim()) || run("git rev-parse HEAD");
+const fromSha = resolveFromSha(fromArg, toSha);
 
 if (!fromSha || !toSha) {
-  console.log("Missing commit range. Usage: node scripts/auto-changeset-from-commits.mjs <from> <to>");
-  process.exit(0);
-}
-
-if (fromSha === "0000000000000000000000000000000000000000") {
-  console.log("Initial push range detected. Skipping auto-changeset generation.");
+  console.log("Unable to resolve commit range. Skipping auto-changeset generation.");
   process.exit(0);
 }
 
@@ -101,4 +98,39 @@ function inferReleaseType(rawCommits) {
   }
 
   return hasMinor ? "minor" : "patch";
+}
+
+function resolveFromSha(fromCandidate, toShaValue) {
+  const candidate = (fromCandidate && fromCandidate.trim()) || "";
+  const zero = "0000000000000000000000000000000000000000";
+
+  if (candidate && candidate !== zero && commitExists(candidate)) {
+    return candidate;
+  }
+
+  const latestTag = run("git describe --tags --abbrev=0");
+  if (latestTag) {
+    const shaFromTag = run(`git rev-list -n 1 ${latestTag}`);
+    if (shaFromTag && shaFromTag !== toShaValue) {
+      console.log(`Using fallback range from latest tag ${latestTag} (${shaFromTag.slice(0, 7)})`);
+      return shaFromTag;
+    }
+  }
+
+  const parent = run(`git rev-parse ${toShaValue}^`);
+  if (parent) {
+    console.log(`Using fallback range from previous commit ${parent.slice(0, 7)}`);
+    return parent;
+  }
+
+  return "";
+}
+
+function commitExists(sha) {
+  try {
+    const type = execSync(`git cat-file -t ${sha}`, { encoding: "utf8" }).trim();
+    return type === "commit";
+  } catch {
+    return false;
+  }
 }

@@ -47,7 +47,6 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Generate changeset from conventional commits
-        if: github.event_name == 'push'
         run: node scripts/auto-changeset-from-commits.mjs "${{ github.event.before }}" "${{ github.sha }}"
 
       - name: Check for pending changesets

@@ -13,7 +13,8 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules",
-    "docs": "bun --filter docs dev",
+    "docs": "bun run --cwd apps/docs dev",
+    "deploy": "bun run --cwd apps/docs deploy",
     "release": "bash scripts/release.sh",
     "postinstall": "node scripts/fix-esm.js"
   },
