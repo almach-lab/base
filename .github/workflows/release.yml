@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "packages/**"
+      - ".changeset/**"
   workflow_dispatch:
 
 concurrency:
