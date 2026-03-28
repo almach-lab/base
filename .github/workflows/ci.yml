@@ -2,9 +2,32 @@ name: CI
 
 on:
   push:
-    branches: [main, dev, "claude/**", "feat/**", "fix/**"]
+    branches: [main]
+    paths:
+      - "packages/**"
+      - "apps/**"
+      - "scripts/**"
+      - "package.json"
+      - "bun.lock"
+      - "turbo.json"
+      - "tsconfig*.json"
+      - ".changeset/config.json"
+      - ".github/workflows/ci.yml"
+      - ".github/workflows/release.yml"
   pull_request:
-    branches: [main, dev]
+    branches: [main]
+    paths:
+      - "packages/**"
+      - "apps/**"
+      - "scripts/**"
+      - "package.json"
+      - "bun.lock"
+      - "turbo.json"
+      - "tsconfig*.json"
+      - ".changeset/config.json"
+      - ".github/workflows/ci.yml"
+      - ".github/workflows/release.yml"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

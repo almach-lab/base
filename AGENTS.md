@@ -44,7 +44,7 @@ bun run dev                        # run all dev watchers
 bun run docs                       # run Astro docs dev server only
 bun run typecheck                  # type-check all packages
 bun run clean                      # remove all dist/ and node_modules
-bun changeset                      # create a changeset for a release
+bun run release                    # publish packages (same command CI uses)
 ```
 
 **Never run bare `tsc`** — always go through `bun run build` so Turborepo
@@ -198,10 +198,9 @@ This repo uses **Tailwind CSS v4**. The rules differ from v3 — read carefully.
 ## Releasing Packages
 
 1. Make changes in a branch and open a PR
-2. Run `bun changeset` locally to describe the change (patch / minor / major)
-3. Commit the generated `.changeset/*.md` file
-4. Merge PR → CI opens a **"Version Packages"** PR automatically
-5. Merge the version PR → all changed packages are published to npm
+2. Use Conventional Commits (`feat:`, `fix:`, `feat!:` or `BREAKING CHANGE`)
+3. Merge PR to `main`
+4. `release.yml` auto-generates changesets from commit history, versions packages, and publishes to npm
 
 Never manually edit `package.json` version fields — changesets handles that.
 
@@ -211,12 +210,10 @@ Never manually edit `package.json` version fields — changesets handles that.
 
 | Workflow | Trigger | What happens |
 |----------|---------|--------------|
-| `ci.yml` | Every push / PR | typecheck + build |
-| `release.yml` | Push to `main` | changesets → npm publish |
-| `deploy-docs.yml` | Push to `main` | Astro build → Cloudflare Pages (production) |
-| `preview-docs.yml` | PRs to `main` | Astro build → Cloudflare Pages (preview URL posted to PR) |
+| `ci.yml` | Push/PR on `main` with relevant code changes | typecheck + build |
+| `release.yml` | Push to `main` with package/release changes | auto changeset generation → versioning → npm publish |
 
-Required GitHub secrets: `NPM_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+Required GitHub secrets: `NPM_TOKEN`
 See `SETUP.md` for how to create and configure them.
 
 ---
@@ -225,7 +222,7 @@ See `SETUP.md` for how to create and configure them.
 
 - Do not run `npm install` or `pnpm install` — use `bun install`
 - Do not push directly to `main`
-- Do not manually bump versions in `package.json` — use `bun changeset`
+- Do not manually bump versions in `package.json` — release flow versions automatically
 - Do not add `"use client"` to `@almach/utils` or `@almach/query` server-safe modules
 - Do not import across package boundaries with relative paths — use the package name
   (e.g. `import { cn } from "@almach/utils"`, not `import { cn } from "../../utils/src/cn"`)

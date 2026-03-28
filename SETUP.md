@@ -29,10 +29,9 @@
 ### How releases work
 
 1. Make changes in a branch and open a PR
-2. Run `bun changeset` locally to describe your change
-3. Commit the changeset file and push
-4. The `release.yml` workflow opens a **"Version Packages"** PR automatically
-5. Merge that PR → packages are automatically published to npm
+2. Use conventional commits (`feat:`, `fix:`, `feat!:` or `BREAKING CHANGE`)
+3. Merge to `main`
+4. `release.yml` auto-generates changesets from commits, versions packages, and publishes automatically
 
 ---
 
@@ -90,8 +89,8 @@ bun run build --filter=!docs
 # Type-check everything
 bun run typecheck
 
-# Create a changeset before releasing
-bun changeset
+# Run release publish flow manually (same command CI uses)
+bun run release
 ```
 
 ---
@@ -102,8 +101,8 @@ bun changeset
 # Build all packages (skip docs)
 bun run build --filter=!docs
 
-# Publish all public packages from changesets
-bun changeset publish
+# Publish all public packages
+bun run release
 ```
 
 ---
@@ -113,5 +112,5 @@ bun changeset publish
 | Secret | Where used | How to get it |
 |--------|-----------|---------------|
 | `NPM_TOKEN` | `release.yml` | npmjs.com → Granular Access Token (read/write) |
-| `CLOUDFLARE_API_TOKEN` | `deploy-docs.yml`, `preview-docs.yml` | Cloudflare → Profile → API Tokens → Pages Edit template |
-| `CLOUDFLARE_ACCOUNT_ID` | `deploy-docs.yml`, `preview-docs.yml` | Cloudflare dashboard URL |
+| `CLOUDFLARE_API_TOKEN` | docs deployment workflow (if enabled) | Cloudflare → Profile → API Tokens → Pages Edit template |
+| `CLOUDFLARE_ACCOUNT_ID` | docs deployment workflow (if enabled) | Cloudflare dashboard URL |

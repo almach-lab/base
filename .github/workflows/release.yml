@@ -1,21 +1,11 @@
 name: Release
 
-# Triggered when a PR from dev → main with title starting "release:" is merged.
-#
-# Fully automatic single-run flow — no intermediate "Version Packages" PR:
-#   1. changeset version  — bumps package.json, updates CHANGELOG.md, removes .changeset/*.md
-#   2. git commit + push  — locks version bumps on main
-#   3. changeset publish  — publishes new versions to npm (skips already-published)
-#   4. GitHub Releases    — one release per package, body from CHANGELOG
-#
-# Bump type is controlled by PR labels (major / minor / patch).
-# Package scope is controlled by pkg:* labels — see auto-changeset.yml.
-
 on:
-  workflow_dispatch:
-  pull_request:
-    types: [closed]
+  push:
     branches: [main]
+    paths:
+      - "packages/**"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -23,19 +13,13 @@ concurrency:
 
 jobs:
   release:
-    name: Release packages
+    name: Version and publish packages
+    if: github.event_name == 'workflow_dispatch' || github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      (
-        github.event.pull_request.merged == true &&
-        startsWith(github.event.pull_request.title, 'release:') &&
-        github.event.pull_request.head.ref == 'dev'
-      )
     permissions:
-      contents: write   # push version-bump commit, create tags + GitHub Releases
-      id-token: write   # npm provenance attestation
+      contents: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -62,26 +46,36 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      # ── 1. Guard — nothing to do if no changesets are pending ─────────────
+      - name: Generate changeset from conventional commits
+        if: github.event_name == 'push'
+        run: node scripts/auto-changeset-from-commits.mjs "${{ github.event.before }}" "${{ github.sha }}"
+
       - name: Check for pending changesets
         id: check
         run: |
           COUNT=$(find .changeset -name '*.md' ! -name 'README.md' | wc -l)
-          echo "has_changesets=$([ "$COUNT" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -gt 0 ]; then
+            echo "has_changesets=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changesets=false" >> "$GITHUB_OUTPUT"
+          fi
           echo "Pending changesets: $COUNT"
 
-      # ── 2. Bump versions + regenerate CHANGELOGs ──────────────────────────
-      # Removes .changeset/*.md files so the publish step below goes straight
-      # to publish mode (no intermediate "Version Packages" PR needed).
+      - name: Stop when there are no pending changesets
+        if: steps.check.outputs.has_changesets != 'true'
+        run: |
+          echo "No pending changesets. Skipping release."
+          echo "## Release skipped" >> "$GITHUB_STEP_SUMMARY"
+          echo "No pending \`.changeset/*.md\` files were found on \`main\`." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Version packages
         if: steps.check.outputs.has_changesets == 'true'
         run: bun changeset version
 
-      # ── 3. Commit version bumps to main ───────────────────────────────────
       - name: Commit version bumps
         if: steps.check.outputs.has_changesets == 'true'
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           if ! git diff --staged --quiet; then
@@ -89,31 +83,23 @@ jobs:
             git push
           fi
 
-      # ── 4. Build packages ─────────────────────────────────────────────────
       - name: Build packages
         if: steps.check.outputs.has_changesets == 'true'
         run: bun run build --filter=!docs
 
-      # ── 5. Publish to npm + create GitHub Releases ────────────────────────
-      # changesets/action sees no .changeset/*.md → publish mode only.
-      # scripts/release.sh works around a bun limitation: bun publish rejects
-      # non-JS exports (e.g. @almach/ui's ./styles CSS export), so the script
-      # temporarily hides bun.lock and strips packageManager so changeset
-      # falls back to `npm publish`. Already-published versions are skipped.
-      - name: Publish packages & create GitHub Releases
+      - name: Publish packages and create GitHub releases
         if: steps.check.outputs.has_changesets == 'true'
         id: publish
         uses: changesets/action@v1
         with:
-          publish: bash scripts/release.sh
+          publish: bun run release
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # ── 6. Job summary ────────────────────────────────────────────────────
-      - name: Summary
+      - name: Release summary
         if: steps.publish.outputs.published == 'true'
         run: |
           echo "## Published" >> "$GITHUB_STEP_SUMMARY"
@@ -121,5 +107,5 @@ jobs:
           echo '${{ steps.publish.outputs.publishedPackages }}' \
             | node -e "
                 const pkgs = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
-                pkgs.forEach(p => console.log('- **' + p.name + '** → v' + p.version));
+                pkgs.forEach(p => console.log('- **' + p.name + '** -> v' + p.version));
               " >> "$GITHUB_STEP_SUMMARY"

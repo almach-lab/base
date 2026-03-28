@@ -1,16 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-# Temporarily hide bun.lock and strip the packageManager field so that
-# package-manager-detector falls back to npm for `changeset publish`.
-# Reason: bun publish rejects non-JS exports (e.g. @almach/ui's ./styles).
 cleanup() {
-  [[ -f bun.lock.bak ]] && mv bun.lock.bak bun.lock || true
+  [[ -f bun.lock.bak ]] && mv bun.lock.bak bun.lock
   git checkout -- package.json packages/*/package.json apps/*/package.json 2>/dev/null || true
 }
 trap cleanup EXIT
 
-mv bun.lock bun.lock.bak
+if [[ -f bun.lock ]]; then
+  mv bun.lock bun.lock.bak
+fi
+
 node -e "
   const fs = require('fs');
   const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
@@ -18,14 +18,10 @@ node -e "
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
 "
 
-# Replace workspace:* references with actual version numbers so that
-# npm publish does not ship literal 'workspace:*' strings to the registry.
-# (npm does not understand the workspace protocol; only bun/pnpm/yarn do.)
 node -e "
   const fs = require('fs');
   const path = require('path');
 
-  // Collect name → version for every local package
   const roots = ['packages', 'apps'];
   const versions = {};
   for (const root of roots) {
@@ -38,7 +34,6 @@ node -e "
     }
   }
 
-  // Rewrite workspace:* / workspace:^ / workspace:~ to the resolved version
   function resolveWorkspaceDeps(deps) {
     if (!deps) return;
     for (const [name, range] of Object.entries(deps)) {

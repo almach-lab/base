@@ -98,8 +98,8 @@ bun run build
 # Type-check everything
 bun run typecheck
 
-# Create a changeset before releasing
-bun changeset
+# Run release publishing (CI uses this command)
+bun run release
 ```
 
 ---
@@ -122,11 +122,9 @@ based/
 ## Releasing
 
 ```bash
-# 1. Create a changeset describing your change
-bun changeset
-
-# 2. Commit and push — CI opens a "Version Packages" PR automatically
-# 3. Merge that PR → packages publish to npm
+# 1. Use conventional commits (feat:, fix:, feat!:, BREAKING CHANGE)
+# 2. Merge to main
+# 3. release.yml auto-generates changesets from commits, versions, and publishes
 ```
 
 ---
