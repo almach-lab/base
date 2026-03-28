@@ -1,5 +1,19 @@
 # @almach/forms
 
+## 1.0.0
+
+### Minor Changes
+
+- auto release from 04a13e2..b455409
+
+### Patch Changes
+
+- cea8524: fix: support universal
+- Updated dependencies
+- Updated dependencies [cea8524]
+  - @almach/ui@1.0.0
+  - @almach/utils@0.2.0
+
 ## 0.1.7
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@almach/query",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "TanStack Query utilities for Based UI — queries, mutations, server actions",
   "type": "module",
   "main": "./dist/index.js",
