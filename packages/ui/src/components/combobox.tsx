@@ -6,5 +6,5 @@
  * import { Select } from "@almach/ui";
  * <Select.Searchable options={options} value={value} onChange={setValue} />
  */
-export { Select as Combobox } from "./select";
-export type { SelectSearchableOption as ComboboxOption, SelectSearchableProps as ComboboxProps } from "./select";
+export { Select as Combobox } from "./select.js";
+export type { SelectSearchableOption as ComboboxOption, SelectSearchableProps as ComboboxProps } from "./select.js";

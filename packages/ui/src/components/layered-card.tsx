@@ -9,4 +9,4 @@
  *   <Card.LayerRow action={<Switch />}>Notifications</Card.LayerRow>
  * </Card.Layers>
  */
-export { Card as LayeredCard } from "./card";
+export { Card as LayeredCard } from "./card.js";

@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@almach/utils";
-import { buttonVariants } from "./button";
+import { buttonVariants } from "./button.js";
 
 /* ── Types ────────────────────────────────────────────────────────────────── */
 // DayPickerProps already includes month, defaultMonth, onMonthChange in PropsBase,

@@ -1,14 +1,14 @@
 "use client";
 
 import { Textarea, type TextareaProps } from "@almach/ui";
-import { useFieldContext } from "../form-context";
+import { useFieldContext } from "../form-context.js";
 import {
   FormControl,
   FormDescription,
   FormItem,
   FormLabel,
   FormMessage,
-} from "../form";
+} from "../form.js";
 
 export interface TextareaFieldProps
   extends Omit<TextareaProps, "name" | "value" | "onChange" | "onBlur"> {

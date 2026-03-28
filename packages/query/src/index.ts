@@ -1,15 +1,15 @@
 // Core factory
-export { createQuery } from "./create-query";
-export { createMutation } from "./create-mutation";
-export { createServerAction } from "./create-server-action";
+export { createQuery } from "./create-query.js";
+export { createMutation } from "./create-mutation.js";
+export { createServerAction } from "./create-server-action.js";
 
 // Hooks
-export { useInvalidate } from "./use-invalidate";
-export { useOptimisticUpdate } from "./use-optimistic-update";
+export { useInvalidate } from "./use-invalidate.js";
+export { useOptimisticUpdate } from "./use-optimistic-update.js";
 
 // Provider
-export { BasedQueryProvider } from "./provider";
-export type { BasedQueryProviderProps } from "./provider";
+export { BasedQueryProvider } from "./provider.js";
+export type { BasedQueryProviderProps } from "./provider.js";
 
 // Types
 export type {
@@ -18,9 +18,9 @@ export type {
   ServerActionConfig,
   ActionResult,
   ActionError,
-} from "./types";
-export type { CreateMutationOptions } from "./create-mutation";
-export type { ServerActionOptions } from "./create-server-action";
+} from "./types.js";
+export type { CreateMutationOptions } from "./create-mutation.js";
+export type { ServerActionOptions } from "./create-server-action.js";
 
 // Re-export TanStack Query for convenience
 export {

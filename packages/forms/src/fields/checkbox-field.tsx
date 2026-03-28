@@ -2,14 +2,14 @@
 
 import { Checkbox } from "@almach/ui";
 import { cn } from "@almach/utils";
-import { useFieldContext } from "../form-context";
+import { useFieldContext } from "../form-context.js";
 import {
   FormControl,
   FormDescription,
   FormItem,
   FormLabel,
   FormMessage,
-} from "../form";
+} from "../form.js";
 
 export interface CheckboxFieldProps {
   label?: string;

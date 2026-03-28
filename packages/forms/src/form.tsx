@@ -3,7 +3,7 @@
 import { Label } from "@almach/ui";
 import { cn } from "@almach/utils";
 import * as React from "react";
-import { useFieldContext } from "./form-context";
+import { useFieldContext } from "./form-context.js";
 
 type FormItemContextValue = { id: string };
 

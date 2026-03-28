@@ -11,17 +11,157 @@
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
-    "./styles": "./src/styles/globals.css"
+    "./styles": "./src/styles/globals.css",
+    "./alert": {
+      "import": "./dist/components/alert.js",
+      "types": "./dist/components/alert.d.ts"
+    },
+    "./avatar": {
+      "import": "./dist/components/avatar.js",
+      "types": "./dist/components/avatar.d.ts"
+    },
+    "./badge": {
+      "import": "./dist/components/badge.js",
+      "types": "./dist/components/badge.d.ts"
+    },
+    "./button": {
+      "import": "./dist/components/button.js",
+      "types": "./dist/components/button.d.ts"
+    },
+    "./calendar": {
+      "import": "./dist/components/calendar.js",
+      "types": "./dist/components/calendar.d.ts"
+    },
+    "./card": {
+      "import": "./dist/components/card.js",
+      "types": "./dist/components/card.d.ts"
+    },
+    "./carousel": {
+      "import": "./dist/components/carousel.js",
+      "types": "./dist/components/carousel.d.ts"
+    },
+    "./chart": {
+      "import": "./dist/components/chart.js",
+      "types": "./dist/components/chart.d.ts"
+    },
+    "./checkbox": {
+      "import": "./dist/components/checkbox.js",
+      "types": "./dist/components/checkbox.d.ts"
+    },
+    "./collapsible": {
+      "import": "./dist/components/collapsible.js",
+      "types": "./dist/components/collapsible.d.ts"
+    },
+    "./combobox": {
+      "import": "./dist/components/combobox.js",
+      "types": "./dist/components/combobox.d.ts"
+    },
+    "./command": {
+      "import": "./dist/components/command.js",
+      "types": "./dist/components/command.d.ts"
+    },
+    "./currency-input": {
+      "import": "./dist/components/currency-input.js",
+      "types": "./dist/components/currency-input.d.ts"
+    },
+    "./dialog": {
+      "import": "./dist/components/dialog.js",
+      "types": "./dist/components/dialog.d.ts"
+    },
+    "./drawer": {
+      "import": "./dist/components/drawer.js",
+      "types": "./dist/components/drawer.d.ts"
+    },
+    "./dropdown-menu": {
+      "import": "./dist/components/dropdown-menu.js",
+      "types": "./dist/components/dropdown-menu.d.ts"
+    },
+    "./family-modal": {
+      "import": "./dist/components/family-modal.js",
+      "types": "./dist/components/family-modal.d.ts"
+    },
+    "./input": {
+      "import": "./dist/components/input.js",
+      "types": "./dist/components/input.d.ts"
+    },
+    "./label": {
+      "import": "./dist/components/label.js",
+      "types": "./dist/components/label.d.ts"
+    },
+    "./layered-card": {
+      "import": "./dist/components/layered-card.js",
+      "types": "./dist/components/layered-card.d.ts"
+    },
+    "./modal": {
+      "import": "./dist/components/modal.js",
+      "types": "./dist/components/modal.d.ts"
+    },
+    "./popover": {
+      "import": "./dist/components/popover.js",
+      "types": "./dist/components/popover.d.ts"
+    },
+    "./progress": {
+      "import": "./dist/components/progress.js",
+      "types": "./dist/components/progress.d.ts"
+    },
+    "./radio": {
+      "import": "./dist/components/radio.js",
+      "types": "./dist/components/radio.d.ts"
+    },
+    "./select": {
+      "import": "./dist/components/select.js",
+      "types": "./dist/components/select.d.ts"
+    },
+    "./separator": {
+      "import": "./dist/components/separator.js",
+      "types": "./dist/components/separator.d.ts"
+    },
+    "./skeleton": {
+      "import": "./dist/components/skeleton.js",
+      "types": "./dist/components/skeleton.d.ts"
+    },
+    "./switch": {
+      "import": "./dist/components/switch.js",
+      "types": "./dist/components/switch.d.ts"
+    },
+    "./table": {
+      "import": "./dist/components/table.js",
+      "types": "./dist/components/table.d.ts"
+    },
+    "./tabs": {
+      "import": "./dist/components/tabs.js",
+      "types": "./dist/components/tabs.d.ts"
+    },
+    "./tag-input": {
+      "import": "./dist/components/tag-input.js",
+      "types": "./dist/components/tag-input.d.ts"
+    },
+    "./textarea": {
+      "import": "./dist/components/textarea.js",
+      "types": "./dist/components/textarea.d.ts"
+    },
+    "./toast": {
+      "import": "./dist/components/toast.js",
+      "types": "./dist/components/toast.d.ts"
+    },
+    "./toaster": {
+      "import": "./dist/components/toaster.js",
+      "types": "./dist/components/toaster.d.ts"
+    },
+    "./tooltip": {
+      "import": "./dist/components/tooltip.js",
+      "types": "./dist/components/tooltip.d.ts"
+    }
   },
   "files": [
     "dist",
     "src/styles"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/fix-esm.js dist",
     "dev": "tsc -p tsconfig.build.json --watch",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist *.tsbuildinfo"
+    "clean": "rm -rf dist"
   },
   "peerDependencies": {
     "@almach/utils": "*",

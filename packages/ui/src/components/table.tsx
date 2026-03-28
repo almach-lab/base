@@ -15,7 +15,7 @@ import {
 import { ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@almach/utils";
-import { Button } from "./button";
+import { Button } from "./button.js";
 
 /* ─── Re-export TanStack types for consumers ────────────────────────────── */
 export type { ColumnDef };

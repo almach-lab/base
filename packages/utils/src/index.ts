@@ -1,6 +1,6 @@
-export { cn } from "./cn";
-export { formatDate, formatRelativeDate } from "./date";
-export { createUrl, parseSearchParams, toSearchParams } from "./url";
+export { cn } from "./cn.js";
+export { formatDate, formatRelativeDate } from "./date.js";
+export { createUrl, parseSearchParams, toSearchParams } from "./url.js";
 export type {
   Prettify,
   NonNullableFields,
@@ -10,4 +10,4 @@ export type {
   Entries,
   MaybeArray,
   MaybePromise,
-} from "./types";
+} from "./types.js";

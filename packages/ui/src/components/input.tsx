@@ -5,8 +5,8 @@ import { CalendarIcon } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@almach/utils";
-import { Calendar } from "./calendar";
-import { InputCurrency } from "./currency-input";
+import { Calendar } from "./calendar.js";
+import { InputCurrency } from "./currency-input.js";
 
 /* ── Base Input ───────────────────────────────────────────────────────────── */
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {

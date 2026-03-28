@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import * as React from "react";
 
 import { cn } from "@almach/utils";
-import { Dialog } from "./dialog";
+import { Dialog } from "./dialog.js";
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
 const CommandRoot = React.forwardRef<

@@ -1,21 +1,21 @@
 /* ─── Components ──────────────────────────────────────────────────────────── */
 
-export { Alert } from "./components/alert";
-export type { AlertVariant } from "./components/alert";
+export { Alert } from "./components/alert.js";
+export type { AlertVariant } from "./components/alert.js";
 
-export { Avatar, avatarVariants } from "./components/avatar";
-export type { AvatarProps } from "./components/avatar";
+export { Avatar, avatarVariants } from "./components/avatar.js";
+export type { AvatarProps } from "./components/avatar.js";
 
-export { Badge, badgeVariants } from "./components/badge";
-export type { BadgeProps } from "./components/badge";
+export { Badge, badgeVariants } from "./components/badge.js";
+export type { BadgeProps } from "./components/badge.js";
 
-export { Button, buttonVariants } from "./components/button";
-export type { ButtonProps } from "./components/button";
+export { Button, buttonVariants } from "./components/button.js";
+export type { ButtonProps } from "./components/button.js";
 
-export { Calendar } from "./components/calendar";
-export type { CalendarProps } from "./components/calendar";
+export { Calendar } from "./components/calendar.js";
+export type { CalendarProps } from "./components/calendar.js";
 
-export { Card, Group } from "./components/card";
+export { Card, Group } from "./components/card.js";
 
 export {
 	Chart,
@@ -49,70 +49,70 @@ export {
 	PolarGrid,
 	PolarAngleAxis,
 	PolarRadiusAxis,
-} from "./components/chart";
+} from "./components/chart.js";
 
-export { Carousel } from "./components/carousel";
+export { Carousel } from "./components/carousel.js";
 
-export { Checkbox } from "./components/checkbox";
+export { Checkbox } from "./components/checkbox.js";
 
-export { Collapsible } from "./components/collapsible";
+export { Collapsible } from "./components/collapsible.js";
 
-export { Command } from "./components/command";
+export { Command } from "./components/command.js";
 
-export { Dialog } from "./components/dialog";
+export { Dialog } from "./components/dialog.js";
 
-export { Drawer } from "./components/drawer";
+export { Drawer } from "./components/drawer.js";
 
-export { DropdownMenu } from "./components/dropdown-menu";
+export { DropdownMenu } from "./components/dropdown-menu.js";
 
-export { Input, DateInput } from "./components/input";
-export type { InputProps, InputDateProps, DateInputProps } from "./components/input";
+export { Input, DateInput } from "./components/input.js";
+export type { InputProps, InputDateProps, DateInputProps } from "./components/input.js";
 
-export { InputCurrency, CURRENCIES, CurrencyFlagBadge } from "./components/currency-input";
-export type { CurrencyDef, CurrencyValue, InputCurrencyProps, CurrencySelectorMode } from "./components/currency-input";
+export { InputCurrency, CURRENCIES, CurrencyFlagBadge } from "./components/currency-input.js";
+export type { CurrencyDef, CurrencyValue, InputCurrencyProps, CurrencySelectorMode } from "./components/currency-input.js";
 
-export { Label } from "./components/label";
+export { Label } from "./components/label.js";
 
-export { FamilyModal, useFamilyModal } from "./components/family-modal";
+export { FamilyModal, useFamilyModal } from "./components/family-modal.js";
 
-export { Modal, useModal } from "./components/modal";
-export type { ViewsRegistry, ViewComponent } from "./components/modal";
+export { Modal, useModal } from "./components/modal.js";
+export type { ViewsRegistry, ViewComponent } from "./components/modal.js";
 
-export { Popover } from "./components/popover";
+export { Popover } from "./components/popover.js";
 
-export { Progress } from "./components/progress";
+export { Progress } from "./components/progress.js";
 
-export { Radio } from "./components/radio";
+export { Radio } from "./components/radio.js";
 
-export { Select } from "./components/select";
-export type { SelectSearchableOption, SelectSearchableProps } from "./components/select";
+export { Select } from "./components/select.js";
+export type { SelectSearchableOption, SelectSearchableProps } from "./components/select.js";
 
-export { Separator } from "./components/separator";
+export { Separator } from "./components/separator.js";
 
-export { Skeleton } from "./components/skeleton";
+export { Skeleton } from "./components/skeleton.js";
 
-export { Switch } from "./components/switch";
-export type { SwitchProps } from "./components/switch";
+export { Switch } from "./components/switch.js";
+export type { SwitchProps } from "./components/switch.js";
 
-export { Table } from "./components/table";
-export type { ColumnDef } from "./components/table";
+export { Table } from "./components/table.js";
+export type { ColumnDef } from "./components/table.js";
 
-export { Tabs, tabsListVariants, tabsTriggerVariants } from "./components/tabs";
+export { Tabs, tabsListVariants, tabsTriggerVariants } from "./components/tabs.js";
 
-export { TagInput } from "./components/tag-input";
-export type { TagInputProps } from "./components/tag-input";
+export { TagInput } from "./components/tag-input.js";
+export type { TagInputProps } from "./components/tag-input.js";
 
-export { toast } from "./components/toast";
-export type { ToastOptions } from "./components/toast";
+export { toast } from "./components/toast.js";
+export type { ToastOptions } from "./components/toast.js";
 
-export { Toaster } from "./components/toaster";
+export { Toaster } from "./components/toaster.js";
 
-export { Textarea } from "./components/textarea";
-export type { TextareaProps } from "./components/textarea";
+export { Textarea } from "./components/textarea.js";
+export type { TextareaProps } from "./components/textarea.js";
 
-export { Tooltip } from "./components/tooltip";
+export { Tooltip } from "./components/tooltip.js";
 
 /* ─── Hooks ───────────────────────────────────────────────────────────────── */
-export { useToast } from "./hooks/use-toast";
-export { useMediaQuery, useIsMobile } from "./hooks/use-media-query";
-export { useCopyToClipboard } from "./hooks/use-copy-to-clipboard";
+export { useToast } from "./hooks/use-toast.js";
+export { useMediaQuery, useIsMobile } from "./hooks/use-media-query.js";
+export { useCopyToClipboard } from "./hooks/use-copy-to-clipboard.js";

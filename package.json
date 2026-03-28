@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -12,7 +15,8 @@
     "clean": "turbo run clean && rm -rf node_modules",
     "docs": "bun --filter docs dev",
     "deploy": "wrangler deploy",
-    "release": "turbo run build --filter=!docs && changeset publish"
+    "release": "turbo run clean && turbo run build --filter=!docs && changeset publish",
+    "postinstall": "node scripts/fix-esm.js"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.12",

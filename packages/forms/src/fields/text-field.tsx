@@ -2,14 +2,14 @@
 
 import { Input, type InputProps } from "@almach/ui";
 import type { CurrencyValue, InputCurrencyProps } from "@almach/ui";
-import { useFieldContext } from "../form-context";
+import { useFieldContext } from "../form-context.js";
 import {
   FormControl,
   FormDescription,
   FormItem,
   FormLabel,
   FormMessage,
-} from "../form";
+} from "../form.js";
 
 interface BaseProps {
   label?: string;

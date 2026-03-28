@@ -4,9 +4,9 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import * as React from "react";
 
 import { cn } from "@almach/utils";
-import { useIsMobile } from "../hooks/use-media-query";
-import { Dialog } from "./dialog";
-import { Drawer } from "./drawer";
+import { useIsMobile } from "../hooks/use-media-query.js";
+import { Dialog } from "./dialog.js";
+import { Drawer } from "./drawer.js";
 
 /* ── Types ───────────────────────────────────────────────────────────────── */
 type ViewComponent = React.ComponentType<Record<string, unknown>>;
