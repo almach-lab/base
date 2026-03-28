@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.1.10
+
+### Patch Changes
+
+- fb35a0e: fix: toast components stylings and modals
+
 ## 0.1.9
 
 ### Patch Changes
