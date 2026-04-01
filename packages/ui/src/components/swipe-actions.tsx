@@ -7,7 +7,7 @@ import { cn } from "@almach/utils";
 const SPRING = "transform 300ms cubic-bezier(0.32,0.72,0,1)";
 
 /* ── Types ─────────────────────────────────────────────────────────────────── */
-export type SwipeSide          = "left" | "right" | "top" | "bottom" | null;
+export type SwipeSide = "left" | "right" | "top" | "bottom" | null;
 export type SwipeActionVariant = "default" | "destructive" | "success" | "warning" | "secondary";
 
 /* ── Slot orientation ─────────────────────────────────────────────────────── */
@@ -16,31 +16,31 @@ const SlotCtx = React.createContext<"horizontal" | "vertical">("vertical");
 /* ── Internal context ─────────────────────────────────────────────────────── */
 interface SwipeCtxValue {
 	// Reactive state
-	openSide:       SwipeSide;
-	dragSide:       SwipeSide;
-	pastThreshold:  boolean;
+	openSide: SwipeSide;
+	dragSide: SwipeSide;
+	pastThreshold: boolean;
 	fullSwipeReady: boolean;
-	disabled:       boolean;
+	disabled: boolean;
 	// Config
-	threshold:          number;
-	overscroll:         number;
-	fullSwipe:          boolean;
+	threshold: number;
+	overscroll: number;
+	fullSwipe: boolean;
 	fullSwipeThreshold: number;
 	// Refs
 	contentRef: React.RefObject<HTMLDivElement | null>;
-	rootRef:    React.RefObject<HTMLDivElement | null>;
-	leftRef:    React.RefObject<HTMLDivElement | null>;
-	rightRef:   React.RefObject<HTMLDivElement | null>;
-	topRef:     React.RefObject<HTMLDivElement | null>;
-	bottomRef:  React.RefObject<HTMLDivElement | null>;
-	posRef:     React.RefObject<{ x: number; y: number }>;
+	rootRef: React.RefObject<HTMLDivElement | null>;
+	leftRef: React.RefObject<HTMLDivElement | null>;
+	rightRef: React.RefObject<HTMLDivElement | null>;
+	topRef: React.RefObject<HTMLDivElement | null>;
+	bottomRef: React.RefObject<HTMLDivElement | null>;
+	posRef: React.RefObject<{ x: number; y: number }>;
 	touchAction: string;
 	// Actions
-	setDragState:    (side: SwipeSide, past: boolean, fsReady?: boolean) => void;
-	applyTransform:  (x: number, y: number, animate?: boolean) => void;
-	open:            (side: NonNullable<SwipeSide>) => void;
-	close:           () => void;
-	triggerFullSwipe:(side: NonNullable<SwipeSide>) => void;
+	setDragState: (side: SwipeSide, past: boolean, fsReady?: boolean) => void;
+	applyTransform: (x: number, y: number, animate?: boolean) => void;
+	open: (side: NonNullable<SwipeSide>) => void;
+	close: () => void;
+	triggerFullSwipe: (side: NonNullable<SwipeSide>) => void;
 }
 
 const SwipeCtx = React.createContext<SwipeCtxValue | null>(null);
@@ -94,39 +94,44 @@ export interface SwipeActionsProps extends React.HTMLAttributes<HTMLDivElement> 
 function SwipeActionsRoot({
 	className,
 	children,
-	disabled          = false,
+	disabled = false,
 	onOpenChange,
-	threshold         = 0.4,
-	overscroll        = 0.15,
-	fullSwipe         = false,
+	threshold = 0.4,
+	overscroll = 0.15,
+	fullSwipe = false,
 	fullSwipeThreshold = 0.55,
 	onFullSwipe,
 	...props
 }: SwipeActionsProps) {
-	const [openSide,       setOpenSide]       = React.useState<SwipeSide>(null);
-	const [dragSide,       setDragSide]       = React.useState<SwipeSide>(null);
-	const [pastThreshold,  setPastThreshold]  = React.useState(false);
+	const [openSide, setOpenSide] = React.useState<SwipeSide>(null);
+	const [dragSide, setDragSide] = React.useState<SwipeSide>(null);
+	const [pastThreshold, setPastThreshold] = React.useState(false);
 	const [fullSwipeReady, setFullSwipeReady] = React.useState(false);
-	const [touchAction,    setTouchAction]    = React.useState("none");
+	const [touchAction, setTouchAction] = React.useState("none");
 
 	const contentRef = React.useRef<HTMLDivElement>(null);
-	const rootRef    = React.useRef<HTMLDivElement>(null);
-	const leftRef    = React.useRef<HTMLDivElement>(null);
-	const rightRef   = React.useRef<HTMLDivElement>(null);
-	const topRef     = React.useRef<HTMLDivElement>(null);
-	const bottomRef  = React.useRef<HTMLDivElement>(null);
-	const posRef     = React.useRef({ x: 0, y: 0 });
-	const timerRef   = React.useRef<ReturnType<typeof setTimeout>>();
+	const rootRef = React.useRef<HTMLDivElement>(null);
+	const leftRef = React.useRef<HTMLDivElement>(null);
+	const rightRef = React.useRef<HTMLDivElement>(null);
+	const topRef = React.useRef<HTMLDivElement>(null);
+	const bottomRef = React.useRef<HTMLDivElement>(null);
+	const posRef = React.useRef({ x: 0, y: 0 });
+	const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	React.useEffect(() => () => clearTimeout(timerRef.current), []);
+	React.useEffect(
+		() => () => {
+			if (timerRef.current !== null) clearTimeout(timerRef.current);
+		},
+		[],
+	);
 
 	React.useLayoutEffect(() => {
-		const hasH = (leftRef.current?.offsetWidth   ?? 0) > 0 || (rightRef.current?.offsetWidth   ?? 0) > 0;
-		const hasV = (topRef.current?.offsetHeight   ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
-		if      (hasH && hasV) setTouchAction("none");
-		else if (hasH)         setTouchAction("pan-y");
-		else if (hasV)         setTouchAction("pan-x");
-		else                   setTouchAction("auto");
+		const hasH = (leftRef.current?.offsetWidth ?? 0) > 0 || (rightRef.current?.offsetWidth ?? 0) > 0;
+		const hasV = (topRef.current?.offsetHeight ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
+		if (hasH && hasV) setTouchAction("none");
+		else if (hasH) setTouchAction("pan-y");
+		else if (hasV) setTouchAction("pan-x");
+		else setTouchAction("auto");
 	}, []);
 
 	const applyTransform = React.useCallback((x: number, y: number, animate = false) => {
@@ -134,7 +139,7 @@ function SwipeActionsRoot({
 		if (!el) return;
 		posRef.current = { x, y };
 		el.style.transition = animate ? SPRING : "none";
-		el.style.transform  = `translate(${x}px,${y}px)`;
+		el.style.transform = `translate(${x}px,${y}px)`;
 	}, []);
 
 	const setDragState = React.useCallback((side: SwipeSide, past: boolean, fsReady = false) => {
@@ -147,9 +152,9 @@ function SwipeActionsRoot({
 		(side: NonNullable<SwipeSide>) => {
 			if (disabled) return;
 			let dx = 0, dy = 0;
-			if (side === "left")   dx =  leftRef.current?.offsetWidth    ?? 0;
-			if (side === "right")  dx = -(rightRef.current?.offsetWidth   ?? 0);
-			if (side === "top")    dy =  topRef.current?.offsetHeight     ?? 0;
+			if (side === "left") dx = leftRef.current?.offsetWidth ?? 0;
+			if (side === "right") dx = -(rightRef.current?.offsetWidth ?? 0);
+			if (side === "top") dy = topRef.current?.offsetHeight ?? 0;
 			if (side === "bottom") dy = -(bottomRef.current?.offsetHeight ?? 0);
 			if (!dx && !dy) return;
 			applyTransform(dx, dy, true);
@@ -173,11 +178,11 @@ function SwipeActionsRoot({
 
 	const triggerFullSwipe = React.useCallback(
 		(side: NonNullable<SwipeSide>) => {
-			clearTimeout(timerRef.current);
-			const w = rootRef.current?.offsetWidth  ?? 0;
+			if (timerRef.current !== null) clearTimeout(timerRef.current);
+			const w = rootRef.current?.offsetWidth ?? 0;
 			const h = rootRef.current?.offsetHeight ?? 0;
 			const dx = side === "left" ? w : side === "right" ? -w : 0;
-			const dy = side === "top"  ? h : side === "bottom" ? -h : 0;
+			const dy = side === "top" ? h : side === "bottom" ? -h : 0;
 			applyTransform(dx, dy, true);          // fly content off-screen
 			onFullSwipe?.(side);                   // notify parent immediately
 			timerRef.current = setTimeout(close, 310); // snap back after animation
@@ -221,11 +226,11 @@ function SwipeActionsContent({
 	} = useSwipeCtx();
 
 	const drag = React.useRef({
-		active:  false,
-		startX:  0, startY:  0,
+		active: false,
+		startX: 0, startY: 0,
 		originX: 0, originY: 0,
-		moved:   false,
-		axis:    null as "x" | "y" | null,
+		moved: false,
+		axis: null as "x" | "y" | null,
 	});
 
 	const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -234,11 +239,11 @@ function SwipeActionsContent({
 		// Freeze spring at its current JS-tracked position (posRef is always accurate)
 		applyTransform(posRef.current.x, posRef.current.y, false);
 		drag.current = {
-			active:  true,
-			startX:  e.clientX, startY:  e.clientY,
+			active: true,
+			startX: e.clientX, startY: e.clientY,
 			originX: posRef.current.x, originY: posRef.current.y,
-			moved:   false,
-			axis:    null,
+			moved: false,
+			axis: null,
 		};
 	};
 
@@ -249,10 +254,10 @@ function SwipeActionsContent({
 
 		if (!drag.current.axis) {
 			if (Math.max(Math.abs(dx), Math.abs(dy)) < AXIS_LOCK) return;
-			const hasH = (leftRef.current?.offsetWidth  ?? 0) > 0 || (rightRef.current?.offsetWidth  ?? 0) > 0;
-			const hasV = (topRef.current?.offsetHeight  ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
+			const hasH = (leftRef.current?.offsetWidth ?? 0) > 0 || (rightRef.current?.offsetWidth ?? 0) > 0;
+			const hasV = (topRef.current?.offsetHeight ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
 			const wantsX = Math.abs(dx) >= Math.abs(dy);
-			if      (wantsX && hasH)  drag.current.axis = "x";
+			if (wantsX && hasH) drag.current.axis = "x";
 			else if (!wantsX && hasV) drag.current.axis = "y";
 			else return;
 			drag.current.moved = true;
@@ -260,50 +265,50 @@ function SwipeActionsContent({
 
 		if (drag.current.axis === "x") {
 			const raw = drag.current.originX + dx;
-			const lw  = leftRef.current?.offsetWidth  ?? 0;
-			const rw  = rightRef.current?.offsetWidth ?? 0;
-			const cw  = rootRef.current?.offsetWidth  ?? 0;
+			const lw = leftRef.current?.offsetWidth ?? 0;
+			const rw = rightRef.current?.offsetWidth ?? 0;
+			const cw = rootRef.current?.offsetWidth ?? 0;
 
 			// Resistance: when fullSwipe is on, allow free movement up to the
 			// full-swipe trigger point; clamp + rubber-band only beyond that.
 			let x = raw;
 			if (raw > 0) {
 				const limit = lw > 0 ? (fullSwipe ? cw * fullSwipeThreshold : lw) : 0;
-				if      (lw === 0)     x = raw * overscroll;
-				else if (raw > limit)  x = limit + (raw - limit) * overscroll;
+				if (lw === 0) x = raw * overscroll;
+				else if (raw > limit) x = limit + (raw - limit) * overscroll;
 			} else if (raw < 0) {
 				const limit = rw > 0 ? (fullSwipe ? cw * fullSwipeThreshold : rw) : 0;
-				if      (rw === 0)     x = raw * overscroll;
+				if (rw === 0) x = raw * overscroll;
 				else if (-raw > limit) x = -(limit + (-raw - limit) * overscroll);
 			}
 			applyTransform(x, 0, false);
 
-			const side   = raw > 0 ? "left" : raw < 0 ? "right" : null;
-			const slotW  = side === "left" ? lw : rw;
-			const past   = slotW > 0 && Math.abs(raw) >= slotW * threshold;
+			const side = raw > 0 ? "left" : raw < 0 ? "right" : null;
+			const slotW = side === "left" ? lw : rw;
+			const past = slotW > 0 && Math.abs(raw) >= slotW * threshold;
 			const fsReady = fullSwipe && cw > 0 && Math.abs(raw) >= cw * fullSwipeThreshold;
 			setDragState(side, past, fsReady);
 		} else {
 			const raw = drag.current.originY + dy;
-			const th  = topRef.current?.offsetHeight    ?? 0;
-			const bh  = bottomRef.current?.offsetHeight ?? 0;
-			const ch  = rootRef.current?.offsetHeight   ?? 0;
+			const th = topRef.current?.offsetHeight ?? 0;
+			const bh = bottomRef.current?.offsetHeight ?? 0;
+			const ch = rootRef.current?.offsetHeight ?? 0;
 
 			let y = raw;
 			if (raw > 0) {
 				const limit = th > 0 ? (fullSwipe ? ch * fullSwipeThreshold : th) : 0;
-				if      (th === 0)     y = raw * overscroll;
-				else if (raw > limit)  y = limit + (raw - limit) * overscroll;
+				if (th === 0) y = raw * overscroll;
+				else if (raw > limit) y = limit + (raw - limit) * overscroll;
 			} else if (raw < 0) {
 				const limit = bh > 0 ? (fullSwipe ? ch * fullSwipeThreshold : bh) : 0;
-				if      (bh === 0)     y = raw * overscroll;
+				if (bh === 0) y = raw * overscroll;
 				else if (-raw > limit) y = -(limit + (-raw - limit) * overscroll);
 			}
 			applyTransform(0, y, false);
 
-			const side   = raw > 0 ? "top" : raw < 0 ? "bottom" : null;
-			const slotH  = side === "top" ? th : bh;
-			const past   = slotH > 0 && Math.abs(raw) >= slotH * threshold;
+			const side = raw > 0 ? "top" : raw < 0 ? "bottom" : null;
+			const slotH = side === "top" ? th : bh;
+			const past = slotH > 0 && Math.abs(raw) >= slotH * threshold;
 			const fsReady = fullSwipe && ch > 0 && Math.abs(raw) >= ch * fullSwipeThreshold;
 			setDragState(side, past, fsReady);
 		}
@@ -313,7 +318,7 @@ function SwipeActionsContent({
 		if (!drag.current.active) return;
 		const { axis, moved } = drag.current;
 		drag.current.active = false;
-		drag.current.axis   = null;
+		drag.current.axis = null;
 		setDragState(null, false, false);
 
 		// Tap (no movement) on open content → close
@@ -323,28 +328,28 @@ function SwipeActionsContent({
 		}
 
 		const { x, y } = posRef.current;
-		const cw = rootRef.current?.offsetWidth  ?? 0;
+		const cw = rootRef.current?.offsetWidth ?? 0;
 		const ch = rootRef.current?.offsetHeight ?? 0;
 
 		if (axis === "x") {
-			const lw = leftRef.current?.offsetWidth  ?? 0;
+			const lw = leftRef.current?.offsetWidth ?? 0;
 			const rw = rightRef.current?.offsetWidth ?? 0;
 			// Full-swipe check first
 			if (fullSwipe && cw > 0) {
-				if (lw > 0 && x >  cw * fullSwipeThreshold) { triggerFullSwipe("left");  return; }
+				if (lw > 0 && x > cw * fullSwipeThreshold) { triggerFullSwipe("left"); return; }
 				if (rw > 0 && x < -cw * fullSwipeThreshold) { triggerFullSwipe("right"); return; }
 			}
-			if      (lw > 0 && x >  lw * threshold) open("left");
+			if (lw > 0 && x > lw * threshold) open("left");
 			else if (rw > 0 && x < -rw * threshold) open("right");
 			else close();
 		} else if (axis === "y") {
-			const th = topRef.current?.offsetHeight    ?? 0;
+			const th = topRef.current?.offsetHeight ?? 0;
 			const bh = bottomRef.current?.offsetHeight ?? 0;
 			if (fullSwipe && ch > 0) {
-				if (th > 0 && y >  ch * fullSwipeThreshold) { triggerFullSwipe("top");    return; }
+				if (th > 0 && y > ch * fullSwipeThreshold) { triggerFullSwipe("top"); return; }
 				if (bh > 0 && y < -ch * fullSwipeThreshold) { triggerFullSwipe("bottom"); return; }
 			}
-			if      (th > 0 && y >  th * threshold) open("top");
+			if (th > 0 && y > th * threshold) open("top");
 			else if (bh > 0 && y < -bh * threshold) open("bottom");
 			else close();
 		} else {
@@ -460,11 +465,11 @@ export interface SwipeActionProps extends React.ButtonHTMLAttributes<HTMLButtonE
 }
 
 const variantStyles: Record<SwipeActionVariant, string> = {
-	default:     "bg-primary     text-primary-foreground",
+	default: "bg-primary     text-primary-foreground",
 	destructive: "bg-destructive text-destructive-foreground",
-	success:     "bg-success     text-success-foreground",
-	warning:     "bg-warning     text-warning-foreground",
-	secondary:   "bg-secondary   text-secondary-foreground",
+	success: "bg-success     text-success-foreground",
+	warning: "bg-warning     text-warning-foreground",
+	secondary: "bg-secondary   text-secondary-foreground",
 };
 
 function SwipeAction({
@@ -509,9 +514,9 @@ function SwipeAction({
 /* ── Compound export ──────────────────────────────────────────────────────── */
 export const SwipeActions = Object.assign(SwipeActionsRoot, {
 	Content: SwipeActionsContent,
-	Left:    SwipeActionsLeft,
-	Right:   SwipeActionsRight,
-	Top:     SwipeActionsTop,
-	Bottom:  SwipeActionsBottom,
-	Action:  SwipeAction,
+	Left: SwipeActionsLeft,
+	Right: SwipeActionsRight,
+	Top: SwipeActionsTop,
+	Bottom: SwipeActionsBottom,
+	Action: SwipeAction,
 });
