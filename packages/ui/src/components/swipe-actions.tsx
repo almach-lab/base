@@ -130,8 +130,9 @@ function SwipeActionsContent({
 	};
 
 	const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		e.currentTarget.setPointerCapture(e.pointerId); // capture early — guarantees pointerup always fires here
 		const [ox, oy] = readTranslate();
-		moveContent(ox, oy, false); // freeze ongoing animation
+		moveContent(ox, oy, false); // freeze any ongoing animation
 		drag.current = { active: true, startX: e.clientX, startY: e.clientY, originX: ox, originY: oy, axis: null };
 	};
 
@@ -140,11 +141,10 @@ function SwipeActionsContent({
 		const dx = e.clientX - drag.current.startX;
 		const dy = e.clientY - drag.current.startY;
 
-		// Lock axis on first significant movement, then capture pointer
+		// Lock axis on first significant movement
 		if (!drag.current.axis) {
 			if (Math.max(Math.abs(dx), Math.abs(dy)) < AXIS_LOCK_PX) return;
 			drag.current.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
-			e.currentTarget.setPointerCapture(e.pointerId);
 		}
 
 		if (drag.current.axis === "x") {
