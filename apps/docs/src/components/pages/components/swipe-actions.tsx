@@ -1,6 +1,9 @@
 import * as React from "react";
 import { SwipeActions, Badge, Card } from "@almach/ui";
-import { Trash2, Archive, Star, Check, Flag, Pin, Edit3, Share2 } from "lucide-react";
+import {
+	Trash2, Archive, Star, Check, Flag, Pin, Edit3, Share2,
+	CreditCard, CheckCircle2,
+} from "lucide-react";
 import { cn } from "@almach/utils";
 import { ComponentDoc } from "../../component-doc";
 
@@ -16,6 +19,58 @@ const TASKS = [
 	{ id: 2, label: "Review pull request #42",  done: false },
 	{ id: 3, label: "Update documentation",     done: false },
 ];
+
+/* ── Swipe-to-pay demo ───────────────────────────────────────────────────── */
+function SwipeToPayDemo() {
+	const [status, setStatus] = React.useState<"idle" | "done">("idle");
+
+	if (status === "done") {
+		return (
+			<div className="w-full max-w-sm rounded-xl border bg-success/10 px-4 py-6 text-center">
+				<CheckCircle2 className="mx-auto mb-2 size-8 text-success" />
+				<p className="text-sm font-semibold">Payment sent!</p>
+				<p className="mt-0.5 text-xs text-muted-foreground">$42.00 → Alice Johnson</p>
+				<button
+					onClick={() => setStatus("idle")}
+					className="mt-4 text-xs text-muted-foreground underline underline-offset-2"
+				>
+					Reset demo
+				</button>
+			</div>
+		);
+	}
+
+	return (
+		<SwipeActions
+			fullSwipe
+			onFullSwipe={() => setStatus("done")}
+			className="w-full max-w-sm rounded-xl border"
+		>
+			<SwipeActions.Left>
+				<SwipeActions.Action
+					variant="success"
+					aria-label="Pay"
+					onClick={() => setStatus("done")}
+				>
+					<CreditCard />
+					Pay
+				</SwipeActions.Action>
+			</SwipeActions.Left>
+			<SwipeActions.Content className="bg-background px-4 py-4">
+				<div className="flex items-center justify-between">
+					<div>
+						<p className="text-xs text-muted-foreground">Payment to</p>
+						<p className="text-sm font-semibold">Alice Johnson</p>
+					</div>
+					<p className="text-lg font-bold tabular-nums">$42.00</p>
+				</div>
+				<p className="mt-2 text-xs text-muted-foreground">
+					Swipe right to reveal Pay — or drag all the way across to confirm instantly.
+				</p>
+			</SwipeActions.Content>
+		</SwipeActions>
+	);
+}
 
 /* ── Page ────────────────────────────────────────────────────────────────── */
 export function SwipeActionsPage() {
@@ -136,6 +191,31 @@ export function SwipeActionsPage() {
 </SwipeActions>`,
 				},
 				{
+					title: "Swipe to pay",
+					description:
+						"fullSwipe fires the primary action on a decisive full-width swipe — no reveal-then-tap needed. Perfect for confirmations and payments.",
+					preview: <SwipeToPayDemo />,
+					code: `<SwipeActions
+  fullSwipe
+  onFullSwipe={handlePay}
+>
+  <SwipeActions.Left>
+    <SwipeActions.Action variant="success" onClick={handlePay}>
+      <CreditCard /> Pay
+    </SwipeActions.Action>
+  </SwipeActions.Left>
+  <SwipeActions.Content className="bg-background px-4 py-4">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-xs text-muted-foreground">Payment to</p>
+        <p className="text-sm font-semibold">Alice Johnson</p>
+      </div>
+      <p className="text-lg font-bold">$42.00</p>
+    </div>
+  </SwipeActions.Content>
+</SwipeActions>`,
+				},
+				{
 					title: "Top & bottom — swipe up / down",
 					description: "Top slot (swipe down) and Bottom slot (swipe up) for vertical actions.",
 					preview: (
@@ -240,10 +320,15 @@ export function SwipeActionsPage() {
 				},
 			]}
 			props={[
-				{ name: "disabled", type: "boolean", default: "false", description: "Disables all swipe interactions." },
-				{ name: "onOpenChange", type: "(side: SwipeSide) => void", description: 'Called when revealed side changes. Receives "left", "right", "top", "bottom", or null.' },
-				{ name: "SwipeActions.Action › variant", type: '"default" | "destructive" | "success" | "warning" | "secondary"', default: '"default"', description: "Color scheme for the action button." },
-				{ name: "SwipeActions.Action › closeOnAction", type: "boolean", default: "true", description: "Auto-closes after the action button is clicked." },
+				{ name: "disabled",            type: "boolean",                  default: "false",   description: "Disables all swipe interactions." },
+				{ name: "threshold",           type: "number",                   default: "0.4",     description: "Fraction of slot size the user must drag past to snap open (0–1)." },
+				{ name: "overscroll",          type: "number",                   default: "0.15",    description: "Rubber-band resistance factor when dragging past the slot edge. Lower = more resistance (0–1)." },
+				{ name: "fullSwipe",           type: "boolean",                  default: "false",   description: "Allow a full-width swipe to immediately fire the primary action — ideal for swipe-to-pay / swipe-to-dismiss." },
+				{ name: "fullSwipeThreshold",  type: "number",                   default: "0.55",    description: "Fraction of container width needed to trigger a full swipe. Only applies when fullSwipe is true." },
+				{ name: "onFullSwipe",         type: "(side: SwipeSide) => void",                    description: "Called immediately when a full-swipe gesture fires." },
+				{ name: "onOpenChange",        type: "(side: SwipeSide) => void",                    description: 'Called when the revealed side changes. Receives "left", "right", "top", "bottom", or null.' },
+				{ name: "Action › variant",    type: '"default" | "destructive" | "success" | "warning" | "secondary"', default: '"default"', description: "Color scheme for the action button." },
+				{ name: "Action › closeOnAction", type: "boolean",              default: "true",    description: "Auto-closes the panel after the action button is clicked." },
 			]}
 		/>
 	);

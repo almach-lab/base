@@ -4,10 +4,7 @@ import * as React from "react";
 import { cn } from "@almach/utils";
 
 /* ── Constants ─────────────────────────────────────────────────────────────── */
-const AXIS_LOCK  = 5;    // px before axis is committed
-const SNAP_RATIO = 0.4;  // fraction of slot size to trigger snap-open
-const OVERSCROLL = 0.15; // rubber-band factor past slot edge
-const SPRING     = "transform 300ms cubic-bezier(0.32,0.72,0,1)";
+const SPRING = "transform 300ms cubic-bezier(0.32,0.72,0,1)";
 
 /* ── Types ─────────────────────────────────────────────────────────────────── */
 export type SwipeSide          = "left" | "right" | "top" | "bottom" | null;
@@ -18,22 +15,32 @@ const SlotCtx = React.createContext<"horizontal" | "vertical">("vertical");
 
 /* ── Internal context ─────────────────────────────────────────────────────── */
 interface SwipeCtxValue {
-	openSide:      SwipeSide;
-	dragSide:      SwipeSide;
-	pastThreshold: boolean;
-	disabled:      boolean;
-	contentRef:    React.RefObject<HTMLDivElement | null>;
-	leftRef:       React.RefObject<HTMLDivElement | null>;
-	rightRef:      React.RefObject<HTMLDivElement | null>;
-	topRef:        React.RefObject<HTMLDivElement | null>;
-	bottomRef:     React.RefObject<HTMLDivElement | null>;
-	/** Tracked position in JS — never read back from the DOM string */
-	posRef:        React.RefObject<{ x: number; y: number }>;
-	touchAction:   string;
-	setDragState:  (side: SwipeSide, past: boolean) => void;
-	applyTransform:(x: number, y: number, animate?: boolean) => void;
-	open:  (side: NonNullable<SwipeSide>) => void;
-	close: () => void;
+	// Reactive state
+	openSide:       SwipeSide;
+	dragSide:       SwipeSide;
+	pastThreshold:  boolean;
+	fullSwipeReady: boolean;
+	disabled:       boolean;
+	// Config
+	threshold:          number;
+	overscroll:         number;
+	fullSwipe:          boolean;
+	fullSwipeThreshold: number;
+	// Refs
+	contentRef: React.RefObject<HTMLDivElement | null>;
+	rootRef:    React.RefObject<HTMLDivElement | null>;
+	leftRef:    React.RefObject<HTMLDivElement | null>;
+	rightRef:   React.RefObject<HTMLDivElement | null>;
+	topRef:     React.RefObject<HTMLDivElement | null>;
+	bottomRef:  React.RefObject<HTMLDivElement | null>;
+	posRef:     React.RefObject<{ x: number; y: number }>;
+	touchAction: string;
+	// Actions
+	setDragState:    (side: SwipeSide, past: boolean, fsReady?: boolean) => void;
+	applyTransform:  (x: number, y: number, animate?: boolean) => void;
+	open:            (side: NonNullable<SwipeSide>) => void;
+	close:           () => void;
+	triggerFullSwipe:(side: NonNullable<SwipeSide>) => void;
 }
 
 const SwipeCtx = React.createContext<SwipeCtxValue | null>(null);
@@ -52,34 +59,67 @@ export function useSwipeActions() {
 
 /* ── Root ─────────────────────────────────────────────────────────────────── */
 export interface SwipeActionsProps extends React.HTMLAttributes<HTMLDivElement> {
-	/** Disable all swipe interactions */
+	/** Disable all swipe interactions. @default false */
 	disabled?: boolean;
-	/** Called when the revealed side changes (null = closed) */
+	/** Called when the revealed side changes (null = closed). */
 	onOpenChange?: (side: SwipeSide) => void;
+	/**
+	 * Fraction of slot size the user must drag past to snap open (0–1).
+	 * @default 0.4
+	 */
+	threshold?: number;
+	/**
+	 * Rubber-band resistance factor applied when dragging past the slot edge (0–1).
+	 * Lower = more resistance. Use 0 to fully block overscroll.
+	 * @default 0.15
+	 */
+	overscroll?: number;
+	/**
+	 * Allow a single decisive full-width swipe to immediately fire the primary
+	 * action (first button) for that direction — no need to reveal then tap.
+	 * Ideal for "swipe to dismiss" / "swipe to pay" patterns.
+	 * @default false
+	 */
+	fullSwipe?: boolean;
+	/**
+	 * Fraction of the container width the user must drag to trigger a full swipe (0–1).
+	 * Only used when `fullSwipe` is true.
+	 * @default 0.55
+	 */
+	fullSwipeThreshold?: number;
+	/** Called when a full-swipe gesture fires. Receives the triggered side. */
+	onFullSwipe?: (side: NonNullable<SwipeSide>) => void;
 }
 
 function SwipeActionsRoot({
 	className,
 	children,
-	disabled = false,
+	disabled          = false,
 	onOpenChange,
+	threshold         = 0.4,
+	overscroll        = 0.15,
+	fullSwipe         = false,
+	fullSwipeThreshold = 0.55,
+	onFullSwipe,
 	...props
 }: SwipeActionsProps) {
-	const [openSide,      setOpenSide]      = React.useState<SwipeSide>(null);
-	const [dragSide,      setDragSide]      = React.useState<SwipeSide>(null);
-	const [pastThreshold, setPastThreshold] = React.useState(false);
-	const [touchAction,   setTouchAction]   = React.useState("none");
+	const [openSide,       setOpenSide]       = React.useState<SwipeSide>(null);
+	const [dragSide,       setDragSide]       = React.useState<SwipeSide>(null);
+	const [pastThreshold,  setPastThreshold]  = React.useState(false);
+	const [fullSwipeReady, setFullSwipeReady] = React.useState(false);
+	const [touchAction,    setTouchAction]    = React.useState("none");
 
 	const contentRef = React.useRef<HTMLDivElement>(null);
+	const rootRef    = React.useRef<HTMLDivElement>(null);
 	const leftRef    = React.useRef<HTMLDivElement>(null);
 	const rightRef   = React.useRef<HTMLDivElement>(null);
 	const topRef     = React.useRef<HTMLDivElement>(null);
 	const bottomRef  = React.useRef<HTMLDivElement>(null);
-	/** Source of truth for current translate — never read back from CSS */
 	const posRef     = React.useRef({ x: 0, y: 0 });
+	const timerRef   = React.useRef<ReturnType<typeof setTimeout>>();
 
-	// Detect which slots exist and set the correct touch-action so the page can
-	// still scroll in the perpendicular direction.
+	React.useEffect(() => () => clearTimeout(timerRef.current), []);
+
 	React.useLayoutEffect(() => {
 		const hasH = (leftRef.current?.offsetWidth   ?? 0) > 0 || (rightRef.current?.offsetWidth   ?? 0) > 0;
 		const hasV = (topRef.current?.offsetHeight   ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
@@ -97,9 +137,10 @@ function SwipeActionsRoot({
 		el.style.transform  = `translate(${x}px,${y}px)`;
 	}, []);
 
-	const setDragState = React.useCallback((side: SwipeSide, past: boolean) => {
+	const setDragState = React.useCallback((side: SwipeSide, past: boolean, fsReady = false) => {
 		setDragSide(side);
 		setPastThreshold(past);
+		setFullSwipeReady(fsReady);
 	}, []);
 
 	const open = React.useCallback(
@@ -115,6 +156,7 @@ function SwipeActionsRoot({
 			setOpenSide(side);
 			setDragSide(null);
 			setPastThreshold(false);
+			setFullSwipeReady(false);
 			onOpenChange?.(side);
 		},
 		[disabled, applyTransform, onOpenChange],
@@ -125,17 +167,34 @@ function SwipeActionsRoot({
 		setOpenSide(null);
 		setDragSide(null);
 		setPastThreshold(false);
+		setFullSwipeReady(false);
 		onOpenChange?.(null);
 	}, [applyTransform, onOpenChange]);
 
+	const triggerFullSwipe = React.useCallback(
+		(side: NonNullable<SwipeSide>) => {
+			clearTimeout(timerRef.current);
+			const w = rootRef.current?.offsetWidth  ?? 0;
+			const h = rootRef.current?.offsetHeight ?? 0;
+			const dx = side === "left" ? w : side === "right" ? -w : 0;
+			const dy = side === "top"  ? h : side === "bottom" ? -h : 0;
+			applyTransform(dx, dy, true);          // fly content off-screen
+			onFullSwipe?.(side);                   // notify parent immediately
+			timerRef.current = setTimeout(close, 310); // snap back after animation
+		},
+		[applyTransform, close, onFullSwipe],
+	);
+
 	return (
 		<SwipeCtx.Provider value={{
-			openSide, dragSide, pastThreshold, disabled,
-			contentRef, leftRef, rightRef, topRef, bottomRef,
+			openSide, dragSide, pastThreshold, fullSwipeReady, disabled,
+			threshold, overscroll, fullSwipe, fullSwipeThreshold,
+			contentRef, rootRef, leftRef, rightRef, topRef, bottomRef,
 			posRef, touchAction,
-			setDragState, applyTransform, open, close,
+			setDragState, applyTransform, open, close, triggerFullSwipe,
 		}}>
 			<div
+				ref={rootRef}
 				data-swipe-open={openSide ?? undefined}
 				className={cn("relative overflow-hidden", className)}
 				{...props}
@@ -147,15 +206,18 @@ function SwipeActionsRoot({
 }
 
 /* ── Content ──────────────────────────────────────────────────────────────── */
+const AXIS_LOCK = 5; // px before axis is committed
+
 function SwipeActionsContent({
 	className,
 	children,
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
 	const {
-		contentRef, leftRef, rightRef, topRef, bottomRef,
+		contentRef, rootRef, leftRef, rightRef, topRef, bottomRef,
 		touchAction, posRef, disabled, openSide,
-		setDragState, applyTransform, open, close,
+		threshold, overscroll, fullSwipe, fullSwipeThreshold,
+		setDragState, applyTransform, open, close, triggerFullSwipe,
 	} = useSwipeCtx();
 
 	const drag = React.useRef({
@@ -169,8 +231,7 @@ function SwipeActionsContent({
 	const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
 		if (disabled) return;
 		e.currentTarget.setPointerCapture(e.pointerId);
-		// Freeze spring animation at its current JS-tracked position.
-		// posRef is always current — no need to parse the CSS string.
+		// Freeze spring at its current JS-tracked position (posRef is always accurate)
 		applyTransform(posRef.current.x, posRef.current.y, false);
 		drag.current = {
 			active:  true,
@@ -186,7 +247,6 @@ function SwipeActionsContent({
 		const dx = e.clientX - drag.current.startX;
 		const dy = e.clientY - drag.current.startY;
 
-		// Commit to an axis once movement passes the lock threshold
 		if (!drag.current.axis) {
 			if (Math.max(Math.abs(dx), Math.abs(dy)) < AXIS_LOCK) return;
 			const hasH = (leftRef.current?.offsetWidth  ?? 0) > 0 || (rightRef.current?.offsetWidth  ?? 0) > 0;
@@ -202,32 +262,50 @@ function SwipeActionsContent({
 			const raw = drag.current.originX + dx;
 			const lw  = leftRef.current?.offsetWidth  ?? 0;
 			const rw  = rightRef.current?.offsetWidth ?? 0;
-			// Rubber-band: clamp at slot edge with resistance
+			const cw  = rootRef.current?.offsetWidth  ?? 0;
+
+			// Resistance: when fullSwipe is on, allow free movement up to the
+			// full-swipe trigger point; clamp + rubber-band only beyond that.
 			let x = raw;
-			if      (lw > 0 && raw >  lw) x =  lw + (raw - lw)  * OVERSCROLL;
-			else if (lw === 0 && raw > 0) x = raw * OVERSCROLL;
-			if      (rw > 0 && raw < -rw) x = -rw + (raw + rw)  * OVERSCROLL;
-			else if (rw === 0 && raw < 0) x = raw * OVERSCROLL;
+			if (raw > 0) {
+				const limit = lw > 0 ? (fullSwipe ? cw * fullSwipeThreshold : lw) : 0;
+				if      (lw === 0)     x = raw * overscroll;
+				else if (raw > limit)  x = limit + (raw - limit) * overscroll;
+			} else if (raw < 0) {
+				const limit = rw > 0 ? (fullSwipe ? cw * fullSwipeThreshold : rw) : 0;
+				if      (rw === 0)     x = raw * overscroll;
+				else if (-raw > limit) x = -(limit + (-raw - limit) * overscroll);
+			}
 			applyTransform(x, 0, false);
-			// Threshold feedback
+
 			const side   = raw > 0 ? "left" : raw < 0 ? "right" : null;
 			const slotW  = side === "left" ? lw : rw;
-			const past   = slotW > 0 && Math.abs(raw) >= slotW * SNAP_RATIO;
-			setDragState(side, past);
+			const past   = slotW > 0 && Math.abs(raw) >= slotW * threshold;
+			const fsReady = fullSwipe && cw > 0 && Math.abs(raw) >= cw * fullSwipeThreshold;
+			setDragState(side, past, fsReady);
 		} else {
 			const raw = drag.current.originY + dy;
 			const th  = topRef.current?.offsetHeight    ?? 0;
 			const bh  = bottomRef.current?.offsetHeight ?? 0;
+			const ch  = rootRef.current?.offsetHeight   ?? 0;
+
 			let y = raw;
-			if      (th > 0 && raw >  th) y =  th + (raw - th)  * OVERSCROLL;
-			else if (th === 0 && raw > 0) y = raw * OVERSCROLL;
-			if      (bh > 0 && raw < -bh) y = -bh + (raw + bh)  * OVERSCROLL;
-			else if (bh === 0 && raw < 0) y = raw * OVERSCROLL;
+			if (raw > 0) {
+				const limit = th > 0 ? (fullSwipe ? ch * fullSwipeThreshold : th) : 0;
+				if      (th === 0)     y = raw * overscroll;
+				else if (raw > limit)  y = limit + (raw - limit) * overscroll;
+			} else if (raw < 0) {
+				const limit = bh > 0 ? (fullSwipe ? ch * fullSwipeThreshold : bh) : 0;
+				if      (bh === 0)     y = raw * overscroll;
+				else if (-raw > limit) y = -(limit + (-raw - limit) * overscroll);
+			}
 			applyTransform(0, y, false);
-			const side  = raw > 0 ? "top" : raw < 0 ? "bottom" : null;
-			const slotH = side === "top" ? th : bh;
-			const past  = slotH > 0 && Math.abs(raw) >= slotH * SNAP_RATIO;
-			setDragState(side, past);
+
+			const side   = raw > 0 ? "top" : raw < 0 ? "bottom" : null;
+			const slotH  = side === "top" ? th : bh;
+			const past   = slotH > 0 && Math.abs(raw) >= slotH * threshold;
+			const fsReady = fullSwipe && ch > 0 && Math.abs(raw) >= ch * fullSwipeThreshold;
+			setDragState(side, past, fsReady);
 		}
 	};
 
@@ -236,7 +314,7 @@ function SwipeActionsContent({
 		const { axis, moved } = drag.current;
 		drag.current.active = false;
 		drag.current.axis   = null;
-		setDragState(null, false);
+		setDragState(null, false, false);
 
 		// Tap (no movement) on open content → close
 		if (!moved) {
@@ -245,21 +323,32 @@ function SwipeActionsContent({
 		}
 
 		const { x, y } = posRef.current;
+		const cw = rootRef.current?.offsetWidth  ?? 0;
+		const ch = rootRef.current?.offsetHeight ?? 0;
 
 		if (axis === "x") {
 			const lw = leftRef.current?.offsetWidth  ?? 0;
 			const rw = rightRef.current?.offsetWidth ?? 0;
-			if      (lw > 0 && x >  lw * SNAP_RATIO) open("left");
-			else if (rw > 0 && x < -rw * SNAP_RATIO) open("right");
+			// Full-swipe check first
+			if (fullSwipe && cw > 0) {
+				if (lw > 0 && x >  cw * fullSwipeThreshold) { triggerFullSwipe("left");  return; }
+				if (rw > 0 && x < -cw * fullSwipeThreshold) { triggerFullSwipe("right"); return; }
+			}
+			if      (lw > 0 && x >  lw * threshold) open("left");
+			else if (rw > 0 && x < -rw * threshold) open("right");
 			else close();
 		} else if (axis === "y") {
 			const th = topRef.current?.offsetHeight    ?? 0;
 			const bh = bottomRef.current?.offsetHeight ?? 0;
-			if      (th > 0 && y >  th * SNAP_RATIO) open("top");
-			else if (bh > 0 && y < -bh * SNAP_RATIO) open("bottom");
+			if (fullSwipe && ch > 0) {
+				if (th > 0 && y >  ch * fullSwipeThreshold) { triggerFullSwipe("top");    return; }
+				if (bh > 0 && y < -ch * fullSwipeThreshold) { triggerFullSwipe("bottom"); return; }
+			}
+			if      (th > 0 && y >  th * threshold) open("top");
+			else if (bh > 0 && y < -bh * threshold) open("bottom");
 			else close();
 		} else {
-			// Tiny movement, axis never locked — bounce back to stable state
+			// Tiny movement, axis never locked — restore stable state
 			if (openSide) open(openSide);
 			else applyTransform(0, 0, true);
 		}
@@ -268,10 +357,7 @@ function SwipeActionsContent({
 	return (
 		<div
 			ref={contentRef}
-			className={cn(
-				"relative z-10 will-change-transform select-none",
-				className,
-			)}
+			className={cn("relative z-10 will-change-transform select-none", className)}
 			style={{ touchAction }}
 			onPointerDown={onPointerDown}
 			onPointerMove={onPointerMove}
@@ -287,7 +373,7 @@ function SwipeActionsContent({
 /* ── Slot wrappers ────────────────────────────────────────────────────────── */
 
 function SwipeActionsLeft({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-	const { leftRef, openSide, dragSide, pastThreshold } = useSwipeCtx();
+	const { leftRef, openSide, dragSide, pastThreshold, fullSwipeReady } = useSwipeCtx();
 	const active = dragSide === "left";
 	return (
 		<SlotCtx.Provider value="vertical">
@@ -296,6 +382,7 @@ function SwipeActionsLeft({ className, children, ...props }: React.HTMLAttribute
 				aria-hidden={openSide !== "left"}
 				data-dragging={active || undefined}
 				data-past-threshold={(active && pastThreshold) || undefined}
+				data-full-swipe-ready={(active && fullSwipeReady) || undefined}
 				className={cn("absolute inset-y-0 left-0 flex items-stretch", className)}
 				{...props}
 			>
@@ -306,7 +393,7 @@ function SwipeActionsLeft({ className, children, ...props }: React.HTMLAttribute
 }
 
 function SwipeActionsRight({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-	const { rightRef, openSide, dragSide, pastThreshold } = useSwipeCtx();
+	const { rightRef, openSide, dragSide, pastThreshold, fullSwipeReady } = useSwipeCtx();
 	const active = dragSide === "right";
 	return (
 		<SlotCtx.Provider value="vertical">
@@ -315,6 +402,7 @@ function SwipeActionsRight({ className, children, ...props }: React.HTMLAttribut
 				aria-hidden={openSide !== "right"}
 				data-dragging={active || undefined}
 				data-past-threshold={(active && pastThreshold) || undefined}
+				data-full-swipe-ready={(active && fullSwipeReady) || undefined}
 				className={cn("absolute inset-y-0 right-0 flex items-stretch", className)}
 				{...props}
 			>
@@ -325,7 +413,7 @@ function SwipeActionsRight({ className, children, ...props }: React.HTMLAttribut
 }
 
 function SwipeActionsTop({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-	const { topRef, openSide, dragSide, pastThreshold } = useSwipeCtx();
+	const { topRef, openSide, dragSide, pastThreshold, fullSwipeReady } = useSwipeCtx();
 	const active = dragSide === "top";
 	return (
 		<SlotCtx.Provider value="horizontal">
@@ -334,6 +422,7 @@ function SwipeActionsTop({ className, children, ...props }: React.HTMLAttributes
 				aria-hidden={openSide !== "top"}
 				data-dragging={active || undefined}
 				data-past-threshold={(active && pastThreshold) || undefined}
+				data-full-swipe-ready={(active && fullSwipeReady) || undefined}
 				className={cn("absolute inset-x-0 top-0 flex w-full", className)}
 				{...props}
 			>
@@ -344,7 +433,7 @@ function SwipeActionsTop({ className, children, ...props }: React.HTMLAttributes
 }
 
 function SwipeActionsBottom({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-	const { bottomRef, openSide, dragSide, pastThreshold } = useSwipeCtx();
+	const { bottomRef, openSide, dragSide, pastThreshold, fullSwipeReady } = useSwipeCtx();
 	const active = dragSide === "bottom";
 	return (
 		<SlotCtx.Provider value="horizontal">
@@ -353,6 +442,7 @@ function SwipeActionsBottom({ className, children, ...props }: React.HTMLAttribu
 				aria-hidden={openSide !== "bottom"}
 				data-dragging={active || undefined}
 				data-past-threshold={(active && pastThreshold) || undefined}
+				data-full-swipe-ready={(active && fullSwipeReady) || undefined}
 				className={cn("absolute inset-x-0 bottom-0 flex w-full", className)}
 				{...props}
 			>
@@ -398,13 +488,12 @@ function SwipeAction({
 			type="button"
 			onClick={handleClick}
 			className={cn(
-				// Base
 				"select-none transition-[transform,filter] duration-150 active:opacity-70",
 				"[&_svg]:pointer-events-none [&_svg]:shrink-0",
 				variantStyles[variant],
-				// Threshold feedback — parent slot sets data-past-threshold
-				"[[data-past-threshold]_&]:scale-105 [[data-past-threshold]_&]:brightness-110",
-				// Layout by orientation
+				// Visual threshold progression via parent slot data-attrs
+				"[[data-past-threshold]_&]:scale-105  [[data-past-threshold]_&]:brightness-110",
+				"[[data-full-swipe-ready]_&]:scale-110 [[data-full-swipe-ready]_&]:brightness-125",
 				orientation === "vertical"
 					? "flex min-w-[68px] flex-col items-center justify-center gap-1.5 px-4 text-[11px] font-semibold tracking-wide [&_svg]:size-[18px]"
 					: "flex flex-1 flex-row items-center justify-center gap-2 px-5 py-3.5 text-sm font-medium [&_svg]:size-4",
