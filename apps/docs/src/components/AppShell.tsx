@@ -49,6 +49,9 @@ const componentPages: Record<string, React.LazyExoticComponent<() => React.JSX.E
   "tag-input": lazy(() => import("./pages/components/tag-input").then((m) => ({ default: m.TagInputPage }))),
   textarea: lazy(() => import("./pages/components/textarea").then((m) => ({ default: m.TextareaPage }))),
   toast: lazy(() => import("./pages/components/toast").then((m) => ({ default: m.ToastPage }))),
+  "swipe-actions": lazy(() =>
+    import("./pages/components/swipe-actions").then((m) => ({ default: m.SwipeActionsPage }))
+  ),
   tooltip: lazy(() => import("./pages/components/tooltip").then((m) => ({ default: m.TooltipPage }))),
   chart: lazy(() => import("./pages/components/chart").then((m) => ({ default: m.ChartPage }))),
   "currency-input": lazy(() =>
