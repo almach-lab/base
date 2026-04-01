@@ -55,6 +55,7 @@ const NAV_GROUPS = [
 			{ label: "Card", href: "/components/card" },
 			{ label: "Carousel", href: "/components/carousel" },
 			{ label: "Separator", href: "/components/separator" },
+			{ label: "Swipe Actions", href: "/components/swipe-actions" },
 		],
 	},
 	{
