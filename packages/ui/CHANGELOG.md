@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 1.1.1
+
+### Patch Changes
+
+- 0798793: feat: implement swipe components
+
 ## 1.1.0
 
 ### Minor Changes
