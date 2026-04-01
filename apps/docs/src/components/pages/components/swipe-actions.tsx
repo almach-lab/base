@@ -1,12 +1,8 @@
 import * as React from "react";
 import { SwipeActions, Badge, Card } from "@almach/ui";
 import { Trash2, Archive, Star, Check, Flag, Pin, Edit3, Share2 } from "lucide-react";
+import { cn } from "@almach/utils";
 import { ComponentDoc } from "../../component-doc";
-
-/* ── Helpers ─────────────────────────────────────────────────────────────── */
-function cn(...classes: (string | undefined | false)[]) {
-	return classes.filter(Boolean).join(" ");
-}
 
 /* ── Demo data ───────────────────────────────────────────────────────────── */
 const EMAILS = [

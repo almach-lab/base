@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Carousel, Card, Badge } from "@almach/ui";
+import { cn } from "@almach/utils";
 import { ComponentDoc } from "../../component-doc";
 
 const SLIDES = [
@@ -227,8 +228,4 @@ export function CarouselPage() {
 			]}
 		/>
 	);
-}
-
-function cn(...classes: (string | undefined | false)[]) {
-	return classes.filter(Boolean).join(" ");
 }
