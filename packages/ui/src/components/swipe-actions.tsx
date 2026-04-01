@@ -125,7 +125,7 @@ function SwipeActionsContent({
 		const el = contentRef.current;
 		if (!el || !el.style.transform) return 0;
 		const m = el.style.transform.match(/translateX\((-?[\d.]+)px\)/);
-		return m ? parseFloat(m[1]) : 0;
+		return m?.[1] != null ? parseFloat(m[1]) : 0;
 	};
 
 	const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
