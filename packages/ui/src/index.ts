@@ -92,7 +92,7 @@ export { Separator } from "./components/separator.js";
 export { Skeleton } from "./components/skeleton.js";
 
 export { SwipeActions, useSwipeActions } from "./components/swipe-actions.js";
-export type { SwipeActionsProps, SwipeSide, SwipeActionVariant, SwipeActionProps } from "./components/swipe-actions.js";
+export type { SwipeActionsProps, SwipeSide, SwipeActionProps, SwipeActionVariant } from "./components/swipe-actions.js";
 
 export { Switch } from "./components/switch.js";
 export type { SwitchProps } from "./components/switch.js";

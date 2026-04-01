@@ -839,71 +839,85 @@ const columns: ColumnDef<User>[] = [
 
 ### SwipeActions
 
-Reveal contextual action buttons by swiping a list item left or right. Works with both touch and mouse (pointer events). No external dependencies.
+Reveal contextual actions by swiping in any direction — left, right, up, or down. Works with both touch and mouse (pointer events). Text selection is disabled during drag. No external dependencies.
 
 ```tsx
 import { SwipeActions } from "@almach/ui";
 
-// Trailing (swipe left) — e.g. delete/archive
+// Right slot — revealed by swiping left
 <SwipeActions>
-  <SwipeActions.Trailing>
+  <SwipeActions.Right>
     <SwipeActions.Action variant="secondary" onClick={archive}>
-      <Archive />
-      Archive
+      <Archive /> Archive
     </SwipeActions.Action>
     <SwipeActions.Action variant="destructive" onClick={remove}>
-      <Trash2 />
-      Delete
+      <Trash2 /> Delete
     </SwipeActions.Action>
-  </SwipeActions.Trailing>
+  </SwipeActions.Right>
   <SwipeActions.Content className="bg-background px-4 py-3">
     {/* row content */}
   </SwipeActions.Content>
 </SwipeActions>
 
-// Leading + Trailing (swipe right to complete, left to delete)
+// Left + Right slots (swipe right = complete, swipe left = delete)
 <SwipeActions>
-  <SwipeActions.Leading>
+  <SwipeActions.Left>
     <SwipeActions.Action variant="success" onClick={complete}>
-      <Check />
-      Done
+      <Check /> Done
     </SwipeActions.Action>
-  </SwipeActions.Leading>
-  <SwipeActions.Trailing>
+  </SwipeActions.Left>
+  <SwipeActions.Right>
     <SwipeActions.Action variant="destructive" onClick={remove}>
-      <Trash2 />
-      Delete
+      <Trash2 /> Delete
     </SwipeActions.Action>
-  </SwipeActions.Trailing>
+  </SwipeActions.Right>
+  <SwipeActions.Content>...</SwipeActions.Content>
+</SwipeActions>
+
+// Top + Bottom slots (swipe down = top, swipe up = bottom)
+<SwipeActions>
+  <SwipeActions.Top>
+    <SwipeActions.Action variant="secondary"><Share2 /> Share</SwipeActions.Action>
+    <SwipeActions.Action variant="warning"><Pin /> Pin</SwipeActions.Action>
+  </SwipeActions.Top>
+  <SwipeActions.Bottom>
+    <SwipeActions.Action variant="destructive"><Trash2 /> Delete</SwipeActions.Action>
+  </SwipeActions.Bottom>
+  <SwipeActions.Content>...</SwipeActions.Content>
+</SwipeActions>
+
+// All four directions
+<SwipeActions>
+  <SwipeActions.Left>...</SwipeActions.Left>
+  <SwipeActions.Right>...</SwipeActions.Right>
+  <SwipeActions.Top>...</SwipeActions.Top>
+  <SwipeActions.Bottom>...</SwipeActions.Bottom>
   <SwipeActions.Content>...</SwipeActions.Content>
 </SwipeActions>
 
 // Disabled
 <SwipeActions disabled>...</SwipeActions>
 
-// Listen for open side changes
-<SwipeActions onOpenChange={(side) => console.log(side)}>
-  ...
-</SwipeActions>
-
 // Programmatic control from a child
 import { useSwipeActions } from "@almach/ui";
 
-function CloseButton() {
-  const { close } = useSwipeActions();
-  return <button onClick={close}>Close</button>;
+function ActionButton() {
+  const { close, open } = useSwipeActions();
+  return <button onClick={close}>Dismiss</button>;
 }
 ```
 
-**Sub-components:** `SwipeActions.Content`, `SwipeActions.Leading`, `SwipeActions.Trailing`, `SwipeActions.Action`
+**Sub-components:** `SwipeActions.Content`, `SwipeActions.Left`, `SwipeActions.Right`, `SwipeActions.Top`, `SwipeActions.Bottom`, `SwipeActions.Action`
+
+**Slot layout:** Left/Right use vertical button layout (icon above label). Top/Bottom use horizontal layout (icon beside label, buttons share full width).
 
 **Action variants:** `default` · `destructive` · `success` · `warning` · `secondary`
 
 **Props:**
-- `SwipeActions`: `disabled?: boolean`, `onOpenChange?: (side: "leading" | "trailing" | null) => void`
+- `SwipeActions`: `disabled?: boolean`, `onOpenChange?: (side: "left" | "right" | "top" | "bottom" | null) => void`
 - `SwipeActions.Action`: `variant?`, `closeOnAction?: boolean` (default `true`)
 
-**Hook:** `useSwipeActions()` — returns `{ openSide, close, openLeading, openTrailing }` for children inside `<SwipeActions>`
+**Hook:** `useSwipeActions()` — returns `{ openSide, close, open }` for children inside `<SwipeActions>`
 
 ---
 
