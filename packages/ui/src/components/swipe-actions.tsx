@@ -18,6 +18,7 @@ interface SwipeActionsCtx {
 	rightRef: React.RefObject<HTMLDivElement | null>;
 	topRef: React.RefObject<HTMLDivElement | null>;
 	bottomRef: React.RefObject<HTMLDivElement | null>;
+	touchAction: string;
 	moveContent: (x: number, y: number, animate?: boolean) => void;
 	open: (side: NonNullable<SwipeSide>) => void;
 	close: () => void;
@@ -53,11 +54,25 @@ function SwipeActionsRoot({
 	...props
 }: SwipeActionsProps) {
 	const [openSide, setOpenSide] = React.useState<SwipeSide>(null);
+	const [touchAction, setTouchAction] = React.useState("none");
 	const contentRef = React.useRef<HTMLDivElement>(null);
 	const leftRef    = React.useRef<HTMLDivElement>(null);
 	const rightRef   = React.useRef<HTMLDivElement>(null);
 	const topRef     = React.useRef<HTMLDivElement>(null);
 	const bottomRef  = React.useRef<HTMLDivElement>(null);
+
+	// After mount, detect which slots are populated and pick the right touch-action.
+	// horizontal-only → pan-y (page scrolls vertically)
+	// vertical-only   → pan-x (page scrolls horizontally)
+	// both            → none  (component owns all directions)
+	React.useLayoutEffect(() => {
+		const hasH = (leftRef.current?.offsetWidth  ?? 0) > 0 || (rightRef.current?.offsetWidth  ?? 0) > 0;
+		const hasV = (topRef.current?.offsetHeight  ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
+		if      (hasH && hasV) setTouchAction("none");
+		else if (hasH)         setTouchAction("pan-y");
+		else if (hasV)         setTouchAction("pan-x");
+		else                   setTouchAction("auto");
+	}, []);
 
 	const moveContent = React.useCallback((x: number, y: number, animate = false) => {
 		const el = contentRef.current;
@@ -90,7 +105,7 @@ function SwipeActionsRoot({
 
 	return (
 		<SwipeActionsCtx.Provider
-			value={{ openSide, contentRef, leftRef, rightRef, topRef, bottomRef, moveContent, open, close }}
+			value={{ openSide, contentRef, leftRef, rightRef, topRef, bottomRef, touchAction, moveContent, open, close }}
 		>
 			<div
 				data-swipe-open={openSide ?? undefined}
@@ -113,7 +128,7 @@ function SwipeActionsContent({
 	children,
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-	const { contentRef, leftRef, rightRef, topRef, bottomRef, moveContent, open, close } =
+	const { contentRef, leftRef, rightRef, topRef, bottomRef, touchAction, moveContent, open, close } =
 		useSwipeActionsCtx();
 
 	const drag = React.useRef({
@@ -141,10 +156,15 @@ function SwipeActionsContent({
 		const dx = e.clientX - drag.current.startX;
 		const dy = e.clientY - drag.current.startY;
 
-		// Lock axis on first significant movement
+		// Lock axis on first significant movement — only to directions that have slots
 		if (!drag.current.axis) {
 			if (Math.max(Math.abs(dx), Math.abs(dy)) < AXIS_LOCK_PX) return;
-			drag.current.axis = Math.abs(dx) >= Math.abs(dy) ? "x" : "y";
+			const hasH = (leftRef.current?.offsetWidth  ?? 0) > 0 || (rightRef.current?.offsetWidth  ?? 0) > 0;
+			const hasV = (topRef.current?.offsetHeight  ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
+			const wantsX = Math.abs(dx) >= Math.abs(dy);
+			if      (wantsX && hasH)  drag.current.axis = "x";
+			else if (!wantsX && hasV) drag.current.axis = "y";
+			else return; // gesture direction has no matching slot — ignore
 		}
 
 		if (drag.current.axis === "x") {
@@ -198,7 +218,7 @@ function SwipeActionsContent({
 		<div
 			ref={contentRef}
 			className={cn("relative z-10 will-change-transform select-none", className)}
-			style={{ touchAction: "none" }}
+			style={{ touchAction }}
 			onPointerDown={onPointerDown}
 			onPointerMove={onPointerMove}
 			onPointerUp={onPointerUp}
