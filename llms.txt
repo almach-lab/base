@@ -837,6 +837,76 @@ const columns: ColumnDef<User>[] = [
 
 ---
 
+### SwipeActions
+
+Reveal contextual action buttons by swiping a list item left or right. Works with both touch and mouse (pointer events). No external dependencies.
+
+```tsx
+import { SwipeActions } from "@almach/ui";
+
+// Trailing (swipe left) — e.g. delete/archive
+<SwipeActions>
+  <SwipeActions.Trailing>
+    <SwipeActions.Action variant="secondary" onClick={archive}>
+      <Archive />
+      Archive
+    </SwipeActions.Action>
+    <SwipeActions.Action variant="destructive" onClick={remove}>
+      <Trash2 />
+      Delete
+    </SwipeActions.Action>
+  </SwipeActions.Trailing>
+  <SwipeActions.Content className="bg-background px-4 py-3">
+    {/* row content */}
+  </SwipeActions.Content>
+</SwipeActions>
+
+// Leading + Trailing (swipe right to complete, left to delete)
+<SwipeActions>
+  <SwipeActions.Leading>
+    <SwipeActions.Action variant="success" onClick={complete}>
+      <Check />
+      Done
+    </SwipeActions.Action>
+  </SwipeActions.Leading>
+  <SwipeActions.Trailing>
+    <SwipeActions.Action variant="destructive" onClick={remove}>
+      <Trash2 />
+      Delete
+    </SwipeActions.Action>
+  </SwipeActions.Trailing>
+  <SwipeActions.Content>...</SwipeActions.Content>
+</SwipeActions>
+
+// Disabled
+<SwipeActions disabled>...</SwipeActions>
+
+// Listen for open side changes
+<SwipeActions onOpenChange={(side) => console.log(side)}>
+  ...
+</SwipeActions>
+
+// Programmatic control from a child
+import { useSwipeActions } from "@almach/ui";
+
+function CloseButton() {
+  const { close } = useSwipeActions();
+  return <button onClick={close}>Close</button>;
+}
+```
+
+**Sub-components:** `SwipeActions.Content`, `SwipeActions.Leading`, `SwipeActions.Trailing`, `SwipeActions.Action`
+
+**Action variants:** `default` · `destructive` · `success` · `warning` · `secondary`
+
+**Props:**
+- `SwipeActions`: `disabled?: boolean`, `onOpenChange?: (side: "leading" | "trailing" | null) => void`
+- `SwipeActions.Action`: `variant?`, `closeOnAction?: boolean` (default `true`)
+
+**Hook:** `useSwipeActions()` — returns `{ openSide, close, openLeading, openTrailing }` for children inside `<SwipeActions>`
+
+---
+
 ### Carousel
 
 ```tsx

@@ -120,6 +120,10 @@
       "import": "./dist/components/skeleton.js",
       "types": "./dist/components/skeleton.d.ts"
     },
+    "./swipe-actions": {
+      "import": "./dist/components/swipe-actions.js",
+      "types": "./dist/components/swipe-actions.d.ts"
+    },
     "./switch": {
       "import": "./dist/components/switch.js",
       "types": "./dist/components/switch.d.ts"
