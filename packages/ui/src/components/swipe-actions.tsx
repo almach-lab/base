@@ -3,39 +3,51 @@
 import * as React from "react";
 import { cn } from "@almach/utils";
 
-/* ── Types ────────────────────────────────────────────────────────────────── */
-export type SwipeSide = "left" | "right" | "top" | "bottom" | null;
+/* ── Constants ─────────────────────────────────────────────────────────────── */
+const AXIS_LOCK  = 5;    // px before axis is committed
+const SNAP_RATIO = 0.4;  // fraction of slot size to trigger snap-open
+const OVERSCROLL = 0.15; // rubber-band factor past slot edge
+const SPRING     = "transform 300ms cubic-bezier(0.32,0.72,0,1)";
+
+/* ── Types ─────────────────────────────────────────────────────────────────── */
+export type SwipeSide          = "left" | "right" | "top" | "bottom" | null;
 export type SwipeActionVariant = "default" | "destructive" | "success" | "warning" | "secondary";
 
-/* ── Slot orientation (passed from slot wrappers to Action buttons) ────────── */
-const SlotOrientationCtx = React.createContext<"horizontal" | "vertical">("vertical");
+/* ── Slot orientation ─────────────────────────────────────────────────────── */
+const SlotCtx = React.createContext<"horizontal" | "vertical">("vertical");
 
 /* ── Internal context ─────────────────────────────────────────────────────── */
-interface SwipeActionsCtx {
-	openSide: SwipeSide;
-	contentRef: React.RefObject<HTMLDivElement | null>;
-	leftRef: React.RefObject<HTMLDivElement | null>;
-	rightRef: React.RefObject<HTMLDivElement | null>;
-	topRef: React.RefObject<HTMLDivElement | null>;
-	bottomRef: React.RefObject<HTMLDivElement | null>;
-	touchAction: string;
-	moveContent: (x: number, y: number, animate?: boolean) => void;
-	open: (side: NonNullable<SwipeSide>) => void;
+interface SwipeCtxValue {
+	openSide:      SwipeSide;
+	dragSide:      SwipeSide;
+	pastThreshold: boolean;
+	disabled:      boolean;
+	contentRef:    React.RefObject<HTMLDivElement | null>;
+	leftRef:       React.RefObject<HTMLDivElement | null>;
+	rightRef:      React.RefObject<HTMLDivElement | null>;
+	topRef:        React.RefObject<HTMLDivElement | null>;
+	bottomRef:     React.RefObject<HTMLDivElement | null>;
+	/** Tracked position in JS — never read back from the DOM string */
+	posRef:        React.RefObject<{ x: number; y: number }>;
+	touchAction:   string;
+	setDragState:  (side: SwipeSide, past: boolean) => void;
+	applyTransform:(x: number, y: number, animate?: boolean) => void;
+	open:  (side: NonNullable<SwipeSide>) => void;
 	close: () => void;
 }
 
-const SwipeActionsCtx = React.createContext<SwipeActionsCtx | null>(null);
+const SwipeCtx = React.createContext<SwipeCtxValue | null>(null);
 
-function useSwipeActionsCtx() {
-	const ctx = React.useContext(SwipeActionsCtx);
+function useSwipeCtx() {
+	const ctx = React.useContext(SwipeCtx);
 	if (!ctx) throw new Error("Must be used inside <SwipeActions>");
 	return ctx;
 }
 
 /** Programmatic open/close from any child of <SwipeActions> */
 export function useSwipeActions() {
-	const { openSide, close, open } = useSwipeActionsCtx();
-	return { openSide, close, open };
+	const { openSide, open, close } = useSwipeCtx();
+	return { openSide, open, close };
 }
 
 /* ── Root ─────────────────────────────────────────────────────────────────── */
@@ -53,60 +65,76 @@ function SwipeActionsRoot({
 	onOpenChange,
 	...props
 }: SwipeActionsProps) {
-	const [openSide, setOpenSide] = React.useState<SwipeSide>(null);
-	const [touchAction, setTouchAction] = React.useState("none");
+	const [openSide,      setOpenSide]      = React.useState<SwipeSide>(null);
+	const [dragSide,      setDragSide]      = React.useState<SwipeSide>(null);
+	const [pastThreshold, setPastThreshold] = React.useState(false);
+	const [touchAction,   setTouchAction]   = React.useState("none");
+
 	const contentRef = React.useRef<HTMLDivElement>(null);
 	const leftRef    = React.useRef<HTMLDivElement>(null);
 	const rightRef   = React.useRef<HTMLDivElement>(null);
 	const topRef     = React.useRef<HTMLDivElement>(null);
 	const bottomRef  = React.useRef<HTMLDivElement>(null);
+	/** Source of truth for current translate — never read back from CSS */
+	const posRef     = React.useRef({ x: 0, y: 0 });
 
-	// After mount, detect which slots are populated and pick the right touch-action.
-	// horizontal-only → pan-y (page scrolls vertically)
-	// vertical-only   → pan-x (page scrolls horizontally)
-	// both            → none  (component owns all directions)
+	// Detect which slots exist and set the correct touch-action so the page can
+	// still scroll in the perpendicular direction.
 	React.useLayoutEffect(() => {
-		const hasH = (leftRef.current?.offsetWidth  ?? 0) > 0 || (rightRef.current?.offsetWidth  ?? 0) > 0;
-		const hasV = (topRef.current?.offsetHeight  ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
+		const hasH = (leftRef.current?.offsetWidth   ?? 0) > 0 || (rightRef.current?.offsetWidth   ?? 0) > 0;
+		const hasV = (topRef.current?.offsetHeight   ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
 		if      (hasH && hasV) setTouchAction("none");
 		else if (hasH)         setTouchAction("pan-y");
 		else if (hasV)         setTouchAction("pan-x");
 		else                   setTouchAction("auto");
 	}, []);
 
-	const moveContent = React.useCallback((x: number, y: number, animate = false) => {
+	const applyTransform = React.useCallback((x: number, y: number, animate = false) => {
 		const el = contentRef.current;
 		if (!el) return;
-		el.style.transition = animate ? "transform 240ms cubic-bezier(0.32,0.72,0,1)" : "none";
+		posRef.current = { x, y };
+		el.style.transition = animate ? SPRING : "none";
 		el.style.transform  = `translate(${x}px,${y}px)`;
+	}, []);
+
+	const setDragState = React.useCallback((side: SwipeSide, past: boolean) => {
+		setDragSide(side);
+		setPastThreshold(past);
 	}, []);
 
 	const open = React.useCallback(
 		(side: NonNullable<SwipeSide>) => {
 			if (disabled) return;
 			let dx = 0, dy = 0;
-			if (side === "left")   dx =  leftRef.current?.offsetWidth   ?? 0;
-			if (side === "right")  dx = -(rightRef.current?.offsetWidth  ?? 0);
-			if (side === "top")    dy =  topRef.current?.offsetHeight    ?? 0;
+			if (side === "left")   dx =  leftRef.current?.offsetWidth    ?? 0;
+			if (side === "right")  dx = -(rightRef.current?.offsetWidth   ?? 0);
+			if (side === "top")    dy =  topRef.current?.offsetHeight     ?? 0;
 			if (side === "bottom") dy = -(bottomRef.current?.offsetHeight ?? 0);
 			if (!dx && !dy) return;
-			moveContent(dx, dy, true);
+			applyTransform(dx, dy, true);
 			setOpenSide(side);
+			setDragSide(null);
+			setPastThreshold(false);
 			onOpenChange?.(side);
 		},
-		[disabled, moveContent, onOpenChange],
+		[disabled, applyTransform, onOpenChange],
 	);
 
 	const close = React.useCallback(() => {
-		moveContent(0, 0, true);
+		applyTransform(0, 0, true);
 		setOpenSide(null);
+		setDragSide(null);
+		setPastThreshold(false);
 		onOpenChange?.(null);
-	}, [moveContent, onOpenChange]);
+	}, [applyTransform, onOpenChange]);
 
 	return (
-		<SwipeActionsCtx.Provider
-			value={{ openSide, contentRef, leftRef, rightRef, topRef, bottomRef, touchAction, moveContent, open, close }}
-		>
+		<SwipeCtx.Provider value={{
+			openSide, dragSide, pastThreshold, disabled,
+			contentRef, leftRef, rightRef, topRef, bottomRef,
+			posRef, touchAction,
+			setDragState, applyTransform, open, close,
+		}}>
 			<div
 				data-swipe-open={openSide ?? undefined}
 				className={cn("relative overflow-hidden", className)}
@@ -114,41 +142,43 @@ function SwipeActionsRoot({
 			>
 				{children}
 			</div>
-		</SwipeActionsCtx.Provider>
+		</SwipeCtx.Provider>
 	);
 }
 
 /* ── Content ──────────────────────────────────────────────────────────────── */
-const AXIS_LOCK_PX = 6;
-const SNAP_RATIO   = 0.4;
-const RESISTANCE   = 0.18;
-
 function SwipeActionsContent({
 	className,
 	children,
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-	const { contentRef, leftRef, rightRef, topRef, bottomRef, touchAction, moveContent, open, close } =
-		useSwipeActionsCtx();
+	const {
+		contentRef, leftRef, rightRef, topRef, bottomRef,
+		touchAction, posRef, disabled, openSide,
+		setDragState, applyTransform, open, close,
+	} = useSwipeCtx();
 
 	const drag = React.useRef({
-		active: false,
-		startX: 0, startY: 0,
+		active:  false,
+		startX:  0, startY:  0,
 		originX: 0, originY: 0,
-		axis: null as "x" | "y" | null,
+		moved:   false,
+		axis:    null as "x" | "y" | null,
 	});
 
-	const readTranslate = (): [number, number] => {
-		const t = contentRef.current?.style.transform ?? "";
-		const m = t.match(/translate\((-?[\d.]+)px,(-?[\d.]+)px\)/);
-		return m && m[1] && m[2] ? [parseFloat(m[1]), parseFloat(m[2])] : [0, 0];
-	};
-
 	const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-		e.currentTarget.setPointerCapture(e.pointerId); // capture early — guarantees pointerup always fires here
-		const [ox, oy] = readTranslate();
-		moveContent(ox, oy, false); // freeze any ongoing animation
-		drag.current = { active: true, startX: e.clientX, startY: e.clientY, originX: ox, originY: oy, axis: null };
+		if (disabled) return;
+		e.currentTarget.setPointerCapture(e.pointerId);
+		// Freeze spring animation at its current JS-tracked position.
+		// posRef is always current — no need to parse the CSS string.
+		applyTransform(posRef.current.x, posRef.current.y, false);
+		drag.current = {
+			active:  true,
+			startX:  e.clientX, startY:  e.clientY,
+			originX: posRef.current.x, originY: posRef.current.y,
+			moved:   false,
+			axis:    null,
+		};
 	};
 
 	const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -156,68 +186,92 @@ function SwipeActionsContent({
 		const dx = e.clientX - drag.current.startX;
 		const dy = e.clientY - drag.current.startY;
 
-		// Lock axis on first significant movement — only to directions that have slots
+		// Commit to an axis once movement passes the lock threshold
 		if (!drag.current.axis) {
-			if (Math.max(Math.abs(dx), Math.abs(dy)) < AXIS_LOCK_PX) return;
+			if (Math.max(Math.abs(dx), Math.abs(dy)) < AXIS_LOCK) return;
 			const hasH = (leftRef.current?.offsetWidth  ?? 0) > 0 || (rightRef.current?.offsetWidth  ?? 0) > 0;
 			const hasV = (topRef.current?.offsetHeight  ?? 0) > 0 || (bottomRef.current?.offsetHeight ?? 0) > 0;
 			const wantsX = Math.abs(dx) >= Math.abs(dy);
 			if      (wantsX && hasH)  drag.current.axis = "x";
 			else if (!wantsX && hasV) drag.current.axis = "y";
-			else return; // gesture direction has no matching slot — ignore
+			else return;
+			drag.current.moved = true;
 		}
 
 		if (drag.current.axis === "x") {
 			const raw = drag.current.originX + dx;
 			const lw  = leftRef.current?.offsetWidth  ?? 0;
 			const rw  = rightRef.current?.offsetWidth ?? 0;
-			let xFinal = raw;
-			if (lw > 0 && raw > lw)   xFinal = lw  + (raw - lw)  * RESISTANCE;
-			else if (lw === 0 && raw > 0) xFinal = raw * RESISTANCE;
-			if (rw > 0 && raw < -rw)  xFinal = -rw + (raw + rw)  * RESISTANCE;
-			else if (rw === 0 && raw < 0) xFinal = raw * RESISTANCE;
-			moveContent(xFinal, 0, false);
+			// Rubber-band: clamp at slot edge with resistance
+			let x = raw;
+			if      (lw > 0 && raw >  lw) x =  lw + (raw - lw)  * OVERSCROLL;
+			else if (lw === 0 && raw > 0) x = raw * OVERSCROLL;
+			if      (rw > 0 && raw < -rw) x = -rw + (raw + rw)  * OVERSCROLL;
+			else if (rw === 0 && raw < 0) x = raw * OVERSCROLL;
+			applyTransform(x, 0, false);
+			// Threshold feedback
+			const side   = raw > 0 ? "left" : raw < 0 ? "right" : null;
+			const slotW  = side === "left" ? lw : rw;
+			const past   = slotW > 0 && Math.abs(raw) >= slotW * SNAP_RATIO;
+			setDragState(side, past);
 		} else {
 			const raw = drag.current.originY + dy;
 			const th  = topRef.current?.offsetHeight    ?? 0;
 			const bh  = bottomRef.current?.offsetHeight ?? 0;
-			let yFinal = raw;
-			if (th > 0 && raw > th)   yFinal = th  + (raw - th)  * RESISTANCE;
-			else if (th === 0 && raw > 0) yFinal = raw * RESISTANCE;
-			if (bh > 0 && raw < -bh)  yFinal = -bh + (raw + bh)  * RESISTANCE;
-			else if (bh === 0 && raw < 0) yFinal = raw * RESISTANCE;
-			moveContent(0, yFinal, false);
+			let y = raw;
+			if      (th > 0 && raw >  th) y =  th + (raw - th)  * OVERSCROLL;
+			else if (th === 0 && raw > 0) y = raw * OVERSCROLL;
+			if      (bh > 0 && raw < -bh) y = -bh + (raw + bh)  * OVERSCROLL;
+			else if (bh === 0 && raw < 0) y = raw * OVERSCROLL;
+			applyTransform(0, y, false);
+			const side  = raw > 0 ? "top" : raw < 0 ? "bottom" : null;
+			const slotH = side === "top" ? th : bh;
+			const past  = slotH > 0 && Math.abs(raw) >= slotH * SNAP_RATIO;
+			setDragState(side, past);
 		}
 	};
 
 	const onPointerUp = () => {
 		if (!drag.current.active) return;
-		const axis = drag.current.axis;
+		const { axis, moved } = drag.current;
 		drag.current.active = false;
 		drag.current.axis   = null;
-		const [x, y] = readTranslate();
+		setDragState(null, false);
+
+		// Tap (no movement) on open content → close
+		if (!moved) {
+			if (openSide) close();
+			return;
+		}
+
+		const { x, y } = posRef.current;
 
 		if (axis === "x") {
 			const lw = leftRef.current?.offsetWidth  ?? 0;
 			const rw = rightRef.current?.offsetWidth ?? 0;
-			if (lw > 0 && x >  lw * SNAP_RATIO) open("left");
+			if      (lw > 0 && x >  lw * SNAP_RATIO) open("left");
 			else if (rw > 0 && x < -rw * SNAP_RATIO) open("right");
 			else close();
 		} else if (axis === "y") {
 			const th = topRef.current?.offsetHeight    ?? 0;
 			const bh = bottomRef.current?.offsetHeight ?? 0;
-			if (th > 0 && y >  th * SNAP_RATIO) open("top");
+			if      (th > 0 && y >  th * SNAP_RATIO) open("top");
 			else if (bh > 0 && y < -bh * SNAP_RATIO) open("bottom");
 			else close();
 		} else {
-			close();
+			// Tiny movement, axis never locked — bounce back to stable state
+			if (openSide) open(openSide);
+			else applyTransform(0, 0, true);
 		}
 	};
 
 	return (
 		<div
 			ref={contentRef}
-			className={cn("relative z-10 will-change-transform select-none", className)}
+			className={cn(
+				"relative z-10 will-change-transform select-none",
+				className,
+			)}
 			style={{ touchAction }}
 			onPointerDown={onPointerDown}
 			onPointerMove={onPointerMove}
@@ -232,62 +286,86 @@ function SwipeActionsContent({
 
 /* ── Slot wrappers ────────────────────────────────────────────────────────── */
 
-/** Actions on the left — revealed by swiping right */
 function SwipeActionsLeft({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-	const { leftRef, openSide } = useSwipeActionsCtx();
+	const { leftRef, openSide, dragSide, pastThreshold } = useSwipeCtx();
+	const active = dragSide === "left";
 	return (
-		<SlotOrientationCtx.Provider value="vertical">
-			<div ref={leftRef} aria-hidden={openSide !== "left"}
-				className={cn("absolute inset-y-0 left-0 flex items-stretch", className)} {...props}>
+		<SlotCtx.Provider value="vertical">
+			<div
+				ref={leftRef}
+				aria-hidden={openSide !== "left"}
+				data-dragging={active || undefined}
+				data-past-threshold={(active && pastThreshold) || undefined}
+				className={cn("absolute inset-y-0 left-0 flex items-stretch", className)}
+				{...props}
+			>
 				{children}
 			</div>
-		</SlotOrientationCtx.Provider>
+		</SlotCtx.Provider>
 	);
 }
 
-/** Actions on the right — revealed by swiping left */
 function SwipeActionsRight({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-	const { rightRef, openSide } = useSwipeActionsCtx();
+	const { rightRef, openSide, dragSide, pastThreshold } = useSwipeCtx();
+	const active = dragSide === "right";
 	return (
-		<SlotOrientationCtx.Provider value="vertical">
-			<div ref={rightRef} aria-hidden={openSide !== "right"}
-				className={cn("absolute inset-y-0 right-0 flex items-stretch", className)} {...props}>
+		<SlotCtx.Provider value="vertical">
+			<div
+				ref={rightRef}
+				aria-hidden={openSide !== "right"}
+				data-dragging={active || undefined}
+				data-past-threshold={(active && pastThreshold) || undefined}
+				className={cn("absolute inset-y-0 right-0 flex items-stretch", className)}
+				{...props}
+			>
 				{children}
 			</div>
-		</SlotOrientationCtx.Provider>
+		</SlotCtx.Provider>
 	);
 }
 
-/** Actions on the top — revealed by swiping down */
 function SwipeActionsTop({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-	const { topRef, openSide } = useSwipeActionsCtx();
+	const { topRef, openSide, dragSide, pastThreshold } = useSwipeCtx();
+	const active = dragSide === "top";
 	return (
-		<SlotOrientationCtx.Provider value="horizontal">
-			<div ref={topRef} aria-hidden={openSide !== "top"}
-				className={cn("absolute inset-x-0 top-0 flex w-full", className)} {...props}>
+		<SlotCtx.Provider value="horizontal">
+			<div
+				ref={topRef}
+				aria-hidden={openSide !== "top"}
+				data-dragging={active || undefined}
+				data-past-threshold={(active && pastThreshold) || undefined}
+				className={cn("absolute inset-x-0 top-0 flex w-full", className)}
+				{...props}
+			>
 				{children}
 			</div>
-		</SlotOrientationCtx.Provider>
+		</SlotCtx.Provider>
 	);
 }
 
-/** Actions on the bottom — revealed by swiping up */
 function SwipeActionsBottom({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-	const { bottomRef, openSide } = useSwipeActionsCtx();
+	const { bottomRef, openSide, dragSide, pastThreshold } = useSwipeCtx();
+	const active = dragSide === "bottom";
 	return (
-		<SlotOrientationCtx.Provider value="horizontal">
-			<div ref={bottomRef} aria-hidden={openSide !== "bottom"}
-				className={cn("absolute inset-x-0 bottom-0 flex w-full", className)} {...props}>
+		<SlotCtx.Provider value="horizontal">
+			<div
+				ref={bottomRef}
+				aria-hidden={openSide !== "bottom"}
+				data-dragging={active || undefined}
+				data-past-threshold={(active && pastThreshold) || undefined}
+				className={cn("absolute inset-x-0 bottom-0 flex w-full", className)}
+				{...props}
+			>
 				{children}
 			</div>
-		</SlotOrientationCtx.Provider>
+		</SlotCtx.Provider>
 	);
 }
 
 /* ── Action button ────────────────────────────────────────────────────────── */
 export interface SwipeActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	variant?: SwipeActionVariant;
-	/** Auto-close after action. @default true */
+	/** Auto-close the panel after clicking. @default true */
 	closeOnAction?: boolean;
 }
 
@@ -307,8 +385,8 @@ function SwipeAction({
 	onClick,
 	...props
 }: SwipeActionProps) {
-	const { close } = useSwipeActionsCtx();
-	const orientation = React.useContext(SlotOrientationCtx);
+	const { close } = useSwipeCtx();
+	const orientation = React.useContext(SlotCtx);
 
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
 		onClick?.(e);
@@ -320,9 +398,13 @@ function SwipeAction({
 			type="button"
 			onClick={handleClick}
 			className={cn(
-				"select-none transition-opacity duration-100 active:opacity-60",
+				// Base
+				"select-none transition-[transform,filter] duration-150 active:opacity-70",
 				"[&_svg]:pointer-events-none [&_svg]:shrink-0",
 				variantStyles[variant],
+				// Threshold feedback — parent slot sets data-past-threshold
+				"[[data-past-threshold]_&]:scale-105 [[data-past-threshold]_&]:brightness-110",
+				// Layout by orientation
 				orientation === "vertical"
 					? "flex min-w-[68px] flex-col items-center justify-center gap-1.5 px-4 text-[11px] font-semibold tracking-wide [&_svg]:size-[18px]"
 					: "flex flex-1 flex-row items-center justify-center gap-2 px-5 py-3.5 text-sm font-medium [&_svg]:size-4",
