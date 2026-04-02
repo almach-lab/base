@@ -240,18 +240,17 @@ const useCreateUser = createServerAction({
 
 export function QueryPage() {
   return (
-    <div className="px-4 py-10 md:px-8">
-      <div className="mb-10 border-b pb-8">
+    <div className="px-4 py-8 md:px-5 md:py-9">
+      <div className="mb-8 border-b pb-6">
         <Badge variant="outline" className="mb-2 font-mono">@almach/query</Badge>
-        <h1 className="mb-3 text-3xl font-bold tracking-tight sm:text-4xl">Data Fetching</h1>
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          Typed query factories and mutation builders powered by TanStack Query.
-          Define once, use anywhere — with automatic cache invalidation.
+        <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">Data Fetching</h1>
+        <p className="text-sm text-muted-foreground leading-relaxed md:text-base">
+          Typed query factories and mutation builders on top of TanStack Query, with consistent cache invalidation.
         </p>
       </div>
 
       {/* Interactive demos */}
-      <div className="grid gap-6 md:grid-cols-2 mb-12">
+      <div id="query-demos" className="mb-10 grid scroll-mt-20 gap-4 md:grid-cols-2">
         <Card>
           <Card.Header>
             <Card.Title className="text-base">List + mutations</Card.Title>
@@ -278,16 +277,16 @@ export function QueryPage() {
         </Card>
       </div>
 
-      <Separator className="mb-10" />
+      <Separator className="mb-8" />
 
       {/* Documentation */}
       <div className="space-y-8">
-        <div>
+        <div id="query-install" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Installation</h2>
           <CodeBlock filename="Terminal" code={installCode} />
         </div>
 
-        <div>
+        <div id="query-queries" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Queries</h2>
           <p className="mb-3 text-sm text-muted-foreground">
             Use <code className="font-mono text-xs">createQuery</code> to define a typed query factory. Call <code className="font-mono text-xs">.options()</code> to get <code className="font-mono text-xs">queryOptions</code> compatible with TanStack Query.
@@ -321,7 +320,7 @@ export function QueryPage() {
           </Tabs>
         </div>
 
-        <div>
+        <div id="query-mutations" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Mutations</h2>
           <p className="mb-3 text-sm text-muted-foreground">
             Use <code className="font-mono text-xs">createMutation</code> to define a typed mutation hook with automatic cache invalidation.
@@ -355,7 +354,7 @@ export function QueryPage() {
           </Tabs>
         </div>
 
-        <div>
+        <div id="query-server-actions" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Server Actions</h2>
           <p className="mb-3 text-sm text-muted-foreground">
             Wrap Next.js server actions with <code className="font-mono text-xs">createServerAction</code> for type-safe error handling and automatic cache invalidation.

@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, Info } from "lucide-react";
+import { ArrowRight, Copy, Info } from "lucide-react";
 import { Alert, Badge } from "@almach/ui";
 import { CodeBlock } from "../code-block";
 import { PkgTabs } from "../pkg-tabs";
@@ -62,6 +62,7 @@ function PackageSection({
 }
 
 interface StepProps {
+  id?: string;
   n: number;
   title: string;
   description?: string;
@@ -69,9 +70,9 @@ interface StepProps {
   children?: React.ReactNode;
 }
 
-function Step({ n, title, description, last = false, children }: StepProps) {
+function Step({ id, n, title, description, last = false, children }: StepProps) {
   return (
-    <div className="relative flex gap-5">
+    <div id={id} className="relative flex scroll-mt-20 gap-5">
       {/* Connector line */}
       {!last && <div className="absolute left-[17px] top-9 bottom-0 w-px bg-border" />}
 
@@ -103,15 +104,44 @@ const CSS_TOKENS = [
 ];
 
 export function GettingStartedPage() {
+  const [copied, setCopied] = React.useState(false);
+
+  const copyMarkdown = React.useCallback(async () => {
+    const text = `# Getting Started
+
+1. Install packages
+2. Add styles
+3. Customize colors
+4. Wrap with providers
+5. Use components
+6. Handle forms`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // no-op
+    }
+  }, []);
+
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12 md:px-8">
+    <div className="mx-auto max-w-3xl px-4 py-8 md:px-5 md:py-9">
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="mb-12 border-b pb-10">
-        <Badge className="mb-4">Quick start</Badge>
-        <h1 className="mb-3 text-4xl font-black tracking-tight">Getting Started</h1>
-        <p className="mb-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-          Set up Almach in minutes. Each package is independently installable and
-          tree-shakable — install only what you need.
+      <div className="mb-9 border-b pb-7">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <Badge>Quick start</Badge>
+          <button
+            onClick={copyMarkdown}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+            {copied ? "Copied" : "Copy Markdown"}
+          </button>
+        </div>
+        <h1 className="mb-2.5 text-3xl font-semibold tracking-tight md:text-[2.2rem]">Getting Started</h1>
+        <p className="mb-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
+          Set up Almach in minutes. Each package is independently installable, so you can keep your bundle focused.
         </p>
         <div className="flex flex-wrap gap-2">
           {["React 18+", "TypeScript", "Tailwind CSS v4", "Vite / Next.js"].map((req) => (
@@ -124,6 +154,7 @@ export function GettingStartedPage() {
       <div>
         {/* Step 1 */}
         <Step
+          id="step-install"
           n={1}
           title="Install packages"
           description="Install only what you need. Every package is independently versioned and zero-dependency from each other."
@@ -135,6 +166,7 @@ export function GettingStartedPage() {
 
         {/* Step 2 */}
         <Step
+          id="step-styles"
           n={2}
           title="Add styles"
           description="Import Tailwind and the Almach design tokens in your root CSS file. Then tell Tailwind where to scan for class names inside the packages."
@@ -164,6 +196,7 @@ export function GettingStartedPage() {
 
         {/* Step 3 */}
         <Step
+          id="step-colors"
           n={3}
           title="Customize colors"
           description="Override any CSS variable to apply your brand. Every component responds automatically — no config files, no build steps."
@@ -191,6 +224,7 @@ export function GettingStartedPage() {
 
         {/* Step 4 */}
         <Step
+          id="step-providers"
           n={4}
           title="Wrap with providers"
           description="Add BasedQueryProvider and Toaster at your app root. Skip if you're not using @almach/query."
@@ -219,6 +253,7 @@ ReactDOM.createRoot(root).render(
 
         {/* Step 5 */}
         <Step
+          id="step-components"
           n={5}
           title="Use components"
           description="Import and compose components directly. Compound APIs keep related parts together."
@@ -251,6 +286,7 @@ ReactDOM.createRoot(root).render(
 
         {/* Step 6 */}
         <Step
+          id="step-forms"
           n={6}
           title="Handle forms"
           description="useBasedForm gives you TanStack Form with Zod validation, type-safe field names, and automatic error display."

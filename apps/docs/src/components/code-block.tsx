@@ -53,7 +53,7 @@ export function CodeBlock({ code, filename, lang = "bash", className }: CodeBloc
       aria-label={copied ? "Copied" : "Copy code"}
       className={cn(
         "h-7 gap-1.5 px-2 text-xs text-muted-foreground",
-        !inHeader && "absolute right-2 top-2 z-10 border bg-background/90 opacity-0 group-hover:opacity-100 focus-visible:opacity-100",
+        !inHeader && "absolute right-2 top-2 z-10 border border-border/70 bg-background/90",
       )}
     >
       {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
@@ -62,9 +62,9 @@ export function CodeBlock({ code, filename, lang = "bash", className }: CodeBloc
   );
 
   return (
-    <div className={cn("group relative overflow-hidden rounded-lg border bg-muted/40 text-sm", className)}>
+    <div className={cn("group relative overflow-hidden rounded-lg border border-border/70 bg-card/40 text-sm", className)}>
       {filename && (
-        <div className="flex items-center justify-between border-b bg-muted/60 px-4 py-2">
+        <div className="flex items-center justify-between border-b border-border/70 bg-muted/25 px-3 py-1.5">
           <span className="font-mono text-xs text-muted-foreground">{filename}</span>
           <CopyButton inHeader />
         </div>
@@ -73,11 +73,11 @@ export function CodeBlock({ code, filename, lang = "bash", className }: CodeBloc
 
       {html ? (
         <div
-          className="overflow-x-auto [&>pre]:p-4 [&>pre]:font-mono [&>pre]:text-[13px] [&>pre]:leading-relaxed [&>pre]:!bg-transparent [&_code]:!bg-transparent shiki-dual-theme"
+          className="overflow-x-auto [&>pre]:p-3 [&>pre]:font-mono [&>pre]:text-[12px] [&>pre]:leading-relaxed [&>pre]:!bg-transparent [&_code]:!bg-transparent shiki-dual-theme"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       ) : (
-        <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed">
+        <pre className="overflow-x-auto p-3 font-mono text-[12px] leading-relaxed">
           <code>{code.trim()}</code>
         </pre>
       )}

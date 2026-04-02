@@ -232,18 +232,17 @@ const fieldsCode = `import { TextField, TextareaField, SelectField, CheckboxFiel
 
 export function FormsPage() {
   return (
-    <div className="px-4 py-10 md:px-8">
-      <div className="mb-10 border-b pb-8">
+    <div className="px-4 py-8 md:px-5 md:py-9">
+      <div className="mb-8 border-b pb-6">
         <Badge variant="outline" className="mb-2 font-mono">@almach/forms</Badge>
-        <h1 className="mb-3 text-3xl font-bold tracking-tight sm:text-4xl">Form Handling</h1>
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          Type-safe forms powered by TanStack Form and Zod. Inline validation,
-          field-level and schema-level errors, accessible by default.
+        <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">Form Handling</h1>
+        <p className="text-sm text-muted-foreground leading-relaxed md:text-base">
+          Type-safe forms built on TanStack Form and Zod, with accessible field components and clear validation flows.
         </p>
       </div>
 
       {/* Interactive demos */}
-      <div className="grid gap-6 md:grid-cols-2 mb-12">
+      <div id="forms-demos" className="mb-10 grid scroll-mt-20 gap-4 md:grid-cols-2">
         <Card>
           <Card.Header>
             <Card.Title className="text-base">Login form</Card.Title>
@@ -269,17 +268,17 @@ export function FormsPage() {
         </Card>
       </div>
 
-      <Separator className="mb-10" />
+      <Separator className="mb-8" />
 
       {/* Documentation */}
       <div className="space-y-8">
-        <div>
+        <div id="forms-install" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Installation</h2>
           <p className="mb-3 text-sm text-muted-foreground">Install the forms package independently.</p>
           <CodeBlock filename="Terminal" code={installCode} />
         </div>
 
-        <div>
+        <div id="forms-quick-start" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Quick start</h2>
           <p className="mb-3 text-sm text-muted-foreground">
             Define a Zod schema, call <code className="font-mono text-xs">useBasedForm</code>, and render fields inside <code className="font-mono text-xs">form.AppField</code>.
@@ -306,7 +305,7 @@ export function FormsPage() {
           </Tabs>
         </div>
 
-        <div>
+        <div id="forms-fields" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Field components</h2>
           <p className="mb-3 text-sm text-muted-foreground">
             All field components read from field context automatically — no <code className="font-mono text-xs">name</code> or <code className="font-mono text-xs">register</code> needed.

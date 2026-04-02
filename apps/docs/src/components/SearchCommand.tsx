@@ -111,7 +111,7 @@ export function SearchCommand() {
 			{/* Desktop: expanded search bar */}
 			<button
 				onClick={() => setOpen(true)}
-				className="hidden h-9 cursor-pointer items-center gap-2.5 rounded-lg border border-input bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 lg:flex"
+				className="hidden h-9 min-w-[220px] cursor-pointer items-center gap-2.5 rounded-lg border border-input bg-muted/30 px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 lg:flex xl:min-w-[260px]"
 				aria-label="Search documentation"
 				aria-haspopup="dialog"
 			>
@@ -128,7 +128,7 @@ export function SearchCommand() {
 				</svg>
 				<span className="flex-1 text-left">Search docs…</span>
 				<kbd className="flex items-center gap-0.5 rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] leading-none text-muted-foreground">
-					⌘K
+					Ctrl K
 				</kbd>
 			</button>
 

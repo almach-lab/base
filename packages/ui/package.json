@@ -108,6 +108,10 @@
       "import": "./dist/components/radio.js",
       "types": "./dist/components/radio.d.ts"
     },
+    "./scroll-area": {
+      "import": "./dist/components/scroll-area.js",
+      "types": "./dist/components/scroll-area.d.ts"
+    },
     "./select": {
       "import": "./dist/components/select.js",
       "types": "./dist/components/select.d.ts"

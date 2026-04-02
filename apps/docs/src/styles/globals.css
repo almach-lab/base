@@ -12,32 +12,29 @@
 @import "@almach/ui/styles";
 
 /* ── Almach docs theme ────────────────────────────────────────────────────── */
-/* Golden primary — inspired by Sandy (γ And), the bright golden-yellow star  */
 :root {
-  --primary: 43 90% 44%;
-  --primary-foreground: 30 40% 6%;
-  --ring: 43 90% 44%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 221 83% 53%;
 }
 
 .dark {
-  /* Deep space — the night sky backdrop for the Andromeda constellation */
-  --background: 224 30% 5%;
-  --foreground: 210 20% 96%;
-  --card: 224 25% 8%;
-  --card-foreground: 210 20% 96%;
-  --popover: 224 25% 8%;
-  --popover-foreground: 210 20% 96%;
-  --muted: 224 20% 11%;
-  --muted-foreground: 224 12% 55%;
-  --accent: 224 22% 14%;
-  --accent-foreground: 210 20% 96%;
-  --border: 224 18% 13%;
-  --input: 224 18% 13%;
+  --background: 222 26% 8%;
+  --foreground: 210 25% 96%;
+  --card: 222 22% 10%;
+  --card-foreground: 210 25% 96%;
+  --popover: 222 22% 10%;
+  --popover-foreground: 210 25% 96%;
+  --muted: 222 16% 14%;
+  --muted-foreground: 222 10% 64%;
+  --accent: 222 14% 17%;
+  --accent-foreground: 210 25% 96%;
+  --border: 222 13% 18%;
+  --input: 222 13% 18%;
 
-  /* Bright gold in the dark sky */
-  --primary: 43 92% 58%;
-  --primary-foreground: 30 40% 6%;
-  --ring: 43 92% 58%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 217 91% 60%;
 }
 
 /* ── View transition: animate only page content, not the shell ────────────── */
@@ -67,12 +64,6 @@
   from {
     opacity: 0;
   }
-}
-
-/* ── Star field twinkle (used by home.tsx StarField) ─────────────────────── */
-@keyframes star-twinkle {
-  0%, 100% { opacity: var(--star-o); }
-  50%       { opacity: calc(var(--star-o) * 0.15); }
 }
 
 /* ── Shiki dual-theme ─────────────────────────────────────────────────────── */

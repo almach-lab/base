@@ -1,112 +1,136 @@
 import * as React from "react";
-import { ArrowRight, Search } from "lucide-react";
+import { ArrowRight, Copy, Search } from "lucide-react";
 import { Badge, Input } from "@almach/ui";
 import { DOC_COMPONENT_GROUPS } from "../../lib/doc-components";
 
-// ── Component registry ──────────────────────────────────────────────────────
-const GROUPS = DOC_COMPONENT_GROUPS.map((group) => ({
-	name: group.name,
-	items: group.items.map((item) => ({
-		name: item.name,
-		href: `/components/${item.slug}`,
-		description: item.description,
-	})),
+type Group = {
+  name: string;
+  id: string;
+  items: { name: string; href: string; description: string }[];
+};
+
+const GROUPS: Group[] = DOC_COMPONENT_GROUPS.map((group) => ({
+  name: group.name,
+  id: `group-${group.name.toLowerCase()}`,
+  items: group.items.map((item) => ({
+    name: item.name,
+    href: `/components/${item.slug}`,
+    description: item.description,
+  })),
 }));
 
 const ALL_ITEMS = GROUPS.flatMap((g) => g.items);
 const TOTAL = ALL_ITEMS.length;
 
-// ── Page ────────────────────────────────────────────────────────────────────
 export function ComponentsIndexPage() {
-	const [query, setQuery] = React.useState("");
+  const [query, setQuery] = React.useState("");
+  const [copied, setCopied] = React.useState(false);
 
-	const filtered = React.useMemo(() => {
-		if (!query.trim()) return null; // null = show groups
-		const q = query.toLowerCase();
-		return ALL_ITEMS.filter(
-			(c) => c.name.toLowerCase().includes(q) || c.description.toLowerCase().includes(q),
-		);
-	}, [query]);
+  const filtered = React.useMemo(() => {
+    if (!query.trim()) return null;
+    const q = query.toLowerCase();
+    return ALL_ITEMS.filter((item) => item.name.toLowerCase().includes(q) || item.description.toLowerCase().includes(q));
+  }, [query]);
 
-	return (
-		<div className="mx-auto max-w-4xl px-4 py-10 md:px-8">
-			{/* Header */}
-			<div className="mb-8 border-b pb-8">
-				<Badge variant="outline" className="mb-2 font-mono">
-					@almach/ui
-				</Badge>
-				<h1 className="mt-2 text-3xl font-bold tracking-tight">Components</h1>
-				<p className="mt-2 text-base text-muted-foreground leading-relaxed max-w-xl">
-					{TOTAL} accessible, composable components built on Radix UI primitives with Tailwind CSS v4.
-				</p>
-			</div>
+  const copyMarkdown = React.useCallback(async () => {
+    const lines = ["# All Components", "", ...GROUPS.flatMap((group) => [
+      `## ${group.name}`,
+      ...group.items.map((item) => `- [${item.name}](${item.href})`),
+      "",
+    ])];
 
-			{/* Search */}
-			<div className="mb-8">
-				<Input
-					type="search"
-					placeholder="Search components…"
-					value={query}
-					onChange={(e) => setQuery(e.target.value)}
-					aria-label="Search components"
-					className="h-10"
-					leftElement={<Search className="h-4 w-4" aria-hidden="true" />}
-				/>
-			</div>
+    try {
+      await navigator.clipboard.writeText(lines.join("\n"));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      // no-op
+    }
+  }, []);
 
-			{/* Flat search results */}
-			{filtered !== null ? (
-				filtered.length === 0 ? (
-					<div className="py-12 text-center text-muted-foreground">
-						<p className="text-sm">
-							No components match "<strong>{query}</strong>"
-						</p>
-					</div>
-				) : (
-					<>
-						<div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-							{filtered.map((c) => (
-								<ComponentCard key={c.name} {...c} />
-							))}
-						</div>
-						<p className="mt-4 text-xs text-muted-foreground">
-							{filtered.length} of {TOTAL} components
-						</p>
-					</>
-				)
-			) : (
-				/* Grouped view */
-				<div className="space-y-10">
-					{GROUPS.map((group) => (
-						<section key={group.name}>
-							<h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground/70">
-								{group.name}
-							</h2>
-							<div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-								{group.items.map((c) => (
-									<ComponentCard key={c.name} {...c} />
-								))}
-							</div>
-						</section>
-					))}
-				</div>
-			)}
-		</div>
-	);
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-7 md:px-5 md:py-8">
+      <div className="mb-5 border-b border-border/70 pb-4">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <Badge variant="outline" className="font-mono text-[11px]">
+            @almach/ui
+          </Badge>
+          <button
+            onClick={copyMarkdown}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/70 hover:text-foreground"
+          >
+            <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+            {copied ? "Copied" : "Copy Markdown"}
+          </button>
+        </div>
+
+        <h1 className="text-3xl font-semibold tracking-tight md:text-[2.2rem]">All Components</h1>
+        <p className="mt-2 max-w-2xl text-sm text-muted-foreground md:text-base">
+          Browse documented components by category. {TOTAL} components are currently available.
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <Input
+          type="search"
+          placeholder="Search components..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          aria-label="Search components"
+          className="h-10 border-border/80"
+          leftElement={<Search className="h-4 w-4" aria-hidden="true" />}
+        />
+      </div>
+
+      {filtered !== null ? (
+        filtered.length === 0 ? (
+          <div className="rounded-xl border border-border/70 bg-muted/20 px-4 py-8 text-center text-sm text-muted-foreground">
+            No components match "{query}".
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {filtered.map((item) => (
+              <ComponentCard key={item.href} {...item} />
+            ))}
+          </div>
+        )
+      ) : (
+        <div className="space-y-9 md:space-y-10">
+          {GROUPS.map((group) => (
+            <section key={group.id} id={group.id} className="scroll-mt-24">
+              <h2 className="mb-3 text-xl font-semibold tracking-tight md:text-2xl">{group.name}</h2>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {group.items.map((item) => (
+                  <ComponentCard key={item.href} {...item} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function ComponentCard({ name, href, description }: { name: string; href: string; description: string }) {
-	return (
-		<a
-			href={href}
-			aria-label={`${name} — ${description}`}
-			className="group flex items-center justify-between rounded-xl border px-4 py-3.5 transition-colors hover:bg-accent/50 hover:border-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-		>
-			<div className="min-w-0">
-				<p className="text-sm font-medium">{name}</p>
-				<p className="truncate text-xs text-muted-foreground">{description}</p>
-			</div>
-			<ArrowRight className="ml-2 h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-0 transition-all group-hover:opacity-100 group-hover:translate-x-0.5" />
-		</a>
-	);
+  return (
+    <a
+      href={href}
+      aria-label={`${name} — ${description}`}
+      className="group block rounded-xl border border-border/70 bg-card/50 p-2.5 transition-all hover:border-primary/45 hover:bg-card"
+    >
+      <div className="mb-2.5 flex h-32 items-center justify-center rounded-lg border border-border/60 bg-[radial-gradient(circle_at_top,hsl(var(--primary)/0.16),transparent_52%)] md:h-36">
+        <span className="rounded-full border border-primary/40 bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
+          {name}
+        </span>
+      </div>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold md:text-base">{name}</p>
+          <p className="mt-1 text-xs text-muted-foreground md:text-sm">{description}</p>
+        </div>
+        <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
+      </div>
+    </a>
+  );
 }
