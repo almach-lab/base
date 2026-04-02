@@ -1,5 +1,16 @@
 # @almach/forms
 
+## 3.0.0
+
+### Minor Changes
+
+- auto release from 82e45c9..f3a50d9
+
+### Patch Changes
+
+- Updated dependencies
+  - @almach/ui@1.2.0
+
 ## 2.0.0
 
 ### Patch Changes
