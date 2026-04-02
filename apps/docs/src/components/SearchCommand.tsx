@@ -9,6 +9,16 @@ import {
 	LayoutGrid,
 	Zap,
 } from "lucide-react";
+import { DOC_COMPONENT_GROUPS } from "../lib/doc-components";
+
+function itemsFor(groupName: (typeof DOC_COMPONENT_GROUPS)[number]["name"]) {
+	const group = DOC_COMPONENT_GROUPS.find((entry) => entry.name === groupName);
+	if (!group) throw new Error(`Missing docs component group: ${groupName}`);
+	return group.items.map((item) => ({
+		label: item.name,
+		href: `/components/${item.slug}`,
+	}));
+}
 
 // ── Navigation groups ───────────────────────────────────────────────────────
 const NAV_GROUPS = [
@@ -23,63 +33,27 @@ const NAV_GROUPS = [
 	{
 		heading: "Inputs",
 		icon: Zap,
-		items: [
-			{ label: "Button", href: "/components/button" },
-			{ label: "Checkbox", href: "/components/checkbox" },
-			{ label: "Input", href: "/components/input" },
-			{ label: "Label", href: "/components/label" },
-			{ label: "Radio", href: "/components/radio" },
-			{ label: "Select", href: "/components/select" },
-			{ label: "Switch", href: "/components/switch" },
-			{ label: "Tag Input", href: "/components/tag-input" },
-			{ label: "Textarea", href: "/components/textarea" },
-		],
+		items: itemsFor("Inputs"),
 	},
 	{
 		heading: "Display",
 		icon: LayoutGrid,
-		items: [
-			{ label: "Alert", href: "/components/alert" },
-			{ label: "Avatar", href: "/components/avatar" },
-			{ label: "Badge", href: "/components/badge" },
-			{ label: "Progress", href: "/components/progress" },
-			{ label: "Skeleton", href: "/components/skeleton" },
-			{ label: "Toast", href: "/components/toast" },
-			{ label: "Tooltip", href: "/components/tooltip" },
-		],
+		items: itemsFor("Display"),
 	},
 	{
 		heading: "Layout",
 		icon: Layers,
-		items: [
-			{ label: "Card", href: "/components/card" },
-			{ label: "Carousel", href: "/components/carousel" },
-			{ label: "Separator", href: "/components/separator" },
-			{ label: "Swipe Actions", href: "/components/swipe-actions" },
-		],
+		items: itemsFor("Layout"),
 	},
 	{
 		heading: "Overlay",
 		icon: FileText,
-		items: [
-			{ label: "Collapsible", href: "/components/collapsible" },
-			{ label: "Command", href: "/components/command" },
-			{ label: "Dialog", href: "/components/dialog" },
-			{ label: "Drawer", href: "/components/drawer" },
-			{ label: "Dropdown Menu", href: "/components/dropdown-menu" },
-			{ label: "Modal", href: "/components/modal" },
-			{ label: "Popover", href: "/components/popover" },
-			{ label: "Tabs", href: "/components/tabs" },
-		],
+		items: itemsFor("Overlay"),
 	},
 	{
 		heading: "Data",
 		icon: BarChart2,
-		items: [
-			{ label: "Chart", href: "/components/chart" },
-			{ label: "Calendar", href: "/components/calendar" },
-			{ label: "Table", href: "/components/table" },
-		],
+		items: itemsFor("Data"),
 	},
 	{
 		heading: "Packages",

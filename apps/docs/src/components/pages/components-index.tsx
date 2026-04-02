@@ -1,68 +1,17 @@
 import * as React from "react";
 import { ArrowRight, Search } from "lucide-react";
 import { Badge, Input } from "@almach/ui";
+import { DOC_COMPONENT_GROUPS } from "../../lib/doc-components";
 
 // ── Component registry ──────────────────────────────────────────────────────
-const GROUPS = [
-	{
-		name: "Inputs",
-		items: [
-			{ name: "Button", href: "/components/button", description: "Triggers an action or event." },
-			{ name: "Checkbox", href: "/components/checkbox", description: "Boolean selection control." },
-			{ name: "Currency Input", href: "/components/currency-input", description: "Amount field with currency selector." },
-			{ name: "Input", href: "/components/input", description: "Text field with icon slots." },
-			{ name: "Label", href: "/components/label", description: "Accessible form label." },
-			{ name: "Radio", href: "/components/radio", description: "Single-selection radio group." },
-			{ name: "Select", href: "/components/select", description: "Dropdown + searchable select." },
-			{ name: "Switch", href: "/components/switch", description: "Toggle control with three sizes." },
-			{ name: "Tag Input", href: "/components/tag-input", description: "Multi-value tag input field." },
-			{ name: "Textarea", href: "/components/textarea", description: "Multi-line text input." },
-		],
-	},
-	{
-		name: "Display",
-		items: [
-			{ name: "Alert", href: "/components/alert", description: "Inline feedback messages." },
-			{ name: "Avatar", href: "/components/avatar", description: "User image with fallback initials." },
-			{ name: "Badge", href: "/components/badge", description: "Status labels and tags." },
-			{ name: "Progress", href: "/components/progress", description: "Linear progress indicator." },
-			{ name: "Skeleton", href: "/components/skeleton", description: "Shimmer loading placeholder." },
-			{ name: "Toast", href: "/components/toast", description: "Transient notifications." },
-			{ name: "Tooltip", href: "/components/tooltip", description: "Contextual hover hints." },
-		],
-	},
-	{
-		name: "Layout",
-		items: [
-			{ name: "Card", href: "/components/card", description: "Surface container with sections." },
-			{ name: "Carousel", href: "/components/carousel", description: "Touch-friendly slide carousel." },
-			{ name: "Separator", href: "/components/separator", description: "Horizontal or vertical divider." },
-			{ name: "Swipe Actions", href: "/components/swipe-actions", description: "Reveal actions by swiping a list item." },
-		],
-	},
-	{
-		name: "Overlay",
-		items: [
-			{ name: "Collapsible", href: "/components/collapsible", description: "Expand / collapse content." },
-			{ name: "Command", href: "/components/command", description: "⌘K command palette with search." },
-			{ name: "Dialog", href: "/components/dialog", description: "Modal overlay with focus trapping." },
-			{ name: "Drawer", href: "/components/drawer", description: "Bottom sheet with drag-to-dismiss." },
-			{ name: "Dropdown Menu", href: "/components/dropdown-menu", description: "Contextual floating menu." },
-			{ name: "Modal", href: "/components/modal", description: "Dialog on desktop, Drawer on mobile." },
-			{ name: "Family Modal", href: "/components/family-modal", description: "Animated multi-view dialog with height transitions." },
-			{ name: "Popover", href: "/components/popover", description: "Floating panel anchored to a trigger." },
-			{ name: "Tabs", href: "/components/tabs", description: "Pill and underline tab variants." },
-		],
-	},
-	{
-		name: "Data",
-		items: [
-			{ name: "Chart", href: "/components/chart", description: "Line, Bar, Area, Pie, and Radar charts." },
-			{ name: "Calendar", href: "/components/calendar", description: "Date and date range picker." },
-			{ name: "Table", href: "/components/table", description: "TanStack-powered data table." },
-		],
-	},
-];
+const GROUPS = DOC_COMPONENT_GROUPS.map((group) => ({
+	name: group.name,
+	items: group.items.map((item) => ({
+		name: item.name,
+		href: `/components/${item.slug}`,
+		description: item.description,
+	})),
+}));
 
 const ALL_ITEMS = GROUPS.flatMap((g) => g.items);
 const TOTAL = ALL_ITEMS.length;

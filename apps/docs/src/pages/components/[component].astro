@@ -1,18 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { AppShell } from "../../components/AppShell";
+import { DOC_COMPONENT_SLUGS } from "../../lib/doc-components";
 
 export function getStaticPaths() {
-  const components = [
-    "alert", "avatar", "badge", "button", "calendar", "card",
-    "carousel", "chart", "checkbox", "collapsible", "command",
-    "dialog", "drawer", "dropdown-menu",
-    "currency-input",
-    "input", "label", "modal", "family-modal", "popover", "progress", "radio",
-    "select", "separator", "skeleton", "swipe-actions", "switch", "table", "tabs",
-    "tag-input", "textarea", "toast", "tooltip",
-  ];
-  return components.map((component) => ({ params: { component } }));
+  return DOC_COMPONENT_SLUGS.map((component) => ({ params: { component } }));
 }
 
 const { component } = Astro.params;

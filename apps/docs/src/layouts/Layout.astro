@@ -4,6 +4,7 @@ import ClientRouter from "astro/components/ClientRouter.astro";
 import { ThemeCustomizer } from "../components/ThemeCustomizer";
 import { SearchCommand } from "../components/SearchCommand";
 import Logo from "../components/Logo.astro";
+import { DOC_COMPONENT_GROUPS } from "../lib/doc-components";
 
 interface Props {
   title?: string;
@@ -36,63 +37,13 @@ const sidebarGroups = [
       { name: "Overview", href: "/components" },
     ],
   },
-  {
-    title: "Inputs",
-    items: [
-      { name: "Button", href: "/components/button" },
-      { name: "Checkbox", href: "/components/checkbox" },
-      { name: "Input", href: "/components/input" },
-      { name: "Label", href: "/components/label" },
-      { name: "Radio", href: "/components/radio" },
-      { name: "Select", href: "/components/select" },
-      { name: "Switch", href: "/components/switch" },
-      { name: "Tag Input", href: "/components/tag-input" },
-      { name: "Textarea", href: "/components/textarea" },
-    ],
-  },
-  {
-    title: "Display",
-    items: [
-      { name: "Alert", href: "/components/alert" },
-      { name: "Avatar", href: "/components/avatar" },
-      { name: "Badge", href: "/components/badge" },
-      { name: "Progress", href: "/components/progress" },
-      { name: "Skeleton", href: "/components/skeleton" },
-      { name: "Toast", href: "/components/toast" },
-      { name: "Tooltip", href: "/components/tooltip" },
-    ],
-  },
-  {
-    title: "Layout",
-    items: [
-      { name: "Card", href: "/components/card" },
-      { name: "Carousel", href: "/components/carousel" },
-      { name: "Separator", href: "/components/separator" },
-      { name: "Swipe Actions", href: "/components/swipe-actions" },
-    ],
-  },
-  {
-    title: "Overlay",
-    items: [
-      { name: "Collapsible", href: "/components/collapsible" },
-      { name: "Command", href: "/components/command" },
-      { name: "Dialog", href: "/components/dialog" },
-      { name: "Drawer", href: "/components/drawer" },
-      { name: "Dropdown Menu", href: "/components/dropdown-menu" },
-      { name: "Modal", href: "/components/modal" },
-      { name: "Family Modal", href: "/components/family-modal" },
-      { name: "Popover", href: "/components/popover" },
-      { name: "Tabs", href: "/components/tabs" },
-    ],
-  },
-  {
-    title: "Data",
-    items: [
-      { name: "Chart", href: "/components/chart" },
-      { name: "Calendar", href: "/components/calendar" },
-      { name: "Table", href: "/components/table" },
-    ],
-  },
+  ...DOC_COMPONENT_GROUPS.map((group) => ({
+    title: group.name,
+    items: group.items.map((item) => ({
+      name: item.name,
+      href: `/components/${item.slug}`,
+    })),
+  })),
   {
     title: "Packages",
     items: [
