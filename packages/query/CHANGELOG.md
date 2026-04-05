@@ -1,5 +1,16 @@
 # @almach/query
 
+## 2.0.0
+
+### Major Changes
+
+- 08f37b0: feat: migate to react-aria for the components
+
+### Patch Changes
+
+- Updated dependencies [08f37b0]
+  - @almach/utils@1.0.0
+
 ## 1.1.0
 
 ### Minor Changes

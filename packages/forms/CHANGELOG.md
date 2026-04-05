@@ -1,5 +1,17 @@
 # @almach/forms
 
+## 5.0.0
+
+### Major Changes
+
+- 08f37b0: feat: migate to react-aria for the components
+
+### Patch Changes
+
+- Updated dependencies [08f37b0]
+  - @almach/ui@3.0.0
+  - @almach/utils@1.0.0
+
 ## 4.0.0
 
 ### Minor Changes

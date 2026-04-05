@@ -1,5 +1,11 @@
 # @almach/utils
 
+## 1.0.0
+
+### Major Changes
+
+- 08f37b0: feat: migate to react-aria for the components
+
 ## 0.2.0
 
 ### Minor Changes
