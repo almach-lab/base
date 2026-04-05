@@ -1,5 +1,11 @@
 # @almach/query
 
+## 1.1.0
+
+### Minor Changes
+
+- auto release from 5ac676a..28b2346
+
 ## 1.0.0
 
 ### Minor Changes
