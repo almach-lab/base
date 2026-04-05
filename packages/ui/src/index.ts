@@ -73,8 +73,6 @@ export type { CurrencyDef, CurrencyValue, InputCurrencyProps, CurrencySelectorMo
 
 export { Label } from "./components/label.js";
 
-export { FamilyModal, useFamilyModal } from "./components/family-modal.js";
-
 export { Modal, useModal } from "./components/modal.js";
 export type { ViewsRegistry, ViewComponent } from "./components/modal.js";
 
@@ -96,6 +94,9 @@ export { Skeleton } from "./components/skeleton.js";
 export { SwipeActions, useSwipeActions } from "./components/swipe-actions.js";
 export type { SwipeActionsProps, SwipeSide, SwipeActionProps, SwipeActionVariant } from "./components/swipe-actions.js";
 
+export { SwipeButton } from "./components/swipe-button.js";
+export type { SwipeButtonRootProps, SwipeButtonThumbProps } from "./components/swipe-button.js";
+
 export { Switch } from "./components/switch.js";
 export type { SwitchProps } from "./components/switch.js";
 
@@ -108,7 +109,7 @@ export { TagInput } from "./components/tag-input.js";
 export type { TagInputProps } from "./components/tag-input.js";
 
 export { toast } from "./components/toast.js";
-export type { ToastOptions } from "./components/toast.js";
+export type { ToastOptions, ToastConfirmOptions } from "./components/toast.js";
 
 export { Toaster } from "./components/toaster.js";
 

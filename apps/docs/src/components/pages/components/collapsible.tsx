@@ -6,7 +6,7 @@ export function CollapsiblePage() {
 	return (
 		<ComponentDoc
 			name="Collapsible"
-			description="Expandable / collapsible section built on Radix Collapsible. The trigger rotates a chevron to indicate state. Supports controlled and uncontrolled usage."
+			description="Expandable / collapsible section with a rotating chevron trigger. Supports controlled and uncontrolled usage."
 			pkg="@almach/ui"
 			examples={[
 				{
@@ -17,8 +17,8 @@ export function CollapsiblePage() {
 							<Collapsible.Trigger>What is Almach?</Collapsible.Trigger>
 							<Collapsible.Content>
 								<p className="pb-4 text-sm text-muted-foreground leading-relaxed">
-									Almach is a component library built on Radix UI primitives
-									and styled with Tailwind CSS v4. It provides accessible,
+									Almach is a component library styled with Tailwind CSS v4.
+									It provides accessible,
 									composable components with a clean API.
 								</p>
 							</Collapsible.Content>
@@ -28,7 +28,7 @@ export function CollapsiblePage() {
   <Collapsible.Trigger>What is Almach?</Collapsible.Trigger>
   <Collapsible.Content>
     <p className="pb-4 text-sm text-muted-foreground">
-      Almach is a component library built on Radix UI primitives…
+	Almach is a component library with accessible, composable primitives…
     </p>
   </Collapsible.Content>
 </Collapsible>`,
@@ -41,7 +41,7 @@ export function CollapsiblePage() {
 							{[
 								{
 									q: "Is it accessible?",
-									a: "Yes. All components follow WAI-ARIA patterns and are built on Radix UI primitives.",
+									a: "Yes. All components follow WAI-ARIA patterns and keyboard navigation best practices.",
 								},
 								{
 									q: "Does it support dark mode?",

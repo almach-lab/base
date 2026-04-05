@@ -13,7 +13,8 @@ function makeQueryClient() {
           // Don't retry on 4xx errors
           if (error instanceof Error && "status" in error) {
             const status = (error as Record<string, unknown>)["status"];
-            if (typeof status === "number" && status >= 400 && status < 500) return false;
+            if (typeof status === "number" && status >= 400 && status < 500)
+              return false;
           }
           return failureCount < 3;
         },
@@ -47,7 +48,10 @@ export interface BasedQueryProviderProps {
  * Drop-in QueryClientProvider with sensible defaults.
  * Supports both client and server rendering (RSC-compatible).
  */
-export function BasedQueryProvider({ children, client }: BasedQueryProviderProps) {
+export function BasedQueryProvider({
+  children,
+  client,
+}: BasedQueryProviderProps) {
   const queryClient = client ?? getQueryClient();
 
   return (

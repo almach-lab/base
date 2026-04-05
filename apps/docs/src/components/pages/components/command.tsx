@@ -20,7 +20,7 @@ export function CommandPage() {
 	return (
 		<ComponentDoc
 			name="Command"
-			description="Accessible command palette built on cmdk. Supports keyboard navigation, grouped results, shortcuts, and a Dialog wrapper for ⌘K style menus."
+			description="Accessible command palette with keyboard navigation, grouped results, shortcuts, and a Dialog wrapper for ⌘K style menus."
 			pkg="@almach/ui"
 			examples={[
 				{

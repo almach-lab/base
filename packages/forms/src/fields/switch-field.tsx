@@ -41,10 +41,10 @@ export function SwitchField({
       </div>
       <FormControl>
         <Switch
-          checked={field.state.value ?? false}
-          onCheckedChange={field.handleChange}
+          isSelected={field.state.value ?? false}
+          onChange={field.handleChange}
           onBlur={field.handleBlur}
-          disabled={disabled ?? false}
+          isDisabled={disabled ?? false}
         />
       </FormControl>
       <FormMessage />

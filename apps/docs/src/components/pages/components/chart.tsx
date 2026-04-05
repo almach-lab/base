@@ -42,7 +42,7 @@ export function ChartPage() {
 	return (
 		<ComponentDoc
 			name="Chart"
-			description="Composable chart primitives built on Recharts. Includes Line, Bar, Area, Pie, and Radar charts with full theme integration via CSS variables."
+			description="Composable chart primitives including Line, Bar, Area, Pie, and Radar charts with full theme integration via CSS variables."
 			pkg="@almach/ui"
 			examples={[
 				{

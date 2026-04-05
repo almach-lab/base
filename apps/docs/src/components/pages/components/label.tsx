@@ -6,7 +6,7 @@ export function LabelPage() {
 	return (
 		<ComponentDoc
 			name="Label"
-			description="An accessible form label built on Radix UI Label. Clicking the label focuses its associated control."
+			description="An accessible form label. Clicking the label focuses its associated control."
 			examples={[
 				{
 					title: "With input",

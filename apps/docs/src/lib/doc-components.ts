@@ -15,7 +15,6 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
 		items: [
 			{ name: "Button", slug: "button", description: "Triggers an action or event." },
 			{ name: "Checkbox", slug: "checkbox", description: "Boolean selection control." },
-			{ name: "Currency Input", slug: "currency-input", description: "Amount field with currency selector." },
 			{ name: "Input", slug: "input", description: "Text field with icon slots." },
 			{ name: "Label", slug: "label", description: "Accessible form label." },
 			{ name: "Radio", slug: "radio", description: "Single-selection radio group." },
@@ -55,11 +54,6 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
 			{ name: "Drawer", slug: "drawer", description: "Bottom sheet with drag-to-dismiss." },
 			{ name: "Dropdown Menu", slug: "dropdown-menu", description: "Contextual floating menu." },
 			{ name: "Modal", slug: "modal", description: "Dialog on desktop, Drawer on mobile." },
-			{
-				name: "Family Modal",
-				slug: "family-modal",
-				description: "Animated multi-view dialog with height transitions.",
-			},
 			{ name: "Popover", slug: "popover", description: "Floating panel anchored to a trigger." },
 			{ name: "Tabs", slug: "tabs", description: "Pill and underline tab variants." },
 		],

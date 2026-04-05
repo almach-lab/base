@@ -17,7 +17,7 @@ export function DropdownMenuPage() {
 	return (
 		<ComponentDoc
 			name="Dropdown Menu"
-			description="A floating contextual menu built on Radix UI DropdownMenu. Supports items, labels, groups, separators, and keyboard shortcuts."
+			description="A floating contextual menu with items, labels, groups, separators, and keyboard shortcuts."
 			examples={[
 				{
 					title: "Account menu",

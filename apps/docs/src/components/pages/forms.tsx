@@ -237,7 +237,7 @@ export function FormsPage() {
         <Badge variant="outline" className="mb-2 font-mono">@almach/forms</Badge>
         <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">Form Handling</h1>
         <p className="text-sm text-muted-foreground leading-relaxed md:text-base">
-          Type-safe forms built on TanStack Form and Zod, with accessible field components and clear validation flows.
+          Type-safe forms using TanStack Form and Zod, with accessible field components and clear validation flows.
         </p>
       </div>
 

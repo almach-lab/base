@@ -176,8 +176,10 @@ export function GettingStartedPage() {
             lang="css"
             code={`@import "tailwindcss";
 
-/* Tell Tailwind v4 to scan component source for class names.
- * Without this, classes inside @almach/ui are stripped from the build. */
+/* Monorepo source scan (local dev) */
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+
+/* Package scan (installed/build output) */
 @source "../node_modules/@almach/ui/dist/**/*.js";
 
 @import "@almach/ui/styles";`}
@@ -187,9 +189,9 @@ export function GettingStartedPage() {
             <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
               @source
             </code>{" "}
-            at the workspace source instead of dist:{" "}
+            at both workspace source and dist so local dev and packaged builds both work:{" "}
             <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
-              @source "../../packages/ui/src/**/*.{"{ts,tsx}"}";
+              @source "../../../../packages/ui/src/**/*.{"{ts,tsx}"}";
             </code>
           </Note>
         </Step>

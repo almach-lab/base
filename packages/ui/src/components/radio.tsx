@@ -1,14 +1,13 @@
-import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
+import { Radio as RadioPrimitive, RadioGroup as RadioGroupPrimitive } from "react-aria-components";
 import * as React from "react";
 
 import { cn } from "@almach/utils";
 
-/* ── Root ─────────────────────────────────────────────────────────────────── */
 const RadioGroupRoot = React.forwardRef<
-	React.ElementRef<typeof RadioGroupPrimitive.Root>,
-	React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
+	HTMLDivElement,
+	React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive>
 >(({ className, ...props }, ref) => (
-	<RadioGroupPrimitive.Root
+	<RadioGroupPrimitive
 		ref={ref}
 		className={cn("grid gap-2", className)}
 		{...props}
@@ -16,62 +15,42 @@ const RadioGroupRoot = React.forwardRef<
 ));
 RadioGroupRoot.displayName = "Radio.Group";
 
-/* ── Item ─────────────────────────────────────────────────────────────────── */
-interface RadioItemProps
-	extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
+interface RadioItemProps extends React.ComponentPropsWithoutRef<typeof RadioPrimitive> {
 	label?: string;
 	description?: string;
 }
 
-const RadioItem = React.forwardRef<
-	React.ElementRef<typeof RadioGroupPrimitive.Item>,
-	RadioItemProps
->(({ className, label, description, id, ...props }, ref) => {
-	const innerId = id ?? React.useId();
-	return (
-		<label
-			htmlFor={innerId}
-			className={cn(
-				"flex cursor-pointer items-start gap-3",
-				props.disabled && "cursor-not-allowed opacity-50",
-			)}
-		>
-			<RadioGroupPrimitive.Item
-				ref={ref}
-				id={innerId}
-				className={cn(
-					"mt-0.5 flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full",
-					"border border-input bg-background",
-					"transition-colors",
-					"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-					"data-[state=checked]:border-foreground data-[state=checked]:bg-foreground",
-					"disabled:pointer-events-none",
-					className,
+const RadioItem = React.forwardRef<HTMLLabelElement, RadioItemProps>(({ className, label, description, ...props }, ref) => (
+	<RadioPrimitive
+		ref={ref}
+		className={cn("flex cursor-pointer items-start gap-3", "disabled:cursor-not-allowed disabled:opacity-50", className)}
+		{...props}
+	>
+		{({ isSelected }) => (
+			<>
+				<span
+					className={cn(
+						"mt-0.5 inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border border-input bg-background transition-colors",
+						"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
+						isSelected && "border-foreground bg-foreground",
+					)}
+				>
+					<span className={cn("block h-2 w-2 rounded-full bg-background", !isSelected && "opacity-0")} />
+				</span>
+				{(label || description) && (
+					<div className="flex flex-col gap-0.5">
+						{label ? <span className="text-sm font-medium leading-none">{label}</span> : null}
+						{description ? (
+							<span className="text-xs text-muted-foreground leading-relaxed">{description}</span>
+						) : null}
+					</div>
 				)}
-				{...props}
-			>
-				<RadioGroupPrimitive.Indicator>
-					<span className="block h-2 w-2 rounded-full bg-background" />
-				</RadioGroupPrimitive.Indicator>
-			</RadioGroupPrimitive.Item>
-			{(label || description) && (
-				<div className="flex flex-col gap-0.5">
-					{label && (
-						<span className="text-sm font-medium leading-none">{label}</span>
-					)}
-					{description && (
-						<span className="text-xs text-muted-foreground leading-relaxed">
-							{description}
-						</span>
-					)}
-				</div>
-			)}
-		</label>
-	);
-});
+			</>
+		)}
+	</RadioPrimitive>
+));
 RadioItem.displayName = "Radio.Item";
 
-/* ── Compound export ──────────────────────────────────────────────────────── */
 export const Radio = Object.assign(RadioGroupRoot, {
 	Item: RadioItem,
 });

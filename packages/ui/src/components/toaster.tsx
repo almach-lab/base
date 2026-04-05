@@ -1,6 +1,7 @@
 "use client";
 
 import { Toaster as SonnerToaster } from "sonner";
+import "sonner/dist/styles.css";
 
 export function Toaster() {
 	return (
@@ -24,9 +25,9 @@ export function Toaster() {
 						"!text-xs !font-medium !bg-muted !text-muted-foreground",
 					closeButton:
 						"!text-muted-foreground hover:!text-foreground !border-border !bg-background",
-					error: "!border-destructive/20 !bg-destructive/[0.03]",
-					success: "!border-success/20 !bg-success/[0.03]",
-					warning: "!border-warning/20 !bg-warning/[0.03]",
+					error: "!border-destructive/35 !bg-background",
+					success: "!border-success/35 !bg-background",
+					warning: "!border-warning/35 !bg-background",
 					info: "!border-border",
 				},
 			}}

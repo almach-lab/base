@@ -6,7 +6,7 @@ export function TabsPage() {
 	return (
 		<ComponentDoc
 			name="Tabs"
-			description="Tab navigation built on Radix UI Tabs. Three visual variants: pill, underline, and minimal."
+			description="Tab navigation with three visual variants: pill, underline, and minimal."
 			examples={[
 				{
 					title: "Pill",

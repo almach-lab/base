@@ -1,7 +1,7 @@
 # Almach
 
 > A modern, accessible React UI component library monorepo.
-> Built on Radix UI, Tailwind CSS v4, TanStack Query, TanStack Form, and Zod.
+> Built on React Aria Components, Tailwind CSS v4, TanStack Query, TanStack Form, and Zod.
 > Maintained by [@rafaalrazzak](https://github.com/rafaalrazzak).
 
 - Docs: https://almach.pages.dev
@@ -12,10 +12,10 @@
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| `@almach/ui` | 0.1.0 | 32+ accessible components (Radix UI + Tailwind CSS v4) |
-| `@almach/forms` | 0.1.0 | Type-safe form builder (TanStack Form + Zod) |
-| `@almach/query` | 0.1.0 | Query/mutation factories (TanStack Query v5) |
-| `@almach/utils` | 0.1.0 | Tree-shakable utilities and TypeScript type helpers |
+| `@almach/ui` | 1.2.1 | 35+ accessible components (React Aria Components + Tailwind CSS v4) |
+| `@almach/forms` | 3.0.0 | Type-safe form builder (TanStack Form + Zod) |
+| `@almach/query` | 1.0.0 | Query/mutation factories (TanStack Query v5) |
+| `@almach/utils` | — | Tree-shakable utilities and TypeScript type helpers |
 
 ---
 
@@ -157,7 +157,7 @@ import { Button } from "@almach/ui";
 | `loading` | `boolean` | `false` | Shows spinner, disables button |
 | `leftIcon` | `React.ReactNode` | — | Icon before children |
 | `rightIcon` | `React.ReactNode` | — | Icon after children |
-| `asChild` | `boolean` | `false` | Render as child element (Radix Slot) |
+| `asChild` | `boolean` | `false` | Render as child element (slot pattern) |
 
 ---
 
@@ -376,7 +376,9 @@ import { Avatar } from "@almach/ui";
 import { Checkbox } from "@almach/ui";
 
 <Checkbox id="terms" />
-<Checkbox id="terms" checked={checked} onCheckedChange={setChecked} />
+<Checkbox id="terms" isSelected={checked} onChange={setChecked} />
+<Checkbox id="terms" defaultSelected />
+<Checkbox id="terms" isDisabled />
 ```
 
 ---
@@ -399,7 +401,10 @@ import { Radio } from "@almach/ui";
 ```tsx
 import { Switch } from "@almach/ui";
 
-<Switch checked={enabled} onCheckedChange={setEnabled} />
+<Switch isSelected={enabled} onChange={setEnabled} />
+<Switch defaultSelected />
+<Switch size="sm" />
+<Switch size="lg" />
 ```
 
 ---
@@ -449,18 +454,18 @@ import { Label } from "@almach/ui";
 ```tsx
 import { Tabs } from "@almach/ui";
 
-<Tabs defaultValue="overview">
+<Tabs defaultSelectedKey="overview">
   <Tabs.List>
-    <Tabs.Trigger value="overview">Overview</Tabs.Trigger>
-    <Tabs.Trigger value="settings">Settings</Tabs.Trigger>
+    <Tabs.Trigger id="overview">Overview</Tabs.Trigger>
+    <Tabs.Trigger id="settings">Settings</Tabs.Trigger>
   </Tabs.List>
-  <Tabs.Content value="overview">Overview content</Tabs.Content>
-  <Tabs.Content value="settings">Settings content</Tabs.Content>
+  <Tabs.Content id="overview">Overview content</Tabs.Content>
+  <Tabs.Content id="settings">Settings content</Tabs.Content>
 </Tabs>
 
-// Variants (pass to Tabs.List and Tabs.Trigger)
+// Variants (pass to Tabs.List)
 <Tabs.List variant="underline">
-  <Tabs.Trigger variant="underline" value="a">Tab A</Tabs.Trigger>
+  <Tabs.Trigger id="a">Tab A</Tabs.Trigger>
 </Tabs.List>
 ```
 
@@ -1027,7 +1032,7 @@ import { Card } from "@almach/ui";
   <Card.GroupRow
     label="Email alerts"
     description="Receive summaries and digests."
-    action={<Switch defaultChecked />}
+    action={<Switch defaultSelected />}
   />
   <Card.GroupRow label="Push notifications" action={<Switch />} />
 </Card.Group>
@@ -1464,7 +1469,7 @@ bun changeset
 ```
 almach-lab/base/
 ├── packages/
-│   ├── ui/      — @almach/ui      (Radix + Tailwind components)
+│   ├── ui/      — @almach/ui      (React Aria Components + Tailwind)
 │   ├── forms/   — @almach/forms   (TanStack Form + Zod fields)
 │   ├── query/   — @almach/query   (TanStack Query factories)
 │   └── utils/   — @almach/utils   (cn, formatters, type helpers)

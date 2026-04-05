@@ -4,7 +4,12 @@ import * as React from "react";
 import { cn } from "@almach/utils";
 
 /* ── Constants ─────────────────────────────────────────────────────────────── */
-const SPRING = "transform 300ms cubic-bezier(0.32,0.72,0,1)";
+/** Snap open — slight overshoot gives a physical spring feel */
+const SPRING_OPEN  = "transform 420ms cubic-bezier(0.34,1.26,0.64,1)";
+/** Snap close — swift smooth deceleration, no bounce */
+const SPRING_CLOSE = "transform 320ms cubic-bezier(0.25,1.0,0.5,1)";
+/** Full-swipe exit — accelerates off-screen decisively */
+const SPRING_FULL  = "transform 260ms cubic-bezier(0.4,0,0.6,1)";
 
 /* ── Types ─────────────────────────────────────────────────────────────────── */
 export type SwipeSide = "left" | "right" | "top" | "bottom" | null;
@@ -37,7 +42,7 @@ interface SwipeCtxValue {
 	touchAction: string;
 	// Actions
 	setDragState: (side: SwipeSide, past: boolean, fsReady?: boolean) => void;
-	applyTransform: (x: number, y: number, animate?: boolean) => void;
+	applyTransform: (x: number, y: number, transition?: string | false) => void;
 	open: (side: NonNullable<SwipeSide>) => void;
 	close: () => void;
 	triggerFullSwipe: (side: NonNullable<SwipeSide>) => void;
@@ -134,11 +139,11 @@ function SwipeActionsRoot({
 		else setTouchAction("auto");
 	}, []);
 
-	const applyTransform = React.useCallback((x: number, y: number, animate = false) => {
+	const applyTransform = React.useCallback((x: number, y: number, transition: string | false = false) => {
 		const el = contentRef.current;
 		if (!el) return;
 		posRef.current = { x, y };
-		el.style.transition = animate ? SPRING : "none";
+		el.style.transition = transition || "none";
 		el.style.transform = `translate(${x}px,${y}px)`;
 	}, []);
 
@@ -157,7 +162,7 @@ function SwipeActionsRoot({
 			if (side === "top") dy = topRef.current?.offsetHeight ?? 0;
 			if (side === "bottom") dy = -(bottomRef.current?.offsetHeight ?? 0);
 			if (!dx && !dy) return;
-			applyTransform(dx, dy, true);
+			applyTransform(dx, dy, SPRING_OPEN);
 			setOpenSide(side);
 			setDragSide(null);
 			setPastThreshold(false);
@@ -168,7 +173,7 @@ function SwipeActionsRoot({
 	);
 
 	const close = React.useCallback(() => {
-		applyTransform(0, 0, true);
+		applyTransform(0, 0, SPRING_CLOSE);
 		setOpenSide(null);
 		setDragSide(null);
 		setPastThreshold(false);
@@ -183,11 +188,19 @@ function SwipeActionsRoot({
 			const h = rootRef.current?.offsetHeight ?? 0;
 			const dx = side === "left" ? w : side === "right" ? -w : 0;
 			const dy = side === "top" ? h : side === "bottom" ? -h : 0;
-			applyTransform(dx, dy, true);          // fly content off-screen
+			applyTransform(dx, dy, SPRING_FULL);   // fly content off-screen
 			onFullSwipe?.(side);                   // notify parent immediately
-			timerRef.current = setTimeout(close, 310); // snap back after animation
+			// After exit animation, instantly snap back — no visible return slide
+			timerRef.current = setTimeout(() => {
+				applyTransform(0, 0, false);
+				setOpenSide(null);
+				setDragSide(null);
+				setPastThreshold(false);
+				setFullSwipeReady(false);
+				onOpenChange?.(null);
+			}, 300);
 		},
-		[applyTransform, close, onFullSwipe],
+		[applyTransform, onFullSwipe, onOpenChange],
 	);
 
 	return (
@@ -237,7 +250,7 @@ function SwipeActionsContent({
 		if (disabled) return;
 		e.currentTarget.setPointerCapture(e.pointerId);
 		// Freeze spring at its current JS-tracked position (posRef is always accurate)
-		applyTransform(posRef.current.x, posRef.current.y, false);
+		applyTransform(posRef.current.x, posRef.current.y);
 		drag.current = {
 			active: true,
 			startX: e.clientX, startY: e.clientY,
@@ -355,7 +368,7 @@ function SwipeActionsContent({
 		} else {
 			// Tiny movement, axis never locked — restore stable state
 			if (openSide) open(openSide);
-			else applyTransform(0, 0, true);
+			else applyTransform(0, 0, SPRING_CLOSE);
 		}
 	};
 
@@ -493,12 +506,13 @@ function SwipeAction({
 			type="button"
 			onClick={handleClick}
 			className={cn(
-				"select-none transition-[transform,filter] duration-150 active:opacity-70",
+				"select-none transition-[transform,filter,opacity] duration-200 ease-out active:opacity-70",
+				"[[data-dragging]_&]:transition-none",
 				"[&_svg]:pointer-events-none [&_svg]:shrink-0",
 				variantStyles[variant],
 				// Visual threshold progression via parent slot data-attrs
-				"[[data-past-threshold]_&]:scale-105  [[data-past-threshold]_&]:brightness-110",
-				"[[data-full-swipe-ready]_&]:scale-110 [[data-full-swipe-ready]_&]:brightness-125",
+				"[[data-past-threshold]_&]:scale-[1.07]  [[data-past-threshold]_&]:brightness-110",
+				"[[data-full-swipe-ready]_&]:scale-[1.14] [[data-full-swipe-ready]_&]:brightness-[1.2]",
 				orientation === "vertical"
 					? "flex min-w-[68px] flex-col items-center justify-center gap-1.5 px-4 text-[11px] font-semibold tracking-wide [&_svg]:size-[18px]"
 					: "flex flex-1 flex-row items-center justify-center gap-2 px-5 py-3.5 text-sm font-medium [&_svg]:size-4",

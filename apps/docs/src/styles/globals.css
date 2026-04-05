@@ -1,51 +1,71 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
 /*
  * Tailwind v4 won't auto-scan packages outside the app directory.
  * @source explicitly adds those paths so component class names are
- * included in the CSS build.
+ * included in the CSS build in both local monorepo dev and package builds.
  */
 @source "../../../../packages/ui/src/**/*.{ts,tsx}";
-@source "../../../../packages/forms/src/**/*.{ts,tsx}";
+@source "../node_modules/@almach/ui/dist/**/*.js";
 
 /* Component library base tokens */
 @import "@almach/ui/styles";
 
-/* ── Almach docs theme ────────────────────────────────────────────────────── */
+/* Almach docs theme */
 :root {
-  --primary: 221 83% 53%;
+  --background: var(--theme-background-light, 0 0% 100%);
+  --foreground: var(--theme-foreground-light, 240 10% 3.9%);
+  --card: var(--theme-card-light, 0 0% 100%);
+  --card-foreground: var(--theme-card-foreground-light, 240 10% 3.9%);
+  --popover: var(--theme-popover-light, 0 0% 100%);
+  --popover-foreground: var(--theme-popover-foreground-light, 240 10% 3.9%);
+  --muted: var(--theme-muted-light, 240 4.8% 95.9%);
+  --muted-foreground: var(--theme-muted-foreground-light, 240 3.8% 46.1%);
+  --accent: var(--theme-accent-light, 240 4.8% 95.9%);
+  --accent-foreground: var(--theme-accent-foreground-light, 240 5.9% 10%);
+  --border: var(--theme-border-light, 240 5.9% 90%);
+  --input: var(--theme-input-light, 240 5.9% 90%);
+
+  --primary: var(--theme-primary-light, 221 83% 53%);
   --primary-foreground: 0 0% 100%;
-  --ring: 221 83% 53%;
+  --ring: var(--theme-primary-light, 221 83% 53%);
 }
 
 .dark {
-  --background: 222 26% 8%;
-  --foreground: 210 25% 96%;
-  --card: 222 22% 10%;
-  --card-foreground: 210 25% 96%;
-  --popover: 222 22% 10%;
-  --popover-foreground: 210 25% 96%;
-  --muted: 222 16% 14%;
-  --muted-foreground: 222 10% 64%;
-  --accent: 222 14% 17%;
-  --accent-foreground: 210 25% 96%;
-  --border: 222 13% 18%;
-  --input: 222 13% 18%;
+  --background: var(--theme-background-dark, 222 26% 8%);
+  --foreground: var(--theme-foreground-dark, 210 25% 96%);
+  --card: var(--theme-card-dark, 222 22% 10%);
+  --card-foreground: var(--theme-card-foreground-dark, 210 25% 96%);
+  --popover: var(--theme-popover-dark, 222 22% 10%);
+  --popover-foreground: var(--theme-popover-foreground-dark, 210 25% 96%);
+  --muted: var(--theme-muted-dark, 222 16% 14%);
+  --muted-foreground: var(--theme-muted-foreground-dark, 222 10% 64%);
+  --accent: var(--theme-accent-dark, 222 14% 17%);
+  --accent-foreground: var(--theme-accent-foreground-dark, 210 25% 96%);
+  --border: var(--theme-border-dark, 222 13% 18%);
+  --input: var(--theme-input-dark, 222 13% 18%);
 
-  --primary: 217 91% 60%;
+  --primary: var(--theme-primary-dark, 217 91% 60%);
   --primary-foreground: 0 0% 100%;
-  --ring: 217 91% 60%;
+  --ring: var(--theme-primary-dark, 217 91% 60%);
 }
 
-/* ── View transition: animate only page content, not the shell ────────────── */
+/* View transition: animate only page content, not the shell */
 /* The main content area has transition:name="page-content" in Layout.astro.  */
 /* Header/sidebar have no transition:name so they get the instant root swap.  */
 ::view-transition-old(page-content) {
-  animation: 120ms ease-out both vt-fade-out;
+  animation-name: vt-fade-out;
+  animation-duration: var(--theme-motion-interactive-duration, 150ms);
+  animation-timing-function: var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+  animation-fill-mode: both;
 }
 
 ::view-transition-new(page-content) {
-  animation: 160ms ease-in both vt-fade-in;
+  animation-name: vt-fade-in;
+  animation-duration: var(--theme-motion-overlay-duration, 180ms);
+  animation-timing-function: var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+  animation-fill-mode: both;
 }
 
 /* Suppress the default root animation so shell never flickers */
@@ -66,11 +86,11 @@
   }
 }
 
-/* ── Shiki dual-theme ─────────────────────────────────────────────────────── */
+/* Shiki dual-theme */
 /*
  * Token colours come from per-span CSS vars (--shiki-light / --shiki-dark).
  * All background-color values are forced transparent so the outer code-block
- * container controls the background — this prevents the white-row artifact
+ * container controls the background. This prevents the white-row artifact
  * caused by Shiki writing background-color: #fff on the <pre> and spans.
  */
 .shiki-dual-theme .shiki,

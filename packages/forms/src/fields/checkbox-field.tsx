@@ -38,10 +38,10 @@ export function CheckboxField({
     >
       <FormControl>
         <Checkbox
-          checked={field.state.value ?? false}
-          onCheckedChange={(checked) => field.handleChange(Boolean(checked))}
+          isSelected={field.state.value ?? false}
+          onChange={(isSelected) => field.handleChange(Boolean(isSelected))}
           onBlur={field.handleBlur}
-          disabled={disabled ?? false}
+          isDisabled={disabled ?? false}
           error={hasError}
         />
       </FormControl>

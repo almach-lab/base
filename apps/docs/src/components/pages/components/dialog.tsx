@@ -6,7 +6,7 @@ export function DialogPage() {
 	return (
 		<ComponentDoc
 			name="Dialog"
-			description="Modal overlay built on Radix UI Dialog. Handles focus trapping, scroll lock, and keyboard dismissal (Escape) automatically."
+			description="Modal overlay with focus trapping, scroll lock, and keyboard dismissal (Escape)."
 			examples={[
 				{
 					title: "Basic dialog",
@@ -174,18 +174,18 @@ export function DialogPage() {
 				},
 				{
 					name: "Dialog.Trigger",
-					type: "Radix DialogTriggerProps",
+					type: "DialogTriggerProps",
 					description:
 						"Element that opens the dialog. Use asChild to forward props to a Button.",
 				},
 				{
 					name: "Dialog.Content",
-					type: "Radix DialogContentProps",
+					type: "DialogContentProps",
 					description: "The dialog panel. Includes a close (×) button by default.",
 				},
 				{
 					name: "Dialog.Close",
-					type: "Radix DialogCloseProps",
+					type: "DialogCloseProps",
 					description: "Closes the dialog on click. Use asChild to wrap a Button.",
 				},
 			]}

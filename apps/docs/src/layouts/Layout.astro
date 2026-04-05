@@ -5,7 +5,6 @@ import { ThemeCustomizer } from "../components/ThemeCustomizer";
 import { SearchCommand } from "../components/SearchCommand";
 import Logo from "../components/Logo.astro";
 import { DOC_COMPONENT_GROUPS } from "../lib/doc-components";
-import { ScrollArea } from "@almach/ui";
 
 interface Props {
   title?: string;
@@ -15,7 +14,7 @@ interface Props {
 
 const {
   title = "Almach",
-  description = "Accessible, themeable UI components for React built on Radix UI and Tailwind CSS.",
+  description = "Accessible, themeable UI components for React with Tailwind CSS.",
   currentPath = Astro.url.pathname,
 } = Astro.props;
 
@@ -133,12 +132,46 @@ const showRightRail = !isHome && pageAnchors.length > 0;
           if (t) {
             var v = JSON.parse(t);
             var root = document.documentElement;
+            if (v.surfaceTokens) {
+              root.style.setProperty("--theme-background-light", v.surfaceTokens.backgroundLight);
+              root.style.setProperty("--theme-foreground-light", v.surfaceTokens.foregroundLight);
+              root.style.setProperty("--theme-card-light", v.surfaceTokens.cardLight);
+              root.style.setProperty("--theme-card-foreground-light", v.surfaceTokens.cardForegroundLight);
+              root.style.setProperty("--theme-muted-light", v.surfaceTokens.mutedLight);
+              root.style.setProperty("--theme-muted-foreground-light", v.surfaceTokens.mutedForegroundLight);
+              root.style.setProperty("--theme-accent-light", v.surfaceTokens.accentLight);
+              root.style.setProperty("--theme-accent-foreground-light", v.surfaceTokens.accentForegroundLight);
+              root.style.setProperty("--theme-border-light", v.surfaceTokens.borderLight);
+              root.style.setProperty("--theme-input-light", v.surfaceTokens.inputLight);
+              root.style.setProperty("--theme-background-dark", v.surfaceTokens.backgroundDark);
+              root.style.setProperty("--theme-foreground-dark", v.surfaceTokens.foregroundDark);
+              root.style.setProperty("--theme-card-dark", v.surfaceTokens.cardDark);
+              root.style.setProperty("--theme-card-foreground-dark", v.surfaceTokens.cardForegroundDark);
+              root.style.setProperty("--theme-muted-dark", v.surfaceTokens.mutedDark);
+              root.style.setProperty("--theme-muted-foreground-dark", v.surfaceTokens.mutedForegroundDark);
+              root.style.setProperty("--theme-accent-dark", v.surfaceTokens.accentDark);
+              root.style.setProperty("--theme-accent-foreground-dark", v.surfaceTokens.accentForegroundDark);
+              root.style.setProperty("--theme-border-dark", v.surfaceTokens.borderDark);
+              root.style.setProperty("--theme-input-dark", v.surfaceTokens.inputDark);
+            }
             var primary = dark ? v.primaryDark : v.primaryLight;
             if (primary) {
               root.style.setProperty("--primary", primary);
               root.style.setProperty("--ring", primary);
             }
+            if (v.primaryLight) root.style.setProperty("--theme-primary-light", v.primaryLight);
+            if (v.primaryDark) root.style.setProperty("--theme-primary-dark", v.primaryDark);
             if (v.radius) root.style.setProperty("--radius", v.radius);
+            if (typeof v.overlayMs === "number") {
+              root.style.setProperty("--theme-motion-overlay-duration-ms", String(v.overlayMs));
+              root.style.setProperty("--theme-motion-overlay-duration", v.overlayMs + "ms");
+            }
+            if (typeof v.interactiveMs === "number") {
+              root.style.setProperty("--theme-motion-interactive-duration", v.interactiveMs + "ms");
+            }
+            if (v.ease) {
+              root.style.setProperty("--theme-motion-ease-standard", v.ease);
+            }
           }
         } catch (_) {}
       })();
@@ -384,7 +417,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
       >
         <div id="mobile-backdrop" class="absolute inset-0 bg-background/70 backdrop-blur-sm"></div>
 
-        <aside id="mobile-sidebar" class="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col border-r border-border/70 bg-background shadow-xl">
+        <aside id="mobile-sidebar" class="absolute inset-y-0 left-0 flex min-h-0 w-72 max-w-[85vw] flex-col border-r border-border/70 bg-background shadow-xl">
           <!-- Sidebar header -->
           <div class="flex h-12 shrink-0 items-center justify-between border-b px-4">
             <a href="/" class="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1" aria-label="Almach home">
@@ -403,7 +436,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
           </div>
 
           <!-- Nav items -->
-          <div class="flex-1 overflow-y-auto px-3 py-4">
+          <div class="flex-1 overflow-y-auto overscroll-contain touch-pan-y px-3 py-4 [-webkit-overflow-scrolling:touch]">
             <nav aria-label="Mobile navigation">
               {sidebarGroups.map((group) => (
                 <div class="mb-5">
@@ -422,7 +455,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
                         }`}
                         aria-current={currentPath === item.href ? "page" : undefined}
                       >
-                     
+
                         {item.name}
                       </a>
                     ))}
@@ -445,7 +478,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
             <!-- Desktop sidebar -->
             <aside class="hidden w-56 shrink-0 border-r border-border/70 bg-muted/10 xl:block" aria-label="Documentation navigation">
               <div class="sticky top-12 h-[calc(100vh-3rem)] px-2 py-2.5">
-                <ScrollArea className="h-full pr-1" client:load>
+                <div class="h-full overflow-y-auto pr-1">
                   <nav aria-label="Documentation navigation" class="px-1 pb-8">
                     {sidebarGroups.map((group) => (
                       <div class="mb-4">
@@ -471,7 +504,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
                       </div>
                     ))}
                   </nav>
-                </ScrollArea>
+                </div>
               </div>
             </aside>
 
@@ -485,7 +518,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
               showRightRail && (
                 <aside class="hidden w-52 shrink-0 border-l border-border/70 bg-muted/10 px-2 py-2.5 xl:block" aria-label="On this page">
                   <div class="sticky top-12 h-[calc(100vh-3rem)]">
-                    <ScrollArea className="h-full pr-1" client:load>
+                    <div class="h-full overflow-y-auto pr-1">
                       <div class="space-y-6 px-2 pb-8">
                         <div class="space-y-2.5">
                           <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/70">On this page</p>
@@ -501,7 +534,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
                           </nav>
                         </div>
                       </div>
-                    </ScrollArea>
+                    </div>
                   </div>
                 </aside>
               )
@@ -545,12 +578,46 @@ const showRightRail = !isHome && pageAnchors.length > 0;
       function applyCustomTheme(dark: boolean) {
         const t = getCustomTheme();
         if (!t) return;
+        if (t.surfaceTokens) {
+          document.documentElement.style.setProperty("--theme-background-light", t.surfaceTokens.backgroundLight);
+          document.documentElement.style.setProperty("--theme-foreground-light", t.surfaceTokens.foregroundLight);
+          document.documentElement.style.setProperty("--theme-card-light", t.surfaceTokens.cardLight);
+          document.documentElement.style.setProperty("--theme-card-foreground-light", t.surfaceTokens.cardForegroundLight);
+          document.documentElement.style.setProperty("--theme-muted-light", t.surfaceTokens.mutedLight);
+          document.documentElement.style.setProperty("--theme-muted-foreground-light", t.surfaceTokens.mutedForegroundLight);
+          document.documentElement.style.setProperty("--theme-accent-light", t.surfaceTokens.accentLight);
+          document.documentElement.style.setProperty("--theme-accent-foreground-light", t.surfaceTokens.accentForegroundLight);
+          document.documentElement.style.setProperty("--theme-border-light", t.surfaceTokens.borderLight);
+          document.documentElement.style.setProperty("--theme-input-light", t.surfaceTokens.inputLight);
+          document.documentElement.style.setProperty("--theme-background-dark", t.surfaceTokens.backgroundDark);
+          document.documentElement.style.setProperty("--theme-foreground-dark", t.surfaceTokens.foregroundDark);
+          document.documentElement.style.setProperty("--theme-card-dark", t.surfaceTokens.cardDark);
+          document.documentElement.style.setProperty("--theme-card-foreground-dark", t.surfaceTokens.cardForegroundDark);
+          document.documentElement.style.setProperty("--theme-muted-dark", t.surfaceTokens.mutedDark);
+          document.documentElement.style.setProperty("--theme-muted-foreground-dark", t.surfaceTokens.mutedForegroundDark);
+          document.documentElement.style.setProperty("--theme-accent-dark", t.surfaceTokens.accentDark);
+          document.documentElement.style.setProperty("--theme-accent-foreground-dark", t.surfaceTokens.accentForegroundDark);
+          document.documentElement.style.setProperty("--theme-border-dark", t.surfaceTokens.borderDark);
+          document.documentElement.style.setProperty("--theme-input-dark", t.surfaceTokens.inputDark);
+        }
         const primary = dark ? t.primaryDark : t.primaryLight;
         if (primary) {
           document.documentElement.style.setProperty("--primary", primary);
           document.documentElement.style.setProperty("--ring", primary);
         }
+        if (t.primaryLight) document.documentElement.style.setProperty("--theme-primary-light", t.primaryLight);
+        if (t.primaryDark) document.documentElement.style.setProperty("--theme-primary-dark", t.primaryDark);
         if (t.radius) document.documentElement.style.setProperty("--radius", t.radius);
+        if (typeof t.overlayMs === "number") {
+          document.documentElement.style.setProperty("--theme-motion-overlay-duration-ms", String(t.overlayMs));
+          document.documentElement.style.setProperty("--theme-motion-overlay-duration", t.overlayMs + "ms");
+        }
+        if (typeof t.interactiveMs === "number") {
+          document.documentElement.style.setProperty("--theme-motion-interactive-duration", t.interactiveMs + "ms");
+        }
+        if (t.ease) {
+          document.documentElement.style.setProperty("--theme-motion-ease-standard", t.ease);
+        }
       }
 
       // ── Sync all theme icon states ────────────────────────────────────────

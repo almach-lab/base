@@ -7,7 +7,7 @@ export function DrawerPage() {
 	return (
 		<ComponentDoc
 			name="Drawer"
-			description="Bottom sheet built on Vaul. Supports drag-to-dismiss, snap points, and scroll within content. Ideal for mobile action sheets."
+			description="Bottom sheet with drag-to-dismiss, snap points, and scrollable content. Ideal for mobile action sheets."
 			examples={[
 				{
 					title: "Action sheet",

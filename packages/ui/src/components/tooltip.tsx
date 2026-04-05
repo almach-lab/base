@@ -1,41 +1,94 @@
-import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { Tooltip as TooltipPrimitive, TooltipTrigger as TooltipTriggerPrimitive } from "react-aria-components";
 import * as React from "react";
 
 import { cn } from "@almach/utils";
+import { MOTION_OVERLAY, MOTION_OVERLAY_ENTER, MOTION_OVERLAY_EXIT } from "./_motion.js";
 
-/* ── Sub-components ────────────────────────────────────────────────────── */
-const TooltipProvider = TooltipPrimitive.Provider;
-const TooltipTrigger = TooltipPrimitive.Trigger;
+type TooltipProviderProps = {
+	delay?: number;
+	children: React.ReactNode;
+};
 
-const TooltipContent = React.forwardRef<
-	React.ElementRef<typeof TooltipPrimitive.Content>,
-	React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 6, ...props }, ref) => (
-	<TooltipPrimitive.Portal>
-		<TooltipPrimitive.Content
-			ref={ref}
-			sideOffset={sideOffset}
-			className={cn(
-				"z-50 max-w-xs rounded-lg bg-foreground px-3 py-1.5",
-				"text-xs font-medium text-background leading-snug",
-				"shadow-md select-none",
-				"animate-in fade-in-0 zoom-in-95",
-				"data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-				"data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2",
-				"data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-				className
-			)}
-			{...props}
-		/>
-	</TooltipPrimitive.Portal>
-));
-TooltipContent.displayName = "Tooltip.Content";
+const TooltipDelayCtx = React.createContext(700);
 
-/* ── Compound export ───────────────────────────────────────────────────── */
-const Tooltip = Object.assign(TooltipPrimitive.Root, {
+function TooltipProvider({ delay = 700, children }: TooltipProviderProps) {
+	return <TooltipDelayCtx.Provider value={delay}>{children}</TooltipDelayCtx.Provider>;
+}
+
+interface TooltipTriggerMarkerProps extends React.HTMLAttributes<HTMLElement> {
+	asChild?: boolean;
+	children: React.ReactNode;
+}
+
+function TooltipTriggerMarker(_props: TooltipTriggerMarkerProps) {
+	return null;
+}
+TooltipTriggerMarker.displayName = "Tooltip.Trigger";
+
+interface TooltipContentMarkerProps extends React.ComponentPropsWithoutRef<typeof TooltipPrimitive> {
+	side?: "top" | "right" | "bottom" | "left";
+	align?: "start" | "center" | "end";
+	sideOffset?: number;
+	children: React.ReactNode;
+}
+
+function TooltipContentMarker(_props: TooltipContentMarkerProps) {
+	return null;
+}
+TooltipContentMarker.displayName = "Tooltip.Content";
+
+function TooltipRoot({ children }: { children: React.ReactNode }) {
+	const delay = React.useContext(TooltipDelayCtx);
+	let triggerProps: TooltipTriggerMarkerProps | null = null;
+	let contentProps: TooltipContentMarkerProps | null = null;
+
+	for (const child of React.Children.toArray(children)) {
+		if (!React.isValidElement(child)) continue;
+		if (child.type === TooltipTriggerMarker) {
+			triggerProps = child.props as TooltipTriggerMarkerProps;
+		}
+		if (child.type === TooltipContentMarker) {
+			contentProps = child.props as TooltipContentMarkerProps;
+		}
+	}
+
+	if (!triggerProps || !contentProps) {
+		return null;
+	}
+
+	const triggerNode = triggerProps.asChild ? (
+		(React.Children.only(triggerProps.children) as React.ReactElement)
+	) : (
+		<button type="button">{triggerProps.children}</button>
+	);
+
+	return (
+		<TooltipTriggerPrimitive delay={delay}>
+			{triggerNode}
+			<TooltipPrimitive
+				offset={contentProps.sideOffset ?? 6}
+				placement={contentProps.side ?? "top"}
+				className={cn(
+					"z-50 max-w-xs rounded-lg bg-foreground px-3 py-1.5",
+					"text-xs font-medium text-background leading-snug",
+					"shadow-md select-none",
+					MOTION_OVERLAY,
+					MOTION_OVERLAY_ENTER.replaceAll("data-[state=open]:", "data-[entering]:"),
+					MOTION_OVERLAY_EXIT.replaceAll("data-[state=closed]:", "data-[exiting]:"),
+					contentProps.className,
+				)}
+			>
+				{contentProps.children}
+			</TooltipPrimitive>
+		</TooltipTriggerPrimitive>
+	);
+}
+TooltipRoot.displayName = "Tooltip";
+
+const Tooltip = Object.assign(TooltipRoot, {
 	Provider: TooltipProvider,
-	Trigger: TooltipTrigger,
-	Content: TooltipContent,
+	Trigger: TooltipTriggerMarker,
+	Content: TooltipContentMarker,
 });
 
 export { Tooltip };

@@ -6,7 +6,7 @@ export function CheckboxPage() {
 	return (
 		<ComponentDoc
 			name="Checkbox"
-			description="A boolean control built on Radix UI Checkbox with checked, unchecked, disabled, and error states."
+			description="A boolean control with checked, unchecked, disabled, and error states."
 			examples={[
 				{
 					title: "Default",

@@ -1,30 +1,26 @@
-import * as ProgressPrimitive from "@radix-ui/react-progress";
+import { ProgressBar } from "react-aria-components";
 import * as React from "react";
 
 import { cn } from "@almach/utils";
 
 const Progress = React.forwardRef<
-	React.ElementRef<typeof ProgressPrimitive.Root>,
-	React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
+	HTMLDivElement,
+	Omit<React.ComponentPropsWithoutRef<typeof ProgressBar>, "value"> & {
+		value?: number;
+	}
 >(({ className, value, ...props }, ref) => (
-	<ProgressPrimitive.Root
-		ref={ref}
-		className={cn(
-			"relative h-1.5 w-full overflow-hidden rounded-full",
-			className
+	<ProgressBar ref={ref} value={value ?? 0} className={cn("relative h-1.5 w-full overflow-hidden rounded-full", className)} {...props}>
+		{({ percentage }) => (
+			<>
+				<div className="h-full w-full rounded-full bg-secondary" />
+				<div
+					className="absolute inset-y-0 left-0 rounded-full bg-foreground transition-[width] duration-500 ease-out"
+					style={{ width: `${percentage}%` }}
+				/>
+			</>
 		)}
-		style={{ backgroundColor: "hsl(var(--secondary))" }}
-		{...props}
-	>
-		<ProgressPrimitive.Indicator
-			className="h-full w-full flex-1 rounded-full transition-transform duration-500 ease-out"
-			style={{
-				transform: `translateX(-${100 - (value ?? 0)}%)`,
-				backgroundColor: "hsl(var(--foreground))",
-			}}
-		/>
-	</ProgressPrimitive.Root>
+	</ProgressBar>
 ));
-Progress.displayName = ProgressPrimitive.Root.displayName;
+Progress.displayName = "Progress";
 
 export { Progress };

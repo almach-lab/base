@@ -6,7 +6,7 @@ export function ProgressPage() {
 	return (
 		<ComponentDoc
 			name="Progress"
-			description="A thin linear progress bar built on Radix UI Progress for showing task or upload completion."
+			description="A thin linear progress bar for showing task or upload completion."
 			examples={[
 				{
 					title: "Default",

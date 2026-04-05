@@ -6,7 +6,7 @@ export function RadioPage() {
 	return (
 		<ComponentDoc
 			name="Radio"
-			description="Single-selection control built on Radix RadioGroup. Supports label, description, disabled state, and controlled value."
+			description="Single-selection control with label, description, disabled state, and controlled value support."
 			pkg="@almach/ui"
 			examples={[
 				{

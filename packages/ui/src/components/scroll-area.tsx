@@ -1,40 +1,67 @@
 "use client";
 
 import * as React from "react";
-import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
+
 import { cn } from "@almach/utils";
 
-const ScrollBar = React.forwardRef<
-	React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
-	React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
->(({ className, orientation = "vertical", ...props }, ref) => (
-	<ScrollAreaPrimitive.ScrollAreaScrollbar
+const ScrollAreaRoot = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+	<div ref={ref} className={cn("relative overflow-hidden", className)} {...props} />
+));
+ScrollAreaRoot.displayName = "ScrollArea.Root";
+
+const ScrollAreaViewport = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+	<div
 		ref={ref}
-		orientation={orientation}
 		className={cn(
-			"flex touch-none select-none transition-colors",
-			orientation === "vertical" ? "h-full w-2.5 border-l border-l-transparent p-[1px]" : "h-2.5 flex-col border-t border-t-transparent p-[1px]",
+			"h-full w-full overflow-auto rounded-md border border-input bg-background text-foreground",
+			"focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
 			className,
 		)}
 		{...props}
-	>
-		<ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-border/80 hover:bg-border" />
-	</ScrollAreaPrimitive.ScrollAreaScrollbar>
+	/>
 ));
-ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
+ScrollAreaViewport.displayName = "ScrollArea.Viewport";
 
-const ScrollArea = React.forwardRef<
-	React.ElementRef<typeof ScrollAreaPrimitive.Root>,
-	React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
->(({ className, children, ...props }, ref) => (
-	<ScrollAreaPrimitive.Root ref={ref} className={cn("relative overflow-hidden", className)} {...props}>
-		<ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
-			{children}
-		</ScrollAreaPrimitive.Viewport>
-		<ScrollBar />
-		<ScrollAreaPrimitive.Corner />
-	</ScrollAreaPrimitive.Root>
+const ScrollAreaContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+	<div ref={ref} className={cn(className)} {...props} />
 ));
-ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
+ScrollAreaContent.displayName = "ScrollArea.Content";
 
-export { ScrollArea, ScrollBar };
+const ScrollAreaScrollBar = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement> & { orientation?: "vertical" | "horizontal" }>(
+	({ className, orientation = "vertical", ...props }, ref) => (
+		<div
+			ref={ref}
+			className={cn(
+				"m-2 flex touch-none select-none justify-center rounded-sm bg-border opacity-0",
+				"pointer-events-none transition-opacity",
+				"group-hover:opacity-100",
+				orientation === "vertical" ? "h-[calc(100%-1rem)] w-1" : "h-1 w-[calc(100%-1rem)] items-center",
+				className,
+			)}
+			{...props}
+		/>
+	),
+);
+ScrollAreaScrollBar.displayName = "ScrollArea.Scrollbar";
+
+const ScrollAreaThumb = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+	<div ref={ref} className={cn("w-full rounded-sm bg-foreground/50", className)} {...props} />
+));
+ScrollAreaThumb.displayName = "ScrollArea.Thumb";
+
+const ScrollAreaCorner = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+	<div ref={ref} className={cn("bg-border", className)} {...props} />
+));
+ScrollAreaCorner.displayName = "ScrollArea.Corner";
+
+const ScrollArea = Object.assign(ScrollAreaRoot, {
+	Root: ScrollAreaRoot,
+	Viewport: ScrollAreaViewport,
+	Content: ScrollAreaContent,
+	Scrollbar: ScrollAreaScrollBar,
+	ScrollBar: ScrollAreaScrollBar,
+	Thumb: ScrollAreaThumb,
+	Corner: ScrollAreaCorner,
+});
+
+export { ScrollArea, ScrollAreaRoot, ScrollAreaViewport, ScrollAreaContent, ScrollAreaScrollBar as ScrollBar, ScrollAreaThumb, ScrollAreaCorner };

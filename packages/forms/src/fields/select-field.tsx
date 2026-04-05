@@ -44,8 +44,8 @@ export function SelectField({
       <FormControl>
         <Select
           value={field.state.value}
-          onValueChange={field.handleChange}
-          disabled={disabled ?? false}
+          onValueChange={(value) => field.handleChange(value)}
+          isDisabled={disabled ?? false}
         >
           <Select.Trigger error={hasError} onBlur={field.handleBlur}>
             <Select.Value placeholder={placeholder} />
@@ -68,3 +68,4 @@ export function SelectField({
     </FormItem>
   );
 }
+

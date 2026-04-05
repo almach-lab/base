@@ -1,20 +1,16 @@
-import * as SwitchPrimitive from "@radix-ui/react-switch";
+import { Switch as SwitchPrimitive } from "react-aria-components";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 import { cn } from "@almach/utils";
 
-/* ── Variants ─────────────────────────────────────────────────────────────── */
 const switchTrack = cva(
 	[
 		"relative inline-flex shrink-0 cursor-pointer items-center rounded-full",
 		"border-2 border-transparent",
-		"transition-colors duration-200 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]",
+		"transition-colors duration-150 ease-out",
 		"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
 		"disabled:cursor-not-allowed disabled:opacity-50",
-		// Uses CSS variables from globals.css — override --switch-on / --switch-off to theme
-		// Note: --switch-on/off are full color values (e.g. hsl(...)), so use var() directly
-		"bg-[var(--switch-off)] data-[state=checked]:bg-[var(--switch-on)]",
 	],
 	{
 		variants: {
@@ -31,39 +27,66 @@ const switchTrack = cva(
 const switchThumb = cva(
 	[
 		"pointer-events-none block rounded-full bg-white",
-		// Shadow makes thumb visible on any background color in both light and dark modes
 		"shadow-[0_1px_3px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.08]",
-		"transition-transform duration-200 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]",
+		"transition-transform duration-150 ease-out",
 	],
 	{
 		variants: {
 			size: {
-				sm: "h-[16px] w-[16px] data-[state=checked]:translate-x-[16px] data-[state=unchecked]:translate-x-0",
-				default: "h-[22px] w-[22px] data-[state=checked]:translate-x-[20px] data-[state=unchecked]:translate-x-0",
-				lg: "h-[28px] w-[28px] data-[state=checked]:translate-x-[26px] data-[state=unchecked]:translate-x-0",
+				sm: "h-[16px] w-[16px]",
+				default: "h-[22px] w-[22px]",
+				lg: "h-[28px] w-[28px]",
 			},
 		},
 		defaultVariants: { size: "default" },
 	},
 );
 
-/* ── Switch ───────────────────────────────────────────────────────────────── */
-export interface SwitchProps
-	extends React.ComponentPropsWithoutRef<typeof SwitchPrimitive.Root>,
-	VariantProps<typeof switchTrack> { }
+type SwitchPrimitiveProps = React.ComponentPropsWithoutRef<typeof SwitchPrimitive>;
 
-const Switch = React.forwardRef<
-	React.ElementRef<typeof SwitchPrimitive.Root>,
-	SwitchProps
->(({ className, size, ...props }, ref) => (
-	<SwitchPrimitive.Root
-		ref={ref}
-		className={cn(switchTrack({ size }), className)}
-		{...props}
-	>
-		<SwitchPrimitive.Thumb className={switchThumb({ size })} />
-	</SwitchPrimitive.Root>
-));
+export interface SwitchProps
+	extends SwitchPrimitiveProps,
+		VariantProps<typeof switchTrack> {
+}
+
+const Switch = React.forwardRef<HTMLLabelElement, SwitchProps>(
+	({ className, size, ...props }, ref) => (
+		<SwitchPrimitive
+			ref={ref}
+			className={cn(switchTrack({ size }), className)}
+			style={{
+				background: "var(--switch-off)",
+			}}
+			{...props}
+		>
+			{({ isSelected }) => (
+				<>
+					<span
+						className="absolute inset-0 rounded-full"
+						style={{ background: isSelected ? "var(--switch-on)" : "var(--switch-off)" }}
+					/>
+					<span
+						className={cn(
+							relativeThumbClass(size),
+							isSelected ? selectedTranslate(size) : "translate-x-0",
+						)}
+					/>
+				</>
+			)}
+		</SwitchPrimitive>
+	),
+);
+
+function relativeThumbClass(size: VariantProps<typeof switchTrack>["size"]) {
+	return cn("relative", switchThumb({ size }));
+}
+
+function selectedTranslate(size: VariantProps<typeof switchTrack>["size"]) {
+	if (size === "sm") return "translate-x-[16px]";
+	if (size === "lg") return "translate-x-[26px]";
+	return "translate-x-[20px]";
+}
+
 Switch.displayName = "Switch";
 
 export { Switch };

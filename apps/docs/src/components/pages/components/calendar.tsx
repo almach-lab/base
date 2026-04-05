@@ -7,7 +7,7 @@ export function CalendarPage() {
 	return (
 		<ComponentDoc
 			name="Calendar"
-			description="Date picker built on react-day-picker v9. Supports single date, multiple dates, and date range selection out of the box."
+			description="Date picker that supports single date, multiple dates, and date range selection out of the box."
 			pkg="@almach/ui"
 			examples={[
 				{

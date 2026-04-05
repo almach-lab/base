@@ -6,7 +6,7 @@ export function PopoverPage() {
 	return (
 		<ComponentDoc
 			name="Popover"
-			description="Floating panel anchored to a trigger element. Built on Radix UI Popover with smooth open/close animations and portal rendering."
+			description="Floating panel anchored to a trigger element with smooth open/close animations and portal rendering."
 			examples={[
 				{
 					title: "Basic popover",
@@ -140,13 +140,13 @@ export function PopoverPage() {
 				},
 				{
 					name: "Popover.Trigger",
-					type: "Radix PopoverTriggerProps",
+					type: "PopoverTriggerProps",
 					description:
 						"Element that opens the popover. Use asChild to forward props to a custom element.",
 				},
 				{
 					name: "Popover.Content",
-					type: "Radix PopoverContentProps",
+					type: "PopoverContentProps",
 					description: "The floating panel content.",
 				},
 				{

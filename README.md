@@ -1,7 +1,7 @@
 # Almach
 
 A modern, accessible React UI component library monorepo.
-Built on Radix UI · Tailwind CSS v4 · TanStack Query · Zod · Astro.
+Built on React Aria · Tailwind CSS v4 · TanStack Query · Zod · Astro.
 
 **Docs:** [almach.kita.blue](https://almach.kita.blue)
 
@@ -11,7 +11,7 @@ Built on Radix UI · Tailwind CSS v4 · TanStack Query · Zod · Astro.
 
 | Package | Description |
 |---------|-------------|
-| `@almach/ui` | 30+ accessible components built on Radix UI and Tailwind CSS v4 |
+| `@almach/ui` | 30+ accessible components built on React Aria and Tailwind CSS v4 |
 | `@almach/forms` | Type-safe forms with TanStack Form and Zod validation |
 | `@almach/query` | Typed query factories and mutation builders on TanStack Query |
 | `@almach/utils` | Tree-shakable utilities: `cn()`, date formatting, type helpers |
@@ -69,6 +69,27 @@ export const usersQuery = createQuery({
 
 ---
 
+## Migration Guide (v2: React Aria)
+
+`@almach/ui` moved fully from Radix primitives to React Aria primitives in a major release.
+
+- Composition changes:
+  `asChild` composition now maps to React Aria `render` composition internally.
+  Trigger/Close components still support `asChild`, but it must receive exactly one React element child.
+- Select behavior:
+  `Select` now follows React Aria value semantics; `onValueChange` can emit `null` when clearing/unsetting.
+  Update handlers that previously assumed `string` only.
+- Data attribute changes:
+  animation/state selectors are now React Aria style (`data-[starting-style]`, `data-[ending-style]`, `data-[highlighted]`, `data-[checked]`, `data-[unchecked]`) instead of Radix `data-[state=...]` in affected primitives.
+- Primitive internals:
+  layered components (`Dialog`, `Popover`, `DropdownMenu`, `Tooltip`, `Select`) now use React Aria `Positioner` + `Popup` internals.
+  Existing public compound exports remain (`.Trigger`, `.Content`, `.Item`, etc.), but custom CSS tied to old Radix internals should be updated.
+- Label/slot-related differences:
+  `Label` is now a native `<label>` wrapper in `@almach/ui`.
+  Button/link composition no longer depends on `@radix-ui/react-slot`.
+
+---
+
 ## Theming
 
 All design tokens are plain CSS variables — override in your stylesheet, no config files:
@@ -109,7 +130,7 @@ bun run release
 ```
 based/
 ├── packages/
-│   ├── ui/      — @almach/ui      (Radix + Tailwind components)
+│   ├── ui/      — @almach/ui      (React Aria + Tailwind components)
 │   ├── forms/   — @almach/forms   (TanStack Form + Zod fields)
 │   ├── query/   — @almach/query   (TanStack Query factories)
 │   └── utils/   — @almach/utils   (cn, type helpers, formatters)
@@ -132,3 +153,4 @@ based/
 ## License
 
 MIT
+

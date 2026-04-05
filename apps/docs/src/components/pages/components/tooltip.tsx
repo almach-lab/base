@@ -8,7 +8,7 @@ export function TooltipPage() {
 		<Tooltip.Provider delayDuration={300}>
 			<ComponentDoc
 				name="Tooltip"
-				description="A contextual hint displayed on hover or keyboard focus. Built on Radix UI Tooltip with configurable delay and placement."
+				description="A contextual hint displayed on hover or keyboard focus with configurable delay and placement."
 				examples={[
 					{
 						title: "Icon buttons",
@@ -115,7 +115,7 @@ export function TooltipPage() {
 					{
 						title: "Disabled element",
 						description:
-							"To show a tooltip on a disabled button, wrap it in a span (Radix requires a focusable trigger).",
+							"To show a tooltip on a disabled button, wrap it in a focusable span.",
 						preview: (
 							<Tooltip>
 								<Tooltip.Trigger asChild>

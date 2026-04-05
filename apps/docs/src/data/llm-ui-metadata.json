@@ -1,0 +1,155 @@
+{
+  "button": {
+    "tasks": [
+      "Trigger an action with semantic variants.",
+      "Use loading state during async submit or mutation.",
+      "Render as child when composing with links or custom elements."
+    ],
+    "anatomy": ["Button"],
+    "api": [
+      "variant + size define style and spacing.",
+      "loading disables interactions and shows spinner.",
+      "asChild enables slot-based composition."
+    ],
+    "accessibility": [
+      "Use meaningful button text.",
+      "Set disabled when action is unavailable.",
+      "Prefer aria-label for icon-only usage."
+    ]
+  },
+  "input": {
+    "tasks": [
+      "Collect single-line text with label and helper text.",
+      "Mark invalid state for form feedback.",
+      "Use date input variant for date entry."
+    ],
+    "anatomy": ["Input.Root", "Input.Field", "Input.Label", "Input.Description", "Input.Error"],
+    "api": [
+      "isDisabled and isInvalid control interaction and state styling.",
+      "description and errorMessage provide form feedback.",
+      "value/defaultValue follow controlled and uncontrolled patterns."
+    ]
+  },
+  "select": {
+    "tasks": [
+      "Select a single value from a list.",
+      "Render grouped options with section headers.",
+      "Use searchable mode for long lists."
+    ],
+    "anatomy": ["Select.Root", "Select.Trigger", "Select.Value", "Select.Content", "Select.Item", "Select.Indicator"],
+    "api": [
+      "value/defaultValue + onValueChange manage selection.",
+      "open/defaultOpen + onOpenChange manage popup state.",
+      "isDisabled and isInvalid align with field semantics."
+    ],
+    "accessibility": [
+      "Arrow keys move through options.",
+      "Enter or Space selects item.",
+      "Escape closes the popup and returns focus."
+    ]
+  },
+  "dialog": {
+    "tasks": [
+      "Show modal confirmation and block background interaction.",
+      "Compose custom header/body/footer content.",
+      "Control open state from parent logic."
+    ],
+    "anatomy": ["Dialog.Root", "Dialog.Trigger", "Dialog.Content", "Dialog.Title", "Dialog.Description", "Dialog.Close"],
+    "api": [
+      "open/defaultOpen + onOpenChange control visibility.",
+      "Content handles focus trap and Escape close.",
+      "Close part returns focus to trigger by default."
+    ]
+  },
+  "drawer": {
+    "tasks": [
+      "Open side panel for details or forms.",
+      "Use directional variants for left/right/bottom entry.",
+      "Allow swipe-to-dismiss on touch devices."
+    ],
+    "anatomy": ["Drawer.Root", "Drawer.Trigger", "Drawer.Content", "Drawer.Backdrop", "Drawer.Close"],
+    "api": [
+      "open/defaultOpen + onOpenChange control lifecycle.",
+      "Motion is transition-first and interruptible.",
+      "Backdrop click and Escape close when enabled."
+    ]
+  },
+  "modal": {
+    "tasks": [
+      "Render stacked workflow views.",
+      "Control modal from imperative hook.",
+      "Embed forms with deterministic close behavior."
+    ],
+    "anatomy": ["Modal.Root", "Modal.Trigger", "Modal.Content", "Modal.Title", "Modal.Close"],
+    "api": [
+      "open/defaultOpen + onOpenChange control visibility.",
+      "useModal helper supports programmatic flows.",
+      "Focus and escape behavior follows dialog semantics."
+    ]
+  },
+  "toast": {
+    "tasks": [
+      "Show transient feedback after user actions.",
+      "Use semantic variants (success, error, warning, info).",
+      "Attach inline actions for recovery paths."
+    ],
+    "anatomy": ["toast()", "Toaster"],
+    "api": [
+      "Mount <Toaster /> once near app root.",
+      "toast() accepts title, description, duration, and action.",
+      "toast.promise() maps loading/success/error lifecycle."
+    ]
+  },
+  "tabs": {
+    "tasks": [
+      "Switch between related content panels.",
+      "Control selected tab from parent state.",
+      "Disable individual tabs when unavailable."
+    ],
+    "anatomy": ["Tabs.Root", "Tabs.List", "Tabs.Trigger", "Tabs.Content"],
+    "api": [
+      "selectedKey/defaultSelectedKey + onSelectionChange manage active tab.",
+      "Trigger and Content share the same id key.",
+      "isDisabled disables a trigger."
+    ]
+  },
+  "checkbox": {
+    "tasks": [
+      "Capture boolean consent in forms.",
+      "Render controlled list of preferences.",
+      "Show disabled and invalid states consistently."
+    ],
+    "anatomy": ["Checkbox"],
+    "api": [
+      "isSelected/defaultSelected + onChange manage state.",
+      "isDisabled blocks interaction.",
+      "error sets invalid visual and semantic state."
+    ]
+  },
+  "radio": {
+    "tasks": [
+      "Select one option from a small set.",
+      "Render option cards with labels and descriptions.",
+      "Control selection for form integration."
+    ],
+    "anatomy": ["Radio.Group", "Radio.Item"],
+    "api": [
+      "value/defaultValue + onChange manage group selection.",
+      "isDisabled supported on group and item.",
+      "name integrates with native form submission."
+    ]
+  },
+  "switch": {
+    "tasks": [
+      "Toggle settings with immediate feedback.",
+      "Use with label/description for preferences.",
+      "Control setting from external store state."
+    ],
+    "anatomy": ["Switch"],
+    "api": [
+      "isSelected/defaultSelected + onChange manage state.",
+      "isDisabled blocks interaction.",
+      "error applies invalid semantics and styles."
+    ]
+  }
+}

@@ -160,7 +160,7 @@ export function ButtonPage() {
 					type: "boolean",
 					default: "false",
 					description:
-						"Merges props onto the child element via Radix Slot (useful for router links).",
+						"Merges props onto the child element (useful for router links).",
 				},
 				{
 					name: "disabled",

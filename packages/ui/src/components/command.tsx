@@ -13,7 +13,8 @@ const CommandRoot = React.forwardRef<
 	<CommandPrimitive
 		ref={ref}
 		className={cn(
-			"flex h-full w-full flex-col overflow-hidden rounded-xl bg-popover text-popover-foreground",
+			"flex w-full min-h-0 flex-col overflow-hidden rounded-xl bg-popover text-popover-foreground",
+			"transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
 			className,
 		)}
 		{...props}
@@ -34,7 +35,17 @@ function CommandDialog({ open, onOpenChange, children }: CommandDialogProps) {
 			{...(open !== undefined && { open })}
 			{...(onOpenChange !== undefined && { onOpenChange })}
 		>
-			<Dialog.Content className="overflow-hidden p-0 shadow-2xl [&>button]:hidden">
+			<Dialog.Content
+				className={cn(
+					"w-[min(92vw,_44rem)] max-w-[44rem] p-0 shadow-2xl [&>button]:hidden",
+					// Keep command palette visually centered in all states.
+					"!-translate-y-1/2 !top-1/2",
+					// Content-fit dialog with responsive max-height.
+					"max-h-[min(86svh,_40rem)] overflow-hidden flex flex-col",
+					// Slightly stronger scale change to improve perceived opening animation.
+					"data-[state=closed]:scale-[0.94] data-[state=open]:scale-100",
+				)}
+			>
 				<CommandRoot className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3">
 					{children}
 				</CommandRoot>
@@ -74,7 +85,11 @@ const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<CommandPrimitive.List
 		ref={ref}
-		className={cn("max-h-[300px] overflow-y-auto overflow-x-hidden", className)}
+		className={cn(
+			// Fit content first, then scroll when list exceeds viewport cap.
+			"max-h-[min(70svh,_32rem)] overflow-y-auto overflow-x-hidden overscroll-contain",
+			className,
+		)}
 		{...props}
 	/>
 ));
@@ -133,8 +148,9 @@ const CommandItem = React.forwardRef<
 		ref={ref}
 		className={cn(
 			"relative flex cursor-pointer select-none items-center gap-2 rounded-lg px-2 py-1.5 text-sm outline-none",
-			"transition-colors",
+			"transition-[background-color,color,transform] duration-150 ease-out",
 			"data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground",
+			"data-[selected=true]:translate-x-0.5",
 			"data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
 			"[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
 			className,
