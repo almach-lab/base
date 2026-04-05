@@ -6,5 +6,5 @@ pages_build_output_dir = "dist"
 name = "based-ui-docs"
 
 [[env.production.routes]]
-pattern = "based-ui-docs.pages.dev/*"
+pattern = "almach.pages.dev/*"
 zone_name = "pages.dev"
