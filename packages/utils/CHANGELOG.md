@@ -1,5 +1,11 @@
 # @almach/utils
 
+## 0.1.0
+
+### Minor Changes
+
+- auto release from 77972bb..0522465
+
 ## 1.0.1
 
 ### Patch Changes

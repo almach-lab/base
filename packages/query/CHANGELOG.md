@@ -1,5 +1,16 @@
 # @almach/query
 
+## 1.0.0
+
+### Minor Changes
+
+- auto release from 77972bb..0522465
+
+### Patch Changes
+
+- Updated dependencies
+  - @almach/utils@0.1.0
+
 ## 2.0.1
 
 ### Patch Changes
