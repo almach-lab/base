@@ -1,6 +1,7 @@
 /* @almach/ui — Tailwind CSS v4 Theme */
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
+@import "sonner/dist/styles.css";
 
 /* ── Dark mode variant ───────────────────────────────────────────────────── */
 @custom-variant dark (&:where(.dark, .dark *));
