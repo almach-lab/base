@@ -140,7 +140,7 @@ function ComponentCard({
       aria-label={`${name} — ${description}`}
       className="group block rounded-xl border border-border/70 bg-card/50 p-2.5 transition-all hover:border-primary/45 hover:bg-card"
     >
-      <div className="mb-2.5 flex h-32 items-center justify-center rounded-lg border border-border/60 bg-[radial-gradient(circle_at_top,hsl(var(--primary)/0.16),transparent_52%)] md:h-36">
+      <div className="mb-2.5 flex h-32 items-center justify-center rounded-lg border border-border/60 bg-[radial-gradient(circle_at_top,color-mix(in_oklch,var(--primary)_16%,transparent),transparent_52%)] md:h-36">
         <span className="rounded-full border border-primary/40 bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
           {name}
         </span>

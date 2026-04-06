@@ -14,41 +14,41 @@
 
 /* Almach docs theme */
 :root {
-  --background: var(--theme-background-light, 0 0% 100%);
-  --foreground: var(--theme-foreground-light, 240 10% 3.9%);
-  --card: var(--theme-card-light, 0 0% 100%);
-  --card-foreground: var(--theme-card-foreground-light, 240 10% 3.9%);
-  --popover: var(--theme-popover-light, 0 0% 100%);
-  --popover-foreground: var(--theme-popover-foreground-light, 240 10% 3.9%);
-  --muted: var(--theme-muted-light, 240 4.8% 95.9%);
-  --muted-foreground: var(--theme-muted-foreground-light, 240 3.8% 46.1%);
-  --accent: var(--theme-accent-light, 240 4.8% 95.9%);
-  --accent-foreground: var(--theme-accent-foreground-light, 240 5.9% 10%);
-  --border: var(--theme-border-light, 240 5.9% 90%);
-  --input: var(--theme-input-light, 240 5.9% 90%);
+  --background: hsl(var(--theme-background-light, 0 0% 100%));
+  --foreground: hsl(var(--theme-foreground-light, 240 10% 3.9%));
+  --card: hsl(var(--theme-card-light, 0 0% 100%));
+  --card-foreground: hsl(var(--theme-card-foreground-light, 240 10% 3.9%));
+  --popover: hsl(var(--theme-popover-light, 0 0% 100%));
+  --popover-foreground: hsl(var(--theme-popover-foreground-light, 240 10% 3.9%));
+  --muted: hsl(var(--theme-muted-light, 240 4.8% 95.9%));
+  --muted-foreground: hsl(var(--theme-muted-foreground-light, 240 3.8% 46.1%));
+  --accent: hsl(var(--theme-accent-light, 240 4.8% 95.9%));
+  --accent-foreground: hsl(var(--theme-accent-foreground-light, 240 5.9% 10%));
+  --border: hsl(var(--theme-border-light, 240 5.9% 90%));
+  --input: hsl(var(--theme-input-light, 240 5.9% 90%));
 
-  --primary: var(--theme-primary-light, 221 83% 53%);
-  --primary-foreground: 0 0% 100%;
-  --ring: var(--theme-primary-light, 221 83% 53%);
+  --primary: hsl(var(--theme-primary-light, 221 83% 53%));
+  --primary-foreground: hsl(0 0% 100%);
+  --ring: hsl(var(--theme-primary-light, 221 83% 53%));
 }
 
 .dark {
-  --background: var(--theme-background-dark, 222 26% 8%);
-  --foreground: var(--theme-foreground-dark, 210 25% 96%);
-  --card: var(--theme-card-dark, 222 22% 10%);
-  --card-foreground: var(--theme-card-foreground-dark, 210 25% 96%);
-  --popover: var(--theme-popover-dark, 222 22% 10%);
-  --popover-foreground: var(--theme-popover-foreground-dark, 210 25% 96%);
-  --muted: var(--theme-muted-dark, 222 16% 14%);
-  --muted-foreground: var(--theme-muted-foreground-dark, 222 10% 64%);
-  --accent: var(--theme-accent-dark, 222 14% 17%);
-  --accent-foreground: var(--theme-accent-foreground-dark, 210 25% 96%);
-  --border: var(--theme-border-dark, 222 13% 18%);
-  --input: var(--theme-input-dark, 222 13% 18%);
+  --background: hsl(var(--theme-background-dark, 222 26% 8%));
+  --foreground: hsl(var(--theme-foreground-dark, 210 25% 96%));
+  --card: hsl(var(--theme-card-dark, 222 22% 10%));
+  --card-foreground: hsl(var(--theme-card-foreground-dark, 210 25% 96%));
+  --popover: hsl(var(--theme-popover-dark, 222 22% 10%));
+  --popover-foreground: hsl(var(--theme-popover-foreground-dark, 210 25% 96%));
+  --muted: hsl(var(--theme-muted-dark, 222 16% 14%));
+  --muted-foreground: hsl(var(--theme-muted-foreground-dark, 222 10% 64%));
+  --accent: hsl(var(--theme-accent-dark, 222 14% 17%));
+  --accent-foreground: hsl(var(--theme-accent-foreground-dark, 210 25% 96%));
+  --border: hsl(var(--theme-border-dark, 222 13% 18%));
+  --input: hsl(var(--theme-input-dark, 222 13% 18%));
 
-  --primary: var(--theme-primary-dark, 217 91% 60%);
-  --primary-foreground: 0 0% 100%;
-  --ring: var(--theme-primary-dark, 217 91% 60%);
+  --primary: hsl(var(--theme-primary-dark, 217 91% 60%));
+  --primary-foreground: hsl(0 0% 100%);
+  --ring: hsl(var(--theme-primary-dark, 217 91% 60%));
 }
 
 /* View transition: animate only page content, not the shell */
