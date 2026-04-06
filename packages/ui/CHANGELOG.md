@@ -1,5 +1,13 @@
 # @almach/ui
 
+## 3.0.1
+
+### Patch Changes
+
+- auto release from 7b3b997..6c9cc07
+- Updated dependencies
+  - @almach/utils@1.0.1
+
 ## 3.0.0
 
 ### Major Changes
