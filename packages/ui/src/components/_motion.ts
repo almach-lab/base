@@ -4,7 +4,9 @@ export const MOTION_DURATION_FAST = 120;
 export const MOTION_DURATION_BASE = 160;
 export const MOTION_DURATION_SLOW = 220;
 
-export const MOTION_VAR_OVERLAY_DURATION = "--theme-motion-overlay-duration-ms";
+export const MOTION_VAR_OVERLAY_DURATION = "--theme-motion-overlay-duration";
+export const MOTION_VAR_INTERACTIVE_DURATION =
+  "--theme-motion-interactive-duration";
 export const MOTION_VAR_EASE = "--theme-motion-ease-standard";
 
 function parseDurationToMs(raw: string): number | null {

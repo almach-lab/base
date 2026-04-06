@@ -3,6 +3,7 @@ import { Check, ChevronRight } from "lucide-react";
 import * as React from "react";
 import {
   Menu as AriaMenu,
+  type MenuProps as AriaMenuProps,
   MenuItem as AriaMenuItem,
   type MenuItemProps as AriaMenuItemProps,
   MenuSection as AriaMenuSection,
@@ -70,12 +71,22 @@ interface DropdownContentProps extends React.HTMLAttributes<HTMLDivElement> {
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
   sideOffset?: number;
+  menuClassName?: string;
+  menuProps?: Omit<AriaMenuProps<object>, "children" | "className">;
 }
 
 function DropdownMenuContent(_props: DropdownContentProps) {
   return null;
 }
 DropdownMenuContent.displayName = "DropdownMenu.Content";
+
+function getContentProps(
+  element: React.ReactNode,
+): DropdownContentProps | null {
+  if (!React.isValidElement(element)) return null;
+  if (element.type !== DropdownMenuContent) return null;
+  return element.props as DropdownContentProps;
+}
 
 function DropdownRoot({ children, ...props }: DropdownRootProps) {
   let triggerProps: DropdownTriggerProps | null = null;
@@ -86,9 +97,8 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
     if (child.type === DropdownMenuTrigger) {
       triggerProps = child.props as DropdownTriggerProps;
     }
-    if (child.type === DropdownMenuContent) {
-      contentProps = child.props as DropdownContentProps;
-    }
+    const parsedContent = getContentProps(child);
+    if (parsedContent) contentProps = parsedContent;
   }
 
   if (!triggerProps || !contentProps) {
@@ -101,8 +111,18 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
     <button type="button">{triggerProps.children}</button>
   );
 
-  const placement = toPlacement(contentProps.side, contentProps.align);
-  const offset = contentProps.sideOffset ?? 8;
+  const {
+    side,
+    align,
+    sideOffset,
+    className,
+    menuClassName,
+    menuProps,
+    children: menuChildren,
+  } = contentProps;
+
+  const placement = toPlacement(side, align);
+  const offset = sideOffset ?? 8;
 
   return (
     <AriaMenuTrigger {...props}>
@@ -121,27 +141,49 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
             "data-[state=closed]:",
             "data-[exiting]:",
           ),
-          contentProps.className,
+          className,
         )}
       >
-        <AriaMenu className="max-h-[min(60svh,_24rem)] overflow-auto p-0.5 outline-none">
-          {contentProps.children}
+        <AriaMenu
+          {...(menuProps ?? {})}
+          className={cn(
+            "max-h-[min(60svh,_24rem)] overflow-y-auto overflow-x-hidden p-0.5 outline-none",
+            menuClassName,
+          )}
+        >
+          {menuChildren}
         </AriaMenu>
       </Popover>
     </AriaMenuTrigger>
   );
 }
 
-interface DropdownMenuItemProps extends Omit<AriaMenuItemProps, "className"> {
+interface DropdownMenuItemProps
+  extends Omit<AriaMenuItemProps, "className" | "isDisabled"> {
   inset?: boolean;
   destructive?: boolean;
+  disabled?: boolean;
+  isDisabled?: boolean;
   className?: string;
 }
 
 const DropdownMenuItem = React.forwardRef<
   HTMLDivElement,
   DropdownMenuItemProps
->(({ className, inset, destructive, children, textValue, ...props }, ref) => {
+>(
+  (
+    {
+      className,
+      inset,
+      destructive,
+      children,
+      textValue,
+      disabled,
+      isDisabled,
+      ...props
+    },
+    ref,
+  ) => {
   const resolvedTextValue =
     textValue ?? (typeof children === "string" ? children : null);
 
@@ -161,6 +203,7 @@ const DropdownMenuItem = React.forwardRef<
           nextClassName,
         ),
       )}
+      {...(isDisabled ?? disabled ? { isDisabled: true } : {})}
       {...props}
     >
       {composeRenderProps(children, (childContent, renderProps) => (
@@ -182,8 +225,19 @@ const DropdownMenuItem = React.forwardRef<
       ))}
     </AriaMenuItem>
   );
-});
+},
+);
 DropdownMenuItem.displayName = "DropdownMenu.Item";
+
+(
+  DropdownMenuItem as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode = (
+  AriaMenuItem as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode;
 
 const DropdownMenuCheckboxItem = React.forwardRef<
   HTMLDivElement,
@@ -193,6 +247,16 @@ const DropdownMenuCheckboxItem = React.forwardRef<
 ));
 DropdownMenuCheckboxItem.displayName = "DropdownMenu.CheckboxItem";
 
+(
+  DropdownMenuCheckboxItem as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode = (
+  AriaMenuItem as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode;
+
 const DropdownMenuRadioItem = React.forwardRef<
   HTMLDivElement,
   DropdownMenuItemProps
@@ -201,22 +265,49 @@ const DropdownMenuRadioItem = React.forwardRef<
 ));
 DropdownMenuRadioItem.displayName = "DropdownMenu.RadioItem";
 
-function DropdownMenuLabel({
-  className,
-  inset,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement> & { inset?: boolean }) {
+(
+  DropdownMenuRadioItem as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode = (
+  AriaMenuItem as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode;
+
+interface DropdownMenuLabelProps {
+  className?: string;
+  inset?: boolean;
+  children?: React.ReactNode;
+}
+
+function DropdownMenuLabel({ className, inset, children }: DropdownMenuLabelProps) {
+  const textValue = typeof children === "string" ? children : undefined;
+
   return (
-    <div
+    <AriaMenuItem
+      isDisabled
+      {...(textValue !== undefined ? { textValue } : {})}
       className={cn(
-        "px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground",
+        "cursor-default px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground",
         inset && "pl-8",
         className,
       )}
-      {...props}
-    />
+    >
+      {children}
+    </AriaMenuItem>
   );
 }
+
+(
+  DropdownMenuLabel as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode = (
+  AriaMenuItem as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode;
 
 function DropdownMenuSeparator({ className, ...props }: SeparatorProps) {
   return (
@@ -226,6 +317,16 @@ function DropdownMenuSeparator({ className, ...props }: SeparatorProps) {
     />
   );
 }
+
+(
+  DropdownMenuSeparator as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode = (
+  Separator as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode;
 
 interface DropdownMenuSectionProps<T extends object>
   extends AriaMenuSectionProps<T> {
@@ -256,17 +357,48 @@ function DropdownMenuGroup<T extends object>({
   );
 }
 
+(
+  DropdownMenuGroup as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode = (
+  AriaMenuSection as unknown as {
+    getCollectionNode?: unknown;
+  }
+).getCollectionNode;
+
 function DropdownMenuSubTrigger(props: SubmenuTriggerProps) {
   const [trigger, menu] = React.Children.toArray(props.children) as [
     React.ReactElement,
     React.ReactElement,
   ];
+
+  const contentProps = getContentProps(menu);
+
+  if (!contentProps) {
+    return <AriaSubmenuTrigger {...props}>{props.children}</AriaSubmenuTrigger>;
+  }
+
+  const {
+    side,
+    align,
+    sideOffset,
+    className,
+    menuClassName,
+    menuProps,
+    children: menuChildren,
+  } = contentProps;
+
+  const placement = toPlacement(side ?? "right", align ?? "start");
+  const offset = sideOffset ?? 6;
+
   return (
     <AriaSubmenuTrigger {...props}>
       {trigger}
       <Popover
-        offset={6}
+        offset={offset}
         crossOffset={-4}
+        placement={placement}
         className={cn(
           "min-w-[12rem] overflow-hidden rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-xl outline-none",
           MOTION_OVERLAY,
@@ -278,10 +410,17 @@ function DropdownMenuSubTrigger(props: SubmenuTriggerProps) {
             "data-[state=closed]:",
             "data-[exiting]:",
           ),
+          className,
         )}
       >
-        <AriaMenu className="max-h-[min(60svh,_24rem)] overflow-auto p-0.5 outline-none">
-          {menu}
+        <AriaMenu
+          {...(menuProps ?? {})}
+          className={cn(
+            "max-h-[min(60svh,_24rem)] overflow-y-auto overflow-x-hidden p-0.5 outline-none",
+            menuClassName,
+          )}
+        >
+          {menuChildren}
         </AriaMenu>
       </Popover>
     </AriaSubmenuTrigger>

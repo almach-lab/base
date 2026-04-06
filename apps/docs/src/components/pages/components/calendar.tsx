@@ -1,7 +1,8 @@
 import { Calendar } from "@almach/ui";
 import * as React from "react";
-import type { DateRange } from "react-day-picker";
 import { ComponentDoc } from "../../component-doc";
+
+type DateRange = { from?: Date; to?: Date };
 
 export function CalendarPage() {
   return (
@@ -23,8 +24,8 @@ export function CalendarPage() {
           title: "Date range",
           description:
             "Select a start and end date. The range highlights between them.",
-          preview: <RangeCalendar />,
-          code: `const [range, setRange] = React.useState<DateRange>();
+          preview: <RangeCalendarExample />,
+          code: `const [range, setRange] = React.useState<{ from?: Date; to?: Date }>();
 
 <Calendar mode="range" selected={range} onSelect={setRange} numberOfMonths={2} />`,
         },
@@ -32,13 +33,9 @@ export function CalendarPage() {
           title: "Multiple months",
           description: "Show multiple months side by side with numberOfMonths.",
           preview: (
-            <Calendar
-              mode="single"
-              numberOfMonths={2}
-              className="rounded-2xl border"
-            />
+            <Calendar numberOfMonths={2} className="rounded-2xl border" />
           ),
-          code: `<Calendar mode="single" numberOfMonths={2} />`,
+          code: `<Calendar numberOfMonths={2} />`,
         },
         {
           title: "Disabled dates",
@@ -126,7 +123,7 @@ function SingleCalendar() {
   );
 }
 
-function RangeCalendar() {
+function RangeCalendarExample() {
   const [range, setRange] = React.useState<DateRange>();
   return (
     <div className="flex flex-col items-center gap-3">

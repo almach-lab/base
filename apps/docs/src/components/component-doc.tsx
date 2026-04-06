@@ -12,6 +12,28 @@ export interface ExampleProps {
   centered?: boolean;
 }
 
+function sanitizeTilePreview(node: React.ReactNode): React.ReactNode {
+  if (!React.isValidElement(node)) {
+    return node;
+  }
+
+  const props = node.props as Record<string, unknown>;
+  const {
+    id: _id,
+    htmlFor: _htmlFor,
+    "aria-labelledby": _ariaLabelledBy,
+    "aria-describedby": _ariaDescribedBy,
+    children,
+    ...rest
+  } = props;
+
+  const safeChildren = React.Children.map(children as React.ReactNode, (child) =>
+    sanitizeTilePreview(child),
+  );
+
+  return React.cloneElement(node, rest, safeChildren);
+}
+
 function VariantTile({
   example,
   selected,
@@ -23,6 +45,7 @@ function VariantTile({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       aria-pressed={selected}
       aria-label={`View ${example.title} example`}
@@ -35,8 +58,16 @@ function VariantTile({
         )}
       >
         <div className="relative flex h-40 w-full items-center justify-center overflow-hidden border-b border-border/60 bg-muted/20 p-4">
-          <div className="[&>*]:max-h-full [&>*]:max-w-full">
-            {example.preview}
+          <div
+            className={cn(
+              "h-full w-full *:max-h-full *:max-w-full",
+              example.centered === false && "*:h-full *:w-full",
+            )}
+          >
+            {/* Tile previews are visual-only to avoid nested interactive controls in selector cards. */}
+            <div className="pointer-events-none select-none">
+              {sanitizeTilePreview(example.preview)}
+            </div>
           </div>
         </div>
         <Card.Footer className="flex items-center justify-between gap-2 p-3">
@@ -68,7 +99,7 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
 
   React.useEffect(() => {
     setTab("preview");
-  }, []);
+  }, [example.title]);
 
   return (
     <div className="overflow-hidden rounded-xl border border-border/70 bg-card/40">
@@ -209,12 +240,14 @@ export function ComponentDoc({
 }: ComponentDocProps) {
   const [selected, setSelected] = React.useState(0);
   const activeExample = (examples[selected] ?? examples[0])!;
-  const viewerRef = React.useRef<HTMLDivElement>(null);
-
-  const handleSelect = (i: number) => {
-    setSelected(i);
-    viewerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const handleSelect = React.useCallback(
+    (i: number) => {
+      // Avoid re-renders and focus/scroll churn when clicking the already active tile.
+      if (i === selected) return;
+      setSelected(i);
+    },
+    [selected],
+  );
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 px-4 py-8 md:px-5 md:py-9">
@@ -232,7 +265,7 @@ export function ComponentDoc({
 
       {children}
 
-      <div ref={viewerRef} className="scroll-mt-16 space-y-3">
+      <div className="scroll-mt-16 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-sm font-semibold text-foreground">
             Example: {activeExample.title}

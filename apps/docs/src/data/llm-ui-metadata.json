@@ -15,6 +15,13 @@
       "Use meaningful button text.",
       "Set disabled when action is unavailable.",
       "Prefer aria-label for icon-only usage."
+    ],
+    "example": [
+      "import { Button } from \"@almach/ui\";",
+      "",
+      "export function SaveAction() {",
+      "  return <Button variant=\"default\">Save changes</Button>;",
+      "}"
     ]
   },
   "input": {
@@ -23,17 +30,23 @@
       "Mark invalid state for form feedback.",
       "Use date input variant for date entry."
     ],
-    "anatomy": [
-      "Input.Root",
-      "Input.Field",
-      "Input.Label",
-      "Input.Description",
-      "Input.Error"
-    ],
+    "anatomy": ["Input", "Input.Date", "Input.Currency"],
     "api": [
-      "isDisabled and isInvalid control interaction and state styling.",
-      "description and errorMessage provide form feedback.",
-      "value/defaultValue follow controlled and uncontrolled patterns."
+      "Use Input for base text/number/email/password fields with optional leftElement and rightElement.",
+      "Input.Date supports segmented date entry and withCalendar popover selection.",
+      "Input.Currency provides amount + currency selector with controlled and uncontrolled usage."
+    ],
+    "example": [
+      "import { Input, Label } from \"@almach/ui\";",
+      "",
+      "export function EmailField() {",
+      "  return (",
+      "    <div className=\"space-y-1.5\">",
+      "      <Label htmlFor=\"email\">Email</Label>",
+      "      <Input id=\"email\" type=\"email\" placeholder=\"john@example.com\" />",
+      "    </div>",
+      "  );",
+      "}"
     ]
   },
   "select": {
@@ -42,23 +55,26 @@
       "Render grouped options with section headers.",
       "Use searchable mode for long lists."
     ],
-    "anatomy": [
-      "Select.Root",
-      "Select.Trigger",
-      "Select.Value",
-      "Select.Content",
-      "Select.Item",
-      "Select.Indicator"
-    ],
+    "anatomy": ["Select", "Select.Searchable"],
     "api": [
-      "value/defaultValue + onValueChange manage selection.",
-      "open/defaultOpen + onOpenChange manage popup state.",
-      "isDisabled and isInvalid align with field semantics."
+      "Use Select with items array for standard single selection.",
+      "Use Select.Searchable for long datasets with built-in filtering.",
+      "onValueChange receives the selected value; value/defaultValue support controlled and uncontrolled patterns."
     ],
     "accessibility": [
       "Arrow keys move through options.",
       "Enter or Space selects item.",
       "Escape closes the popup and returns focus."
+    ],
+    "example": [
+      "import { Select } from \"@almach/ui\";",
+      "",
+      "const items = [",
+      "  { label: \"Indonesia\", value: \"id\" },",
+      "  { label: \"Japan\", value: \"jp\" },",
+      "];",
+      "",
+      "<Select items={items} placeholder=\"Choose country\" />;"
     ]
   },
   "dialog": {
@@ -79,6 +95,19 @@
       "open/defaultOpen + onOpenChange control visibility.",
       "Content handles focus trap and Escape close.",
       "Close part returns focus to trigger by default."
+    ],
+    "example": [
+      "import { Button, Dialog } from \"@almach/ui\";",
+      "",
+      "<Dialog>",
+      "  <Dialog.Trigger asChild>",
+      "    <Button>Open dialog</Button>",
+      "  </Dialog.Trigger>",
+      "  <Dialog.Content>",
+      "    <Dialog.Title>Confirm action</Dialog.Title>",
+      "    <Dialog.Description>This cannot be undone.</Dialog.Description>",
+      "  </Dialog.Content>",
+      "</Dialog>;"
     ]
   },
   "drawer": {
@@ -98,6 +127,16 @@
       "open/defaultOpen + onOpenChange control lifecycle.",
       "Motion is transition-first and interruptible.",
       "Backdrop click and Escape close when enabled."
+    ],
+    "example": [
+      "import { Button, Drawer } from \"@almach/ui\";",
+      "",
+      "<Drawer>",
+      "  <Drawer.Trigger asChild>",
+      "    <Button>Open drawer</Button>",
+      "  </Drawer.Trigger>",
+      "  <Drawer.Content side=\"right\">Drawer content</Drawer.Content>",
+      "</Drawer>;"
     ]
   },
   "modal": {
@@ -117,6 +156,18 @@
       "open/defaultOpen + onOpenChange control visibility.",
       "useModal helper supports programmatic flows.",
       "Focus and escape behavior follows dialog semantics."
+    ],
+    "example": [
+      "import { Button, Modal } from \"@almach/ui\";",
+      "",
+      "<Modal>",
+      "  <Modal.Trigger asChild>",
+      "    <Button>Open modal</Button>",
+      "  </Modal.Trigger>",
+      "  <Modal.Content>",
+      "    <Modal.Title>Profile settings</Modal.Title>",
+      "  </Modal.Content>",
+      "</Modal>;"
     ]
   },
   "toast": {
@@ -130,6 +181,15 @@
       "Mount <Toaster /> once near app root.",
       "toast() accepts title, description, duration, and action.",
       "toast.promise() maps loading/success/error lifecycle."
+    ],
+    "example": [
+      "import { Toaster, toast } from \"@almach/ui\";",
+      "",
+      "export function AppRoot() {",
+      "  return <Toaster />;",
+      "}",
+      "",
+      "toast(\"Saved successfully\");"
     ]
   },
   "tabs": {
@@ -138,11 +198,22 @@
       "Control selected tab from parent state.",
       "Disable individual tabs when unavailable."
     ],
-    "anatomy": ["Tabs.Root", "Tabs.List", "Tabs.Trigger", "Tabs.Content"],
+    "anatomy": ["Tabs", "Tabs.List", "Tabs.Tab", "Tabs.Panel"],
     "api": [
-      "selectedKey/defaultSelectedKey + onSelectionChange manage active tab.",
-      "Trigger and Content share the same id key.",
-      "isDisabled disables a trigger."
+      "Use the items prop for declarative tab definitions.",
+      "value/defaultValue + onValueChange manage active tab.",
+      "Tabs supports variant and size styling through its variant props."
+    ],
+    "example": [
+      "import { Tabs } from \"@almach/ui\";",
+      "",
+      "<Tabs",
+      "  defaultValue=\"account\"",
+      "  items=[",
+      "    { value: \"account\", label: \"Account\", content: \"Account settings\" },",
+      "    { value: \"security\", label: \"Security\", content: \"Security options\" },",
+      "  ]",
+      "/>;"
     ]
   },
   "checkbox": {
@@ -156,6 +227,11 @@
       "isSelected/defaultSelected + onChange manage state.",
       "isDisabled blocks interaction.",
       "error sets invalid visual and semantic state."
+    ],
+    "example": [
+      "import { Checkbox } from \"@almach/ui\";",
+      "",
+      "<Checkbox defaultSelected>Receive product updates</Checkbox>;"
     ]
   },
   "radio": {
@@ -169,6 +245,14 @@
       "value/defaultValue + onChange manage group selection.",
       "isDisabled supported on group and item.",
       "name integrates with native form submission."
+    ],
+    "example": [
+      "import { Radio } from \"@almach/ui\";",
+      "",
+      "<Radio.Group defaultValue=\"monthly\">",
+      "  <Radio.Item value=\"monthly\">Monthly</Radio.Item>",
+      "  <Radio.Item value=\"yearly\">Yearly</Radio.Item>",
+      "</Radio.Group>;"
     ]
   },
   "switch": {
@@ -182,6 +266,11 @@
       "isSelected/defaultSelected + onChange manage state.",
       "isDisabled blocks interaction.",
       "error applies invalid semantics and styles."
+    ],
+    "example": [
+      "import { Switch } from \"@almach/ui\";",
+      "",
+      "<Switch defaultSelected aria-label=\"Enable notifications\" />;"
     ]
   }
 }

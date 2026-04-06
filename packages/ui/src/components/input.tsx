@@ -125,6 +125,7 @@ function InputDate({
   );
   const [active, setActive] = React.useState<SegKey | null>(null);
   const [calOpen, setCalOpen] = React.useState(false);
+  const prevFormatRef = React.useRef(format);
 
   const refs = {
     month: React.useRef<HTMLInputElement>(null),
@@ -172,11 +173,15 @@ function InputDate({
     if (p) focus(p);
   };
 
-  // When format changes, move focus to first segment
+  // Only move focus on an actual format change while this field is active.
+  // This avoids offscreen docs thumbnails stealing focus and causing scroll jumps.
   React.useEffect(() => {
-    const first = SEG_ORDER[0];
-    if (first) focus(first);
-  }, [focus, SEG_ORDER[0]]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (prevFormatRef.current === format) return;
+    prevFormatRef.current = format;
+    if (!active || disabled) return;
+    const target = SEG_ORDER.includes(active) ? active : SEG_ORDER[0];
+    if (target) focus(target);
+  }, [active, disabled, format, SEG_ORDER]);
 
   const handleKeyDown = (
     key: SegKey,
@@ -338,8 +343,10 @@ function InputDate({
           >
             <Calendar
               mode="single"
-              selected={calValue}
-              onSelect={handleCalendarSelect}
+              {...(calValue ? { selected: calValue } : {})}
+              onSelect={(value) => {
+                handleCalendarSelect(value instanceof Date ? value : undefined);
+              }}
               defaultMonth={calValue ?? new Date()}
               initialFocus
             />

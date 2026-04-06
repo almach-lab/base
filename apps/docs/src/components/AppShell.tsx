@@ -1,6 +1,6 @@
 import { BasedQueryProvider } from "@almach/query";
 import { Toaster } from "@almach/ui";
-import type React from "react";
+import React from "react";
 import { lazy, Suspense } from "react";
 import {
   ComponentDocSkeleton,
@@ -8,26 +8,7 @@ import {
   HomeSkeleton,
 } from "./PageSkeleton";
 
-// Page-level components (lazy loaded for code splitting)
-const HomePage = lazy(() =>
-  import("./pages/home").then((m) => ({ default: m.HomePage })),
-);
-const GettingStartedPage = lazy(() =>
-  import("./pages/getting-started").then((m) => ({
-    default: m.GettingStartedPage,
-  })),
-);
-const FormsPage = lazy(() =>
-  import("./pages/forms").then((m) => ({ default: m.FormsPage })),
-);
-const QueryPage = lazy(() =>
-  import("./pages/query").then((m) => ({ default: m.QueryPage })),
-);
-const ComponentsIndexPage = lazy(() =>
-  import("./pages/components-index").then((m) => ({
-    default: m.ComponentsIndexPage,
-  })),
-);
+type PageComponent = React.LazyExoticComponent<() => React.JSX.Element>;
 
 // Component doc pages (lazy loaded)
 const componentPages: Record<
@@ -185,12 +166,64 @@ interface AppShellProps {
   componentSlug?: string;
 }
 
+type StaticPage = Exclude<AppShellProps["page"], "component">;
+
+const staticPages: Record<StaticPage, PageComponent> = {
+  home: lazy(() =>
+    import("./pages/home").then((m) => ({ default: m.HomePage })),
+  ),
+  "getting-started": lazy(() =>
+    import("./pages/getting-started").then((m) => ({
+      default: m.GettingStartedPage,
+    })),
+  ),
+  forms: lazy(() =>
+    import("./pages/forms").then((m) => ({ default: m.FormsPage })),
+  ),
+  query: lazy(() =>
+    import("./pages/query").then((m) => ({ default: m.QueryPage })),
+  ),
+  components: lazy(() =>
+    import("./pages/components-index").then((m) => ({
+      default: m.ComponentsIndexPage,
+    })),
+  ),
+};
+
+class AppShellErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  override componentDidCatch(error: Error) {
+    console.error("AppShell page render failed", error);
+  }
+
+  override render() {
+    if (this.state.hasError) {
+      return (
+        <div className="mx-auto max-w-4xl px-4 py-10 md:px-8">
+          <div className="rounded-xl border border-destructive/40 bg-destructive/5 p-4 text-sm text-muted-foreground">
+            Failed to render this page. Please refresh, and if the issue
+            persists, check the browser console for details.
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 function PageContent({ page, componentSlug }: AppShellProps) {
-  if (page === "home") return <HomePage />;
-  if (page === "getting-started") return <GettingStartedPage />;
-  if (page === "forms") return <FormsPage />;
-  if (page === "query") return <QueryPage />;
-  if (page === "components") return <ComponentsIndexPage />;
   if (page === "component" && componentSlug) {
     const Comp = componentPages[componentSlug];
     if (!Comp)
@@ -201,6 +234,12 @@ function PageContent({ page, componentSlug }: AppShellProps) {
       );
     return <Comp />;
   }
+
+  if (page !== "component") {
+    const Page = staticPages[page];
+    return <Page />;
+  }
+
   return null;
 }
 
@@ -211,11 +250,19 @@ function pageSkeleton(page: AppShellProps["page"]) {
 }
 
 export function AppShell({ page, componentSlug }: AppShellProps) {
+  const boundaryKey =
+    page === "component" ? `component:${componentSlug ?? ""}` : page;
+
   return (
     <BasedQueryProvider>
-      <Suspense fallback={pageSkeleton(page)}>
-        <PageContent page={page} {...(componentSlug ? { componentSlug } : {})} />
-      </Suspense>
+      <AppShellErrorBoundary key={boundaryKey}>
+        <Suspense fallback={pageSkeleton(page)}>
+          <PageContent
+            page={page}
+            {...(componentSlug ? { componentSlug } : {})}
+          />
+        </Suspense>
+      </AppShellErrorBoundary>
       <Toaster />
     </BasedQueryProvider>
   );

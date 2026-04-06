@@ -183,6 +183,53 @@ export function DropdownMenuPage() {
   Delete
 </DropdownMenu.Item>`,
         },
+        {
+          title: "With submenu",
+          description:
+            "Nested actions using React Aria submenu trigger and nested content.",
+          preview: (
+            <DropdownMenu>
+              <DropdownMenu.Trigger asChild>
+                <Button variant="outline" size="sm">
+                  Actions
+                  <ChevronDown className="h-4 w-4 opacity-50" />
+                </Button>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Content className="w-48">
+                <DropdownMenu.Item>Open</DropdownMenu.Item>
+                <DropdownMenu.Item>Rename...</DropdownMenu.Item>
+                <DropdownMenu.SubTrigger>
+                  <DropdownMenu.Item>Share</DropdownMenu.Item>
+                  <DropdownMenu.Content className="w-44">
+                    <DropdownMenu.Item>Email</DropdownMenu.Item>
+                    <DropdownMenu.Item>SMS</DropdownMenu.Item>
+                    <DropdownMenu.Item>Instagram</DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.SubTrigger>
+                <DropdownMenu.Separator />
+                <DropdownMenu.Item destructive>
+                  <Trash2 className="h-4 w-4" />
+                  Delete
+                </DropdownMenu.Item>
+              </DropdownMenu.Content>
+            </DropdownMenu>
+          ),
+          code: `<DropdownMenu>
+  <DropdownMenu.Trigger asChild>
+    <Button variant="outline" size="sm">Actions</Button>
+  </DropdownMenu.Trigger>
+  <DropdownMenu.Content className="w-48">
+    <DropdownMenu.Item>Open</DropdownMenu.Item>
+    <DropdownMenu.SubTrigger>
+      <DropdownMenu.Item>Share</DropdownMenu.Item>
+      <DropdownMenu.Content className="w-44">
+        <DropdownMenu.Item>Email</DropdownMenu.Item>
+        <DropdownMenu.Item>SMS</DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.SubTrigger>
+  </DropdownMenu.Content>
+</DropdownMenu>`,
+        },
       ]}
       props={[
         {

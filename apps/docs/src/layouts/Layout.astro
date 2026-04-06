@@ -693,7 +693,10 @@ const showRightRail = !isHome && pageAnchors.length > 0;
 
         // close on outside click
         document.addEventListener("click", (e) => {
-          if (!wrapper?.contains(e.target as Node)) closeMoreMenu();
+          const target = e.target;
+          if (!(target instanceof Node) || !wrapper?.contains(target)) {
+            closeMoreMenu();
+          }
         });
 
         // close on Escape

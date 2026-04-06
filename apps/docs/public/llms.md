@@ -1,9 +1,49 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-04-06T01:50:35.178Z
+Generated: 2026-04-06T03:47:04.836Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
+
+Total modules: 35
+
+## Index
+
+- alert: 1 value export(s), 1 type export(s)
+- avatar: 2 value export(s), 1 type export(s)
+- badge: 2 value export(s), 1 type export(s)
+- button: 2 value export(s), 1 type export(s)
+- calendar: 1 value export(s), 1 type export(s)
+- card: 2 value export(s), 0 type export(s)
+- carousel: 1 value export(s), 0 type export(s)
+- chart: 28 value export(s), 0 type export(s)
+- checkbox: 1 value export(s), 0 type export(s)
+- collapsible: 1 value export(s), 0 type export(s)
+- command: 1 value export(s), 0 type export(s)
+- currency-input: 3 value export(s), 4 type export(s)
+- dialog: 1 value export(s), 0 type export(s)
+- drawer: 1 value export(s), 0 type export(s)
+- dropdown-menu: 1 value export(s), 0 type export(s)
+- input: 2 value export(s), 3 type export(s)
+- label: 1 value export(s), 0 type export(s)
+- modal: 2 value export(s), 2 type export(s)
+- popover: 1 value export(s), 0 type export(s)
+- progress: 1 value export(s), 0 type export(s)
+- radio: 1 value export(s), 0 type export(s)
+- scroll-area: 2 value export(s), 0 type export(s)
+- select: 1 value export(s), 2 type export(s)
+- separator: 1 value export(s), 0 type export(s)
+- skeleton: 1 value export(s), 0 type export(s)
+- swipe-actions: 2 value export(s), 4 type export(s)
+- swipe-button: 1 value export(s), 2 type export(s)
+- switch: 1 value export(s), 1 type export(s)
+- table: 1 value export(s), 1 type export(s)
+- tabs: 3 value export(s), 0 type export(s)
+- tag-input: 1 value export(s), 1 type export(s)
+- textarea: 1 value export(s), 1 type export(s)
+- toast: 1 value export(s), 2 type export(s)
+- toaster: 1 value export(s), 0 type export(s)
+- tooltip: 1 value export(s), 0 type export(s)
 
 ## Alert
 
@@ -13,6 +53,16 @@ Module: `alert`
 
 ```tsx
 import { Alert } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Alert } from "@almach/ui";
+
+export function Example() {
+  return <Alert />;
+}
 ```
 
 ### Most Common Tasks
@@ -42,6 +92,16 @@ Module: `avatar`
 import { Avatar } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Avatar } from "@almach/ui";
+
+export function Example() {
+  return <Avatar />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -69,6 +129,16 @@ Module: `badge`
 import { Badge } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Badge } from "@almach/ui";
+
+export function Example() {
+  return <Badge />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -94,6 +164,16 @@ Module: `button`
 
 ```tsx
 import { Button } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Button } from "@almach/ui";
+
+export function SaveAction() {
+  return <Button variant="default">Save changes</Button>;
+}
 ```
 
 ### Most Common Tasks
@@ -133,6 +213,16 @@ Module: `calendar`
 import { Calendar } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Calendar } from "@almach/ui";
+
+export function Example() {
+  return <Calendar />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -158,6 +248,16 @@ Module: `card`
 
 ```tsx
 import { Card } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Card } from "@almach/ui";
+
+export function Example() {
+  return <Card />;
+}
 ```
 
 ### Most Common Tasks
@@ -187,6 +287,16 @@ Module: `carousel`
 import { Carousel } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Carousel } from "@almach/ui";
+
+export function Example() {
+  return <Carousel />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -204,6 +314,43 @@ import { Carousel } from "@almach/ui";
 - Values: `Carousel`
 - Types: (none)
 
+## Chart
+
+Module: `chart`
+
+### Import
+
+```tsx
+import { Chart } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Chart } from "@almach/ui";
+
+export function Example() {
+  return <Chart />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Chart`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Area`, `AreaChart`, `Bar`, `BarChart`, `Cell`, `Chart`, `CHART_COLORS`, `ChartContainer`, `ChartGrid`, `ChartLegend`, `ChartPolarAxis`, `ChartPolarGrid`, `ChartTooltip`, `ChartTooltipContent`, `ChartXAxis`, `ChartYAxis`, `Line`, `LineChart`, `Pie`, `PieChart`, `PolarAngleAxis`, `PolarGrid`, `PolarRadiusAxis`, `Radar`, `RadarChart`, `ResponsiveContainer`, `Scatter`, `ScatterChart`
+- Types: (none)
+
 ## Checkbox
 
 Module: `checkbox`
@@ -212,6 +359,14 @@ Module: `checkbox`
 
 ```tsx
 import { Checkbox } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Checkbox } from "@almach/ui";
+
+<Checkbox defaultSelected>Receive product updates</Checkbox>;
 ```
 
 ### Most Common Tasks
@@ -245,6 +400,16 @@ Module: `collapsible`
 import { Collapsible } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Collapsible } from "@almach/ui";
+
+export function Example() {
+  return <Collapsible />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -272,6 +437,16 @@ Module: `command`
 import { Command } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Command } from "@almach/ui";
+
+export function Example() {
+  return <Command />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -289,6 +464,43 @@ import { Command } from "@almach/ui";
 - Values: `Command`
 - Types: (none)
 
+## CURRENCIES
+
+Module: `currency-input`
+
+### Import
+
+```tsx
+import { CURRENCIES } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { CURRENCIES } from "@almach/ui";
+
+export function Example() {
+  return <CURRENCIES />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `CURRENCIES`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `CURRENCIES`, `CurrencyFlagBadge`, `InputCurrency`
+- Types: `CurrencyDef`, `CurrencySelectorMode`, `CurrencyValue`, `InputCurrencyProps`
+
 ## Dialog
 
 Module: `dialog`
@@ -297,6 +509,22 @@ Module: `dialog`
 
 ```tsx
 import { Dialog } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Button, Dialog } from "@almach/ui";
+
+<Dialog>
+  <Dialog.Trigger asChild>
+    <Button>Open dialog</Button>
+  </Dialog.Trigger>
+  <Dialog.Content>
+    <Dialog.Title>Confirm action</Dialog.Title>
+    <Dialog.Description>This cannot be undone.</Dialog.Description>
+  </Dialog.Content>
+</Dialog>;
 ```
 
 ### Most Common Tasks
@@ -335,6 +563,19 @@ Module: `drawer`
 import { Drawer } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Button, Drawer } from "@almach/ui";
+
+<Drawer>
+  <Drawer.Trigger asChild>
+    <Button>Open drawer</Button>
+  </Drawer.Trigger>
+  <Drawer.Content side="right">Drawer content</Drawer.Content>
+</Drawer>;
+```
+
 ### Most Common Tasks
 
 - Open side panel for details or forms.
@@ -370,6 +611,16 @@ Module: `dropdown-menu`
 import { DropdownMenu } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { DropdownMenu } from "@almach/ui";
+
+export function Example() {
+  return <DropdownMenu />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -397,6 +648,21 @@ Module: `input`
 import { Input } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Input, Label } from "@almach/ui";
+
+export function EmailField() {
+  return (
+    <div className="space-y-1.5">
+      <Label htmlFor="email">Email</Label>
+      <Input id="email" type="email" placeholder="john@example.com" />
+    </div>
+  );
+}
+```
+
 ### Most Common Tasks
 
 - Collect single-line text with label and helper text.
@@ -405,22 +671,20 @@ import { Input } from "@almach/ui";
 
 ### Anatomy
 
-- `Input.Root`
-- `Input.Field`
-- `Input.Label`
-- `Input.Description`
-- `Input.Error`
+- `Input`
+- `Input.Date`
+- `Input.Currency`
 
 ### API Notes
 
-- isDisabled and isInvalid control interaction and state styling.
-- description and errorMessage provide form feedback.
-- value/defaultValue follow controlled and uncontrolled patterns.
+- Use Input for base text/number/email/password fields with optional leftElement and rightElement.
+- Input.Date supports segmented date entry and withCalendar popover selection.
+- Input.Currency provides amount + currency selector with controlled and uncontrolled usage.
 
 ### Exported Symbols
 
 - Values: `DateInput`, `Input`
-- Types: (none)
+- Types: `DateInputProps`, `InputDateProps`, `InputProps`
 
 ## Label
 
@@ -430,6 +694,16 @@ Module: `label`
 
 ```tsx
 import { Label } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Label } from "@almach/ui";
+
+export function Example() {
+  return <Label />;
+}
 ```
 
 ### Most Common Tasks
@@ -457,6 +731,21 @@ Module: `modal`
 
 ```tsx
 import { Modal } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Button, Modal } from "@almach/ui";
+
+<Modal>
+  <Modal.Trigger asChild>
+    <Button>Open modal</Button>
+  </Modal.Trigger>
+  <Modal.Content>
+    <Modal.Title>Profile settings</Modal.Title>
+  </Modal.Content>
+</Modal>;
 ```
 
 ### Most Common Tasks
@@ -494,6 +783,16 @@ Module: `popover`
 import { Popover } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Popover } from "@almach/ui";
+
+export function Example() {
+  return <Popover />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -521,6 +820,16 @@ Module: `progress`
 import { Progress } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Progress } from "@almach/ui";
+
+export function Example() {
+  return <Progress />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -546,6 +855,17 @@ Module: `radio`
 
 ```tsx
 import { Radio } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Radio } from "@almach/ui";
+
+<Radio.Group defaultValue="monthly">
+  <Radio.Item value="monthly">Monthly</Radio.Item>
+  <Radio.Item value="yearly">Yearly</Radio.Item>
+</Radio.Group>;
 ```
 
 ### Most Common Tasks
@@ -580,6 +900,16 @@ Module: `scroll-area`
 import { ScrollArea } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { ScrollArea } from "@almach/ui";
+
+export function Example() {
+  return <ScrollArea />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -607,6 +937,19 @@ Module: `select`
 import { Select } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Select } from "@almach/ui";
+
+const items = [
+  { label: "Indonesia", value: "id" },
+  { label: "Japan", value: "jp" },
+];
+
+<Select items={items} placeholder="Choose country" />;
+```
+
 ### Most Common Tasks
 
 - Select a single value from a list.
@@ -615,23 +958,19 @@ import { Select } from "@almach/ui";
 
 ### Anatomy
 
-- `Select.Root`
-- `Select.Trigger`
-- `Select.Value`
-- `Select.Content`
-- `Select.Item`
-- `Select.Indicator`
+- `Select`
+- `Select.Searchable`
 
 ### API Notes
 
-- value/defaultValue + onValueChange manage selection.
-- open/defaultOpen + onOpenChange manage popup state.
-- isDisabled and isInvalid align with field semantics.
+- Use Select with items array for standard single selection.
+- Use Select.Searchable for long datasets with built-in filtering.
+- onValueChange receives the selected value; value/defaultValue support controlled and uncontrolled patterns.
 
 ### Exported Symbols
 
 - Values: `Select`
-- Types: (none)
+- Types: `SelectSearchableOption`, `SelectSearchableProps`
 
 ### Accessibility Notes
 
@@ -647,6 +986,16 @@ Module: `separator`
 
 ```tsx
 import { Separator } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Separator } from "@almach/ui";
+
+export function Example() {
+  return <Separator />;
+}
 ```
 
 ### Most Common Tasks
@@ -676,6 +1025,16 @@ Module: `skeleton`
 import { Skeleton } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Skeleton } from "@almach/ui";
+
+export function Example() {
+  return <Skeleton />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -703,6 +1062,16 @@ Module: `swipe-actions`
 import { SwipeActions } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { SwipeActions } from "@almach/ui";
+
+export function Example() {
+  return <SwipeActions />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -718,7 +1087,7 @@ import { SwipeActions } from "@almach/ui";
 ### Exported Symbols
 
 - Values: `SwipeActions`, `useSwipeActions`
-- Types: (none)
+- Types: `SwipeActionProps`, `SwipeActionsProps`, `SwipeActionVariant`, `SwipeSide`
 
 ## SwipeButton
 
@@ -728,6 +1097,16 @@ Module: `swipe-button`
 
 ```tsx
 import { SwipeButton } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { SwipeButton } from "@almach/ui";
+
+export function Example() {
+  return <SwipeButton />;
+}
 ```
 
 ### Most Common Tasks
@@ -745,7 +1124,7 @@ import { SwipeButton } from "@almach/ui";
 ### Exported Symbols
 
 - Values: `SwipeButton`
-- Types: (none)
+- Types: `SwipeButtonRootProps`, `SwipeButtonThumbProps`
 
 ## Switch
 
@@ -755,6 +1134,14 @@ Module: `switch`
 
 ```tsx
 import { Switch } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Switch } from "@almach/ui";
+
+<Switch defaultSelected aria-label="Enable notifications" />;
 ```
 
 ### Most Common Tasks
@@ -788,6 +1175,16 @@ Module: `table`
 import { Table } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Table } from "@almach/ui";
+
+export function Example() {
+  return <Table />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -815,6 +1212,20 @@ Module: `tabs`
 import { Tabs } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Tabs } from "@almach/ui";
+
+<Tabs
+  defaultValue="account"
+  items=[
+    { value: "account", label: "Account", content: "Account settings" },
+    { value: "security", label: "Security", content: "Security options" },
+  ]
+/>;
+```
+
 ### Most Common Tasks
 
 - Switch between related content panels.
@@ -823,16 +1234,16 @@ import { Tabs } from "@almach/ui";
 
 ### Anatomy
 
-- `Tabs.Root`
+- `Tabs`
 - `Tabs.List`
-- `Tabs.Trigger`
-- `Tabs.Content`
+- `Tabs.Tab`
+- `Tabs.Panel`
 
 ### API Notes
 
-- selectedKey/defaultSelectedKey + onSelectionChange manage active tab.
-- Trigger and Content share the same id key.
-- isDisabled disables a trigger.
+- Use the items prop for declarative tab definitions.
+- value/defaultValue + onValueChange manage active tab.
+- Tabs supports variant and size styling through its variant props.
 
 ### Exported Symbols
 
@@ -847,6 +1258,16 @@ Module: `tag-input`
 
 ```tsx
 import { TagInput } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { TagInput } from "@almach/ui";
+
+export function Example() {
+  return <TagInput />;
+}
 ```
 
 ### Most Common Tasks
@@ -876,6 +1297,16 @@ Module: `textarea`
 import { Textarea } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Textarea } from "@almach/ui";
+
+export function Example() {
+  return <Textarea />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -900,7 +1331,19 @@ Module: `toast`
 ### Import
 
 ```tsx
-import { Toast } from "@almach/ui";
+import { toast } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Toaster, toast } from "@almach/ui";
+
+export function AppRoot() {
+  return <Toaster />;
+}
+
+toast("Saved successfully");
 ```
 
 ### Most Common Tasks
@@ -935,6 +1378,16 @@ Module: `toaster`
 import { Toaster } from "@almach/ui";
 ```
 
+### Quick Example
+
+```tsx
+import { Toaster } from "@almach/ui";
+
+export function Example() {
+  return <Toaster />;
+}
+```
+
 ### Most Common Tasks
 
 - Use the exported component in controlled or uncontrolled form.
@@ -960,6 +1413,16 @@ Module: `tooltip`
 
 ```tsx
 import { Tooltip } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Tooltip } from "@almach/ui";
+
+export function Example() {
+  return <Tooltip />;
+}
 ```
 
 ### Most Common Tasks

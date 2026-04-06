@@ -58,7 +58,7 @@ function DialogOverlay({ className, ...props }: DialogOverlayProps) {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 bg-black/40 backdrop-blur-sm",
+        "fixed inset-0 z-50 min-h-dvh bg-black/40 backdrop-blur-sm supports-[-webkit-touch-callout:none]:absolute",
         className,
       )}
       {...props}

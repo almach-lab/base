@@ -15,5 +15,9 @@ const title = component
 ---
 
 <Layout title={title} currentPath={`/components/${component}`}>
-  <AppShell page="component" componentSlug={component} client:only="react" />
+  <AppShell
+    page="component"
+    componentSlug={component}
+    client:only="react"
+  />
 </Layout>

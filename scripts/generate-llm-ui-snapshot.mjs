@@ -16,40 +16,38 @@ const mode = process.argv.includes("--check") ? "check" : "update";
 
 function toModuleMap(indexSource) {
   const map = new Map();
-  const lines = indexSource.split(/\r?\n/);
+  const exportPattern =
+    /export\s+(type\s+)?\{([\s\S]*?)\}\s+from\s+"\.\/components\/([^".]+)\.js";/g;
 
-  for (const line of lines) {
-    const valueMatch = line.match(
-      /^export \{([^}]+)\} from "\.\/components\/([^".]+)\.js";/,
-    );
-    if (valueMatch) {
-      const [, rawExports, moduleName] = valueMatch;
-      const valueExports = rawExports
-        .split(",")
-        .map((token) => token.trim())
-        .filter(Boolean)
-        .map((token) => token.replace(/\/\/.*$/, "").trim())
-        .filter(Boolean);
+  const parseSymbols = (rawList) => {
+    const normalized = rawList
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .replace(/\/\/.*$/gm, "");
 
-      const current = map.get(moduleName) ?? { exports: [], typeExports: [] };
-      current.exports.push(...valueExports);
-      map.set(moduleName, current);
-      continue;
+    return normalized
+      .split(",")
+      .map((token) => token.trim())
+      .filter(Boolean)
+      .map((token) => {
+        const asMatch = token.match(/^(.+?)\s+as\s+(.+)$/);
+        return asMatch ? asMatch[2].trim() : token;
+      });
+  };
+
+  for (const match of indexSource.matchAll(exportPattern)) {
+    const isTypeOnly = Boolean(match[1]);
+    const rawSymbols = match[2] ?? "";
+    const moduleName = match[3];
+    const symbols = parseSymbols(rawSymbols);
+    const current = map.get(moduleName) ?? { exports: [], typeExports: [] };
+
+    if (isTypeOnly) {
+      current.typeExports.push(...symbols);
+    } else {
+      current.exports.push(...symbols);
     }
 
-    const typeMatch = line.match(
-      /^export type \{([^}]+)\} from "\.\/components\/([^".]+)\.js";/,
-    );
-    if (typeMatch) {
-      const [, rawTypes, moduleName] = typeMatch;
-      const typeExports = rawTypes
-        .split(",")
-        .map((token) => token.trim())
-        .filter(Boolean);
-      const current = map.get(moduleName) ?? { exports: [], typeExports: [] };
-      current.typeExports.push(...typeExports);
-      map.set(moduleName, current);
-    }
+    map.set(moduleName, current);
   }
 
   const entries = [...map.entries()].map(([module, value]) => {
@@ -65,7 +63,9 @@ function toModuleMap(indexSource) {
   return Object.fromEntries(entries.sort(([a], [b]) => a.localeCompare(b)));
 }
 
-function inferPrimary(moduleName, exports) {
+function inferPrimaryExport(moduleName, exports) {
+  if (exports.length === 1) return exports[0];
+
   const modulePrefix = moduleName
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
@@ -75,7 +75,44 @@ function inferPrimary(moduleName, exports) {
   if (firstExact) return firstExact;
 
   const firstComponent = exports.find((item) => /^[A-Z]/.test(item));
-  return firstComponent ?? modulePrefix;
+  return firstComponent ?? exports[0] ?? modulePrefix;
+}
+
+function formatTitle(symbol) {
+  if (!symbol) return "Component";
+  return symbol.charAt(0).toUpperCase() + symbol.slice(1);
+}
+
+function renderExample(moduleName, primaryExport, meta) {
+  if (typeof meta.example === "string" && meta.example.trim().length > 0) {
+    return meta.example.trim();
+  }
+
+  if (Array.isArray(meta.example) && meta.example.length > 0) {
+    return meta.example.join("\n").trim();
+  }
+
+  if (moduleName === "toast") {
+    return ['import { toast } from "@almach/ui";', "", 'toast("Saved successfully");'].join(
+      "\n",
+    );
+  }
+
+  if (primaryExport?.startsWith("use")) {
+    return [
+      `import { ${primaryExport} } from "@almach/ui";`,
+      "",
+      `const value = ${primaryExport}();`,
+    ].join("\n");
+  }
+
+  return [
+    `import { ${primaryExport} } from "@almach/ui";`,
+    "",
+    `export function Example() {`,
+    `  return <${primaryExport} />;`,
+    `}`,
+  ].join("\n");
 }
 
 function readJson(path, fallback) {
@@ -97,11 +134,23 @@ function renderMarkdown(moduleMap, metadata) {
   );
   lines.push("Use this as the primary LLM-oriented API reference.");
   lines.push("");
+  lines.push(`Total modules: ${modules.length}`);
+  lines.push("");
+  lines.push("## Index");
+  lines.push("");
+  for (const moduleName of modules) {
+    const item = moduleMap[moduleName];
+    lines.push(
+      `- ${moduleName}: ${item.exports.length} value export(s), ${item.typeExports.length} type export(s)`,
+    );
+  }
+  lines.push("");
 
   for (const moduleName of modules) {
     const { exports, typeExports } = moduleMap[moduleName];
     const meta = metadata[moduleName] ?? {};
-    const title = meta.title ?? inferPrimary(moduleName, exports);
+    const primaryExport = inferPrimaryExport(moduleName, exports);
+    const title = meta.title ?? formatTitle(primaryExport);
 
     lines.push(`## ${title}`);
     lines.push("");
@@ -111,7 +160,18 @@ function renderMarkdown(moduleMap, metadata) {
     lines.push("### Import");
     lines.push("");
     lines.push("```tsx");
-    lines.push(`import { ${title} } from "@almach/ui";`);
+    if (primaryExport) {
+      lines.push(`import { ${primaryExport} } from "@almach/ui";`);
+    } else {
+      lines.push("// No value exports for this module.");
+    }
+    lines.push("```");
+    lines.push("");
+
+    lines.push("### Quick Example");
+    lines.push("");
+    lines.push("```tsx");
+    lines.push(renderExample(moduleName, primaryExport, meta));
     lines.push("```");
     lines.push("");
 
@@ -125,7 +185,10 @@ function renderMarkdown(moduleMap, metadata) {
 
     lines.push("### Anatomy");
     lines.push("");
-    const anatomy = meta.anatomy ?? [title];
+    const anatomy = meta.anatomy ?? (primaryExport ? [primaryExport] : []);
+    if (anatomy.length === 0) {
+      lines.push("- (none)");
+    }
     for (const part of anatomy) lines.push(`- \`${part}\``);
     lines.push("");
 

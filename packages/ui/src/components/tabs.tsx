@@ -61,11 +61,23 @@ const TabsVariantCtx = React.createContext<"pill" | "underline" | "minimal">(
 );
 
 interface TabsProps
-  extends React.ComponentPropsWithoutRef<typeof TabsPrimitive> {}
+  extends Omit<React.ComponentPropsWithoutRef<typeof TabsPrimitive>, "selectedKey" | "defaultSelectedKey"> {
+  value?: React.Key;
+  defaultValue?: React.Key;
+}
 
-const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>((props, ref) => (
-  <TabsPrimitive ref={ref} {...props} />
-));
+const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
+  ({ value, defaultValue, ...props }, ref) => (
+    <TabsPrimitive
+      ref={ref}
+      {...(value !== undefined ? { selectedKey: value } : {})}
+      {...(defaultValue !== undefined
+        ? { defaultSelectedKey: defaultValue }
+        : {})}
+      {...props}
+    />
+  ),
+);
 TabsRoot.displayName = "Tabs";
 
 interface TabsListProps
@@ -91,15 +103,19 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
 );
 TabsList.displayName = "Tabs.List";
 
-interface TabsTriggerProps extends React.ComponentPropsWithoutRef<typeof Tab> {}
+interface TabsTriggerProps
+  extends Omit<React.ComponentPropsWithoutRef<typeof Tab>, "id"> {
+  value?: React.Key;
+}
 
 const TabsTrigger = React.forwardRef<HTMLDivElement, TabsTriggerProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, value, ...props }, ref) => {
     const variant = React.useContext(TabsVariantCtx);
     return (
       <Tab
         ref={ref}
         className={cn(tabsTriggerVariants({ variant }), className)}
+        {...(value !== undefined ? { id: value } : {})}
         {...props}
       />
     );
@@ -108,10 +124,12 @@ const TabsTrigger = React.forwardRef<HTMLDivElement, TabsTriggerProps>(
 TabsTrigger.displayName = "Tabs.Trigger";
 
 interface TabsContentProps
-  extends React.ComponentPropsWithoutRef<typeof TabPanel> {}
+  extends Omit<React.ComponentPropsWithoutRef<typeof TabPanel>, "id"> {
+  value?: React.Key;
+}
 
 const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
-  ({ className, ...props }, ref) => (
+  ({ className, value, ...props }, ref) => (
     <TabPanel
       ref={ref}
       className={cn(
@@ -119,6 +137,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg",
         className,
       )}
+      {...(value !== undefined ? { id: value } : {})}
       {...props}
     />
   ),

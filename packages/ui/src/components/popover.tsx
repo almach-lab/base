@@ -1,210 +1,201 @@
 import { cn } from "@almach/utils";
 import * as React from "react";
-import { createPortal } from "react-dom";
 import {
-  MOTION_DURATION_BASE,
-  MOTION_OVERLAY,
-  MOTION_OVERLAY_ENTER,
-  MOTION_OVERLAY_EXIT,
-  MOTION_VAR_OVERLAY_DURATION,
-  resolveMotionDurationMs,
-} from "./_motion.js";
+  DialogTrigger as AriaDialogTrigger,
+  OverlayArrow,
+  Popover as AriaPopover,
+  type PopoverProps as AriaPopoverProps,
+  composeRenderProps,
+} from "react-aria-components";
 
-interface PopoverContextValue {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}
-
-const PopoverCtx = React.createContext<PopoverContextValue | null>(null);
-
-function usePopoverCtx() {
-  const ctx = React.useContext(PopoverCtx);
-  if (!ctx) throw new Error("Popover parts must be used within Popover");
-  return ctx;
-}
-
-type PopoverRootProps = {
+interface PopoverRootProps {
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  children: React.ReactNode;
-};
+  children?: React.ReactNode;
+}
+
+interface PopoverTriggerProps {
+  asChild?: boolean;
+  children?: React.ReactNode;
+}
+
+function PopoverTrigger(_props: PopoverTriggerProps) {
+  return null;
+}
+PopoverTrigger.displayName = "Popover.Trigger";
+
+type PopoverPlacement =
+  | "top"
+  | "top start"
+  | "top end"
+  | "right"
+  | "right top"
+  | "right bottom"
+  | "bottom"
+  | "bottom start"
+  | "bottom end"
+  | "left"
+  | "left top"
+  | "left bottom";
+
+function toPlacement(
+  side: "top" | "right" | "bottom" | "left" = "bottom",
+  align: "start" | "center" | "end" = "center",
+): PopoverPlacement {
+  if (align === "center") return side;
+  const cross =
+    side === "top" || side === "bottom"
+      ? align
+      : align === "start"
+        ? "top"
+        : "bottom";
+  return `${side} ${cross}` as PopoverPlacement;
+}
+
+interface PopoverContentProps
+  extends Omit<AriaPopoverProps, "children" | "className" | "offset"> {
+  showArrow?: boolean;
+  side?: "top" | "right" | "bottom" | "left";
+  align?: "start" | "center" | "end";
+  sideOffset?: number;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+function PopoverContent(_props: PopoverContentProps) {
+  return null;
+}
+PopoverContent.displayName = "Popover.Content";
+
+interface PopoverCloseProps {
+  asChild?: boolean;
+  children?: React.ReactNode;
+}
+
+function PopoverClose(_props: PopoverCloseProps) {
+  return null;
+}
+PopoverClose.displayName = "Popover.Close";
+
+function getTriggerProps(node: React.ReactNode): PopoverTriggerProps | null {
+  if (!React.isValidElement(node)) return null;
+  if (node.type !== PopoverTrigger) return null;
+  return node.props as PopoverTriggerProps;
+}
+
+function getContentProps(node: React.ReactNode): PopoverContentProps | null {
+  if (!React.isValidElement(node)) return null;
+  if (node.type !== PopoverContent) return null;
+  return node.props as PopoverContentProps;
+}
 
 function PopoverRoot({
   open,
-  defaultOpen = false,
+  defaultOpen,
   onOpenChange,
   children,
 }: PopoverRootProps) {
-  const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
-  const isOpen = open ?? internalOpen;
-  const setOpen = React.useCallback(
-    (next: boolean) => {
-      if (open === undefined) setInternalOpen(next);
-      onOpenChange?.(next);
-    },
-    [open, onOpenChange],
+  let triggerProps: PopoverTriggerProps | null = null;
+  let contentProps: PopoverContentProps | null = null;
+
+  for (const child of React.Children.toArray(children)) {
+    const parsedTrigger = getTriggerProps(child);
+    if (parsedTrigger) {
+      triggerProps = parsedTrigger;
+      continue;
+    }
+
+    const parsedContent = getContentProps(child);
+    if (parsedContent) {
+      contentProps = parsedContent;
+    }
+  }
+
+  if (!triggerProps || !contentProps) return null;
+
+  const {
+    showArrow,
+    side,
+    align,
+    sideOffset,
+    className,
+    children: contentChildren,
+    ...popoverProps
+  } = contentProps;
+
+  const placement = toPlacement(side, align);
+  const offset = sideOffset ?? (showArrow ? 12 : 8);
+
+  const triggerNode = triggerProps.asChild ? (
+    (React.Children.only(triggerProps.children) as React.ReactElement)
+  ) : (
+    <button type="button">{triggerProps.children}</button>
   );
 
   return (
-    <PopoverCtx.Provider value={{ open: isOpen, setOpen }}>
-      {children}
-    </PopoverCtx.Provider>
+    <AriaDialogTrigger
+      {...(open !== undefined ? { isOpen: open } : {})}
+      {...(defaultOpen !== undefined ? { defaultOpen } : {})}
+      {...(onOpenChange ? { onOpenChange } : {})}
+    >
+      {triggerNode}
+      <AriaPopover
+        {...popoverProps}
+        placement={placement}
+        offset={offset}
+        className={composeRenderProps(className, (nextClassName, renderProps) =>
+          cn(
+            "z-50 rounded-xl border border-border bg-popover p-4 text-popover-foreground shadow-2xl outline-none",
+            "backdrop-blur-xl",
+            "data-[entering]:fade-in-0 data-[entering]:zoom-in-95",
+            "data-[exiting]:fade-out-0 data-[exiting]:zoom-out-95",
+            "data-[entering]:placement-bottom:slide-in-from-top-1",
+            "data-[entering]:placement-top:slide-in-from-bottom-1",
+            "data-[entering]:placement-left:slide-in-from-right-1",
+            "data-[entering]:placement-right:slide-in-from-left-1",
+            "data-[exiting]:placement-bottom:slide-out-to-top-1",
+            "data-[exiting]:placement-top:slide-out-to-bottom-1",
+            "data-[exiting]:placement-left:slide-out-to-right-1",
+            "data-[exiting]:placement-right:slide-out-to-left-1",
+            "duration-200 ease-out data-[exiting]:duration-150 data-[exiting]:ease-in",
+            renderProps.isEntering && "animate-in",
+            renderProps.isExiting && "animate-out",
+            nextClassName,
+          ),
+        )}
+      >
+        {showArrow ? (
+          <OverlayArrow className="group">
+            <svg
+              width={12}
+              height={12}
+              viewBox="0 0 12 12"
+              className="block fill-popover stroke-[hsl(var(--border))] stroke-1 group-placement-bottom:rotate-180 group-placement-left:-rotate-90 group-placement-right:rotate-90"
+            >
+              <path d="M0 0 L6 6 L12 0" />
+            </svg>
+          </OverlayArrow>
+        ) : null}
+        {contentChildren}
+      </AriaPopover>
+    </AriaDialogTrigger>
   );
 }
-
-interface PopoverTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean;
-  children: React.ReactNode;
-}
-
-const PopoverTrigger = React.forwardRef<HTMLButtonElement, PopoverTriggerProps>(
-  ({ asChild, children, onClick, ...props }, ref) => {
-    const { open, setOpen } = usePopoverCtx();
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      onClick?.(e);
-      if (!e.defaultPrevented) setOpen(!open);
-    };
-
-    if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<{
-        onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-      }>;
-      return React.cloneElement(child, {
-        onClick: (e: React.MouseEvent<HTMLElement>) => {
-          child.props.onClick?.(e);
-          if (!e.defaultPrevented) setOpen(!open);
-        },
-      });
-    }
-
-    return (
-      <button ref={ref} type="button" onClick={handleClick} {...props}>
-        {children}
-      </button>
-    );
-  },
-);
-PopoverTrigger.displayName = "Popover.Trigger";
-
-const PopoverAnchor = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->((props, ref) => <div ref={ref} {...props} />);
-PopoverAnchor.displayName = "Popover.Anchor";
-
-interface PopoverContentProps extends React.HTMLAttributes<HTMLDivElement> {
-  align?: "start" | "center" | "end";
-  sideOffset?: number;
-  side?: "top" | "right" | "bottom" | "left";
-  popupClassName?: string;
-}
-
-const PopoverContent = React.forwardRef<HTMLDivElement, PopoverContentProps>(
-  ({ className, popupClassName, ...props }, ref) => {
-    const { open } = usePopoverCtx();
-    const [mounted, setMounted] = React.useState(open);
-    const [isVisible, setIsVisible] = React.useState(false);
-
-    React.useEffect(() => {
-      const motionMs = resolveMotionDurationMs(
-        MOTION_VAR_OVERLAY_DURATION,
-        MOTION_DURATION_BASE,
-      );
-      if (open) {
-        setMounted(true);
-        const rafId = window.requestAnimationFrame(() => {
-          setIsVisible(true);
-        });
-        return () => window.cancelAnimationFrame(rafId);
-      }
-
-      setIsVisible(false);
-      if (!mounted) {
-        return;
-      }
-
-      const timeout = window.setTimeout(() => setMounted(false), motionMs);
-      return () => window.clearTimeout(timeout);
-    }, [open, mounted]);
-
-    if (!mounted) return null;
-    const state = isVisible ? "open" : "closed";
-
-    return createPortal(
-      <div className="fixed inset-0 z-50 pointer-events-none">
-        <div
-          ref={ref}
-          data-state={state}
-          className={cn(
-            "pointer-events-auto fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
-            "z-50 w-72 rounded-lg border bg-popover p-4 text-popover-foreground shadow-md outline-none",
-            MOTION_OVERLAY,
-            MOTION_OVERLAY_ENTER,
-            MOTION_OVERLAY_EXIT,
-            popupClassName,
-            className,
-          )}
-          {...props}
-        />
-      </div>,
-      document.body,
-    );
-  },
-);
-PopoverContent.displayName = "Popover.Content";
-
-interface PopoverCloseProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  asChild?: boolean;
-  children: React.ReactNode;
-}
-
-const PopoverClose = React.forwardRef<HTMLButtonElement, PopoverCloseProps>(
-  ({ asChild, children, onClick, ...props }, ref) => {
-    const { setOpen } = usePopoverCtx();
-    if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<{
-        onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-      }>;
-      return React.cloneElement(child, {
-        onClick: (e: React.MouseEvent<HTMLElement>) => {
-          child.props.onClick?.(e);
-          if (!e.defaultPrevented) setOpen(false);
-        },
-      });
-    }
-    return (
-      <button
-        ref={ref}
-        type="button"
-        onClick={(e) => {
-          onClick?.(e);
-          if (!e.defaultPrevented) setOpen(false);
-        }}
-        {...props}
-      >
-        {children}
-      </button>
-    );
-  },
-);
-PopoverClose.displayName = "Popover.Close";
 
 interface PopoverComponent {
   (props: PopoverRootProps): React.ReactElement | null;
   Trigger: typeof PopoverTrigger;
-  Anchor: typeof PopoverAnchor;
   Content: typeof PopoverContent;
   Close: typeof PopoverClose;
+  Anchor: React.FC<{ children?: React.ReactNode }>;
 }
 
 const Popover = Object.assign(PopoverRoot, {
   Trigger: PopoverTrigger,
-  Anchor: PopoverAnchor,
   Content: PopoverContent,
   Close: PopoverClose,
+  Anchor: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
 }) as PopoverComponent;
 
 export { Popover };

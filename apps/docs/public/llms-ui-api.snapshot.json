@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-06T01:50:35.182Z",
+  "generatedAt": "2026-04-06T03:47:04.838Z",
   "components": {
     "alert": {
       "exports": [
@@ -57,6 +57,39 @@
       ],
       "typeExports": []
     },
+    "chart": {
+      "exports": [
+        "Area",
+        "AreaChart",
+        "Bar",
+        "BarChart",
+        "Cell",
+        "Chart",
+        "CHART_COLORS",
+        "ChartContainer",
+        "ChartGrid",
+        "ChartLegend",
+        "ChartPolarAxis",
+        "ChartPolarGrid",
+        "ChartTooltip",
+        "ChartTooltipContent",
+        "ChartXAxis",
+        "ChartYAxis",
+        "Line",
+        "LineChart",
+        "Pie",
+        "PieChart",
+        "PolarAngleAxis",
+        "PolarGrid",
+        "PolarRadiusAxis",
+        "Radar",
+        "RadarChart",
+        "ResponsiveContainer",
+        "Scatter",
+        "ScatterChart"
+      ],
+      "typeExports": []
+    },
     "checkbox": {
       "exports": [
         "Checkbox"
@@ -74,6 +107,19 @@
         "Command"
       ],
       "typeExports": []
+    },
+    "currency-input": {
+      "exports": [
+        "CURRENCIES",
+        "CurrencyFlagBadge",
+        "InputCurrency"
+      ],
+      "typeExports": [
+        "CurrencyDef",
+        "CurrencySelectorMode",
+        "CurrencyValue",
+        "InputCurrencyProps"
+      ]
     },
     "dialog": {
       "exports": [
@@ -98,7 +144,11 @@
         "DateInput",
         "Input"
       ],
-      "typeExports": []
+      "typeExports": [
+        "DateInputProps",
+        "InputDateProps",
+        "InputProps"
+      ]
     },
     "label": {
       "exports": [
@@ -145,7 +195,10 @@
       "exports": [
         "Select"
       ],
-      "typeExports": []
+      "typeExports": [
+        "SelectSearchableOption",
+        "SelectSearchableProps"
+      ]
     },
     "separator": {
       "exports": [
@@ -164,13 +217,21 @@
         "SwipeActions",
         "useSwipeActions"
       ],
-      "typeExports": []
+      "typeExports": [
+        "SwipeActionProps",
+        "SwipeActionsProps",
+        "SwipeActionVariant",
+        "SwipeSide"
+      ]
     },
     "swipe-button": {
       "exports": [
         "SwipeButton"
       ],
-      "typeExports": []
+      "typeExports": [
+        "SwipeButtonRootProps",
+        "SwipeButtonThumbProps"
+      ]
     },
     "switch": {
       "exports": [

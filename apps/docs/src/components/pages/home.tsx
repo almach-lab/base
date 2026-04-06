@@ -1,5 +1,18 @@
-import { Badge, Button, Card, Checkbox, Input, Switch } from "@almach/ui";
-import { ArrowRight, Sparkles } from "lucide-react";
+import {
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Input,
+  Progress,
+  Radio,
+  Separator,
+  Switch,
+  Tabs,
+  Textarea,
+} from "@almach/ui";
+import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
 
 const PKG_MANAGERS = ["bun", "npm", "pnpm", "yarn"] as const;
@@ -16,7 +29,15 @@ function InstallBar() {
   const [pm, setPm] = useState<PM>("bun");
 
   return (
-    <div className="mx-auto mt-6 w-full max-w-2xl rounded-xl border border-border/70 bg-card/40 p-3">
+    <div className="w-full rounded-2xl border border-border/70 bg-card/50 p-3 shadow-sm">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Install all packages
+        </p>
+        <Badge variant="outline" className="text-[10px]">
+          Copy-ready
+        </Badge>
+      </div>
       <div className="mb-2 flex flex-wrap gap-1.5">
         {PKG_MANAGERS.map((manager) => (
           <button
@@ -33,7 +54,7 @@ function InstallBar() {
         ))}
       </div>
 
-      <pre className="overflow-x-auto rounded-lg border border-border/70 bg-background px-3 py-2 text-xs text-muted-foreground sm:text-sm">
+      <pre className="overflow-x-auto rounded-xl border border-border/70 bg-background px-3 py-2 text-xs text-muted-foreground sm:text-sm">
         <code>
           <span className="text-muted-foreground">$ </span>
           {INSTALL[pm]}
@@ -43,476 +64,297 @@ function InstallBar() {
   );
 }
 
-function ShowcaseCanvas() {
-  const TABS = [
-    "Examples",
-    "Dashboard",
-    "Tasks",
-    "Playground",
-    "Authentication",
-  ] as const;
-  type ShowcaseTab = (typeof TABS)[number];
-  const [activeTab, setActiveTab] = useState<ShowcaseTab>("Examples");
-
-  const renderPanel = () => {
-    if (activeTab === "Examples") {
-      return (
-        <div className="grid gap-3 lg:grid-cols-12">
-          <Card className="border-border/70 bg-background lg:col-span-4">
-            <Card.Content className="space-y-3 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Payment Method
-              </p>
-              <Input placeholder="Name on card" />
-              <div className="grid grid-cols-3 gap-2">
-                <Input className="col-span-2" placeholder="Card number" />
-                <Input placeholder="CVV" />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <Input placeholder="Month" />
-                <Input placeholder="Year" />
-              </div>
-              <Button size="sm" className="w-full">
-                Submit
-              </Button>
-            </Card.Content>
-          </Card>
-
-          <Card className="border-border/70 bg-background lg:col-span-3">
-            <Card.Content className="space-y-3 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Team
-              </p>
-              <div className="rounded-lg border border-border/70 bg-muted/20 p-3 text-center">
-                <p className="text-sm font-semibold">No team members</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Invite your team to collaborate.
-                </p>
-              </div>
-              <Button variant="outline" size="sm" className="w-full">
-                Invite members
-              </Button>
-              <div className="rounded-lg border border-border/70 bg-muted/20 p-2 text-xs text-muted-foreground">
-                Syncing • Updating • Loading
-              </div>
-            </Card.Content>
-          </Card>
-
-          <Card className="border-border/70 bg-background lg:col-span-5">
-            <Card.Content className="space-y-3 p-4">
-              <div className="flex items-center justify-between gap-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                  Settings
-                </p>
-                <Badge variant="outline">Neutral</Badge>
-              </div>
-              <Input placeholder="https://" />
-              <div className="rounded-lg border border-border/70 bg-muted/20 p-3">
-                <p className="text-sm font-semibold">
-                  Two-factor authentication
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Verify via email or phone number.
-                </p>
-              </div>
-              <div className="space-y-2 rounded-lg border border-border/70 bg-muted/20 p-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Allow notifications</span>
-                  <Switch defaultChecked size="sm" />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Tint wallpaper</span>
-                  <Switch size="sm" />
-                </div>
-              </div>
-            </Card.Content>
-          </Card>
-        </div>
-      );
-    }
-
-    if (activeTab === "Dashboard") {
-      return (
-        <div className="grid gap-3 lg:grid-cols-12">
-          {[
-            { label: "Active Users", value: "12,430", change: "+8.2%" },
-            { label: "Conversion", value: "4.73%", change: "+0.6%" },
-            { label: "MRR", value: "$84,200", change: "+11.4%" },
-            { label: "Retention", value: "92.1%", change: "+1.1%" },
-          ].map((item) => (
-            <Card
-              key={item.label}
-              className="border-border/70 bg-background lg:col-span-3"
-            >
-              <Card.Content className="space-y-1.5 p-4">
-                <p className="text-xs text-muted-foreground">{item.label}</p>
-                <p className="text-xl font-semibold">{item.value}</p>
-                <p className="text-xs text-primary">{item.change}</p>
-              </Card.Content>
-            </Card>
-          ))}
-          <Card className="border-border/70 bg-background lg:col-span-8">
-            <Card.Content className="p-4">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Revenue trend
-              </p>
-              <div className="h-36 rounded-lg border border-border/70 bg-[linear-gradient(to_top,hsl(var(--primary)/0.2),transparent_70%)]" />
-            </Card.Content>
-          </Card>
-          <Card className="border-border/70 bg-background lg:col-span-4">
-            <Card.Content className="space-y-2 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Top channels
-              </p>
-              {[
-                { name: "Organic", share: "34%" },
-                { name: "Paid", share: "28%" },
-                { name: "Referral", share: "22%" },
-                { name: "Direct", share: "16%" },
-              ].map((item) => (
-                <div
-                  key={item.name}
-                  className="flex items-center justify-between rounded-md border border-border/70 px-2.5 py-2 text-sm"
-                >
-                  <span>{item.name}</span>
-                  <span className="text-muted-foreground">{item.share}</span>
-                </div>
-              ))}
-            </Card.Content>
-          </Card>
-        </div>
-      );
-    }
-
-    if (activeTab === "Tasks") {
-      return (
-        <div className="grid gap-3 lg:grid-cols-12">
-          <Card className="border-border/70 bg-background lg:col-span-7">
-            <Card.Content className="space-y-3 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Sprint board
-              </p>
-              {[
-                "Polish button loading states",
-                "Add swipe actions docs page",
-                "Improve keyboard accessibility for modal",
-                "Finalize release notes",
-              ].map((task, idx) => (
-                <label
-                  key={task}
-                  className="flex items-center gap-2 rounded-md border border-border/70 px-3 py-2 text-sm"
-                >
-                  <Checkbox defaultChecked={idx < 2} className="h-4 w-4" />
-                  <span>{task}</span>
-                </label>
-              ))}
-            </Card.Content>
-          </Card>
-          <Card className="border-border/70 bg-background lg:col-span-5">
-            <Card.Content className="space-y-3 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Create task
-              </p>
-              <Input placeholder="Task title" />
-              <Input placeholder="Assignee" />
-              <Input placeholder="Due date" />
-              <Button size="sm" className="w-full">
-                Add task
-              </Button>
-            </Card.Content>
-          </Card>
-        </div>
-      );
-    }
-
-    if (activeTab === "Playground") {
-      return (
-        <div className="grid gap-3 lg:grid-cols-12">
-          <Card className="border-border/70 bg-background lg:col-span-8">
-            <Card.Content className="space-y-3 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Prompt playground
-              </p>
-              <Input placeholder="Ask, search, or make anything..." />
-              <div className="rounded-lg border border-border/70 bg-muted/20 p-3 text-sm text-muted-foreground">
-                Suggestion: \"Generate settings panel with switches and
-                badges.\"
-              </div>
-              <div className="flex gap-2">
-                <Button size="sm">Run</Button>
-                <Button size="sm" variant="outline">
-                  Archive
-                </Button>
-                <Button size="sm" variant="outline">
-                  Snooze
-                </Button>
-              </div>
-            </Card.Content>
-          </Card>
-          <Card className="border-border/70 bg-background lg:col-span-4">
-            <Card.Content className="space-y-2 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Tokens
-              </p>
-              {[
-                { label: "Input", value: "1,482" },
-                { label: "Output", value: "604" },
-                { label: "Latency", value: "1.2s" },
-              ].map((row) => (
-                <div
-                  key={row.label}
-                  className="flex items-center justify-between rounded-md border border-border/70 px-2.5 py-2 text-sm"
-                >
-                  <span>{row.label}</span>
-                  <span className="text-muted-foreground">{row.value}</span>
-                </div>
-              ))}
-            </Card.Content>
-          </Card>
-        </div>
-      );
-    }
-
-    return (
-      <div className="grid gap-3 lg:grid-cols-12">
-        <Card className="border-border/70 bg-background lg:col-span-5">
-          <Card.Content className="space-y-3 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Sign in
-            </p>
-            <Input placeholder="Email" type="email" />
-            <Input placeholder="Password" type="password" />
-            <Button size="sm" className="w-full">
-              Continue with Email
-            </Button>
-            <Button size="sm" variant="outline" className="w-full">
-              Continue with Google
-            </Button>
-          </Card.Content>
-        </Card>
-        <Card className="border-border/70 bg-background lg:col-span-7">
-          <Card.Content className="space-y-3 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Security
-            </p>
-            <div className="rounded-lg border border-border/70 bg-muted/20 p-3">
-              <p className="text-sm font-semibold">Two-factor authentication</p>
-              <p className="text-xs text-muted-foreground">
-                Recommended for all admin members.
-              </p>
-            </div>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <div className="rounded-md border border-border/70 p-3 text-sm">
-                Magic link
-              </div>
-              <div className="rounded-md border border-border/70 p-3 text-sm">
-                Recovery codes
-              </div>
-            </div>
-            <div className="flex items-center justify-between rounded-md border border-border/70 px-3 py-2 text-sm">
-              <span>Remember this device</span>
-              <Switch size="sm" />
-            </div>
-          </Card.Content>
-        </Card>
-      </div>
-    );
-  };
+export function HomePage() {
+  const [notifications, setNotifications] = useState(true);
+  const [plan, setPlan] = useState("starter");
 
   return (
-    <section className="border-t border-border/70 bg-background">
-      <div className="mx-auto max-w-screen-xl px-4 py-10 md:px-6 md:py-12">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-          <div className="inline-flex items-center gap-1 rounded-lg border border-border/70 bg-card/40 p-1">
-            {TABS.map((item) => (
-              <button
-                key={item}
-                onClick={() => setActiveTab(item)}
-                className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                  activeTab === item
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                }`}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() =>
-              window.dispatchEvent(new CustomEvent("almach-customizer-toggle"))
-            }
-            className="rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
-          >
-            Open Theme Builder
-          </button>
-        </div>
-
-        <div className="rounded-2xl border border-border/70 bg-card/30 p-3">
-          {renderPanel()}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ExamplesSection() {
-  const blocks = [
-    {
-      label: "@almach/ui",
-      title: "Components",
-      description: "Composable UI primitives with clean defaults.",
-      preview: (
-        <div className="space-y-2 rounded-lg border border-border/70 bg-background p-3">
-          <Input placeholder="Search components..." />
-          <div className="flex items-center gap-2">
-            <Button size="sm">Continue</Button>
-            <Button size="sm" variant="outline">
-              Cancel
-            </Button>
-          </div>
-        </div>
-      ),
-      code: `import { Button, Input } from "@almach/ui";\n\n<Input placeholder="Search..." />\n<Button>Continue</Button>`,
-      href: "/components",
-      cta: "Browse components",
-    },
-    {
-      label: "@almach/forms",
-      title: "Forms",
-      description: "Typed form patterns with Zod schema validation.",
-      preview: (
-        <div className="space-y-2 rounded-lg border border-border/70 bg-background p-3">
-          <div className="rounded-md border border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-            john@example.com
-          </div>
-          <div className="rounded-md border border-border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-            Password ••••••••
-          </div>
-          <div className="rounded-md bg-primary px-3 py-2 text-center text-xs font-semibold text-primary-foreground">
-            Submit
-          </div>
-        </div>
-      ),
-      code: `const form = useBasedForm({\n  defaultValues: { email: "" },\n  validators: { onChange: schema },\n});`,
-      href: "/forms",
-      cta: "Open forms docs",
-    },
-    {
-      label: "@almach/query",
-      title: "Data",
-      description: "Typed query/mutation factories for TanStack Query.",
-      preview: (
-        <div className="space-y-2 rounded-lg border border-border/70 bg-background p-3 text-xs">
-          <div className="flex items-center justify-between rounded-md border border-border px-2.5 py-2">
-            <span>users</span>
-            <span className="text-success">fresh</span>
-          </div>
-          <div className="flex items-center justify-between rounded-md border border-border px-2.5 py-2">
-            <span>posts</span>
-            <span className="text-warning">stale</span>
-          </div>
-        </div>
-      ),
-      code: `const usersQuery = createQuery({\n  queryKey: () => ["users"],\n  queryFn: fetchUsers,\n});`,
-      href: "/query",
-      cta: "Open query docs",
-    },
-  ];
-
-  return (
-    <section className="border-t border-border/70 bg-muted/10">
-      <div className="mx-auto max-w-screen-xl px-4 py-10 md:px-6 md:py-12">
-        <div className="mb-6 max-w-2xl">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Examples you can ship with
-          </h2>
-          <p className="mt-2 text-sm text-muted-foreground md:text-base">
-            Reference snippets for components, forms, and server-state
-            workflows.
-          </p>
-        </div>
-
-        <div className="grid gap-3 lg:grid-cols-3">
-          {blocks.map((block) => (
-            <Card key={block.label} className="border-border/70 bg-card/50">
-              <Card.Content className="space-y-3 p-4">
-                <Badge
-                  variant="outline"
-                  className="w-fit font-mono text-[11px]"
-                >
-                  {block.label}
-                </Badge>
-                <div>
-                  <h3 className="text-base font-semibold">{block.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {block.description}
-                  </p>
-                </div>
-                {block.preview}
-                <pre className="overflow-x-auto rounded-lg border border-border/70 bg-background p-3 text-[11px] leading-relaxed text-muted-foreground">
-                  <code>{block.code}</code>
-                </pre>
-                <a
-                  href={block.href}
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-opacity hover:opacity-80"
-                >
-                  {block.cta}
+    <div className="bg-[radial-gradient(860px_420px_at_50%_-120px,hsl(var(--primary)/0.18),transparent),linear-gradient(to_bottom,hsl(var(--background)),hsl(var(--background)))]">
+      <section className="border-b border-border/70">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-12 md:grid-cols-12 md:px-6 md:py-14">
+          <div className="space-y-4 md:col-span-7">
+            <Badge variant="outline" className="w-fit text-[11px]">
+              <Sparkles className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
+              New generation React toolkit
+            </Badge>
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-[2.6rem]">
+              Build polished products faster with one cohesive system.
+            </h1>
+            <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+              Almach combines UI components, typed forms, and query utilities
+              into one workflow so teams ship clean interfaces with fewer bugs.
+            </p>
+            <div className="flex flex-wrap items-center gap-2.5">
+              <Button asChild>
+                <a href="/getting-started">
+                  Start building
                   <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </a>
-              </Card.Content>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function HomePage() {
-  return (
-    <div>
-      <section className="border-b border-border/70 bg-[radial-gradient(circle_at_top,hsl(var(--primary)/0.14),transparent_40%)]">
-        <div className="mx-auto max-w-screen-xl px-4 py-14 md:px-6 md:py-16">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              Almach UI
-            </span>
-            <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl md:text-[2.5rem]">
-              The foundation for a clean design system.
-            </h1>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-              A compact React UI system with typed forms and query helpers.
-            </p>
-
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
-              <a
-                href="/getting-started"
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-              >
-                Get started
-              </a>
-              <a
-                href="/components"
-                className="rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-accent"
-              >
-                View components
-              </a>
+              </Button>
+              <Button asChild variant="outline">
+                <a href="/components">Explore components</a>
+              </Button>
             </div>
-
-            <p className="mt-3 text-xs text-muted-foreground">
-              React 18+ · Tailwind CSS v4 · Open source
-            </p>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {[
+                { label: "UI primitives", value: "35+" },
+                { label: "Form fields", value: "Typed" },
+                { label: "Query helpers", value: "Factory-first" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-xl border border-border/70 bg-background/65 px-3 py-2"
+                >
+                  <p className="text-[11px] text-muted-foreground">{item.label}</p>
+                  <p className="text-sm font-semibold">{item.value}</p>
+                </div>
+              ))}
+            </div>
+            <InstallBar />
           </div>
 
-          <InstallBar />
+          <Card className="border-border/70 bg-card/60 shadow-sm md:col-span-5">
+            <Card.Header>
+              <Card.Title className="text-base">Team activity</Card.Title>
+              <p className="text-sm text-muted-foreground">
+                A compact preview of common interface states.
+              </p>
+            </Card.Header>
+            <Card.Content className="space-y-3">
+              <div className="flex items-center gap-2.5 rounded-lg border border-border/70 bg-background/80 p-3">
+                <Avatar size="sm">
+                  <Avatar.Fallback>AR</Avatar.Fallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">Weekly release</p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    QA checklist completed
+                  </p>
+                </div>
+                <Badge variant="outline">Ready</Badge>
+              </div>
+
+              <div className="space-y-1.5 rounded-lg border border-border/70 bg-background/80 p-3">
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Migration progress</span>
+                  <span>74%</span>
+                </div>
+                <Progress value={74} />
+              </div>
+
+              <div className="rounded-lg border border-border/70 bg-background/80 p-3">
+                <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+                  <span>Release checklist</span>
+                  <span>2/3 complete</span>
+                </div>
+                <div className="space-y-1.5 text-sm">
+                  <label className="flex items-center gap-2">
+                    <Checkbox defaultChecked className="h-4 w-4" />
+                    <span>Visual QA</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <Checkbox defaultChecked className="h-4 w-4" />
+                    <span>Docs snapshot</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <Checkbox className="h-4 w-4" />
+                    <span>Publish release notes</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Button size="sm" variant="outline" className="w-full">
+                  Open roadmap
+                </Button>
+                <Button size="sm" className="w-full">
+                  Deploy preview
+                </Button>
+              </div>
+            </Card.Content>
+          </Card>
         </div>
       </section>
 
-      <ShowcaseCanvas />
-      <ExamplesSection />
+      <section className="border-b border-border/70">
+        <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-12">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-semibold tracking-tight">
+                Interactive studio
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Clean, production-like patterns built with shared primitives.
+              </p>
+            </div>
+            <Badge className="hidden sm:inline-flex" variant="outline">
+              <Zap className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
+              Composable by default
+            </Badge>
+          </div>
+
+          <Tabs defaultValue="ui" className="space-y-3">
+            <Tabs.List>
+              <Tabs.Trigger value="ui">UI Flow</Tabs.Trigger>
+              <Tabs.Trigger value="forms">Forms Flow</Tabs.Trigger>
+              <Tabs.Trigger value="query">Data Flow</Tabs.Trigger>
+            </Tabs.List>
+
+            <Tabs.Content value="ui">
+              <Card className="border-border/70 bg-card/45">
+                <Card.Content className="grid gap-3 p-4 md:grid-cols-12">
+                  <div className="space-y-2 md:col-span-7">
+                    <Input placeholder="Search project settings..." />
+                    <Textarea placeholder="Write release note summary..." />
+                    <div className="flex gap-2">
+                      <Button size="sm">Save draft</Button>
+                      <Button size="sm" variant="outline">
+                        Preview
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="space-y-2 rounded-xl border border-border/70 bg-background/80 p-3 md:col-span-5">
+                    <div className="flex items-center justify-between text-sm">
+                      <span>Enable notifications</span>
+                      <Switch
+                        size="sm"
+                        isSelected={notifications}
+                        onChange={setNotifications}
+                      />
+                    </div>
+                    <Separator />
+                    <div className="space-y-2 text-sm">
+                      <label className="flex items-center gap-2">
+                        <Checkbox defaultChecked className="h-4 w-4" />
+                        <span>Ship with analytics enabled</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <Checkbox className="h-4 w-4" />
+                        <span>Require review approvals</span>
+                      </label>
+                    </div>
+                  </div>
+                </Card.Content>
+              </Card>
+            </Tabs.Content>
+
+            <Tabs.Content value="forms">
+              <Card className="border-border/70 bg-card/45">
+                <Card.Content className="grid gap-3 p-4 md:grid-cols-12">
+                  <div className="space-y-2 md:col-span-7">
+                    <Input placeholder="Email address" type="email" />
+                    <Input placeholder="Workspace name" />
+                    <Textarea placeholder="Tell us about your project" />
+                  </div>
+                  <div className="rounded-xl border border-border/70 bg-background/80 p-3 md:col-span-5">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                      Plan
+                    </p>
+                    <Radio value={plan} onChange={setPlan}>
+                      <Radio.Item
+                        value="starter"
+                        label="Starter"
+                        description="Best for new teams"
+                      />
+                      <Radio.Item
+                        value="scale"
+                        label="Scale"
+                        description="Advanced workflows"
+                      />
+                    </Radio>
+                    <Button size="sm" className="mt-3 w-full">
+                      Continue
+                    </Button>
+                  </div>
+                </Card.Content>
+              </Card>
+            </Tabs.Content>
+
+            <Tabs.Content value="query">
+              <div className="grid gap-3 md:grid-cols-3">
+                {[
+                  { label: "Users query", value: "fresh", pct: 92 },
+                  { label: "Projects query", value: "warm", pct: 67 },
+                  { label: "Audit logs", value: "stale", pct: 31 },
+                ].map((item) => (
+                  <Card key={item.label} className="border-border/70 bg-card/45">
+                    <Card.Content className="space-y-2 p-4">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium">{item.label}</p>
+                        <Badge variant="outline">{item.value}</Badge>
+                      </div>
+                      <Progress value={item.pct} />
+                      <p className="text-xs text-muted-foreground">
+                        Cache health {item.pct}%
+                      </p>
+                    </Card.Content>
+                  </Card>
+                ))}
+              </div>
+            </Tabs.Content>
+          </Tabs>
+        </div>
+      </section>
+
+      <section>
+        <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-12">
+          <div className="mb-5">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              One ecosystem, three focused packages
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Start simple, scale intentionally, and keep implementation clean.
+            </p>
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-3">
+            {[
+              {
+                pkg: "@almach/ui",
+                title: "UI components",
+                desc: "Accessible primitives and polished defaults for product interfaces.",
+                href: "/components",
+                sample: "<Button variant=\"default\">Save</Button>",
+              },
+              {
+                pkg: "@almach/forms",
+                title: "Typed forms",
+                desc: "Zod + TanStack Form patterns for predictable validation flows.",
+                href: "/forms",
+                sample: "<TextField label=\"Email\" required />",
+              },
+              {
+                pkg: "@almach/query",
+                title: "Data layer",
+                desc: "Typed query and mutation factories with consistent invalidation.",
+                href: "/query",
+                sample: "const q = createQuery({ queryKey, queryFn })",
+              },
+            ].map((item) => (
+              <Card key={item.pkg} className="border-border/70 bg-card/50 shadow-sm">
+                <Card.Content className="space-y-3 p-4">
+                  <Badge variant="outline" className="w-fit font-mono text-[11px]">
+                    {item.pkg}
+                  </Badge>
+                  <div>
+                    <h3 className="text-base font-semibold">{item.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.desc}</p>
+                  </div>
+                  <pre className="overflow-x-auto rounded-xl border border-border/70 bg-background px-3 py-2 text-[11px] text-muted-foreground">
+                    <code>{item.sample}</code>
+                  </pre>
+                  <Button asChild variant="outline" size="sm" className="w-full">
+                    <a href={item.href}>
+                      Open docs
+                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    </a>
+                  </Button>
+                </Card.Content>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

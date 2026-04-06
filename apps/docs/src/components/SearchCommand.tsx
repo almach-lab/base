@@ -68,6 +68,11 @@ const NAV_GROUPS = [
 // ── Component ───────────────────────────────────────────────────────────────
 export function SearchCommand() {
   const [open, setOpen] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const hasSearchables = React.useMemo(
+    () => NAV_GROUPS.some((group) => group.items.length > 0),
+    [],
+  );
 
   // ⌘K / Ctrl+K to open
   React.useEffect(() => {
@@ -80,6 +85,24 @@ export function SearchCommand() {
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, []);
+
+  // Focus the command input as soon as the dialog opens.
+  React.useEffect(() => {
+    if (!open || !hasSearchables) return;
+
+    const frame = requestAnimationFrame(() => {
+      inputRef.current?.focus();
+    });
+
+    const timeout = window.setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(timeout);
+    };
+  }, [open, hasSearchables]);
 
   const navigate = (href: string) => {
     setOpen(false);
@@ -134,7 +157,7 @@ export function SearchCommand() {
 
       {/* Command dialog */}
       <Command.Dialog open={open} onOpenChange={setOpen}>
-        <Command.Input placeholder="Search docs…" />
+        <Command.Input autoFocus ref={inputRef} placeholder="Search docs…" />
         <Command.List>
           <Command.Empty>No results found.</Command.Empty>
 

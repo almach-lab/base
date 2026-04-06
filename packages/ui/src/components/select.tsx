@@ -315,7 +315,7 @@ const SelectContent = React.forwardRef<
       {...props}
     >
       <div
-        className="relative overflow-y-auto py-1 scroll-py-6"
+        className="relative overflow-y-auto overflow-x-hidden py-1 scroll-py-6"
         style={position ? { maxHeight: position.maxHeight } : undefined}
       >
         {children}
@@ -466,7 +466,7 @@ function SelectSearchable({
             </div>
 
             <CommandPrimitive.List
-              className="max-h-56 overflow-y-auto p-1"
+              className="max-h-56 overflow-y-auto overflow-x-hidden p-1"
               role="listbox"
               aria-label="Options"
             >
