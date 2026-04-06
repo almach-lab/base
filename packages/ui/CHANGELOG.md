@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.0.3
+
+### Patch Changes
+
+- Fix Sonner CSS import behavior to improve SSR compatibility across frameworks (Astro/Next/Remix) by avoiding runtime CSS loading pitfalls.
+
 ## 0.0.2
 
 ### Patch Changes
