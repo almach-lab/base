@@ -157,6 +157,79 @@ based/
 # 3. release.yml auto-generates changesets from commits, versions, and publishes
 ```
 
+### Resetting The Release Baseline
+
+Published npm versions cannot be fully reset or deleted in a clean way once consumed.
+The supported approach is to start a new baseline from the current code with a major bump:
+
+```bash
+bun run release:reset-baseline
+```
+
+This command creates a single changeset that marks all publishable packages as `major`.
+It is idempotent: rerunning refreshes today's baseline file and removes stale `reset-baseline-*.md` files.
+Then merge and run the normal release pipeline to publish the new baseline versions.
+
+### About Starting Again From v0
+
+You cannot reliably restart to `0.x` on the same published package names and call it a true reset.
+For a clean v0 restart, use a new package line (for example a new scope/name such as `@almach-v0/*`) and publish that line separately.
+
+Recommended clean strategy:
+- Keep current `@almach/*` packages on their existing semver line.
+- Start a new `@almach-v0/*` line at `0.1.0`.
+- Mark old line status in README/changelog and guide consumers to the intended line.
+
+### Remote Release Cleanup (GitHub + npm)
+
+If you still want to clean old remote artifacts, use:
+
+```bash
+bun run release:reset-remote
+```
+
+Behavior:
+- Default is `dry-run` (prints what would be removed/deprecated).
+- Use `--apply` to execute real deletion/deprecation.
+- Loads `.env` automatically if present.
+- npm cleanup mode defaults to `auto`: tries `unpublish` first, falls back to `deprecate`.
+- Processes versions `>= 0.0.1` by default (configurable with `--min-version`).
+
+Setup:
+
+```bash
+cp .env.example .env
+```
+
+Examples:
+
+```bash
+# Preview only
+node scripts/reset-remote-releases.mjs
+
+# Apply all actions
+node scripts/reset-remote-releases.mjs --apply
+
+# Only GitHub releases
+node scripts/reset-remote-releases.mjs --apply --skip-npm
+
+# Only npm deprecations
+node scripts/reset-remote-releases.mjs --apply --skip-github
+
+# Force npm unpublish-only strategy
+node scripts/reset-remote-releases.mjs --apply --skip-github --npm-mode=unpublish
+
+# Restrict cleanup to versions >= 0.0.1 (default shown explicitly)
+node scripts/reset-remote-releases.mjs --apply --min-version=0.0.1
+
+# Publish reset baseline versions with explicit npm tag (for lower-version lines like 0.0.1)
+bun run release:publish-env -- --tag=reset-v0
+```
+
+Important:
+- npm unpublish is heavily restricted and often unavailable for old versions.
+- This script uses deprecation for npm versions (safe and reversible with a new deprecate message).
+
 ---
 
 ## License

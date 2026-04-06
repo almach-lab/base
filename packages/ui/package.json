@@ -1,6 +1,6 @@
 {
   "name": "@almach/ui",
-  "version": "3.0.1",
+  "version": "0.0.1",
   "description": "Modern, accessible UI components built on React Aria and Tailwind CSS",
   "type": "module",
   "main": "./dist/index.js",

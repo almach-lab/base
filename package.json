@@ -21,6 +21,9 @@
     "docs": "bun run --cwd apps/docs dev",
     "deploy": "bun run --cwd apps/docs deploy",
     "release": "bash scripts/release.sh",
+    "release:publish-env": "node scripts/publish-from-env.mjs",
+    "release:reset-baseline": "node scripts/reset-release-baseline.mjs",
+    "release:reset-remote": "node scripts/reset-remote-releases.mjs",
     "llms:snapshot:update": "node scripts/generate-llm-ui-snapshot.mjs",
     "llms:snapshot:check": "node scripts/generate-llm-ui-snapshot.mjs --check",
     "postinstall": "node scripts/fix-esm.js"

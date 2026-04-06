@@ -3,21 +3,21 @@
 import { cn } from "@almach/utils";
 import {
   CalendarDate,
-  getLocalTimeZone,
   type DateValue,
+  getLocalTimeZone,
 } from "@internationalized/date";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
 import {
-  Button,
   Calendar as AriaCalendar,
+  RangeCalendar as AriaRangeCalendar,
+  Button,
   CalendarCell,
   CalendarGrid,
   CalendarGridBody,
   CalendarGridHeader,
   CalendarHeaderCell,
   Heading,
-  RangeCalendar as AriaRangeCalendar,
   Text,
   useLocale,
 } from "react-aria-components";
@@ -139,7 +139,9 @@ function createCellClassName(
   selectedDates: Date[],
   selectedRange?: DateRange,
 ) {
-  const rangeFrom = selectedRange?.from ? startOfDay(selectedRange.from) : undefined;
+  const rangeFrom = selectedRange?.from
+    ? startOfDay(selectedRange.from)
+    : undefined;
   const rangeTo = selectedRange?.to ? startOfDay(selectedRange.to) : undefined;
 
   return (renderProps: unknown) => {

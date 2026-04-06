@@ -93,9 +93,11 @@ function renderExample(moduleName, primaryExport, meta) {
   }
 
   if (moduleName === "toast") {
-    return ['import { toast } from "@almach/ui";', "", 'toast("Saved successfully");'].join(
-      "\n",
-    );
+    return [
+      'import { toast } from "@almach/ui";',
+      "",
+      'toast("Saved successfully");',
+    ].join("\n");
   }
 
   if (primaryExport?.startsWith("use")) {

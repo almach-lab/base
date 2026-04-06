@@ -2,10 +2,10 @@ import { cn } from "@almach/utils";
 import * as React from "react";
 import {
   DialogTrigger as AriaDialogTrigger,
-  OverlayArrow,
   Popover as AriaPopover,
   type PopoverProps as AriaPopoverProps,
   composeRenderProps,
+  OverlayArrow,
 } from "react-aria-components";
 
 interface PopoverRootProps {

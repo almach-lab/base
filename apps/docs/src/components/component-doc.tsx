@@ -27,8 +27,9 @@ function sanitizeTilePreview(node: React.ReactNode): React.ReactNode {
     ...rest
   } = props;
 
-  const safeChildren = React.Children.map(children as React.ReactNode, (child) =>
-    sanitizeTilePreview(child),
+  const safeChildren = React.Children.map(
+    children as React.ReactNode,
+    (child) => sanitizeTilePreview(child),
   );
 
   return React.cloneElement(node, rest, safeChildren);

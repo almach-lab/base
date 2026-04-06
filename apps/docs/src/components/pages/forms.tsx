@@ -8,6 +8,7 @@ import {
   z,
 } from "@almach/forms";
 import { Badge, Button, Card, Separator, Tabs, toast } from "@almach/ui";
+import { getPackageVersion } from "../../lib/package-versions";
 import { CodeBlock } from "../code-block";
 
 const loginSchema = z.object({
@@ -266,9 +267,14 @@ export function FormsPage() {
   return (
     <div className="px-4 py-8 md:px-5 md:py-9">
       <div className="mb-8 border-b pb-6">
-        <Badge variant="outline" className="mb-2 font-mono">
-          @almach/forms
-        </Badge>
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <Badge variant="outline" className="font-mono">
+            @almach/forms
+          </Badge>
+          <Badge variant="ghost" className="font-mono text-[11px]">
+            v{getPackageVersion("@almach/forms")}
+          </Badge>
+        </div>
         <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">
           Form Handling
         </h1>

@@ -1,7 +1,6 @@
 import { BasedQueryProvider } from "@almach/query";
 import { Toaster } from "@almach/ui";
-import React from "react";
-import { lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import {
   ComponentDocSkeleton,
   GenericPageSkeleton,

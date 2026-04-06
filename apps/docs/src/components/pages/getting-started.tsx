@@ -1,8 +1,11 @@
 import { Alert, Badge } from "@almach/ui";
 import { ArrowRight, Copy, Info } from "lucide-react";
 import React from "react";
+import { getPackageVersion } from "../../lib/package-versions";
 import { CodeBlock } from "../code-block";
 import { PkgTabs } from "../pkg-tabs";
+
+type PackageName = "@almach/ui" | "@almach/forms" | "@almach/query";
 
 /* ── Small reusable layout pieces ─────────────────────────────────────────── */
 
@@ -47,13 +50,16 @@ function PackageSection({
   required,
 }: {
   label: string;
-  pkg: string;
+  pkg: PackageName;
   required?: boolean;
 }) {
   return (
     <div className="space-y-2">
       <p className="flex items-center gap-2 text-sm font-medium">
         {label}
+        <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+          v{getPackageVersion(pkg)}
+        </span>
         {required && (
           <span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
             required

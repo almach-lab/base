@@ -3,9 +3,9 @@ import { Check, ChevronRight } from "lucide-react";
 import * as React from "react";
 import {
   Menu as AriaMenu,
-  type MenuProps as AriaMenuProps,
   MenuItem as AriaMenuItem,
   type MenuItemProps as AriaMenuItemProps,
+  type MenuProps as AriaMenuProps,
   MenuSection as AriaMenuSection,
   type MenuSectionProps as AriaMenuSectionProps,
   MenuTrigger as AriaMenuTrigger,
@@ -184,48 +184,50 @@ const DropdownMenuItem = React.forwardRef<
     },
     ref,
   ) => {
-  const resolvedTextValue =
-    textValue ?? (typeof children === "string" ? children : null);
+    const resolvedTextValue =
+      textValue ?? (typeof children === "string" ? children : null);
 
-  return (
-    <AriaMenuItem
-      ref={ref}
-      {...(resolvedTextValue !== null ? { textValue: resolvedTextValue } : {})}
-      className={composeRenderProps(className, (nextClassName, renderProps) =>
-        cn(
-          "group relative flex cursor-default select-none items-center gap-2 rounded-lg px-2 py-1.5 text-sm outline-none",
-          "transition-colors duration-150 ease-out",
-          renderProps.isFocused && "bg-accent text-accent-foreground",
-          renderProps.isDisabled && "pointer-events-none opacity-50",
-          inset && "pl-8",
-          destructive && "text-destructive",
-          "[&_svg]:size-4 [&_svg]:shrink-0",
-          nextClassName,
-        ),
-      )}
-      {...(isDisabled ?? disabled ? { isDisabled: true } : {})}
-      {...props}
-    >
-      {composeRenderProps(children, (childContent, renderProps) => (
-        <>
-          {renderProps.selectionMode !== "none" && (
-            <span className="flex w-4 items-center justify-center">
-              {renderProps.isSelected ? (
-                <Check aria-hidden className="h-4 w-4" />
-              ) : null}
+    return (
+      <AriaMenuItem
+        ref={ref}
+        {...(resolvedTextValue !== null
+          ? { textValue: resolvedTextValue }
+          : {})}
+        className={composeRenderProps(className, (nextClassName, renderProps) =>
+          cn(
+            "group relative flex cursor-default select-none items-center gap-2 rounded-lg px-2 py-1.5 text-sm outline-none",
+            "transition-colors duration-150 ease-out",
+            renderProps.isFocused && "bg-accent text-accent-foreground",
+            renderProps.isDisabled && "pointer-events-none opacity-50",
+            inset && "pl-8",
+            destructive && "text-destructive",
+            "[&_svg]:size-4 [&_svg]:shrink-0",
+            nextClassName,
+          ),
+        )}
+        {...((isDisabled ?? disabled) ? { isDisabled: true } : {})}
+        {...props}
+      >
+        {composeRenderProps(children, (childContent, renderProps) => (
+          <>
+            {renderProps.selectionMode !== "none" && (
+              <span className="flex w-4 items-center justify-center">
+                {renderProps.isSelected ? (
+                  <Check aria-hidden className="h-4 w-4" />
+                ) : null}
+              </span>
+            )}
+            <span className="flex min-w-0 flex-1 items-center gap-2 truncate">
+              {childContent}
             </span>
-          )}
-          <span className="flex min-w-0 flex-1 items-center gap-2 truncate">
-            {childContent}
-          </span>
-          {renderProps.hasSubmenu ? (
-            <ChevronRight aria-hidden className="absolute right-2 h-4 w-4" />
-          ) : null}
-        </>
-      ))}
-    </AriaMenuItem>
-  );
-},
+            {renderProps.hasSubmenu ? (
+              <ChevronRight aria-hidden className="absolute right-2 h-4 w-4" />
+            ) : null}
+          </>
+        ))}
+      </AriaMenuItem>
+    );
+  },
 );
 DropdownMenuItem.displayName = "DropdownMenu.Item";
 
@@ -281,7 +283,11 @@ interface DropdownMenuLabelProps {
   children?: React.ReactNode;
 }
 
-function DropdownMenuLabel({ className, inset, children }: DropdownMenuLabelProps) {
+function DropdownMenuLabel({
+  className,
+  inset,
+  children,
+}: DropdownMenuLabelProps) {
   const textValue = typeof children === "string" ? children : undefined;
 
   return (

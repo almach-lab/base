@@ -14,6 +14,7 @@ import {
 } from "@almach/ui";
 import { ArrowRight, Sparkles, Zap } from "lucide-react";
 import { useState } from "react";
+import { getPackageVersion } from "../../lib/package-versions";
 
 const PKG_MANAGERS = ["bun", "npm", "pnpm", "yarn"] as const;
 type PM = (typeof PKG_MANAGERS)[number];
@@ -105,7 +106,9 @@ export function HomePage() {
                   key={item.label}
                   className="rounded-xl border border-border/70 bg-background/65 px-3 py-2"
                 >
-                  <p className="text-[11px] text-muted-foreground">{item.label}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {item.label}
+                  </p>
                   <p className="text-sm font-semibold">{item.value}</p>
                 </div>
               ))}
@@ -277,7 +280,10 @@ export function HomePage() {
                   { label: "Projects query", value: "warm", pct: 67 },
                   { label: "Audit logs", value: "stale", pct: 31 },
                 ].map((item) => (
-                  <Card key={item.label} className="border-border/70 bg-card/45">
+                  <Card
+                    key={item.label}
+                    className="border-border/70 bg-card/45"
+                  >
                     <Card.Content className="space-y-2 p-4">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-medium">{item.label}</p>
@@ -311,39 +317,58 @@ export function HomePage() {
             {[
               {
                 pkg: "@almach/ui",
+                version: getPackageVersion("@almach/ui"),
                 title: "UI components",
                 desc: "Accessible primitives and polished defaults for product interfaces.",
                 href: "/components",
-                sample: "<Button variant=\"default\">Save</Button>",
+                sample: '<Button variant="default">Save</Button>',
               },
               {
                 pkg: "@almach/forms",
+                version: getPackageVersion("@almach/forms"),
                 title: "Typed forms",
                 desc: "Zod + TanStack Form patterns for predictable validation flows.",
                 href: "/forms",
-                sample: "<TextField label=\"Email\" required />",
+                sample: '<TextField label="Email" required />',
               },
               {
                 pkg: "@almach/query",
+                version: getPackageVersion("@almach/query"),
                 title: "Data layer",
                 desc: "Typed query and mutation factories with consistent invalidation.",
                 href: "/query",
                 sample: "const q = createQuery({ queryKey, queryFn })",
               },
             ].map((item) => (
-              <Card key={item.pkg} className="border-border/70 bg-card/50 shadow-sm">
+              <Card
+                key={item.pkg}
+                className="border-border/70 bg-card/50 shadow-sm"
+              >
                 <Card.Content className="space-y-3 p-4">
-                  <Badge variant="outline" className="w-fit font-mono text-[11px]">
+                  <Badge
+                    variant="outline"
+                    className="w-fit font-mono text-[11px]"
+                  >
                     {item.pkg}
                   </Badge>
+                  <p className="text-[11px] font-mono text-muted-foreground">
+                    v{item.version}
+                  </p>
                   <div>
                     <h3 className="text-base font-semibold">{item.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{item.desc}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {item.desc}
+                    </p>
                   </div>
                   <pre className="overflow-x-auto rounded-xl border border-border/70 bg-background px-3 py-2 text-[11px] text-muted-foreground">
                     <code>{item.sample}</code>
                   </pre>
-                  <Button asChild variant="outline" size="sm" className="w-full">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                  >
                     <a href={item.href}>
                       Open docs
                       <ArrowRight className="h-4 w-4" aria-hidden="true" />

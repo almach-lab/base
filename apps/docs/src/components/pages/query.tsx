@@ -15,6 +15,7 @@ import {
 } from "@almach/ui";
 import { Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { getPackageVersion } from "../../lib/package-versions";
 import { CodeBlock } from "../code-block";
 
 interface Post {
@@ -266,9 +267,14 @@ export function QueryPage() {
   return (
     <div className="px-4 py-8 md:px-5 md:py-9">
       <div className="mb-8 border-b pb-6">
-        <Badge variant="outline" className="mb-2 font-mono">
-          @almach/query
-        </Badge>
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <Badge variant="outline" className="font-mono">
+            @almach/query
+          </Badge>
+          <Badge variant="ghost" className="font-mono text-[11px]">
+            v{getPackageVersion("@almach/query")}
+          </Badge>
+        </div>
         <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">
           Data Fetching
         </h1>
