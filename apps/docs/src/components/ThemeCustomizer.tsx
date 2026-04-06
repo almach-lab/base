@@ -484,10 +484,6 @@ function clear() {
   }
 }
 
-function isDarkMode() {
-  return document.documentElement.classList.contains("dark");
-}
-
 function applyVars(
   preset: ColorPreset,
   radius: string,
@@ -495,11 +491,7 @@ function applyVars(
   motion: { overlayMs: number; interactiveMs: number; ease: string },
 ) {
   const root = document.documentElement;
-  const dark = isDarkMode();
-  const color = dark ? preset.dark : preset.light;
   applySurfaceVars(surfaces);
-  root.style.setProperty("--primary", color);
-  root.style.setProperty("--ring", color);
   root.style.setProperty("--theme-primary-light", preset.light);
   root.style.setProperty("--theme-primary-dark", preset.dark);
   root.style.setProperty("--radius", radius);
@@ -542,8 +534,6 @@ function resetVars() {
   root.style.removeProperty("--theme-input-dark");
   root.style.removeProperty("--theme-primary-light");
   root.style.removeProperty("--theme-primary-dark");
-  root.style.removeProperty("--primary");
-  root.style.removeProperty("--ring");
   root.style.removeProperty("--radius");
   root.style.removeProperty("--theme-motion-overlay-duration-ms");
   root.style.removeProperty("--theme-motion-overlay-duration");
@@ -792,10 +782,7 @@ export function ThemeCustomizer() {
     const preset = getColorPresetByName(activePreset);
     const css = [
       `:root {`,
-      `  --primary: hsl(${preset.light});`,
-      `  --ring: hsl(${preset.light});`,
       `  --theme-primary-light: ${preset.light};`,
-      `  --theme-primary-dark: ${preset.dark};`,
       `  --theme-background-light: ${surfaceTokens.backgroundLight};`,
       `  --theme-foreground-light: ${surfaceTokens.foregroundLight};`,
       `  --theme-card-light: ${surfaceTokens.cardLight};`,
@@ -806,6 +793,7 @@ export function ThemeCustomizer() {
       `  --theme-accent-foreground-light: ${surfaceTokens.accentForegroundLight};`,
       `  --theme-border-light: ${surfaceTokens.borderLight};`,
       `  --theme-input-light: ${surfaceTokens.inputLight};`,
+      `  --theme-primary-dark: ${preset.dark};`,
       `  --theme-background-dark: ${surfaceTokens.backgroundDark};`,
       `  --theme-foreground-dark: ${surfaceTokens.foregroundDark};`,
       `  --theme-card-dark: ${surfaceTokens.cardDark};`,
@@ -821,11 +809,6 @@ export function ThemeCustomizer() {
       `  --theme-motion-overlay-duration: ${overlayMs}ms;`,
       `  --theme-motion-interactive-duration: ${interactiveMs}ms;`,
       `  --theme-motion-ease-standard: ${activeEase};`,
-      `}`,
-      ``,
-      `.dark {`,
-      `  --primary: hsl(${preset.dark});`,
-      `  --ring: hsl(${preset.dark});`,
       `}`,
     ].join("\n");
 
