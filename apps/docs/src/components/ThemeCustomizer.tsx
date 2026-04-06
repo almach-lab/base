@@ -491,7 +491,13 @@ function applyVars(
   motion: { overlayMs: number; interactiveMs: number; ease: string },
 ) {
   const root = document.documentElement;
+  const dark = root.classList.contains("dark");
   applySurfaceVars(surfaces);
+
+  // Keep both design-time theme channels and active runtime channels in sync.
+  root.style.setProperty("--primary", dark ? preset.dark : preset.light);
+  root.style.setProperty("--ring", dark ? preset.dark : preset.light);
+
   root.style.setProperty("--theme-primary-light", preset.light);
   root.style.setProperty("--theme-primary-dark", preset.dark);
   root.style.setProperty("--radius", radius);
@@ -534,6 +540,8 @@ function resetVars() {
   root.style.removeProperty("--theme-input-dark");
   root.style.removeProperty("--theme-primary-light");
   root.style.removeProperty("--theme-primary-dark");
+  root.style.removeProperty("--primary");
+  root.style.removeProperty("--ring");
   root.style.removeProperty("--radius");
   root.style.removeProperty("--theme-motion-overlay-duration-ms");
   root.style.removeProperty("--theme-motion-overlay-duration");
@@ -583,6 +591,10 @@ export function ThemeCustomizer() {
         ease: activeEase,
       });
     };
+
+    // Apply current theme state immediately (including saved theme on mount).
+    handler();
+
     window.addEventListener("almach-theme-mode-changed", handler);
     return () =>
       window.removeEventListener("almach-theme-mode-changed", handler);
