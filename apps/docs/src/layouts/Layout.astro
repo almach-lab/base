@@ -1,5 +1,9 @@
 ---
 import "../styles/globals.css";
+import { ClientRouter } from "astro:transitions";
+import Logo from "../components/Logo.astro";
+import { SearchCommand } from "../components/SearchCommand";
+import { ThemeCustomizer } from "../components/ThemeCustomizer";
 import { DOC_COMPONENT_GROUPS } from "../lib/doc-components";
 
 interface Props {
@@ -16,18 +20,18 @@ const {
 
 const siteUrl =
   Astro.site?.toString().replace(/\/$/, "") ?? "https://almach.kita.blue";
-const _canonicalUrl = `${siteUrl}${currentPath}`;
-const _ogImage = `${siteUrl}/og.png`;
-const _pageTitle =
+const canonicalUrl = `${siteUrl}${currentPath}`;
+const ogImage = `${siteUrl}/og.png`;
+const pageTitle =
   title === "Almach" ? "Almach — UI Components for React" : `${title} · Almach`;
-const _topNavItems = [
+const topNavItems = [
   { name: "Getting Started", href: "/getting-started" },
   { name: "Components", href: "/components" },
   { name: "Forms", href: "/forms" },
   { name: "Query", href: "/query" },
 ];
 
-const _sidebarGroups = [
+const sidebarGroups = [
   {
     title: "Introduction",
     items: [
@@ -87,7 +91,7 @@ const pageAnchors = isComponentsPage
             { id: "query-server-actions", name: "Server actions" },
           ]
         : [];
-const _showRightRail = !isHome && pageAnchors.length > 0;
+const showRightRail = !isHome && pageAnchors.length > 0;
 ---
 
 <!doctype html>

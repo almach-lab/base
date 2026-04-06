@@ -214,7 +214,7 @@ export function AppShell({ page, componentSlug }: AppShellProps) {
   return (
     <BasedQueryProvider>
       <Suspense fallback={pageSkeleton(page)}>
-        <PageContent page={page} componentSlug={componentSlug} />
+        <PageContent page={page} {...(componentSlug ? { componentSlug } : {})} />
       </Suspense>
       <Toaster />
     </BasedQueryProvider>

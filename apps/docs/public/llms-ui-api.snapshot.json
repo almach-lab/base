@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-05T10:36:51.839Z",
+  "generatedAt": "2026-04-06T01:50:35.182Z",
   "components": {
     "alert": {
       "exports": [
@@ -75,19 +75,6 @@
       ],
       "typeExports": []
     },
-    "currency-input": {
-      "exports": [
-        "CURRENCIES",
-        "CurrencyFlagBadge",
-        "InputCurrency"
-      ],
-      "typeExports": [
-        "CurrencyDef",
-        "CurrencySelectorMode",
-        "CurrencyValue",
-        "InputCurrencyProps"
-      ]
-    },
     "dialog": {
       "exports": [
         "Dialog"
@@ -111,11 +98,7 @@
         "DateInput",
         "Input"
       ],
-      "typeExports": [
-        "DateInputProps",
-        "InputDateProps",
-        "InputProps"
-      ]
+      "typeExports": []
     },
     "label": {
       "exports": [
@@ -162,10 +145,7 @@
       "exports": [
         "Select"
       ],
-      "typeExports": [
-        "SelectSearchableOption",
-        "SelectSearchableProps"
-      ]
+      "typeExports": []
     },
     "separator": {
       "exports": [
@@ -184,21 +164,13 @@
         "SwipeActions",
         "useSwipeActions"
       ],
-      "typeExports": [
-        "SwipeActionProps",
-        "SwipeActionsProps",
-        "SwipeActionVariant",
-        "SwipeSide"
-      ]
+      "typeExports": []
     },
     "swipe-button": {
       "exports": [
         "SwipeButton"
       ],
-      "typeExports": [
-        "SwipeButtonRootProps",
-        "SwipeButtonThumbProps"
-      ]
+      "typeExports": []
     },
     "switch": {
       "exports": [

@@ -203,9 +203,16 @@ function SwipeButtonRoot({
   useEffect(
     () => () => {
       if (resetTimer.current) clearTimeout(resetTimer.current);
-      cancelHold();
+      if (holdTimer.current) {
+        clearTimeout(holdTimer.current);
+        holdTimer.current = null;
+      }
+      if (holdRaf.current) {
+        cancelAnimationFrame(holdRaf.current);
+        holdRaf.current = null;
+      }
     },
-    [cancelHold],
+    [],
   ); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ── helpers ─────────────────────────────────────────────────────────── */

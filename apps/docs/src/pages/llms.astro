@@ -1,6 +1,7 @@
 ---
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import Layout from "../layouts/Layout.astro";
 
 const generatedSnapshot = readFileSync(
   resolve(process.cwd(), "public/llms.md"),
@@ -8,8 +9,8 @@ const generatedSnapshot = readFileSync(
 );
 const rawLLMs = readFileSync(resolve(process.cwd(), "../../llms.txt"), "utf-8");
 
-const _generatedLines = generatedSnapshot.split("\n").length;
-const _rawLines = rawLLMs.split("\n").length;
+const generatedLines = generatedSnapshot.split("\n").length;
+const rawLines = rawLLMs.split("\n").length;
 ---
 
 <Layout title="For LLMs" currentPath="/llms">

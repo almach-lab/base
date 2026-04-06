@@ -1,6 +1,6 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-04-05T10:36:51.837Z
+Generated: 2026-04-06T01:50:35.178Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
@@ -289,33 +289,6 @@ import { Command } from "@almach/ui";
 - Values: `Command`
 - Types: (none)
 
-## CURRENCIES
-
-Module: `currency-input`
-
-### Import
-
-```tsx
-import { CURRENCIES } from "@almach/ui";
-```
-
-### Most Common Tasks
-
-- Use the exported component in controlled or uncontrolled form.
-
-### Anatomy
-
-- `CURRENCIES`
-
-### API Notes
-
-- Refer to the component page for full prop and behavior details.
-
-### Exported Symbols
-
-- Values: `CURRENCIES`, `CurrencyFlagBadge`, `InputCurrency`
-- Types: `CurrencyDef`, `CurrencySelectorMode`, `CurrencyValue`, `InputCurrencyProps`
-
 ## Dialog
 
 Module: `dialog`
@@ -447,7 +420,7 @@ import { Input } from "@almach/ui";
 ### Exported Symbols
 
 - Values: `DateInput`, `Input`
-- Types: `DateInputProps`, `InputDateProps`, `InputProps`
+- Types: (none)
 
 ## Label
 
@@ -658,7 +631,7 @@ import { Select } from "@almach/ui";
 ### Exported Symbols
 
 - Values: `Select`
-- Types: `SelectSearchableOption`, `SelectSearchableProps`
+- Types: (none)
 
 ### Accessibility Notes
 
@@ -745,7 +718,7 @@ import { SwipeActions } from "@almach/ui";
 ### Exported Symbols
 
 - Values: `SwipeActions`, `useSwipeActions`
-- Types: `SwipeActionProps`, `SwipeActionsProps`, `SwipeActionVariant`, `SwipeSide`
+- Types: (none)
 
 ## SwipeButton
 
@@ -772,7 +745,7 @@ import { SwipeButton } from "@almach/ui";
 ### Exported Symbols
 
 - Values: `SwipeButton`
-- Types: `SwipeButtonRootProps`, `SwipeButtonThumbProps`
+- Types: (none)
 
 ## Switch
 

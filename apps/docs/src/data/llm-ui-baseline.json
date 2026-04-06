@@ -1,148 +1,234 @@
 {
   "alert": {
-    "exports": ["Alert"],
-    "typeExports": ["AlertVariant"]
+    "exports": [
+      "Alert"
+    ],
+    "typeExports": [
+      "AlertVariant"
+    ]
   },
   "avatar": {
-    "exports": ["Avatar", "avatarVariants"],
-    "typeExports": ["AvatarProps"]
+    "exports": [
+      "Avatar",
+      "avatarVariants"
+    ],
+    "typeExports": [
+      "AvatarProps"
+    ]
   },
   "badge": {
-    "exports": ["Badge", "badgeVariants"],
-    "typeExports": ["BadgeProps"]
+    "exports": [
+      "Badge",
+      "badgeVariants"
+    ],
+    "typeExports": [
+      "BadgeProps"
+    ]
   },
   "button": {
-    "exports": ["Button", "buttonVariants"],
-    "typeExports": ["ButtonProps"]
+    "exports": [
+      "Button",
+      "buttonVariants"
+    ],
+    "typeExports": [
+      "ButtonProps"
+    ]
   },
   "calendar": {
-    "exports": ["Calendar"],
-    "typeExports": ["CalendarProps"]
+    "exports": [
+      "Calendar"
+    ],
+    "typeExports": [
+      "CalendarProps"
+    ]
   },
   "card": {
-    "exports": ["Card", "Group"],
+    "exports": [
+      "Card",
+      "Group"
+    ],
     "typeExports": []
   },
   "carousel": {
-    "exports": ["Carousel"],
+    "exports": [
+      "Carousel"
+    ],
     "typeExports": []
   },
   "checkbox": {
-    "exports": ["Checkbox"],
+    "exports": [
+      "Checkbox"
+    ],
     "typeExports": []
   },
   "collapsible": {
-    "exports": ["Collapsible"],
+    "exports": [
+      "Collapsible"
+    ],
     "typeExports": []
   },
   "command": {
-    "exports": ["Command"],
+    "exports": [
+      "Command"
+    ],
     "typeExports": []
   },
-  "currency-input": {
-    "exports": ["CURRENCIES", "CurrencyFlagBadge", "InputCurrency"],
-    "typeExports": [
-      "CurrencyDef",
-      "CurrencySelectorMode",
-      "CurrencyValue",
-      "InputCurrencyProps"
-    ]
-  },
   "dialog": {
-    "exports": ["Dialog"],
+    "exports": [
+      "Dialog"
+    ],
     "typeExports": []
   },
   "drawer": {
-    "exports": ["Drawer"],
+    "exports": [
+      "Drawer"
+    ],
     "typeExports": []
   },
   "dropdown-menu": {
-    "exports": ["DropdownMenu"],
+    "exports": [
+      "DropdownMenu"
+    ],
     "typeExports": []
   },
   "input": {
-    "exports": ["DateInput", "Input"],
-    "typeExports": ["DateInputProps", "InputDateProps", "InputProps"]
+    "exports": [
+      "DateInput",
+      "Input"
+    ],
+    "typeExports": []
   },
   "label": {
-    "exports": ["Label"],
+    "exports": [
+      "Label"
+    ],
     "typeExports": []
   },
   "modal": {
-    "exports": ["Modal", "useModal"],
-    "typeExports": ["ViewComponent", "ViewsRegistry"]
+    "exports": [
+      "Modal",
+      "useModal"
+    ],
+    "typeExports": [
+      "ViewComponent",
+      "ViewsRegistry"
+    ]
   },
   "popover": {
-    "exports": ["Popover"],
+    "exports": [
+      "Popover"
+    ],
     "typeExports": []
   },
   "progress": {
-    "exports": ["Progress"],
+    "exports": [
+      "Progress"
+    ],
     "typeExports": []
   },
   "radio": {
-    "exports": ["Radio"],
+    "exports": [
+      "Radio"
+    ],
     "typeExports": []
   },
   "scroll-area": {
-    "exports": ["ScrollArea", "ScrollBar"],
+    "exports": [
+      "ScrollArea",
+      "ScrollBar"
+    ],
     "typeExports": []
   },
   "select": {
-    "exports": ["Select"],
-    "typeExports": ["SelectSearchableOption", "SelectSearchableProps"]
+    "exports": [
+      "Select"
+    ],
+    "typeExports": []
   },
   "separator": {
-    "exports": ["Separator"],
+    "exports": [
+      "Separator"
+    ],
     "typeExports": []
   },
   "skeleton": {
-    "exports": ["Skeleton"],
+    "exports": [
+      "Skeleton"
+    ],
     "typeExports": []
   },
   "swipe-actions": {
-    "exports": ["SwipeActions", "useSwipeActions"],
-    "typeExports": [
-      "SwipeActionProps",
-      "SwipeActionsProps",
-      "SwipeActionVariant",
-      "SwipeSide"
-    ]
+    "exports": [
+      "SwipeActions",
+      "useSwipeActions"
+    ],
+    "typeExports": []
   },
   "swipe-button": {
-    "exports": ["SwipeButton"],
-    "typeExports": ["SwipeButtonRootProps", "SwipeButtonThumbProps"]
+    "exports": [
+      "SwipeButton"
+    ],
+    "typeExports": []
   },
   "switch": {
-    "exports": ["Switch"],
-    "typeExports": ["SwitchProps"]
+    "exports": [
+      "Switch"
+    ],
+    "typeExports": [
+      "SwitchProps"
+    ]
   },
   "table": {
-    "exports": ["Table"],
-    "typeExports": ["ColumnDef"]
+    "exports": [
+      "Table"
+    ],
+    "typeExports": [
+      "ColumnDef"
+    ]
   },
   "tabs": {
-    "exports": ["Tabs", "tabsListVariants", "tabsTriggerVariants"],
+    "exports": [
+      "Tabs",
+      "tabsListVariants",
+      "tabsTriggerVariants"
+    ],
     "typeExports": []
   },
   "tag-input": {
-    "exports": ["TagInput"],
-    "typeExports": ["TagInputProps"]
+    "exports": [
+      "TagInput"
+    ],
+    "typeExports": [
+      "TagInputProps"
+    ]
   },
   "textarea": {
-    "exports": ["Textarea"],
-    "typeExports": ["TextareaProps"]
+    "exports": [
+      "Textarea"
+    ],
+    "typeExports": [
+      "TextareaProps"
+    ]
   },
   "toast": {
-    "exports": ["toast"],
-    "typeExports": ["ToastConfirmOptions", "ToastOptions"]
+    "exports": [
+      "toast"
+    ],
+    "typeExports": [
+      "ToastConfirmOptions",
+      "ToastOptions"
+    ]
   },
   "toaster": {
-    "exports": ["Toaster"],
+    "exports": [
+      "Toaster"
+    ],
     "typeExports": []
   },
   "tooltip": {
-    "exports": ["Tooltip"],
+    "exports": [
+      "Tooltip"
+    ],
     "typeExports": []
   }
 }

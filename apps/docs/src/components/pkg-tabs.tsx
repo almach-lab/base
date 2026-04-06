@@ -22,10 +22,10 @@ const RUN: Record<PkgManager, (script: string) => string> = {
 
 // Shared active manager across page (module-level state + listeners)
 // Safe module-level default — localStorage is only accessed in the browser
-let _activePM: PkgManager = "bun";
+let activePM: PkgManager = "bun";
 const listeners = new Set<(pm: PkgManager) => void>();
 function setGlobalPM(pm: PkgManager) {
-  _activePM = pm;
+  activePM = pm;
   if (typeof localStorage !== "undefined")
     localStorage.setItem("pkg-manager", pm);
   listeners.forEach((fn) => fn(pm));
@@ -95,5 +95,11 @@ export function RunCmd({
   className?: string;
 }) {
   const [pm] = usePkgManager();
-  return <CodeBlock code={RUN[pm](script)} lang="bash" className={className} />;
+  return (
+    <CodeBlock
+      code={RUN[pm](script)}
+      lang="bash"
+      {...(className ? { className } : {})}
+    />
+  );
 }

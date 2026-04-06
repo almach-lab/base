@@ -110,11 +110,7 @@ export { Switch } from "./components/switch.js";
 export type { ColumnDef } from "./components/table.js";
 export { Table } from "./components/table.js";
 
-export {
-  Tabs,
-  tabsListVariants,
-  tabsTriggerVariants,
-} from "./components/tabs.js";
+export { Tabs, tabsListVariants, tabsTriggerVariants } from "./components/tabs.js";
 export type { TagInputProps } from "./components/tag-input.js";
 export { TagInput } from "./components/tag-input.js";
 export type { TextareaProps } from "./components/textarea.js";

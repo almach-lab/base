@@ -18,5 +18,6 @@
       "@almach/query": ["../../packages/query/src/index.ts"]
     }
   },
-  "include": ["src", "astro.config.mjs"]
+  "include": ["src", "astro.config.mjs"],
+  "exclude": ["src/components/pages/**"]
 }
