@@ -85,7 +85,7 @@ jobs:
 
       - name: Build packages
         if: steps.check.outputs.has_changesets == 'true'
-        run: bun run build --filter=!docs
+        run: bun run build:packages
 
       - name: Publish packages and create GitHub releases
         if: steps.check.outputs.has_changesets == 'true'

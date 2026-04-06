@@ -1,6 +1,6 @@
-import * as React from "react";
-import { ArrowRight, Copy, Search } from "lucide-react";
 import { Badge, Input } from "@almach/ui";
+import { ArrowRight, Copy, Search } from "lucide-react";
+import * as React from "react";
 import { DOC_COMPONENT_GROUPS } from "../../lib/doc-components";
 
 type Group = {
@@ -29,15 +29,23 @@ export function ComponentsIndexPage() {
   const filtered = React.useMemo(() => {
     if (!query.trim()) return null;
     const q = query.toLowerCase();
-    return ALL_ITEMS.filter((item) => item.name.toLowerCase().includes(q) || item.description.toLowerCase().includes(q));
+    return ALL_ITEMS.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q),
+    );
   }, [query]);
 
   const copyMarkdown = React.useCallback(async () => {
-    const lines = ["# All Components", "", ...GROUPS.flatMap((group) => [
-      `## ${group.name}`,
-      ...group.items.map((item) => `- [${item.name}](${item.href})`),
+    const lines = [
+      "# All Components",
       "",
-    ])];
+      ...GROUPS.flatMap((group) => [
+        `## ${group.name}`,
+        ...group.items.map((item) => `- [${item.name}](${item.href})`),
+        "",
+      ]),
+    ];
 
     try {
       await navigator.clipboard.writeText(lines.join("\n"));
@@ -64,9 +72,12 @@ export function ComponentsIndexPage() {
           </button>
         </div>
 
-        <h1 className="text-3xl font-semibold tracking-tight md:text-[2.2rem]">All Components</h1>
+        <h1 className="text-3xl font-semibold tracking-tight md:text-[2.2rem]">
+          All Components
+        </h1>
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground md:text-base">
-          Browse documented components by category. {TOTAL} components are currently available.
+          Browse documented components by category. {TOTAL} components are
+          currently available.
         </p>
       </div>
 
@@ -98,7 +109,9 @@ export function ComponentsIndexPage() {
         <div className="space-y-9 md:space-y-10">
           {GROUPS.map((group) => (
             <section key={group.id} id={group.id} className="scroll-mt-24">
-              <h2 className="mb-3 text-xl font-semibold tracking-tight md:text-2xl">{group.name}</h2>
+              <h2 className="mb-3 text-xl font-semibold tracking-tight md:text-2xl">
+                {group.name}
+              </h2>
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {group.items.map((item) => (
                   <ComponentCard key={item.href} {...item} />
@@ -112,7 +125,15 @@ export function ComponentsIndexPage() {
   );
 }
 
-function ComponentCard({ name, href, description }: { name: string; href: string; description: string }) {
+function ComponentCard({
+  name,
+  href,
+  description,
+}: {
+  name: string;
+  href: string;
+  description: string;
+}) {
   return (
     <a
       href={href}
@@ -127,9 +148,14 @@ function ComponentCard({ name, href, description }: { name: string; href: string
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold md:text-base">{name}</p>
-          <p className="mt-1 text-xs text-muted-foreground md:text-sm">{description}</p>
+          <p className="mt-1 text-xs text-muted-foreground md:text-sm">
+            {description}
+          </p>
         </div>
-        <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" aria-hidden="true" />
+        <ArrowRight
+          className="mt-1 h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary"
+          aria-hidden="true"
+        />
       </div>
     </a>
   );

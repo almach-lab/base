@@ -34,7 +34,9 @@ const useFormField = () => {
   const errorMessage = hasError
     ? typeof errors[0] === "string"
       ? errors[0]
-      : typeof errors[0] === "object" && errors[0] !== null && "message" in errors[0]
+      : typeof errors[0] === "object" &&
+          errors[0] !== null &&
+          "message" in errors[0]
         ? String(errors[0].message)
         : String(errors[0])
     : undefined;
@@ -78,9 +80,7 @@ const FormControl = React.forwardRef<
       ref={ref}
       id={formItemId}
       aria-describedby={
-        !error
-          ? formDescriptionId
-          : `${formDescriptionId} ${formMessageId}`
+        !error ? formDescriptionId : `${formDescriptionId} ${formMessageId}`
       }
       aria-invalid={!!error}
       {...props}

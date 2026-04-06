@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Select,
-} from "@almach/ui";
-import { useFieldContext } from "../form-context.js";
+import { Select } from "@almach/ui";
 import {
   FormControl,
   FormDescription,
@@ -11,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../form.js";
+import { useFieldContext } from "../form-context.js";
 
 export interface SelectOption {
   label: string;
@@ -36,7 +34,8 @@ export function SelectField({
   disabled,
 }: SelectFieldProps) {
   const field = useFieldContext<string>();
-  const hasError = field.state.meta.isTouched && field.state.meta.errors.length > 0;
+  const hasError =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0;
 
   return (
     <FormItem>
@@ -68,4 +67,3 @@ export function SelectField({
     </FormItem>
   );
 }
-

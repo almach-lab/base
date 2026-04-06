@@ -1,4 +1,8 @@
-import type { UseQueryOptions, UseMutationOptions, QueryKey } from "@tanstack/react-query";
+import type {
+  QueryKey,
+  UseMutationOptions,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 
 export interface QueryConfig<TData, TError = Error>
   extends Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn"> {

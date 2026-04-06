@@ -8,7 +8,7 @@ export function formatDate(
     month: "long",
     day: "numeric",
   },
-  locale = "en-US"
+  locale = "en-US",
 ): string {
   return new Intl.DateTimeFormat(locale, options).format(new Date(date));
 }
@@ -24,7 +24,10 @@ const YEAR = DAY * 365;
 /**
  * Format a date relative to now (e.g., "2 hours ago", "in 3 days").
  */
-export function formatRelativeDate(date: Date | string | number, locale = "en-US"): string {
+export function formatRelativeDate(
+  date: Date | string | number,
+  locale = "en-US",
+): string {
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
   const diff = new Date(date).getTime() - Date.now();
   const absDiff = Math.abs(diff);

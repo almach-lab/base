@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import { cn } from "@almach/utils";
+import React, { useState } from "react";
 import { CodeBlock } from "./code-block";
 
 type PkgManager = "npm" | "pnpm" | "yarn" | "bun";
@@ -22,11 +22,12 @@ const RUN: Record<PkgManager, (script: string) => string> = {
 
 // Shared active manager across page (module-level state + listeners)
 // Safe module-level default — localStorage is only accessed in the browser
-let activePM: PkgManager = "bun";
+let _activePM: PkgManager = "bun";
 const listeners = new Set<(pm: PkgManager) => void>();
 function setGlobalPM(pm: PkgManager) {
-  activePM = pm;
-  if (typeof localStorage !== "undefined") localStorage.setItem("pkg-manager", pm);
+  _activePM = pm;
+  if (typeof localStorage !== "undefined")
+    localStorage.setItem("pkg-manager", pm);
   listeners.forEach((fn) => fn(pm));
 }
 
@@ -39,7 +40,9 @@ function usePkgManager(): [PkgManager, (pm: PkgManager) => void] {
   });
   React.useEffect(() => {
     listeners.add(setPm);
-    return () => { listeners.delete(setPm); };
+    return () => {
+      listeners.delete(setPm);
+    };
   }, []);
   return [pm, setGlobalPM];
 }
@@ -56,7 +59,11 @@ export function PkgTabs({ packages, className }: PkgTabsProps) {
 
   return (
     <div className={className}>
-      <div role="tablist" aria-label="Package manager" className="mb-1 flex gap-1">
+      <div
+        role="tablist"
+        aria-label="Package manager"
+        className="mb-1 flex gap-1"
+      >
         {MANAGERS.map((m) => (
           <button
             key={m}
@@ -80,7 +87,13 @@ export function PkgTabs({ packages, className }: PkgTabsProps) {
 }
 
 /** Show a run command with correct syntax per package manager */
-export function RunCmd({ script, className }: { script: string; className?: string }) {
+export function RunCmd({
+  script,
+  className,
+}: {
+  script: string;
+  className?: string;
+}) {
   const [pm] = usePkgManager();
   return <CodeBlock code={RUN[pm](script)} lang="bash" className={className} />;
 }

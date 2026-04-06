@@ -1,9 +1,5 @@
 ---
 import "../styles/globals.css";
-import ClientRouter from "astro/components/ClientRouter.astro";
-import { ThemeCustomizer } from "../components/ThemeCustomizer";
-import { SearchCommand } from "../components/SearchCommand";
-import Logo from "../components/Logo.astro";
 import { DOC_COMPONENT_GROUPS } from "../lib/doc-components";
 
 interface Props {
@@ -18,18 +14,20 @@ const {
   currentPath = Astro.url.pathname,
 } = Astro.props;
 
-const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://almach.kita.blue";
-const canonicalUrl = `${siteUrl}${currentPath}`;
-const ogImage = `${siteUrl}/og.png`;
-const pageTitle = title === "Almach" ? "Almach — UI Components for React" : `${title} · Almach`;
-const topNavItems = [
+const siteUrl =
+  Astro.site?.toString().replace(/\/$/, "") ?? "https://almach.kita.blue";
+const _canonicalUrl = `${siteUrl}${currentPath}`;
+const _ogImage = `${siteUrl}/og.png`;
+const _pageTitle =
+  title === "Almach" ? "Almach — UI Components for React" : `${title} · Almach`;
+const _topNavItems = [
   { name: "Getting Started", href: "/getting-started" },
   { name: "Components", href: "/components" },
   { name: "Forms", href: "/forms" },
   { name: "Query", href: "/query" },
 ];
 
-const sidebarGroups = [
+const _sidebarGroups = [
   {
     title: "Introduction",
     items: [
@@ -39,9 +37,7 @@ const sidebarGroups = [
   },
   {
     title: "Components",
-    items: [
-      { name: "Overview", href: "/components" },
-    ],
+    items: [{ name: "Overview", href: "/components" }],
   },
   ...DOC_COMPONENT_GROUPS.map((group) => ({
     title: group.name,
@@ -61,35 +57,37 @@ const sidebarGroups = [
 
 const isHome = currentPath === "/";
 const isComponentsPage = currentPath === "/components";
-const pageAnchors =
-  isComponentsPage
-    ? DOC_COMPONENT_GROUPS.map((group) => ({ id: `group-${group.name.toLowerCase()}`, name: group.name }))
-    : currentPath === "/getting-started"
+const pageAnchors = isComponentsPage
+  ? DOC_COMPONENT_GROUPS.map((group) => ({
+      id: `group-${group.name.toLowerCase()}`,
+      name: group.name,
+    }))
+  : currentPath === "/getting-started"
+    ? [
+        { id: "step-install", name: "Install packages" },
+        { id: "step-styles", name: "Add styles" },
+        { id: "step-colors", name: "Customize colors" },
+        { id: "step-providers", name: "Wrap with providers" },
+        { id: "step-components", name: "Use components" },
+        { id: "step-forms", name: "Handle forms" },
+      ]
+    : currentPath === "/forms"
       ? [
-          { id: "step-install", name: "Install packages" },
-          { id: "step-styles", name: "Add styles" },
-          { id: "step-colors", name: "Customize colors" },
-          { id: "step-providers", name: "Wrap with providers" },
-          { id: "step-components", name: "Use components" },
-          { id: "step-forms", name: "Handle forms" },
+          { id: "forms-demos", name: "Interactive demos" },
+          { id: "forms-install", name: "Installation" },
+          { id: "forms-quick-start", name: "Quick start" },
+          { id: "forms-fields", name: "Field components" },
         ]
-      : currentPath === "/forms"
+      : currentPath === "/query"
         ? [
-            { id: "forms-demos", name: "Interactive demos" },
-            { id: "forms-install", name: "Installation" },
-            { id: "forms-quick-start", name: "Quick start" },
-            { id: "forms-fields", name: "Field components" },
+            { id: "query-demos", name: "Interactive demos" },
+            { id: "query-install", name: "Installation" },
+            { id: "query-queries", name: "Queries" },
+            { id: "query-mutations", name: "Mutations" },
+            { id: "query-server-actions", name: "Server actions" },
           ]
-        : currentPath === "/query"
-          ? [
-              { id: "query-demos", name: "Interactive demos" },
-              { id: "query-install", name: "Installation" },
-              { id: "query-queries", name: "Queries" },
-              { id: "query-mutations", name: "Mutations" },
-              { id: "query-server-actions", name: "Server actions" },
-            ]
-          : [];
-const showRightRail = !isHome && pageAnchors.length > 0;
+        : [];
+const _showRightRail = !isHome && pageAnchors.length > 0;
 ---
 
 <!doctype html>

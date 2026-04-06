@@ -1,7 +1,7 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import * as React from "react";
+import type * as React from "react";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -12,7 +12,7 @@ function makeQueryClient() {
         retry: (failureCount, error) => {
           // Don't retry on 4xx errors
           if (error instanceof Error && "status" in error) {
-            const status = (error as Record<string, unknown>)["status"];
+            const status = (error as Record<string, unknown>).status;
             if (typeof status === "number" && status >= 400 && status < 500)
               return false;
           }

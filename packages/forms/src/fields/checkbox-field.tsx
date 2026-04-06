@@ -2,7 +2,6 @@
 
 import { Checkbox } from "@almach/ui";
 import { cn } from "@almach/utils";
-import { useFieldContext } from "../form-context.js";
 import {
   FormControl,
   FormDescription,
@@ -10,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../form.js";
+import { useFieldContext } from "../form-context.js";
 
 export interface CheckboxFieldProps {
   label?: string;
@@ -27,14 +27,12 @@ export function CheckboxField({
   className,
 }: CheckboxFieldProps) {
   const field = useFieldContext<boolean>();
-  const hasError = field.state.meta.isTouched && field.state.meta.errors.length > 0;
+  const hasError =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0;
 
   return (
     <FormItem
-      className={cn(
-        "flex flex-row items-start space-x-3 space-y-0",
-        className,
-      )}
+      className={cn("flex flex-row items-start space-x-3 space-y-0", className)}
     >
       <FormControl>
         <Checkbox

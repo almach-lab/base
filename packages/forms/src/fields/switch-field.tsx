@@ -2,7 +2,6 @@
 
 import { Switch } from "@almach/ui";
 import { cn } from "@almach/utils";
-import { useFieldContext } from "../form-context.js";
 import {
   FormControl,
   FormDescription,
@@ -10,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../form.js";
+import { useFieldContext } from "../form-context.js";
 
 export interface SwitchFieldProps {
   label?: string;

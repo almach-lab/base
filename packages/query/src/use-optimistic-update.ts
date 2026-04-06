@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryClient, type QueryKey } from "@tanstack/react-query";
+import { type QueryKey, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 /**
@@ -34,7 +34,7 @@ export function useOptimisticUpdate<TData>(queryKey: QueryKey) {
         previous,
       };
     },
-    [queryClient, queryKey]
+    [queryClient, queryKey],
   );
 
   return { optimisticUpdate };

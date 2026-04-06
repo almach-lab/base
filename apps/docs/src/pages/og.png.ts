@@ -1,8 +1,8 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { Resvg } from "@resvg/resvg-js";
 import type { APIRoute } from "astro";
 import satori from "satori";
-import { Resvg } from "@resvg/resvg-js";
-import { readFileSync } from "fs";
-import { join } from "path";
 import {
   BRAND_DOMAIN,
   BRAND_LOGO_FILL,
@@ -18,7 +18,11 @@ export const prerender = true;
 
 function loadFont(weight: 400 | 700): ArrayBuffer {
   const file = `inter-latin-${weight}-normal.woff`;
-  const fontPath = join(process.cwd(), "node_modules/@fontsource/inter/files", file);
+  const fontPath = join(
+    process.cwd(),
+    "node_modules/@fontsource/inter/files",
+    file,
+  );
   return readFileSync(fontPath).buffer as ArrayBuffer;
 }
 
@@ -131,7 +135,11 @@ export const GET: APIRoute = async () => {
                 {
                   type: "div",
                   props: {
-                    style: { display: "flex", flexDirection: "column", gap: "20px" },
+                    style: {
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "20px",
+                    },
                     children: [
                       {
                         type: "p",
@@ -216,7 +224,9 @@ export const GET: APIRoute = async () => {
     },
   );
 
-  const resvg = new Resvg(svg, { fitTo: { mode: "width", value: OG_IMAGE_WIDTH } });
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: "width", value: OG_IMAGE_WIDTH },
+  });
   const png = resvg.render().asPng();
 
   return new Response(new Uint8Array(png), {
@@ -226,4 +236,3 @@ export const GET: APIRoute = async () => {
     },
   });
 };
-

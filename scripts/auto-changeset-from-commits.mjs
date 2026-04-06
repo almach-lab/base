@@ -3,15 +3,19 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const [, , fromArg, toArg] = process.argv;
-const toSha = (toArg && toArg.trim()) || run("git rev-parse HEAD");
+const toSha = toArg?.trim() || run("git rev-parse HEAD");
 const fromSha = resolveFromSha(fromArg, toSha);
 
 if (!fromSha || !toSha) {
-  console.log("Unable to resolve commit range. Skipping auto-changeset generation.");
+  console.log(
+    "Unable to resolve commit range. Skipping auto-changeset generation.",
+  );
   process.exit(0);
 }
 
-const changedFiles = run(`git diff --name-only ${fromSha}..${toSha}`).split("\n").filter(Boolean);
+const changedFiles = run(`git diff --name-only ${fromSha}..${toSha}`)
+  .split("\n")
+  .filter(Boolean);
 const commits = run(`git log --format=%s%n%b%x1e ${fromSha}..${toSha}`);
 
 if (!changedFiles.length || !commits.trim()) {
@@ -29,7 +33,9 @@ const affectedPackageDirs = new Set(
 );
 
 if (affectedPackageDirs.size === 0) {
-  console.log("No package changes detected. Skipping auto-changeset generation.");
+  console.log(
+    "No package changes detected. Skipping auto-changeset generation.",
+  );
   process.exit(0);
 }
 
@@ -43,7 +49,9 @@ for (const dir of affectedPackageDirs) {
 }
 
 if (changedPackages.length === 0) {
-  console.log("No publishable package changes detected. Skipping auto-changeset generation.");
+  console.log(
+    "No publishable package changes detected. Skipping auto-changeset generation.",
+  );
   process.exit(0);
 }
 changedPackages.sort();
@@ -56,7 +64,9 @@ if (!existsSync(".changeset")) {
 }
 
 const changesetFile = `.changeset/auto-${shortSha}.md`;
-const header = changedPackages.map((name) => `"${name}": ${releaseType}`).join("\n");
+const header = changedPackages
+  .map((name) => `"${name}": ${releaseType}`)
+  .join("\n");
 const body = `---\n${header}\n---\n\nauto release from ${fromSha.slice(0, 7)}..${shortSha}\n`;
 
 if (existsSync(changesetFile)) {
@@ -65,7 +75,9 @@ if (existsSync(changesetFile)) {
 }
 
 writeFileSync(changesetFile, body, "utf8");
-console.log(`Generated ${changesetFile} for: ${changedPackages.join(", ")} (${releaseType})`);
+console.log(
+  `Generated ${changesetFile} for: ${changedPackages.join(", ")} (${releaseType})`,
+);
 
 function run(command) {
   try {
@@ -101,7 +113,7 @@ function inferReleaseType(rawCommits) {
 }
 
 function resolveFromSha(fromCandidate, toShaValue) {
-  const candidate = (fromCandidate && fromCandidate.trim()) || "";
+  const candidate = fromCandidate?.trim() || "";
   const zero = "0000000000000000000000000000000000000000";
 
   if (candidate && candidate !== zero && commitExists(candidate)) {
@@ -112,14 +124,18 @@ function resolveFromSha(fromCandidate, toShaValue) {
   if (latestTag) {
     const shaFromTag = run(`git rev-list -n 1 ${latestTag}`);
     if (shaFromTag && shaFromTag !== toShaValue) {
-      console.log(`Using fallback range from latest tag ${latestTag} (${shaFromTag.slice(0, 7)})`);
+      console.log(
+        `Using fallback range from latest tag ${latestTag} (${shaFromTag.slice(0, 7)})`,
+      );
       return shaFromTag;
     }
   }
 
   const parent = run(`git rev-parse ${toShaValue}^`);
   if (parent) {
-    console.log(`Using fallback range from previous commit ${parent.slice(0, 7)}`);
+    console.log(
+      `Using fallback range from previous commit ${parent.slice(0, 7)}`,
+    );
     return parent;
   }
 
@@ -128,7 +144,9 @@ function resolveFromSha(fromCandidate, toShaValue) {
 
 function commitExists(sha) {
   try {
-    const type = execSync(`git cat-file -t ${sha}`, { encoding: "utf8" }).trim();
+    const type = execSync(`git cat-file -t ${sha}`, {
+      encoding: "utf8",
+    }).trim();
     return type === "commit";
   } catch {
     return false;

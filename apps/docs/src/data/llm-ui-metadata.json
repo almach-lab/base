@@ -23,7 +23,13 @@
       "Mark invalid state for form feedback.",
       "Use date input variant for date entry."
     ],
-    "anatomy": ["Input.Root", "Input.Field", "Input.Label", "Input.Description", "Input.Error"],
+    "anatomy": [
+      "Input.Root",
+      "Input.Field",
+      "Input.Label",
+      "Input.Description",
+      "Input.Error"
+    ],
     "api": [
       "isDisabled and isInvalid control interaction and state styling.",
       "description and errorMessage provide form feedback.",
@@ -36,7 +42,14 @@
       "Render grouped options with section headers.",
       "Use searchable mode for long lists."
     ],
-    "anatomy": ["Select.Root", "Select.Trigger", "Select.Value", "Select.Content", "Select.Item", "Select.Indicator"],
+    "anatomy": [
+      "Select.Root",
+      "Select.Trigger",
+      "Select.Value",
+      "Select.Content",
+      "Select.Item",
+      "Select.Indicator"
+    ],
     "api": [
       "value/defaultValue + onValueChange manage selection.",
       "open/defaultOpen + onOpenChange manage popup state.",
@@ -54,7 +67,14 @@
       "Compose custom header/body/footer content.",
       "Control open state from parent logic."
     ],
-    "anatomy": ["Dialog.Root", "Dialog.Trigger", "Dialog.Content", "Dialog.Title", "Dialog.Description", "Dialog.Close"],
+    "anatomy": [
+      "Dialog.Root",
+      "Dialog.Trigger",
+      "Dialog.Content",
+      "Dialog.Title",
+      "Dialog.Description",
+      "Dialog.Close"
+    ],
     "api": [
       "open/defaultOpen + onOpenChange control visibility.",
       "Content handles focus trap and Escape close.",
@@ -67,7 +87,13 @@
       "Use directional variants for left/right/bottom entry.",
       "Allow swipe-to-dismiss on touch devices."
     ],
-    "anatomy": ["Drawer.Root", "Drawer.Trigger", "Drawer.Content", "Drawer.Backdrop", "Drawer.Close"],
+    "anatomy": [
+      "Drawer.Root",
+      "Drawer.Trigger",
+      "Drawer.Content",
+      "Drawer.Backdrop",
+      "Drawer.Close"
+    ],
     "api": [
       "open/defaultOpen + onOpenChange control lifecycle.",
       "Motion is transition-first and interruptible.",
@@ -80,7 +106,13 @@
       "Control modal from imperative hook.",
       "Embed forms with deterministic close behavior."
     ],
-    "anatomy": ["Modal.Root", "Modal.Trigger", "Modal.Content", "Modal.Title", "Modal.Close"],
+    "anatomy": [
+      "Modal.Root",
+      "Modal.Trigger",
+      "Modal.Content",
+      "Modal.Title",
+      "Modal.Close"
+    ],
     "api": [
       "open/defaultOpen + onOpenChange control visibility.",
       "useModal helper supports programmatic flows.",

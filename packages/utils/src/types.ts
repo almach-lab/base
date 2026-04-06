@@ -8,7 +8,8 @@ export type NonNullableFields<T> = { [K in keyof T]: NonNullable<T[K]> };
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 /** Make specific keys required */
-export type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
+export type RequiredBy<T, K extends keyof T> = Omit<T, K> &
+  Required<Pick<T, K>>;
 
 /** Get value types of an object */
 export type ValueOf<T> = T[keyof T];

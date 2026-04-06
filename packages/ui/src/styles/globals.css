@@ -2,10 +2,8 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 
-
 /* ── Dark mode variant ───────────────────────────────────────────────────── */
 @custom-variant dark (&:where(.dark, .dark *));
-
 
 /* ── Tailwind theme — maps CSS vars → utility classes ───────────────────── */
 /*
@@ -58,7 +56,6 @@
   --animate-accordion-up: accordion-up 0.2s ease-out;
 }
 
-
 /* ── Animations ──────────────────────────────────────────────────────────── */
 @keyframes accordion-down {
   from {
@@ -89,7 +86,6 @@
     background-position: 400px 0;
   }
 }
-
 
 /* ── Light mode tokens (defaults) ────────────────────────────────────────── */
 :root {
@@ -139,7 +135,6 @@
   --chart-5: 271 91% 65%;
 }
 
-
 /* ── Dark mode tokens ────────────────────────────────────────────────────── */
 .dark {
   --background: 240 10% 3.9%;
@@ -181,7 +176,6 @@
   --chart-5: 271 91% 72%;
 }
 
-
 /* ── Base styles ─────────────────────────────────────────────────────────── */
 @layer base {
   * {
@@ -192,26 +186,30 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+      system-ui, sans-serif;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 }
 
-
 /* ── Component utilities ─────────────────────────────────────────────────── */
 
 /* Skeleton shimmer animation */
 .skeleton-shimmer {
-  background-image: linear-gradient(90deg,
-      hsl(var(--muted)) 25%,
-      hsl(var(--muted-foreground) / 0.12) 50%,
-      hsl(var(--muted)) 75%);
+  background-image: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted-foreground) / 0.12) 50%,
+    hsl(var(--muted)) 75%
+  );
   background-size: 400px 100%;
   animation: shimmer 1.6s linear infinite;
 }
-
 
 /* ── Utilities ───────────────────────────────────────────────────────────── */
 @layer utilities {

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { cn } from "@almach/utils";
 import { Button } from "@almach/ui";
+import { cn } from "@almach/utils";
 import { Check, Copy } from "lucide-react";
+import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
 
 interface CodeBlockProps {
@@ -27,7 +27,12 @@ async function highlight(code: string, lang: string): Promise<string> {
   return html;
 }
 
-export function CodeBlock({ code, filename, lang = "bash", className }: CodeBlockProps) {
+export function CodeBlock({
+  code,
+  filename,
+  lang = "bash",
+  className,
+}: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const [html, setHtml] = useState<string | null>(null);
 
@@ -36,7 +41,9 @@ export function CodeBlock({ code, filename, lang = "bash", className }: CodeBloc
     highlight(code, lang).then((result) => {
       if (!cancelled) setHtml(result);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [code, lang]);
 
   const copy = async () => {
@@ -53,7 +60,8 @@ export function CodeBlock({ code, filename, lang = "bash", className }: CodeBloc
       aria-label={copied ? "Copied" : "Copy code"}
       className={cn(
         "h-7 gap-1.5 px-2 text-xs text-muted-foreground",
-        !inHeader && "absolute right-2 top-2 z-10 border border-border/70 bg-background/90",
+        !inHeader &&
+          "absolute right-2 top-2 z-10 border border-border/70 bg-background/90",
       )}
     >
       {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
@@ -62,10 +70,17 @@ export function CodeBlock({ code, filename, lang = "bash", className }: CodeBloc
   );
 
   return (
-    <div className={cn("group relative overflow-hidden rounded-lg border border-border/70 bg-card/40 text-sm", className)}>
+    <div
+      className={cn(
+        "group relative overflow-hidden rounded-lg border border-border/70 bg-card/40 text-sm",
+        className,
+      )}
+    >
       {filename && (
         <div className="flex items-center justify-between border-b border-border/70 bg-muted/25 px-3 py-1.5">
-          <span className="font-mono text-xs text-muted-foreground">{filename}</span>
+          <span className="font-mono text-xs text-muted-foreground">
+            {filename}
+          </span>
           <CopyButton inHeader />
         </div>
       )}

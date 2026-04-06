@@ -1,10 +1,9 @@
-import React from "react";
 import {
-  TextField,
-  TextareaField,
-  SelectField,
   CheckboxField,
+  SelectField,
   SwitchField,
+  TextareaField,
+  TextField,
   useBasedForm,
   z,
 } from "@almach/forms";
@@ -23,20 +22,39 @@ function LoginForm() {
     validators: { onChange: loginSchema },
     onSubmit: async ({ value }) => {
       await new Promise((r) => setTimeout(r, 800));
-      toast.success("Signed in!", { description: `Welcome back, ${value.email}` });
+      toast.success("Signed in!", {
+        description: `Welcome back, ${value.email}`,
+      });
     },
   });
 
   return (
     <form
-      onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
       className="space-y-4"
     >
       <form.AppField name="email">
-        {() => <TextField label="Email" type="email" placeholder="john@example.com" required />}
+        {() => (
+          <TextField
+            label="Email"
+            type="email"
+            placeholder="john@example.com"
+            required
+          />
+        )}
       </form.AppField>
       <form.AppField name="password">
-        {() => <TextField label="Password" type="password" placeholder="••••••••" required />}
+        {() => (
+          <TextField
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            required
+          />
+        )}
       </form.AppField>
       <form.AppField name="rememberMe">
         {() => <CheckboxField label="Remember me for 30 days" />}
@@ -72,7 +90,11 @@ function RegisterForm() {
       firstName: "",
       lastName: "",
       email: "",
-      role: undefined as unknown as "developer" | "designer" | "manager" | "other",
+      role: undefined as unknown as
+        | "developer"
+        | "designer"
+        | "manager"
+        | "other",
       bio: "",
       notifications: true,
       terms: undefined as unknown as true,
@@ -87,7 +109,10 @@ function RegisterForm() {
 
   return (
     <form
-      onSubmit={(e) => { e.preventDefault(); form.handleSubmit(); }}
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
       className="space-y-4"
     >
       <div className="grid sm:grid-cols-2 gap-4">
@@ -99,7 +124,14 @@ function RegisterForm() {
         </form.AppField>
       </div>
       <form.AppField name="email">
-        {() => <TextField label="Email" type="email" placeholder="john@example.com" required />}
+        {() => (
+          <TextField
+            label="Email"
+            type="email"
+            placeholder="john@example.com"
+            required
+          />
+        )}
       </form.AppField>
       <form.AppField name="role">
         {() => (
@@ -234,15 +266,23 @@ export function FormsPage() {
   return (
     <div className="px-4 py-8 md:px-5 md:py-9">
       <div className="mb-8 border-b pb-6">
-        <Badge variant="outline" className="mb-2 font-mono">@almach/forms</Badge>
-        <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">Form Handling</h1>
+        <Badge variant="outline" className="mb-2 font-mono">
+          @almach/forms
+        </Badge>
+        <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">
+          Form Handling
+        </h1>
         <p className="text-sm text-muted-foreground leading-relaxed md:text-base">
-          Type-safe forms using TanStack Form and Zod, with accessible field components and clear validation flows.
+          Type-safe forms using TanStack Form and Zod, with accessible field
+          components and clear validation flows.
         </p>
       </div>
 
       {/* Interactive demos */}
-      <div id="forms-demos" className="mb-10 grid scroll-mt-20 gap-4 md:grid-cols-2">
+      <div
+        id="forms-demos"
+        className="mb-10 grid scroll-mt-20 gap-4 md:grid-cols-2"
+      >
         <Card>
           <Card.Header>
             <Card.Title className="text-base">Login form</Card.Title>
@@ -274,14 +314,19 @@ export function FormsPage() {
       <div className="space-y-8">
         <div id="forms-install" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Installation</h2>
-          <p className="mb-3 text-sm text-muted-foreground">Install the forms package independently.</p>
+          <p className="mb-3 text-sm text-muted-foreground">
+            Install the forms package independently.
+          </p>
           <CodeBlock filename="Terminal" code={installCode} />
         </div>
 
         <div id="forms-quick-start" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Quick start</h2>
           <p className="mb-3 text-sm text-muted-foreground">
-            Define a Zod schema, call <code className="font-mono text-xs">useBasedForm</code>, and render fields inside <code className="font-mono text-xs">form.AppField</code>.
+            Define a Zod schema, call{" "}
+            <code className="font-mono text-xs">useBasedForm</code>, and render
+            fields inside{" "}
+            <code className="font-mono text-xs">form.AppField</code>.
           </p>
           <Tabs defaultValue="code">
             <Tabs.List>
@@ -293,13 +338,30 @@ export function FormsPage() {
             </Tabs.Content>
             <Tabs.Content value="how">
               <div className="mt-2 rounded-xl border p-5 space-y-3 text-sm font-mono text-muted-foreground">
-                <p><span className="text-foreground">useBasedForm</span>{"({ defaultValues, validators, onSubmit })"}</p>
-                <p className="pl-4 text-xs">↳ wraps TanStack Form with Zod Standard Schema support</p>
-                <p><span className="text-foreground">form.AppField</span>{" name=\"fieldName\""}</p>
-                <p className="pl-4 text-xs">↳ injects field context via createFormHookContexts</p>
-                <p><span className="text-foreground">TextField</span>{" / SelectField / ..."}</p>
-                <p className="pl-4 text-xs">↳ reads field context · renders label, input, error</p>
-                <p className="pl-4 text-xs">↳ aria-invalid + aria-describedby for accessibility</p>
+                <p>
+                  <span className="text-foreground">useBasedForm</span>
+                  {"({ defaultValues, validators, onSubmit })"}
+                </p>
+                <p className="pl-4 text-xs">
+                  ↳ wraps TanStack Form with Zod Standard Schema support
+                </p>
+                <p>
+                  <span className="text-foreground">form.AppField</span>
+                  {' name="fieldName"'}
+                </p>
+                <p className="pl-4 text-xs">
+                  ↳ injects field context via createFormHookContexts
+                </p>
+                <p>
+                  <span className="text-foreground">TextField</span>
+                  {" / SelectField / ..."}
+                </p>
+                <p className="pl-4 text-xs">
+                  ↳ reads field context · renders label, input, error
+                </p>
+                <p className="pl-4 text-xs">
+                  ↳ aria-invalid + aria-describedby for accessibility
+                </p>
               </div>
             </Tabs.Content>
           </Tabs>
@@ -308,7 +370,9 @@ export function FormsPage() {
         <div id="forms-fields" className="scroll-mt-20">
           <h2 className="mb-1 text-lg font-semibold">Field components</h2>
           <p className="mb-3 text-sm text-muted-foreground">
-            All field components read from field context automatically — no <code className="font-mono text-xs">name</code> or <code className="font-mono text-xs">register</code> needed.
+            All field components read from field context automatically — no{" "}
+            <code className="font-mono text-xs">name</code> or{" "}
+            <code className="font-mono text-xs">register</code> needed.
           </p>
           <CodeBlock code={fieldsCode} />
         </div>
@@ -317,18 +381,54 @@ export function FormsPage() {
           <h3 className="mb-3 font-semibold text-sm">API reference</h3>
           <div className="grid gap-4 sm:grid-cols-2 text-sm">
             {[
-              { prop: "defaultValues", type: "object", desc: "Initial field values." },
-              { prop: "validators.onChange", type: "ZodSchema", desc: "Validates on each change." },
-              { prop: "validators.onBlur", type: "ZodSchema", desc: "Validates on field blur." },
-              { prop: "validators.onSubmit", type: "ZodSchema", desc: "Validates on form submit." },
-              { prop: "onSubmit", type: "(value) => Promise", desc: "Called when form is valid." },
-              { prop: "form.AppField", type: "component", desc: "Wraps a field with context." },
-              { prop: "form.Subscribe", type: "component", desc: "Subscribes to form state." },
-              { prop: "form.reset()", type: "fn", desc: "Resets all fields to defaults." },
+              {
+                prop: "defaultValues",
+                type: "object",
+                desc: "Initial field values.",
+              },
+              {
+                prop: "validators.onChange",
+                type: "ZodSchema",
+                desc: "Validates on each change.",
+              },
+              {
+                prop: "validators.onBlur",
+                type: "ZodSchema",
+                desc: "Validates on field blur.",
+              },
+              {
+                prop: "validators.onSubmit",
+                type: "ZodSchema",
+                desc: "Validates on form submit.",
+              },
+              {
+                prop: "onSubmit",
+                type: "(value) => Promise",
+                desc: "Called when form is valid.",
+              },
+              {
+                prop: "form.AppField",
+                type: "component",
+                desc: "Wraps a field with context.",
+              },
+              {
+                prop: "form.Subscribe",
+                type: "component",
+                desc: "Subscribes to form state.",
+              },
+              {
+                prop: "form.reset()",
+                type: "fn",
+                desc: "Resets all fields to defaults.",
+              },
             ].map(({ prop, type, desc }) => (
               <div key={prop} className="space-y-0.5">
-                <p className="font-mono text-xs font-medium text-foreground">{prop}</p>
-                <p className="font-mono text-[11px] text-muted-foreground/70">{type}</p>
+                <p className="font-mono text-xs font-medium text-foreground">
+                  {prop}
+                </p>
+                <p className="font-mono text-[11px] text-muted-foreground/70">
+                  {type}
+                </p>
                 <p className="text-xs text-muted-foreground">{desc}</p>
               </div>
             ))}

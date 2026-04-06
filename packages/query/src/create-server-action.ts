@@ -1,7 +1,11 @@
 "use client";
 
-import { useMutation, useQueryClient, type QueryKey } from "@tanstack/react-query";
-import type { ActionResult, ActionError } from "./types.js";
+import {
+  type QueryKey,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import type { ActionError, ActionResult } from "./types.js";
 
 export interface ServerActionOptions<TData, TVariables> {
   action: (input: TVariables) => Promise<ActionResult<TData>>;

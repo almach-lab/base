@@ -1,13 +1,16 @@
 #!/usr/bin/env node
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 const ROOT = resolve(process.cwd());
 const INDEX_PATH = resolve(ROOT, "packages/ui/src/index.ts");
 const METADATA_PATH = resolve(ROOT, "apps/docs/src/data/llm-ui-metadata.json");
 const BASELINE_PATH = resolve(ROOT, "apps/docs/src/data/llm-ui-baseline.json");
 const OUT_MARKDOWN_PATH = resolve(ROOT, "apps/docs/public/llms.md");
-const OUT_JSON_PATH = resolve(ROOT, "apps/docs/public/llms-ui-api.snapshot.json");
+const OUT_JSON_PATH = resolve(
+  ROOT,
+  "apps/docs/public/llms-ui-api.snapshot.json",
+);
 
 const mode = process.argv.includes("--check") ? "check" : "update";
 
@@ -16,7 +19,9 @@ function toModuleMap(indexSource) {
   const lines = indexSource.split(/\r?\n/);
 
   for (const line of lines) {
-    const valueMatch = line.match(/^export \{([^}]+)\} from "\.\/components\/([^".]+)\.js";/);
+    const valueMatch = line.match(
+      /^export \{([^}]+)\} from "\.\/components\/([^".]+)\.js";/,
+    );
     if (valueMatch) {
       const [, rawExports, moduleName] = valueMatch;
       const valueExports = rawExports
@@ -32,7 +37,9 @@ function toModuleMap(indexSource) {
       continue;
     }
 
-    const typeMatch = line.match(/^export type \{([^}]+)\} from "\.\/components\/([^".]+)\.js";/);
+    const typeMatch = line.match(
+      /^export type \{([^}]+)\} from "\.\/components\/([^".]+)\.js";/,
+    );
     if (typeMatch) {
       const [, rawTypes, moduleName] = typeMatch;
       const typeExports = rawTypes
@@ -46,8 +53,12 @@ function toModuleMap(indexSource) {
   }
 
   const entries = [...map.entries()].map(([module, value]) => {
-    const exports = [...new Set(value.exports)].sort((a, b) => a.localeCompare(b));
-    const typeExports = [...new Set(value.typeExports)].sort((a, b) => a.localeCompare(b));
+    const exports = [...new Set(value.exports)].sort((a, b) =>
+      a.localeCompare(b),
+    );
+    const typeExports = [...new Set(value.typeExports)].sort((a, b) =>
+      a.localeCompare(b),
+    );
     return [module, { exports, typeExports }];
   });
 
@@ -81,7 +92,9 @@ function renderMarkdown(moduleMap, metadata) {
   lines.push("");
   lines.push(`Generated: ${now}`);
   lines.push("");
-  lines.push("This file is generated from `packages/ui/src/index.ts` and docs metadata.");
+  lines.push(
+    "This file is generated from `packages/ui/src/index.ts` and docs metadata.",
+  );
   lines.push("Use this as the primary LLM-oriented API reference.");
   lines.push("");
 
@@ -98,13 +111,15 @@ function renderMarkdown(moduleMap, metadata) {
     lines.push("### Import");
     lines.push("");
     lines.push("```tsx");
-    lines.push(`import { ${title} } from \"@almach/ui\";`);
+    lines.push(`import { ${title} } from "@almach/ui";`);
     lines.push("```");
     lines.push("");
 
     lines.push("### Most Common Tasks");
     lines.push("");
-    const tasks = meta.tasks ?? ["Use the exported component in controlled or uncontrolled form."];
+    const tasks = meta.tasks ?? [
+      "Use the exported component in controlled or uncontrolled form.",
+    ];
     for (const task of tasks) lines.push(`- ${task}`);
     lines.push("");
 
@@ -116,14 +131,20 @@ function renderMarkdown(moduleMap, metadata) {
 
     lines.push("### API Notes");
     lines.push("");
-    const api = meta.api ?? ["Refer to the component page for full prop and behavior details."];
+    const api = meta.api ?? [
+      "Refer to the component page for full prop and behavior details.",
+    ];
     for (const note of api) lines.push(`- ${note}`);
     lines.push("");
 
     lines.push("### Exported Symbols");
     lines.push("");
-    lines.push(`- Values: ${exports.map((item) => `\`${item}\``).join(", ") || "(none)"}`);
-    lines.push(`- Types: ${typeExports.map((item) => `\`${item}\``).join(", ") || "(none)"}`);
+    lines.push(
+      `- Values: ${exports.map((item) => `\`${item}\``).join(", ") || "(none)"}`,
+    );
+    lines.push(
+      `- Types: ${typeExports.map((item) => `\`${item}\``).join(", ") || "(none)"}`,
+    );
     lines.push("");
 
     if (meta.accessibility?.length) {
@@ -146,7 +167,9 @@ function run() {
   const moduleMap = toModuleMap(indexSource);
   const metadata = readJson(METADATA_PATH, {});
 
-  const unknownMetadataKeys = Object.keys(metadata).filter((key) => !(key in moduleMap));
+  const unknownMetadataKeys = Object.keys(metadata).filter(
+    (key) => !(key in moduleMap),
+  );
   if (unknownMetadataKeys.length > 0) {
     console.error("Unknown metadata modules:");
     for (const key of unknownMetadataKeys) console.error(`- ${key}`);
@@ -157,7 +180,9 @@ function run() {
 
   if (mode === "check") {
     if (!baseline) {
-      console.error("Missing baseline snapshot. Run: bun run llms:snapshot:update");
+      console.error(
+        "Missing baseline snapshot. Run: bun run llms:snapshot:update",
+      );
       process.exit(1);
     }
 
@@ -165,7 +190,9 @@ function run() {
     const expected = JSON.stringify(baseline);
 
     if (current !== expected) {
-      console.error("LLM docs drift detected: @almach/ui exports/types changed.");
+      console.error(
+        "LLM docs drift detected: @almach/ui exports/types changed.",
+      );
       console.error("Run: bun run llms:snapshot:update");
       process.exit(1);
     }

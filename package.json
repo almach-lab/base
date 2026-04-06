@@ -8,11 +8,16 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "typecheck": "bun run llms:snapshot:check && turbo run typecheck",
-    "clean": "turbo run clean && rm -rf node_modules",
+    "build": "bun run build:packages && bun run build:docs",
+    "build:packages": "bun run --filter @almach/utils build && bun run --filter @almach/ui build && bun run --filter @almach/forms build && bun run --filter @almach/query build",
+    "build:docs": "bun run --filter docs build",
+    "dev": "bun run --workspaces --if-present dev",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write",
+    "format": "biome format . --write",
+    "format:check": "biome format .",
+    "typecheck": "bun run llms:snapshot:check && bun run build:packages && bun run --workspaces --if-present typecheck",
+    "clean": "bun run --workspaces --if-present clean && rm -rf node_modules",
     "docs": "bun run --cwd apps/docs dev",
     "deploy": "bun run --cwd apps/docs deploy",
     "release": "bash scripts/release.sh",
@@ -21,10 +26,10 @@
     "postinstall": "node scripts/fix-esm.js"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
     "@changesets/cli": "^2.30.0",
     "@types/bun": "^1.3.11",
     "@types/node": "^25.5.2",
-    "turbo": "^2.9.3",
     "typescript": "^6.0.2"
   },
   "packageManager": "bun@1.3.9",

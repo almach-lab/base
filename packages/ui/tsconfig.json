@@ -5,9 +5,7 @@
     "rootDir": "./src",
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
     "paths": {
-      "@almach/utils": [
-        "../utils/src/index.ts"
-      ]
+      "@almach/utils": ["../utils/src/index.ts"]
     }
   },
   "references": [
@@ -15,7 +13,5 @@
       "path": "../utils"
     }
   ],
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

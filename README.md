@@ -113,8 +113,17 @@ bun install
 # Run the Astro docs dev server
 bun run docs
 
-# Build all packages (respects dep order via Turborepo)
+# Build all packages
 bun run build
+
+# Build packages only (skip docs)
+bun run build:packages
+
+# Lint with Biome
+bun run lint
+
+# Check formatting with Biome
+bun run format:check
 
 # Type-check everything
 bun run typecheck

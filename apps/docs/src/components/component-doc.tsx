@@ -1,6 +1,6 @@
-import * as React from "react";
-import { cn } from "@almach/utils";
 import { Badge, Card } from "@almach/ui";
+import { cn } from "@almach/utils";
+import * as React from "react";
 import { CodeBlock } from "./code-block";
 
 export interface ExampleProps {
@@ -31,22 +31,31 @@ function VariantTile({
       <Card
         className={cn(
           "overflow-hidden border-border/70 bg-card/40 transition-colors",
-          selected ? "border-primary/55 bg-primary/5" : "hover:border-border"
+          selected ? "border-primary/55 bg-primary/5" : "hover:border-border",
         )}
       >
         <div className="relative flex h-40 w-full items-center justify-center overflow-hidden border-b border-border/60 bg-muted/20 p-4">
-          <div className="[&>*]:max-h-full [&>*]:max-w-full">{example.preview}</div>
+          <div className="[&>*]:max-h-full [&>*]:max-w-full">
+            {example.preview}
+          </div>
         </div>
         <Card.Footer className="flex items-center justify-between gap-2 p-3">
           <p
             className={cn(
               "truncate text-xs font-medium",
-              selected ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"
+              selected
+                ? "text-foreground"
+                : "text-muted-foreground group-hover:text-foreground",
             )}
           >
             {example.title}
           </p>
-          {selected && <span className="h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />}
+          {selected && (
+            <span
+              className="h-1.5 w-1.5 rounded-full bg-primary"
+              aria-hidden="true"
+            />
+          )}
         </Card.Footer>
       </Card>
     </button>
@@ -59,11 +68,15 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
 
   React.useEffect(() => {
     setTab("preview");
-  }, [example.title]);
+  }, []);
 
   return (
     <div className="overflow-hidden rounded-xl border border-border/70 bg-card/40">
-      <div role="tablist" aria-label="Example view" className="flex items-center justify-between border-b border-border/70 bg-muted/20 px-3 py-2">
+      <div
+        role="tablist"
+        aria-label="Example view"
+        className="flex items-center justify-between border-b border-border/70 bg-muted/20 px-3 py-2"
+      >
         <div className="flex items-center gap-1">
           {(["preview", "code"] as const).map((t) => (
             <button
@@ -75,14 +88,18 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
               onClick={() => setTab(t)}
               className={cn(
                 "cursor-pointer rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-                tab === t ? "bg-background text-foreground" : "text-muted-foreground hover:text-foreground"
+                tab === t
+                  ? "bg-background text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               {t}
             </button>
           ))}
         </div>
-        <span className="hidden text-xs text-muted-foreground sm:block">{example.title}</span>
+        <span className="hidden text-xs text-muted-foreground sm:block">
+          {example.title}
+        </span>
       </div>
 
       {tab === "preview" ? (
@@ -92,14 +109,22 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
           aria-labelledby={`${uid}-tab-preview`}
           className={cn(
             "min-h-48 bg-background px-4 py-6 sm:px-6",
-            example.centered !== false && "flex items-center justify-center"
+            example.centered !== false && "flex items-center justify-center",
           )}
         >
           {example.preview}
         </div>
       ) : (
-        <div id={`${uid}-tabpanel-code`} role="tabpanel" aria-labelledby={`${uid}-tab-code`}>
-          <CodeBlock code={example.code} lang={example.lang ?? "tsx"} className="rounded-none border-0 bg-transparent" />
+        <div
+          id={`${uid}-tabpanel-code`}
+          role="tabpanel"
+          aria-labelledby={`${uid}-tab-code`}
+        >
+          <CodeBlock
+            code={example.code}
+            lang={example.lang ?? "tsx"}
+            className="rounded-none border-0 bg-transparent"
+          />
         </div>
       )}
     </div>
@@ -123,7 +148,10 @@ function PropsTable({ props }: { props: PropRow[] }) {
           <thead>
             <tr className="border-b border-border/70 bg-muted/25">
               {["Prop", "Type", "Default", "Description"].map((h) => (
-                <th key={h} className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">
+                <th
+                  key={h}
+                  className="px-4 py-2 text-left text-xs font-medium text-muted-foreground"
+                >
                   {h}
                 </th>
               ))}
@@ -133,16 +161,26 @@ function PropsTable({ props }: { props: PropRow[] }) {
             {props.map((p) => (
               <tr key={p.name} className="align-top">
                 <td className="px-4 py-3">
-                  <code className="font-mono text-[12px] text-foreground">{p.name}</code>
-                  {p.required && <span className="ml-1 text-xs text-destructive">*</span>}
+                  <code className="font-mono text-[12px] text-foreground">
+                    {p.name}
+                  </code>
+                  {p.required && (
+                    <span className="ml-1 text-xs text-destructive">*</span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
-                  <code className="font-mono text-[12px] text-primary/90">{p.type}</code>
+                  <code className="font-mono text-[12px] text-primary/90">
+                    {p.type}
+                  </code>
                 </td>
                 <td className="px-4 py-3">
-                  <code className="font-mono text-[12px] text-muted-foreground">{p.default ?? "-"}</code>
+                  <code className="font-mono text-[12px] text-muted-foreground">
+                    {p.default ?? "-"}
+                  </code>
                 </td>
-                <td className="px-4 py-3 text-sm leading-relaxed text-muted-foreground">{p.description}</td>
+                <td className="px-4 py-3 text-sm leading-relaxed text-muted-foreground">
+                  {p.description}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -184,26 +222,43 @@ export function ComponentDoc({
         <Badge variant="outline" className="w-fit font-mono text-[11px]">
           {pkg}
         </Badge>
-        <h1 className="text-3xl font-semibold tracking-tight md:text-[2.1rem]">{name}</h1>
-        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">{description}</p>
+        <h1 className="text-3xl font-semibold tracking-tight md:text-[2.1rem]">
+          {name}
+        </h1>
+        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+          {description}
+        </p>
       </div>
 
       {children}
 
       <div ref={viewerRef} className="scroll-mt-16 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-foreground">Example: {activeExample.title}</h2>
-          {activeExample.description && <p className="text-xs text-muted-foreground">{activeExample.description}</p>}
+          <h2 className="text-sm font-semibold text-foreground">
+            Example: {activeExample.title}
+          </h2>
+          {activeExample.description && (
+            <p className="text-xs text-muted-foreground">
+              {activeExample.description}
+            </p>
+          )}
         </div>
         <ExampleViewer example={activeExample} />
       </div>
 
       {examples.length > 1 && (
         <div className="space-y-3">
-          <h2 className="text-sm font-semibold text-foreground">All Examples</h2>
+          <h2 className="text-sm font-semibold text-foreground">
+            All Examples
+          </h2>
           <div className="grid gap-3 md:grid-cols-2">
             {examples.map((ex, i) => (
-              <VariantTile key={i} example={ex} selected={i === selected} onClick={() => handleSelect(i)} />
+              <VariantTile
+                key={i}
+                example={ex}
+                selected={i === selected}
+                onClick={() => handleSelect(i)}
+              />
             ))}
           </div>
         </div>

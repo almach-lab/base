@@ -40,7 +40,7 @@ function processDirectory(dir) {
 
       if (isTarget) {
         let content = fs.readFileSync(fullPath, "utf8");
-        let originalContent = content;
+        const originalContent = content;
 
         // Multi-line aware regexes to catch complex formatting (e.g. Prettier formatting)
         const regexes = [
@@ -82,7 +82,7 @@ function processDirectory(dir) {
                 ) {
                   isDir = true;
                 }
-              } catch (e) {
+              } catch {
                 // Ignore missing files during stat
               }
 
@@ -106,7 +106,7 @@ function processDirectory(dir) {
 const targetArg = process.argv[2];
 
 if (targetArg) {
-  // If invoked with a specific target (e.g., from Turborepo: `node fix-esm.js dist`)
+  // If invoked with a specific target (e.g., `node fix-esm.js dist`)
   const targetDir = path.resolve(process.cwd(), targetArg);
 
   if (fs.existsSync(targetDir)) {

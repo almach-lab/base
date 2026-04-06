@@ -1,5 +1,3 @@
-import React from "react";
-
 function Bone({ className = "" }: { className?: string }) {
   return <div className={`rounded-md bg-muted animate-pulse ${className}`} />;
 }

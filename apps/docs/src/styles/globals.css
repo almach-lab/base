@@ -57,14 +57,20 @@
 ::view-transition-old(page-content) {
   animation-name: vt-fade-out;
   animation-duration: var(--theme-motion-interactive-duration, 150ms);
-  animation-timing-function: var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+  animation-timing-function: var(
+    --theme-motion-ease-standard,
+    cubic-bezier(0.22, 1, 0.36, 1)
+  );
   animation-fill-mode: both;
 }
 
 ::view-transition-new(page-content) {
   animation-name: vt-fade-in;
   animation-duration: var(--theme-motion-overlay-duration, 180ms);
-  animation-timing-function: var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+  animation-timing-function: var(
+    --theme-motion-ease-standard,
+    cubic-bezier(0.22, 1, 0.36, 1)
+  );
   animation-fill-mode: both;
 }
 
@@ -97,13 +103,13 @@
 .shiki-dual-theme .shiki code,
 .shiki-dual-theme .shiki .line,
 .shiki-dual-theme .shiki span {
-  background-color: transparent !important;
+  background-color: transparent;
 }
 
 .shiki-dual-theme .shiki span {
-  color: var(--shiki-light) !important;
+  color: var(--shiki-light);
 }
 
 .dark .shiki-dual-theme .shiki span {
-  color: var(--shiki-dark) !important;
+  color: var(--shiki-dark);
 }

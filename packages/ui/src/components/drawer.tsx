@@ -1,10 +1,12 @@
 "use client";
 
+import { cn } from "@almach/utils";
 import * as React from "react";
 import { createPortal } from "react-dom";
-
-import { cn } from "@almach/utils";
-import { MOTION_VAR_OVERLAY_DURATION, resolveMotionDurationMs } from "./_motion.js";
+import {
+  MOTION_VAR_OVERLAY_DURATION,
+  resolveMotionDurationMs,
+} from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
 
 const DRAWER_EASE = "cubic-bezier(0.32,0.72,0,1)";
@@ -34,7 +36,12 @@ type DrawerRootProps = {
   children?: React.ReactNode;
 };
 
-function DrawerRoot({ open, defaultOpen = false, onOpenChange, children }: DrawerRootProps) {
+function DrawerRoot({
+  open,
+  defaultOpen = false,
+  onOpenChange,
+  children,
+}: DrawerRootProps) {
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
   const isControlled = open !== undefined;
   const isOpen = isControlled ? open : internalOpen;
@@ -47,11 +54,16 @@ function DrawerRoot({ open, defaultOpen = false, onOpenChange, children }: Drawe
     [isControlled, onOpenChange],
   );
 
-  return <DrawerCtx.Provider value={{ open: isOpen, setOpen }}>{children}</DrawerCtx.Provider>;
+  return (
+    <DrawerCtx.Provider value={{ open: isOpen, setOpen }}>
+      {children}
+    </DrawerCtx.Provider>
+  );
 }
 DrawerRoot.displayName = "Drawer";
 
-interface DrawerTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DrawerTriggerProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   children?: React.ReactNode;
 }
@@ -61,7 +73,9 @@ const DrawerTrigger = React.forwardRef<HTMLButtonElement, DrawerTriggerProps>(
     const { open, setOpen } = useDrawerCtx();
 
     if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<{ onClick?: (e: React.MouseEvent<HTMLElement>) => void }>;
+      const child = children as React.ReactElement<{
+        onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+      }>;
       return React.cloneElement(child, {
         onClick: (e: React.MouseEvent<HTMLElement>) => {
           child.props.onClick?.(e);
@@ -87,7 +101,8 @@ const DrawerTrigger = React.forwardRef<HTMLButtonElement, DrawerTriggerProps>(
 );
 DrawerTrigger.displayName = "Drawer.Trigger";
 
-interface DrawerCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DrawerCloseProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   children?: React.ReactNode;
 }
@@ -97,7 +112,9 @@ const DrawerClose = React.forwardRef<HTMLButtonElement, DrawerCloseProps>(
     const { setOpen } = useDrawerCtx();
 
     if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<{ onClick?: (e: React.MouseEvent<HTMLElement>) => void }>;
+      const child = children as React.ReactElement<{
+        onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+      }>;
       return React.cloneElement(child, {
         onClick: (e: React.MouseEvent<HTMLElement>) => {
           child.props.onClick?.(e);
@@ -139,15 +156,20 @@ interface DrawerBackdropProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: DrawerBackdropVariant;
 }
 
-function DrawerBackdrop({ className, state, variant = "opaque", ...props }: DrawerBackdropProps) {
+function DrawerBackdrop({
+  className,
+  state,
+  variant = "opaque",
+  ...props
+}: DrawerBackdropProps) {
   const { open } = useDrawerCtx();
   const drawerState = state ?? (open ? "open" : "closed");
   return (
     <div
       data-state={drawerState}
       style={{
-    transitionDuration: `var(--theme-motion-overlay-duration, ${DRAWER_DURATION_MS}ms)`,
-    transitionTimingFunction: `var(--theme-motion-ease-standard, ${DRAWER_EASE})`,
+        transitionDuration: `var(--theme-motion-overlay-duration, ${DRAWER_DURATION_MS}ms)`,
+        transitionTimingFunction: `var(--theme-motion-ease-standard, ${DRAWER_EASE})`,
       }}
       className={cn(
         "fixed inset-0 z-50 min-h-dvh",
@@ -169,7 +191,11 @@ interface DrawerViewportProps extends React.HTMLAttributes<HTMLDivElement> {
   side?: DrawerSide;
 }
 
-function DrawerViewport({ className, side = "bottom", ...props }: DrawerViewportProps) {
+function DrawerViewport({
+  className,
+  side = "bottom",
+  ...props
+}: DrawerViewportProps) {
   return (
     <div
       className={cn(
@@ -193,7 +219,17 @@ interface DrawerPopupProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
-  ({ className, side = "bottom", state, showHandle = true, children, ...props }, ref) => {
+  (
+    {
+      className,
+      side = "bottom",
+      state,
+      showHandle = true,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
     const { open } = useDrawerCtx();
     const popupState = state ?? (open ? "open" : "closed");
 
@@ -252,13 +288,29 @@ interface DrawerContentProps extends DrawerPopupProps {
 }
 
 const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
-  ({ className, viewportClassName, side = "bottom", backdrop = "opaque", isDismissable = true, isKeyboardDismissDisabled = false, showHandle = true, children, ...props }, ref) => {
+  (
+    {
+      className,
+      viewportClassName,
+      side = "bottom",
+      backdrop = "opaque",
+      isDismissable = true,
+      isKeyboardDismissDisabled = false,
+      showHandle = true,
+      children,
+      ...props
+    },
+    ref,
+  ) => {
     const { open, setOpen } = useDrawerCtx();
     const [mounted, setMounted] = React.useState(open);
     const [isVisible, setIsVisible] = React.useState(false);
 
     React.useEffect(() => {
-		const motionMs = resolveMotionDurationMs(MOTION_VAR_OVERLAY_DURATION, DRAWER_DURATION_MS);
+      const motionMs = resolveMotionDurationMs(
+        MOTION_VAR_OVERLAY_DURATION,
+        DRAWER_DURATION_MS,
+      );
       if (open) {
         setMounted(true);
         const rafId = window.requestAnimationFrame(() => {
@@ -272,14 +324,15 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
         return;
       }
 
-		const timeout = window.setTimeout(() => setMounted(false), motionMs);
+      const timeout = window.setTimeout(() => setMounted(false), motionMs);
       return () => window.clearTimeout(timeout);
     }, [open, mounted]);
 
     React.useEffect(() => {
       if (!mounted) return;
       const onKeyDown = (event: KeyboardEvent) => {
-        if (!isKeyboardDismissDisabled && event.key === "Escape") setOpen(false);
+        if (!isKeyboardDismissDisabled && event.key === "Escape")
+          setOpen(false);
       };
       window.addEventListener("keydown", onKeyDown);
       return () => window.removeEventListener("keydown", onKeyDown);
@@ -324,38 +377,81 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
 );
 DrawerContent.displayName = "Drawer.Content";
 
-function DrawerHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("px-4 pt-4 pb-2 flex flex-col space-y-1.5", className)} {...props} />;
+function DrawerHeader({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("px-4 pt-4 pb-2 flex flex-col space-y-1.5", className)}
+      {...props}
+    />
+  );
 }
 DrawerHeader.displayName = "Drawer.Header";
 
-function DrawerFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("mt-auto flex flex-col gap-2 px-4 pt-2 pb-4", className)} {...props} />;
+function DrawerFooter({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn("mt-auto flex flex-col gap-2 px-4 pt-2 pb-4", className)}
+      {...props}
+    />
+  );
 }
 DrawerFooter.displayName = "Drawer.Footer";
 
-function DrawerBody({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+function DrawerBody({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("px-4 py-2", className)} {...props} />;
 }
 DrawerBody.displayName = "Drawer.Body";
 
-function DrawerHandle({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("mx-auto h-1.5 w-12 rounded-full bg-muted shrink-0", className)} {...props} />;
+function DrawerHandle({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "mx-auto h-1.5 w-12 rounded-full bg-muted shrink-0",
+        className,
+      )}
+      {...props}
+    />
+  );
 }
 DrawerHandle.displayName = "Drawer.Handle";
 
-const DrawerTitle = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
-  ({ className, ...props }, ref) => (
-    <h2 ref={ref} className={cn("text-lg font-semibold leading-none tracking-tight", className)} {...props} />
-  ),
-);
+const DrawerTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => (
+  <h2
+    ref={ref}
+    className={cn(
+      "text-lg font-semibold leading-none tracking-tight",
+      className,
+    )}
+    {...props}
+  />
+));
 DrawerTitle.displayName = "Drawer.Title";
 
-const DrawerDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLParagraphElement>>(
-  ({ className, ...props }, ref) => (
-    <p ref={ref} className={cn("text-sm text-muted-foreground leading-relaxed", className)} {...props} />
-  ),
-);
+const DrawerDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p
+    ref={ref}
+    className={cn("text-sm text-muted-foreground leading-relaxed", className)}
+    {...props}
+  />
+));
 DrawerDescription.displayName = "Drawer.Description";
 
 const Drawer = Object.assign(DrawerRoot, {

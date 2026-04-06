@@ -1,20 +1,20 @@
 "use client";
 
 import {
+  type CSSProperties,
   createContext,
-  useContext,
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
   forwardRef,
   type HTMLAttributes,
-  type RefObject,
-  type MouseEvent,
-  type TouchEvent,
   type KeyboardEvent,
-  type CSSProperties,
+  type MouseEvent,
   type ReactNode,
+  type RefObject,
+  type TouchEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 
 /* ── Spring curves ──────────────────────────────────────────────────────────── */
@@ -45,10 +45,8 @@ export type SwipeButtonVariant =
   | "success"
   | "warning";
 
-export interface SwipeButtonRootProps extends Omit<
-  HTMLAttributes<HTMLDivElement>,
-  "onSuccess"
-> {
+export interface SwipeButtonRootProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "onSuccess"> {
   /** Fired when swipe (+ optional hold) completes. */
   onSuccess?: () => void;
   /** Fired when the thumb is released without completing. */
@@ -140,7 +138,7 @@ function SwipeButtonRoot({
   const [containerWidth, setContainerWidth] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isAutoSnapping, setIsAutoSnapping] = useState(false);
-  const [layoutVersion, setLayoutVersion] = useState(0);
+  const [_layoutVersion, setLayoutVersion] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -154,7 +152,12 @@ function SwipeButtonRoot({
   const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const holdRaf = useRef<number | null>(null);
   const holdStart = useRef(0);
-  const dimsRef = useRef<SwipeButtonDimensions>({ cw: 0, sw: 0, inset: 0, max: 0 });
+  const dimsRef = useRef<SwipeButtonDimensions>({
+    cw: 0,
+    sw: 0,
+    inset: 0,
+    max: 0,
+  });
 
   /* stable refs for props that change */
   const reverseRef = useRef(reverseSwipe);
@@ -202,7 +205,7 @@ function SwipeButtonRoot({
       if (resetTimer.current) clearTimeout(resetTimer.current);
       cancelHold();
     },
-    [],
+    [cancelHold],
   ); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ── helpers ─────────────────────────────────────────────────────────── */
@@ -301,7 +304,6 @@ function SwipeButtonRoot({
     });
   }, [
     reverseSwipe,
-    getDimensions,
     getStart,
     calcFillWidth,
     calcProgress,
@@ -355,7 +357,6 @@ function SwipeButtonRoot({
     setContainerWidth(cw);
     setProgress(calcProgress(start, max, reverseRef.current));
   }, [
-    layoutVersion,
     isSwiping,
     isHolding,
     succeeded,
@@ -401,13 +402,7 @@ function SwipeButtonRoot({
         );
       }
     },
-    [
-      cancelHold,
-      getDimensions,
-      calcFillWidth,
-      resetToStart,
-      debugLog,
-    ],
+    [cancelHold, getDimensions, calcFillWidth, resetToStart, debugLog],
   );
 
   /* ── start hold countdown ────────────────────────────────────────────── */
@@ -809,9 +804,10 @@ const Track = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
           ...(isSwiping ? { clipPath } : {}),
           transform: `translate3d(${offset}px,0,0)`,
           willChange: "transform, opacity",
-          transition: isSwiping && !isAutoSnapping
-            ? "none"
-            : "transform 260ms cubic-bezier(0.25,1.0,0.5,1), opacity 150ms",
+          transition:
+            isSwiping && !isAutoSnapping
+              ? "none"
+              : "transform 260ms cubic-bezier(0.25,1.0,0.5,1), opacity 150ms",
           ...style,
         }}
         {...props}
@@ -824,7 +820,8 @@ const Track = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 Track.displayName = "SwipeButton.Track";
 
 /* ── Overlay ────────────────────────────────────────────────────────────── */
-export interface SwipeButtonOverlayProps extends HTMLAttributes<HTMLDivElement> {}
+export interface SwipeButtonOverlayProps
+  extends HTMLAttributes<HTMLDivElement> {}
 
 const Overlay = forwardRef<HTMLDivElement, SwipeButtonOverlayProps>(
   ({ className = "", style, children, ...props }, ref) => {
@@ -946,11 +943,12 @@ const Thumb = forwardRef<HTMLDivElement, SwipeButtonThumbProps>(
           left: thumbPad,
           transform: `translate3d(${sliderPosition}px,0,0)`,
           willChange: "transform",
-          transition: succeeded || isAutoSnapping
-            ? SPRING_THUMB
-            : isSwiping
-              ? "none"
-              : SPRING_BACK,
+          transition:
+            succeeded || isAutoSnapping
+              ? SPRING_THUMB
+              : isSwiping
+                ? "none"
+                : SPRING_BACK,
           ...style,
         }}
         {...props}

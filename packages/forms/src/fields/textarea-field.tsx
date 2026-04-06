@@ -1,7 +1,6 @@
 "use client";
 
 import { Textarea, type TextareaProps } from "@almach/ui";
-import { useFieldContext } from "../form-context.js";
 import {
   FormControl,
   FormDescription,
@@ -9,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../form.js";
+import { useFieldContext } from "../form-context.js";
 
 export interface TextareaFieldProps
   extends Omit<TextareaProps, "name" | "value" | "onChange" | "onBlur"> {
@@ -24,7 +24,8 @@ export function TextareaField({
   ...props
 }: TextareaFieldProps) {
   const field = useFieldContext<string>();
-  const hasError = field.state.meta.isTouched && field.state.meta.errors.length > 0;
+  const hasError =
+    field.state.meta.isTouched && field.state.meta.errors.length > 0;
 
   return (
     <FormItem>

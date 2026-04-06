@@ -1,6 +1,6 @@
-import React from "react";
-import { ArrowRight, Copy, Info } from "lucide-react";
 import { Alert, Badge } from "@almach/ui";
+import { ArrowRight, Copy, Info } from "lucide-react";
+import React from "react";
 import { CodeBlock } from "../code-block";
 import { PkgTabs } from "../pkg-tabs";
 
@@ -9,9 +9,13 @@ import { PkgTabs } from "../pkg-tabs";
 function Note({ children }: { children: React.ReactNode }) {
   return (
     <Alert variant="default" className="text-sm">
-      <Alert.Icon><Info /></Alert.Icon>
+      <Alert.Icon>
+        <Info />
+      </Alert.Icon>
       <Alert.Body>
-        <Alert.Description className="leading-relaxed">{children}</Alert.Description>
+        <Alert.Description className="leading-relaxed">
+          {children}
+        </Alert.Description>
       </Alert.Body>
     </Alert>
   );
@@ -70,11 +74,20 @@ interface StepProps {
   children?: React.ReactNode;
 }
 
-function Step({ id, n, title, description, last = false, children }: StepProps) {
+function Step({
+  id,
+  n,
+  title,
+  description,
+  last = false,
+  children,
+}: StepProps) {
   return (
     <div id={id} className="relative flex scroll-mt-20 gap-5">
       {/* Connector line */}
-      {!last && <div className="absolute left-[17px] top-9 bottom-0 w-px bg-border" />}
+      {!last && (
+        <div className="absolute left-[17px] top-9 bottom-0 w-px bg-border" />
+      )}
 
       {/* Step number */}
       <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
@@ -85,9 +98,16 @@ function Step({ id, n, title, description, last = false, children }: StepProps) 
       <div className="min-w-0 flex-1 pb-12 pt-1.5">
         <h2 className="text-lg font-bold tracking-tight">{title}</h2>
         {description && (
-          <p className="mb-4 mt-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
+          <p className="mb-4 mt-1 text-sm leading-relaxed text-muted-foreground">
+            {description}
+          </p>
         )}
-        {children && <div className="space-y-4">{!description && <div className="mt-4" />}{children}</div>}
+        {children && (
+          <div className="space-y-4">
+            {!description && <div className="mt-4" />}
+            {children}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -96,11 +116,23 @@ function Step({ id, n, title, description, last = false, children }: StepProps) 
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 
 const CSS_TOKENS = [
-  "--background", "--foreground", "--card", "--popover",
-  "--primary", "--secondary", "--muted", "--accent",
-  "--destructive", "--success", "--warning",
-  "--border", "--input", "--ring", "--radius",
-  "--switch-on", "--switch-off",
+  "--background",
+  "--foreground",
+  "--card",
+  "--popover",
+  "--primary",
+  "--secondary",
+  "--muted",
+  "--accent",
+  "--destructive",
+  "--success",
+  "--warning",
+  "--border",
+  "--input",
+  "--ring",
+  "--radius",
+  "--switch-on",
+  "--switch-off",
 ];
 
 export function GettingStartedPage() {
@@ -139,14 +171,21 @@ export function GettingStartedPage() {
             {copied ? "Copied" : "Copy Markdown"}
           </button>
         </div>
-        <h1 className="mb-2.5 text-3xl font-semibold tracking-tight md:text-[2.2rem]">Getting Started</h1>
+        <h1 className="mb-2.5 text-3xl font-semibold tracking-tight md:text-[2.2rem]">
+          Getting Started
+        </h1>
         <p className="mb-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
-          Set up Almach in minutes. Each package is independently installable, so you can keep your bundle focused.
+          Set up Almach in minutes. Each package is independently installable,
+          so you can keep your bundle focused.
         </p>
         <div className="flex flex-wrap gap-2">
-          {["React 18+", "TypeScript", "Tailwind CSS v4", "Vite / Next.js"].map((req) => (
-            <Badge key={req} variant="ghost">{req}</Badge>
-          ))}
+          {["React 18+", "TypeScript", "Tailwind CSS v4", "Vite / Next.js"].map(
+            (req) => (
+              <Badge key={req} variant="ghost">
+                {req}
+              </Badge>
+            ),
+          )}
         </div>
       </div>
 
@@ -160,8 +199,14 @@ export function GettingStartedPage() {
           description="Install only what you need. Every package is independently versioned and zero-dependency from each other."
         >
           <PackageSection label="UI components" pkg="@almach/ui" required />
-          <PackageSection label="Form handling — TanStack Form + Zod" pkg="@almach/forms" />
-          <PackageSection label="Data fetching — TanStack Query" pkg="@almach/query" />
+          <PackageSection
+            label="Form handling — TanStack Form + Zod"
+            pkg="@almach/forms"
+          />
+          <PackageSection
+            label="Data fetching — TanStack Query"
+            pkg="@almach/query"
+          />
         </Step>
 
         {/* Step 2 */}
@@ -189,7 +234,8 @@ export function GettingStartedPage() {
             <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
               @source
             </code>{" "}
-            at both workspace source and dist so local dev and packaged builds both work:{" "}
+            at both workspace source and dist so local dev and packaged builds
+            both work:{" "}
             <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
               @source "../../../../packages/ui/src/**/*.{"{ts,tsx}"}";
             </code>
@@ -248,8 +294,8 @@ ReactDOM.createRoot(root).render(
             <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
               BasedQueryProvider
             </code>{" "}
-            wraps TanStack QueryClient with sensible defaults. Skip it if you manage your own
-            QueryClient.
+            wraps TanStack QueryClient with sensible defaults. Skip it if you
+            manage your own QueryClient.
           </Note>
         </Step>
 
@@ -342,9 +388,21 @@ export function LoginForm() {
         <h2 className="mb-5 text-xl font-bold tracking-tight">What's next?</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           {[
-            { href: "/components", label: "Components", desc: "Browse 30+ interactive component demos" },
-            { href: "/forms", label: "Forms", desc: "Type-safe form patterns with Zod" },
-            { href: "/query", label: "Query", desc: "Data fetching and mutation helpers" },
+            {
+              href: "/components",
+              label: "Components",
+              desc: "Browse 30+ interactive component demos",
+            },
+            {
+              href: "/forms",
+              label: "Forms",
+              desc: "Type-safe form patterns with Zod",
+            },
+            {
+              href: "/query",
+              label: "Query",
+              desc: "Data fetching and mutation helpers",
+            },
           ].map((link) => (
             <a
               key={link.href}
@@ -356,7 +414,9 @@ export function LoginForm() {
                 {link.label}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </span>
-              <span className="text-xs leading-relaxed text-muted-foreground">{link.desc}</span>
+              <span className="text-xs leading-relaxed text-muted-foreground">
+                {link.desc}
+              </span>
             </a>
           ))}
         </div>

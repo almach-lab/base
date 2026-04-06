@@ -84,7 +84,13 @@ bun run docs
 bun run build
 
 # Build packages only (skip docs)
-bun run build --filter=!docs
+bun run build:packages
+
+# Lint code (Biome)
+bun run lint
+
+# Check formatting (Biome)
+bun run format:check
 
 # Type-check everything
 bun run typecheck
@@ -99,7 +105,7 @@ bun run release
 
 ```bash
 # Build all packages (skip docs)
-bun run build --filter=!docs
+bun run build:packages
 
 # Publish all public packages
 bun run release

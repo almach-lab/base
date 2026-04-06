@@ -3,7 +3,7 @@
  */
 export function createUrl(
   base: string,
-  params: Record<string, string | number | boolean | null | undefined>
+  params: Record<string, string | number | boolean | null | undefined>,
 ): string {
   const url = new URL(base, "http://placeholder");
   for (const [key, value] of Object.entries(params)) {
@@ -18,7 +18,7 @@ export function createUrl(
  * Parse URL search params into a typed object.
  */
 export function parseSearchParams(
-  params: URLSearchParams | string
+  params: URLSearchParams | string,
 ): Record<string, string> {
   const sp = typeof params === "string" ? new URLSearchParams(params) : params;
   return Object.fromEntries(sp.entries());
@@ -28,7 +28,7 @@ export function parseSearchParams(
  * Convert an object to URLSearchParams.
  */
 export function toSearchParams(
-  obj: Record<string, string | number | boolean | null | undefined>
+  obj: Record<string, string | number | boolean | null | undefined>,
 ): URLSearchParams {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(obj)) {

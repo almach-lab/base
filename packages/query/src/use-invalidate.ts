@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryClient, type QueryKey } from "@tanstack/react-query";
+import { type QueryKey, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 
 /**
@@ -15,7 +15,7 @@ export function useInvalidate(...keys: QueryKey[]) {
 
   return useCallback(async () => {
     await Promise.all(
-      keys.map((key) => queryClient.invalidateQueries({ queryKey: key }))
+      keys.map((key) => queryClient.invalidateQueries({ queryKey: key })),
     );
-  }, [queryClient, ...keys]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [queryClient, ...keys, keys.map]); // eslint-disable-line react-hooks/exhaustive-deps
 }

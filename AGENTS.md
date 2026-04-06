@@ -8,7 +8,7 @@ Guidelines for AI agents (Claude, Copilot, Cursor, etc.) working in this reposit
 ## Repo at a Glance
 
 ```
-based/                          ← monorepo root (Bun workspaces + Turborepo)
+based/                          ← monorepo root (Bun workspaces)
 ├── packages/
 │   ├── utils/                  → @almach/utils   (cn, types, date, url)
 │   ├── ui/                     → @almach/ui      (Radix UI + Tailwind components)
@@ -26,7 +26,7 @@ based/                          ← monorepo root (Bun workspaces + Turborepo)
 ```
 
 **Package manager:** Bun (`bun install` — never `npm` or `pnpm`)
-**Build orchestration:** Turborepo (`bun run build`)
+**Build orchestration:** Bun workspace scripts (`bun run build`)
 **Language:** TypeScript strict mode throughout
 **CSS:** Tailwind CSS **v4** — CSS-first, no `tailwind.config.js`, no `postcss.config.js`
 **Docs framework:** Astro 6 (file-based routing, React islands via `client:only="react"`)
@@ -37,18 +37,20 @@ based/                          ← monorepo root (Bun workspaces + Turborepo)
 
 ```bash
 bun install                        # install all workspace deps
-bun run build                      # build all packages (Turborepo dep order)
-bun run build --filter=!docs       # build packages only (skip docs app)
-bun run build --filter=docs        # build docs app only
+bun run build                      # build packages + docs
+bun run build:packages             # build packages only (skip docs app)
+bun run build:docs                 # build docs app only
 bun run dev                        # run all dev watchers
 bun run docs                       # run Astro docs dev server only
+bun run lint                       # lint with Biome
+bun run format:check               # check formatting with Biome
 bun run typecheck                  # type-check all packages
 bun run clean                      # remove all dist/ and node_modules
 bun run release                    # publish packages (same command CI uses)
 ```
 
-**Never run bare `tsc`** — always go through `bun run build` so Turborepo
-handles inter-package dependency order correctly.
+**Never run bare `tsc`** — always go through `bun run build:packages` so
+inter-package dependency order remains explicit and consistent.
 
 ---
 

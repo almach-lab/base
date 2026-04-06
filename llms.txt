@@ -1438,7 +1438,7 @@ import type {
 # Install all dependencies
 bun install
 
-# Build all packages (Turborepo respects dependency order)
+# Build all packages
 bun run build
 
 # Run docs site (Astro)

@@ -1,8 +1,7 @@
 "use client";
 
-import { Input, type InputProps } from "@almach/ui";
 import type { CurrencyValue, InputCurrencyProps } from "@almach/ui";
-import { useFieldContext } from "../form-context.js";
+import { Input, type InputProps } from "@almach/ui";
 import {
   FormControl,
   FormDescription,
@@ -10,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../form.js";
+import { useFieldContext } from "../form-context.js";
 
 interface BaseProps {
   label?: string;
@@ -45,14 +45,20 @@ export function TextField({
       <FormControl>
         {inputProps.type === "currency" ? (
           <Input.Currency
-            {...(inputProps as Omit<InputCurrencyProps, "value" | "onChange" | "error">)}
+            {...(inputProps as Omit<
+              InputCurrencyProps,
+              "value" | "onChange" | "error"
+            >)}
             value={field.state.value as CurrencyValue}
             onChange={(value) => field.handleChange(value)}
             error={hasError}
           />
         ) : (
           <Input
-            {...(inputProps as Omit<InputProps, "name" | "value" | "onChange" | "onBlur">)}
+            {...(inputProps as Omit<
+              InputProps,
+              "name" | "value" | "onChange" | "onBlur"
+            >)}
             name={field.name}
             value={(field.state.value as string) ?? ""}
             onChange={(e) => field.handleChange(e.target.value)}

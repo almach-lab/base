@@ -1,8 +1,6 @@
 ---
-import Layout from "./Layout.astro";
-
 const { frontmatter } = Astro.props;
-const currentPath = Astro.url.pathname;
+const _currentPath = Astro.url.pathname;
 ---
 
 <Layout title={frontmatter?.title} currentPath={currentPath}>

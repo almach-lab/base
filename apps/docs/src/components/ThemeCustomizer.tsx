@@ -1,5 +1,12 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { Check, X, RotateCcw, Copy, ClipboardCheck, Palette } from "lucide-react";
+import {
+  Check,
+  ClipboardCheck,
+  Copy,
+  Palette,
+  RotateCcw,
+  X,
+} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 interface ColorPreset {
   name: string;
@@ -59,18 +66,78 @@ interface SurfaceTokens {
 }
 
 const COLOR_PRESETS: ColorPreset[] = [
-  { name: "Golden", light: "43 90% 44%", dark: "43 92% 58%", swatch: "hsl(43 90% 44%)" },
-  { name: "Blue", light: "217 91% 55%", dark: "213 93% 67%", swatch: "hsl(217 91% 55%)" },
-  { name: "Sky", light: "199 89% 48%", dark: "198 93% 61%", swatch: "hsl(199 89% 48%)" },
-  { name: "Cyan", light: "189 90% 44%", dark: "189 90% 56%", swatch: "hsl(189 90% 44%)" },
-  { name: "Teal", light: "172 70% 40%", dark: "171 72% 53%", swatch: "hsl(172 70% 40%)" },
-  { name: "Emerald", light: "158 64% 40%", dark: "160 68% 54%", swatch: "hsl(158 64% 40%)" },
-  { name: "Lime", light: "85 76% 44%", dark: "85 70% 57%", swatch: "hsl(85 76% 44%)" },
-  { name: "Orange", light: "25 95% 50%", dark: "25 95% 63%", swatch: "hsl(25 95% 50%)" },
-  { name: "Rose", light: "346 84% 52%", dark: "347 87% 65%", swatch: "hsl(346 84% 52%)" },
-  { name: "Pink", light: "330 81% 57%", dark: "330 82% 68%", swatch: "hsl(330 81% 57%)" },
-  { name: "Violet", light: "262 80% 52%", dark: "263 85% 70%", swatch: "hsl(262 80% 52%)" },
-  { name: "Slate", light: "221 39% 41%", dark: "217 32% 66%", swatch: "hsl(221 39% 41%)" },
+  {
+    name: "Golden",
+    light: "43 90% 44%",
+    dark: "43 92% 58%",
+    swatch: "hsl(43 90% 44%)",
+  },
+  {
+    name: "Blue",
+    light: "217 91% 55%",
+    dark: "213 93% 67%",
+    swatch: "hsl(217 91% 55%)",
+  },
+  {
+    name: "Sky",
+    light: "199 89% 48%",
+    dark: "198 93% 61%",
+    swatch: "hsl(199 89% 48%)",
+  },
+  {
+    name: "Cyan",
+    light: "189 90% 44%",
+    dark: "189 90% 56%",
+    swatch: "hsl(189 90% 44%)",
+  },
+  {
+    name: "Teal",
+    light: "172 70% 40%",
+    dark: "171 72% 53%",
+    swatch: "hsl(172 70% 40%)",
+  },
+  {
+    name: "Emerald",
+    light: "158 64% 40%",
+    dark: "160 68% 54%",
+    swatch: "hsl(158 64% 40%)",
+  },
+  {
+    name: "Lime",
+    light: "85 76% 44%",
+    dark: "85 70% 57%",
+    swatch: "hsl(85 76% 44%)",
+  },
+  {
+    name: "Orange",
+    light: "25 95% 50%",
+    dark: "25 95% 63%",
+    swatch: "hsl(25 95% 50%)",
+  },
+  {
+    name: "Rose",
+    light: "346 84% 52%",
+    dark: "347 87% 65%",
+    swatch: "hsl(346 84% 52%)",
+  },
+  {
+    name: "Pink",
+    light: "330 81% 57%",
+    dark: "330 82% 68%",
+    swatch: "hsl(330 81% 57%)",
+  },
+  {
+    name: "Violet",
+    light: "262 80% 52%",
+    dark: "263 85% 70%",
+    swatch: "hsl(262 80% 52%)",
+  },
+  {
+    name: "Slate",
+    light: "221 39% 41%",
+    dark: "217 32% 66%",
+    swatch: "hsl(221 39% 41%)",
+  },
 ];
 
 const RADIUS_PRESETS: RadiusPreset[] = [
@@ -271,7 +338,11 @@ const FALLBACK_COLOR_PRESET: ColorPreset = {
 
 const FALLBACK_RADIUS_PRESET: RadiusPreset = { name: "Md", value: "0.625rem" };
 
-const FALLBACK_MOTION_PRESET: MotionPreset = { name: "Balanced", overlayMs: 180, interactiveMs: 150 };
+const FALLBACK_MOTION_PRESET: MotionPreset = {
+  name: "Balanced",
+  overlayMs: 180,
+  interactiveMs: 150,
+};
 
 const FALLBACK_EASING_PRESET: EasingPreset = {
   name: "Standard",
@@ -336,7 +407,9 @@ function getColorPresetByName(name: string): ColorPreset {
 }
 
 function getSurfacePresetByName(name: string): SurfacePreset {
-  return SURFACE_PRESETS.find((s) => s.name === name) ?? FALLBACK_SURFACE_PRESET;
+  return (
+    SURFACE_PRESETS.find((s) => s.name === name) ?? FALLBACK_SURFACE_PRESET
+  );
 }
 
 function getDefaultSurfaceTokens(): SurfaceTokens {
@@ -348,22 +421,40 @@ function applySurfaceVars(tokens: SurfaceTokens) {
   root.style.setProperty("--theme-background-light", tokens.backgroundLight);
   root.style.setProperty("--theme-foreground-light", tokens.foregroundLight);
   root.style.setProperty("--theme-card-light", tokens.cardLight);
-  root.style.setProperty("--theme-card-foreground-light", tokens.cardForegroundLight);
+  root.style.setProperty(
+    "--theme-card-foreground-light",
+    tokens.cardForegroundLight,
+  );
   root.style.setProperty("--theme-muted-light", tokens.mutedLight);
-  root.style.setProperty("--theme-muted-foreground-light", tokens.mutedForegroundLight);
+  root.style.setProperty(
+    "--theme-muted-foreground-light",
+    tokens.mutedForegroundLight,
+  );
   root.style.setProperty("--theme-accent-light", tokens.accentLight);
-  root.style.setProperty("--theme-accent-foreground-light", tokens.accentForegroundLight);
+  root.style.setProperty(
+    "--theme-accent-foreground-light",
+    tokens.accentForegroundLight,
+  );
   root.style.setProperty("--theme-border-light", tokens.borderLight);
   root.style.setProperty("--theme-input-light", tokens.inputLight);
 
   root.style.setProperty("--theme-background-dark", tokens.backgroundDark);
   root.style.setProperty("--theme-foreground-dark", tokens.foregroundDark);
   root.style.setProperty("--theme-card-dark", tokens.cardDark);
-  root.style.setProperty("--theme-card-foreground-dark", tokens.cardForegroundDark);
+  root.style.setProperty(
+    "--theme-card-foreground-dark",
+    tokens.cardForegroundDark,
+  );
   root.style.setProperty("--theme-muted-dark", tokens.mutedDark);
-  root.style.setProperty("--theme-muted-foreground-dark", tokens.mutedForegroundDark);
+  root.style.setProperty(
+    "--theme-muted-foreground-dark",
+    tokens.mutedForegroundDark,
+  );
   root.style.setProperty("--theme-accent-dark", tokens.accentDark);
-  root.style.setProperty("--theme-accent-foreground-dark", tokens.accentForegroundDark);
+  root.style.setProperty(
+    "--theme-accent-foreground-dark",
+    tokens.accentForegroundDark,
+  );
   root.style.setProperty("--theme-border-dark", tokens.borderDark);
   root.style.setProperty("--theme-input-dark", tokens.inputDark);
 }
@@ -412,9 +503,18 @@ function applyVars(
   root.style.setProperty("--theme-primary-light", preset.light);
   root.style.setProperty("--theme-primary-dark", preset.dark);
   root.style.setProperty("--radius", radius);
-  root.style.setProperty("--theme-motion-overlay-duration-ms", String(motion.overlayMs));
-  root.style.setProperty("--theme-motion-overlay-duration", `${motion.overlayMs}ms`);
-  root.style.setProperty("--theme-motion-interactive-duration", `${motion.interactiveMs}ms`);
+  root.style.setProperty(
+    "--theme-motion-overlay-duration-ms",
+    String(motion.overlayMs),
+  );
+  root.style.setProperty(
+    "--theme-motion-overlay-duration",
+    `${motion.overlayMs}ms`,
+  );
+  root.style.setProperty(
+    "--theme-motion-interactive-duration",
+    `${motion.interactiveMs}ms`,
+  );
   root.style.setProperty("--theme-motion-ease-standard", motion.ease);
 }
 
@@ -456,7 +556,9 @@ export function ThemeCustomizer() {
   const [activePreset, setActivePreset] = useState(DEFAULT_PRESET);
   const [activeRadius, setActiveRadius] = useState(DEFAULT_RADIUS);
   const [activeSurface, setActiveSurface] = useState(DEFAULT_SURFACE);
-  const [surfaceTokens, setSurfaceTokens] = useState<SurfaceTokens>(getDefaultSurfaceTokens());
+  const [surfaceTokens, setSurfaceTokens] = useState<SurfaceTokens>(
+    getDefaultSurfaceTokens(),
+  );
   const [overlayMs, setOverlayMs] = useState(DEFAULT_OVERLAY_MS);
   const [interactiveMs, setInteractiveMs] = useState(DEFAULT_INTERACTIVE_MS);
   const [activeEase, setActiveEase] = useState(DEFAULT_EASE);
@@ -478,22 +580,39 @@ export function ThemeCustomizer() {
   useEffect(() => {
     const handler = () => setOpen((o) => !o);
     window.addEventListener("almach-customizer-toggle", handler);
-    return () => window.removeEventListener("almach-customizer-toggle", handler);
+    return () =>
+      window.removeEventListener("almach-customizer-toggle", handler);
   }, []);
 
   useEffect(() => {
     const handler = () => {
       const preset = getColorPresetByName(activePreset);
-      applyVars(preset, activeRadius, surfaceTokens, { overlayMs, interactiveMs, ease: activeEase });
+      applyVars(preset, activeRadius, surfaceTokens, {
+        overlayMs,
+        interactiveMs,
+        ease: activeEase,
+      });
     };
     window.addEventListener("almach-theme-mode-changed", handler);
-    return () => window.removeEventListener("almach-theme-mode-changed", handler);
-  }, [activePreset, activeRadius, surfaceTokens, overlayMs, interactiveMs, activeEase]);
+    return () =>
+      window.removeEventListener("almach-theme-mode-changed", handler);
+  }, [
+    activePreset,
+    activeRadius,
+    surfaceTokens,
+    overlayMs,
+    interactiveMs,
+    activeEase,
+  ]);
 
   const selectPreset = useCallback(
     (preset: ColorPreset) => {
       setActivePreset(preset.name);
-      applyVars(preset, activeRadius, surfaceTokens, { overlayMs, interactiveMs, ease: activeEase });
+      applyVars(preset, activeRadius, surfaceTokens, {
+        overlayMs,
+        interactiveMs,
+        ease: activeEase,
+      });
       save({
         preset: preset.name,
         primaryLight: preset.light,
@@ -506,14 +625,25 @@ export function ThemeCustomizer() {
         ease: activeEase,
       });
     },
-    [activeRadius, activeSurface, surfaceTokens, overlayMs, interactiveMs, activeEase],
+    [
+      activeRadius,
+      activeSurface,
+      surfaceTokens,
+      overlayMs,
+      interactiveMs,
+      activeEase,
+    ],
   );
 
   const selectRadius = useCallback(
     (r: RadiusPreset) => {
       setActiveRadius(r.value);
       const preset = getColorPresetByName(activePreset);
-      applyVars(preset, r.value, surfaceTokens, { overlayMs, interactiveMs, ease: activeEase });
+      applyVars(preset, r.value, surfaceTokens, {
+        overlayMs,
+        interactiveMs,
+        ease: activeEase,
+      });
       save({
         preset: activePreset,
         primaryLight: preset.light,
@@ -526,7 +656,14 @@ export function ThemeCustomizer() {
         ease: activeEase,
       });
     },
-    [activePreset, activeSurface, surfaceTokens, overlayMs, interactiveMs, activeEase],
+    [
+      activePreset,
+      activeSurface,
+      surfaceTokens,
+      overlayMs,
+      interactiveMs,
+      activeEase,
+    ],
   );
 
   const selectSurface = useCallback(
@@ -534,7 +671,11 @@ export function ThemeCustomizer() {
       const color = getColorPresetByName(activePreset);
       setActiveSurface(preset.name);
       setSurfaceTokens(preset.tokens);
-      applyVars(color, activeRadius, preset.tokens, { overlayMs, interactiveMs, ease: activeEase });
+      applyVars(color, activeRadius, preset.tokens, {
+        overlayMs,
+        interactiveMs,
+        ease: activeEase,
+      });
       save({
         preset: activePreset,
         primaryLight: color.light,
@@ -550,23 +691,30 @@ export function ThemeCustomizer() {
     [activePreset, activeRadius, overlayMs, interactiveMs, activeEase],
   );
 
-  const applyPack = useCallback((pack: ThemePack) => {
-    const preset = getColorPresetByName(pack.color);
-    setActivePreset(preset.name);
-    setActiveRadius(pack.radius);
-    applyVars(preset, pack.radius, surfaceTokens, { overlayMs, interactiveMs, ease: activeEase });
-    save({
-      preset: preset.name,
-      primaryLight: preset.light,
-      primaryDark: preset.dark,
-      radius: pack.radius,
-      surfaceName: activeSurface,
-      surfaceTokens,
-      overlayMs,
-      interactiveMs,
-      ease: activeEase,
-    });
-  }, [activeSurface, surfaceTokens, overlayMs, interactiveMs, activeEase]);
+  const applyPack = useCallback(
+    (pack: ThemePack) => {
+      const preset = getColorPresetByName(pack.color);
+      setActivePreset(preset.name);
+      setActiveRadius(pack.radius);
+      applyVars(preset, pack.radius, surfaceTokens, {
+        overlayMs,
+        interactiveMs,
+        ease: activeEase,
+      });
+      save({
+        preset: preset.name,
+        primaryLight: preset.light,
+        primaryDark: preset.dark,
+        radius: pack.radius,
+        surfaceName: activeSurface,
+        surfaceTokens,
+        overlayMs,
+        interactiveMs,
+        ease: activeEase,
+      });
+    },
+    [activeSurface, surfaceTokens, overlayMs, interactiveMs, activeEase],
+  );
 
   const randomizeTheme = useCallback(() => {
     const color = pickFromList(COLOR_PRESETS, FALLBACK_COLOR_PRESET);
@@ -629,7 +777,15 @@ export function ThemeCustomizer() {
         ease: nextEase,
       });
     },
-    [activePreset, activeRadius, activeSurface, surfaceTokens, overlayMs, interactiveMs, activeEase],
+    [
+      activePreset,
+      activeRadius,
+      activeSurface,
+      surfaceTokens,
+      overlayMs,
+      interactiveMs,
+      activeEase,
+    ],
   );
 
   const copyCSS = useCallback(() => {
@@ -677,7 +833,14 @@ export function ThemeCustomizer() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
-  }, [activePreset, activeRadius, surfaceTokens, overlayMs, interactiveMs, activeEase]);
+  }, [
+    activePreset,
+    activeRadius,
+    surfaceTokens,
+    overlayMs,
+    interactiveMs,
+    activeEase,
+  ]);
 
   const reset = useCallback(() => {
     setActivePreset(DEFAULT_PRESET);
@@ -693,7 +856,13 @@ export function ThemeCustomizer() {
 
   return (
     <>
-      {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden="true" />}
+      {open && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       <div
         role="dialog"
@@ -704,13 +873,16 @@ export function ThemeCustomizer() {
         }`}
         style={{
           transitionDuration: "var(--theme-motion-overlay-duration, 180ms)",
-          transitionTimingFunction: "var(--theme-motion-ease-standard, cubic-bezier(0.22,1,0.36,1))",
+          transitionTimingFunction:
+            "var(--theme-motion-ease-standard, cubic-bezier(0.22,1,0.36,1))",
         }}
       >
         <div className="flex items-center justify-between border-b border-border/70 px-5 py-4">
           <div>
             <p className="text-sm font-semibold">Theme Customizer</p>
-            <p className="text-xs text-muted-foreground">Customize color, surfaces, radius, and clean motion.</p>
+            <p className="text-xs text-muted-foreground">
+              Customize color, surfaces, radius, and clean motion.
+            </p>
           </div>
           <button
             onClick={() => setOpen(false)}
@@ -723,17 +895,22 @@ export function ThemeCustomizer() {
 
         <div className="flex-1 space-y-7 overflow-y-auto px-5 py-5">
           <section>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Theme Collections</p>
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Theme Collections
+            </p>
             <div className="grid grid-cols-2 gap-2">
               {THEME_PACKS.map((pack) => {
                 const color = COLOR_PRESETS.find((p) => p.name === pack.color);
-                const active = activePreset === pack.color && activeRadius === pack.radius;
+                const active =
+                  activePreset === pack.color && activeRadius === pack.radius;
                 return (
                   <button
                     key={pack.name}
                     onClick={() => applyPack(pack)}
                     className={`cursor-pointer rounded-lg border p-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                      active ? "border-primary bg-primary/8" : "border-border/70 hover:bg-accent"
+                      active
+                        ? "border-primary bg-primary/8"
+                        : "border-border/70 hover:bg-accent"
                     }`}
                     aria-pressed={active}
                     aria-label={`${pack.name} theme pack`}
@@ -742,11 +919,15 @@ export function ThemeCustomizer() {
                       <span className="text-xs font-medium">{pack.name}</span>
                       <span
                         className="h-3.5 w-3.5 rounded-full border border-border/70"
-                        style={{ backgroundColor: color?.swatch ?? "transparent" }}
+                        style={{
+                          backgroundColor: color?.swatch ?? "transparent",
+                        }}
                         aria-hidden="true"
                       />
                     </div>
-                    <p className="text-[10px] text-muted-foreground">{pack.color} · radius {pack.radius}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {pack.color} · radius {pack.radius}
+                    </p>
                   </button>
                 );
               })}
@@ -760,7 +941,9 @@ export function ThemeCustomizer() {
           </section>
 
           <section>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Surface Styles</p>
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Surface Styles
+            </p>
             <div className="grid grid-cols-3 gap-1.5">
               {SURFACE_PRESETS.map((surface) => {
                 const active = activeSurface === surface.name;
@@ -770,7 +953,9 @@ export function ThemeCustomizer() {
                     onClick={() => selectSurface(surface)}
                     aria-pressed={active}
                     className={`cursor-pointer rounded-md border px-2 py-2 text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                      active ? "border-primary bg-primary/10 text-primary" : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
+                      active
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
                     }`}
                   >
                     {surface.name}
@@ -781,7 +966,9 @@ export function ThemeCustomizer() {
           </section>
 
           <section>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Primary Palette</p>
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Primary Palette
+            </p>
             <div className="grid grid-cols-4 gap-2">
               {COLOR_PRESETS.map((preset) => {
                 const active = activePreset === preset.name;
@@ -792,11 +979,21 @@ export function ThemeCustomizer() {
                     title={preset.name}
                     aria-pressed={active}
                     className={`group relative flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border p-2 text-[10px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                      active ? "border-primary bg-primary/6 text-primary" : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
+                      active
+                        ? "border-primary bg-primary/6 text-primary"
+                        : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
                     }`}
                   >
-                    <span className="relative flex h-7 w-7 items-center justify-center rounded-full" style={{ background: preset.swatch }}>
-                      {active && <Check className="h-3.5 w-3.5 text-white drop-shadow" strokeWidth={3} />}
+                    <span
+                      className="relative flex h-7 w-7 items-center justify-center rounded-full"
+                      style={{ background: preset.swatch }}
+                    >
+                      {active && (
+                        <Check
+                          className="h-3.5 w-3.5 text-white drop-shadow"
+                          strokeWidth={3}
+                        />
+                      )}
                     </span>
                     {preset.name}
                   </button>
@@ -806,7 +1003,9 @@ export function ThemeCustomizer() {
           </section>
 
           <section>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Corner Radius</p>
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Corner Radius
+            </p>
             <div className="flex flex-wrap gap-1.5">
               {RADIUS_PRESETS.map((r) => {
                 const active = activeRadius === r.value;
@@ -816,7 +1015,9 @@ export function ThemeCustomizer() {
                     onClick={() => selectRadius(r)}
                     aria-pressed={active}
                     className={`cursor-pointer rounded-md border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                      active ? "border-primary bg-primary/10 text-primary" : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
+                      active
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
                     }`}
                   >
                     {r.name}
@@ -828,11 +1029,17 @@ export function ThemeCustomizer() {
             <div className="mt-3 rounded-lg border border-border/70 bg-card/40 p-3">
               <p className="mb-2 text-[11px] text-muted-foreground">Preview</p>
               <div className="space-y-2">
-                <button className="w-full bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground" style={{ borderRadius: activeRadius }}>
+                <button
+                  className="w-full bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground"
+                  style={{ borderRadius: activeRadius }}
+                >
                   <Palette className="mr-1 inline h-3 w-3" />
                   Themed Button
                 </button>
-                <div className="rounded-md border border-border/70 bg-background px-3 py-2 text-xs text-muted-foreground" style={{ borderRadius: activeRadius }}>
+                <div
+                  className="rounded-md border border-border/70 bg-background px-3 py-2 text-xs text-muted-foreground"
+                  style={{ borderRadius: activeRadius }}
+                >
                   Input preview
                 </div>
               </div>
@@ -840,17 +1047,28 @@ export function ThemeCustomizer() {
           </section>
 
           <section>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Animation</p>
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Animation
+            </p>
             <div className="flex flex-wrap gap-1.5">
               {MOTION_PRESETS.map((preset) => {
-                const active = overlayMs === preset.overlayMs && interactiveMs === preset.interactiveMs;
+                const active =
+                  overlayMs === preset.overlayMs &&
+                  interactiveMs === preset.interactiveMs;
                 return (
                   <button
                     key={preset.name}
-                    onClick={() => updateMotion({ overlayMs: preset.overlayMs, interactiveMs: preset.interactiveMs })}
+                    onClick={() =>
+                      updateMotion({
+                        overlayMs: preset.overlayMs,
+                        interactiveMs: preset.interactiveMs,
+                      })
+                    }
                     aria-pressed={active}
                     className={`cursor-pointer rounded-md border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                      active ? "border-primary bg-primary/10 text-primary" : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
+                      active
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
                     }`}
                   >
                     {preset.name}
@@ -871,7 +1089,9 @@ export function ThemeCustomizer() {
                   max={500}
                   step={10}
                   value={overlayMs}
-                  onChange={(e) => updateMotion({ overlayMs: Number(e.target.value) })}
+                  onChange={(e) =>
+                    updateMotion({ overlayMs: Number(e.target.value) })
+                  }
                   className="w-full cursor-pointer"
                   aria-label="Overlay animation duration"
                 />
@@ -888,7 +1108,9 @@ export function ThemeCustomizer() {
                   max={400}
                   step={10}
                   value={interactiveMs}
-                  onChange={(e) => updateMotion({ interactiveMs: Number(e.target.value) })}
+                  onChange={(e) =>
+                    updateMotion({ interactiveMs: Number(e.target.value) })
+                  }
                   className="w-full cursor-pointer"
                   aria-label="Interactive animation duration"
                 />
@@ -904,8 +1126,10 @@ export function ThemeCustomizer() {
                     className="h-2 w-1/3 rounded-full bg-primary"
                     style={{
                       transform: `translateX(${open ? "0%" : "200%"})`,
-                      transitionDuration: "var(--theme-motion-interactive-duration, 150ms)",
-                      transitionTimingFunction: "var(--theme-motion-ease-standard, cubic-bezier(0.22,1,0.36,1))",
+                      transitionDuration:
+                        "var(--theme-motion-interactive-duration, 150ms)",
+                      transitionTimingFunction:
+                        "var(--theme-motion-ease-standard, cubic-bezier(0.22,1,0.36,1))",
                       transitionProperty: "transform",
                     }}
                   />
@@ -915,7 +1139,9 @@ export function ThemeCustomizer() {
           </section>
 
           <section>
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Easing</p>
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Easing
+            </p>
             <div className="grid grid-cols-2 gap-1.5">
               {EASING_PRESETS.map((easing) => {
                 const active = activeEase === easing.value;
@@ -925,7 +1151,9 @@ export function ThemeCustomizer() {
                     onClick={() => updateMotion({ ease: easing.value })}
                     aria-pressed={active}
                     className={`cursor-pointer rounded-md border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                      active ? "border-primary bg-primary/10 text-primary" : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
+                      active
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:border-primary/30 hover:bg-accent"
                     }`}
                   >
                     {easing.name}
@@ -940,7 +1168,9 @@ export function ThemeCustomizer() {
           <button
             onClick={copyCSS}
             className={`flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-              copied ? "border-primary bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent hover:text-foreground"
+              copied
+                ? "border-primary bg-primary/10 text-primary"
+                : "text-muted-foreground hover:bg-accent hover:text-foreground"
             }`}
           >
             {copied ? (

@@ -1,4 +1,4 @@
-import { queryOptions, type QueryKey } from "@tanstack/react-query";
+import { type QueryKey, queryOptions } from "@tanstack/react-query";
 
 /**
  * Type-safe query factory. Creates a reusable query definition
@@ -13,7 +13,10 @@ import { queryOptions, type QueryKey } from "@tanstack/react-query";
  * // In component:
  * const { data } = useQuery(userQuery.options(userId));
  */
-export function createQuery<TData, TArgs extends readonly unknown[] = []>(config: {
+export function createQuery<
+  TData,
+  TArgs extends readonly unknown[] = [],
+>(config: {
   queryKey: (...args: TArgs) => QueryKey;
   queryFn: (...args: TArgs) => Promise<TData>;
   staleTime?: number;

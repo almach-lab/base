@@ -6,12 +6,12 @@
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     // ── Strict type-checking ──────────────────────────────────────────────
-    "strict": true,                        // Enables all strict flags
-    "exactOptionalPropertyTypes": true,    // Prevents assigning `undefined` to optional props
-    "noUncheckedIndexedAccess": true,      // Array/index access returns T | undefined
-    "noImplicitReturns": true,             // All code paths must return a value
-    "noFallthroughCasesInSwitch": true,    // Prevents accidental switch fall-through
-    "noImplicitOverride": true,            // Class overrides must use `override` keyword
+    "strict": true, // Enables all strict flags
+    "exactOptionalPropertyTypes": true, // Prevents assigning `undefined` to optional props
+    "noUncheckedIndexedAccess": true, // Array/index access returns T | undefined
+    "noImplicitReturns": true, // All code paths must return a value
+    "noFallthroughCasesInSwitch": true, // Prevents accidental switch fall-through
+    "noImplicitOverride": true, // Class overrides must use `override` keyword
     // ── Module resolution ─────────────────────────────────────────────────
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
