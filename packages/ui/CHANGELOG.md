@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.0.6
+
+### Patch Changes
+
+- Align theme tokens and customizer output to channel-based CSS variables and ensure consistent light/dark Tailwind token consumption.
+
 ## 0.0.5
 
 ### Patch Changes

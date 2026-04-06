@@ -171,7 +171,7 @@ function PopoverRoot({
               width={12}
               height={12}
               viewBox="0 0 12 12"
-              className="block fill-popover stroke-[var(--border)] stroke-1 group-placement-bottom:rotate-180 group-placement-left:-rotate-90 group-placement-right:rotate-90"
+              className="block fill-popover stroke-[var(--color-border)] stroke-1 group-placement-bottom:rotate-180 group-placement-left:-rotate-90 group-placement-right:rotate-90"
             >
               <path d="M0 0 L6 6 L12 0" />
             </svg>

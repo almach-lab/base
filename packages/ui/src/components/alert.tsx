@@ -6,19 +6,19 @@ type AlertVariant = "default" | "destructive" | "success" | "warning";
 const alertStyles: Record<AlertVariant, React.CSSProperties> = {
   default: {},
   destructive: {
-    backgroundColor: "color-mix(in oklch, var(--destructive) 5%, transparent)",
-    borderColor: "color-mix(in oklch, var(--destructive) 30%, transparent)",
-    color: "var(--destructive)",
+    backgroundColor: "color-mix(in srgb, var(--color-destructive) 5%, transparent)",
+    borderColor: "color-mix(in srgb, var(--color-destructive) 30%, transparent)",
+    color: "var(--color-destructive)",
   },
   success: {
-    backgroundColor: "color-mix(in oklch, var(--success) 5%, transparent)",
-    borderColor: "color-mix(in oklch, var(--success) 30%, transparent)",
-    color: "var(--success)",
+    backgroundColor: "color-mix(in srgb, var(--color-success) 5%, transparent)",
+    borderColor: "color-mix(in srgb, var(--color-success) 30%, transparent)",
+    color: "var(--color-success)",
   },
   warning: {
-    backgroundColor: "color-mix(in oklch, var(--warning) 5%, transparent)",
-    borderColor: "color-mix(in oklch, var(--warning) 30%, transparent)",
-    color: "var(--warning)",
+    backgroundColor: "color-mix(in srgb, var(--color-warning) 5%, transparent)",
+    borderColor: "color-mix(in srgb, var(--color-warning) 30%, transparent)",
+    color: "var(--color-warning)",
   },
 };
 

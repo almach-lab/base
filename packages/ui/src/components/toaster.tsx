@@ -9,9 +9,9 @@ export function Toaster() {
       theme="system"
       toastOptions={{
         style: {
-          background: "var(--background)",
-          border: "1px solid var(--border)",
-          color: "var(--foreground)",
+          background: "var(--color-background)",
+          border: "1px solid var(--color-border)",
+          color: "var(--color-foreground)",
         },
         classNames: {
           toast:

@@ -70,7 +70,7 @@ export function HomePage() {
   const [plan, setPlan] = useState("starter");
 
   return (
-    <div className="bg-[radial-gradient(860px_420px_at_50%_-120px,color-mix(in_oklch,var(--primary)_18%,transparent),transparent),linear-gradient(to_bottom,var(--background),var(--background))]">
+    <div className="bg-[radial-gradient(860px_420px_at_50%_-120px,color-mix(in_srgb,var(--color-primary)_18%,transparent),transparent),linear-gradient(to_bottom,var(--color-background),var(--color-background))]">
       <section className="border-b border-border/70">
         <div className="mx-auto grid max-w-7xl gap-6 px-4 py-12 md:grid-cols-12 md:px-6 md:py-14">
           <div className="space-y-4 md:col-span-7">

@@ -28,11 +28,11 @@ import {
 // ── Chart color tokens ──────────────────────────────────────────────────────
 // Defined in globals.css as --chart-1 … --chart-5
 export const CHART_COLORS = [
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)",
-  "var(--chart-4)",
-  "var(--chart-5)",
+  "var(--color-chart-1)",
+  "var(--color-chart-2)",
+  "var(--color-chart-3)",
+  "var(--color-chart-4)",
+  "var(--color-chart-5)",
 ] as const;
 
 // ── Container ───────────────────────────────────────────────────────────────
@@ -109,22 +109,22 @@ ChartTooltipContent.displayName = "Chart.TooltipContent";
 const ChartTooltip = (props: React.ComponentProps<typeof Tooltip>) => (
   <Tooltip
     content={<ChartTooltipContent />}
-    cursor={{ stroke: "var(--border)", strokeWidth: 1 }}
+    cursor={{ stroke: "var(--color-border)", strokeWidth: 1 }}
     {...props}
   />
 );
 ChartTooltip.displayName = "Chart.Tooltip";
 
 const ChartGrid = (props: React.ComponentProps<typeof CartesianGrid>) => (
-  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" {...props} />
+  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" {...props} />
 );
 ChartGrid.displayName = "Chart.Grid";
 
 const ChartXAxis = (props: React.ComponentProps<typeof XAxis>) => (
   <XAxis
-    tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
+    tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
     tickLine={false}
-    axisLine={{ stroke: "var(--border)" }}
+    axisLine={{ stroke: "var(--color-border)" }}
     {...props}
   />
 );
@@ -132,7 +132,7 @@ ChartXAxis.displayName = "Chart.XAxis";
 
 const ChartYAxis = (props: React.ComponentProps<typeof YAxis>) => (
   <YAxis
-    tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
+    tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
     tickLine={false}
     axisLine={false}
     {...props}
@@ -142,20 +142,20 @@ ChartYAxis.displayName = "Chart.YAxis";
 
 const ChartLegend = (props: React.ComponentProps<typeof Legend>) => (
   <Legend
-    wrapperStyle={{ fontSize: 12, color: "var(--muted-foreground)" }}
+    wrapperStyle={{ fontSize: 12, color: "var(--color-muted-foreground)" }}
     {...props}
   />
 );
 ChartLegend.displayName = "Chart.Legend";
 
 const ChartPolarGrid = (props: React.ComponentProps<typeof PolarGrid>) => (
-  <PolarGrid stroke="var(--border)" {...props} />
+  <PolarGrid stroke="var(--color-border)" {...props} />
 );
 ChartPolarGrid.displayName = "Chart.PolarGrid";
 
 const ChartPolarAxis = (props: React.ComponentProps<typeof PolarAngleAxis>) => (
   <PolarAngleAxis
-    tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
+    tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }}
     {...props}
   />
 );
