@@ -3,6 +3,20 @@
 @plugin "tailwindcss-animate";
 @import "sonner/dist/styles.css";
 
+/*
+ * Scan compiled component output so every Tailwind class used inside
+ * @almach/ui is generated in the consumer's CSS bundle.
+ *
+ * The path resolves to the correct location in both environments:
+ *   monorepo dev  → packages/ui/dist/**\/*.js
+ *   installed pkg → node_modules/@almach/ui/dist/**\/*.js
+ *
+ * Without this, classes that only appear in component source files
+ * (e.g. sr-only, will-change-transform, [backface-visibility:hidden])
+ * are never emitted in the consumer's stylesheet.
+ */
+@source "../../dist/**/*.js";
+
 /* ── Dark mode variant ───────────────────────────────────────────────────── */
 @custom-variant dark (&:where(.dark, .dark *));
 
