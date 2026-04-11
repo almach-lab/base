@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.0.8
+
+### Patch Changes
+
+- auto release from c501a96..3080752
+
 ## 0.0.7
 
 ### Patch Changes
