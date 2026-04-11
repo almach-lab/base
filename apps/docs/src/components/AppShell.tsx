@@ -139,6 +139,16 @@ const componentPages: Record<
       default: m.SwipeActionsPage,
     })),
   ),
+  "swipe-button": lazy(() =>
+    import("./pages/components/swipe-button").then((m) => ({
+      default: m.SwipeButtonPage,
+    })),
+  ),
+  "scroll-area": lazy(() =>
+    import("./pages/components/scroll-area").then((m) => ({
+      default: m.ScrollAreaPage,
+    })),
+  ),
   tooltip: lazy(() =>
     import("./pages/components/tooltip").then((m) => ({
       default: m.TooltipPage,

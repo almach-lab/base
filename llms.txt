@@ -926,6 +926,69 @@ function ActionButton() {
 
 ---
 
+### SwipeButton
+
+Confirm-by-swiping interaction with spring physics. Prevents accidental taps. Supports pointer, touch, and keyboard (Space/Enter).
+
+Sub-components: `SwipeButton.Track`, `SwipeButton.Fill`, `SwipeButton.Overlay`, `SwipeButton.Thumb`, `SwipeButton.Progress`
+
+```tsx
+import { SwipeButton } from "@almach/ui";
+
+// Basic
+<SwipeButton onSuccess={() => console.log("confirmed!")} className="w-72">
+  <SwipeButton.Track>
+    <SwipeButton.Fill />
+    <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
+    <SwipeButton.Thumb />
+  </SwipeButton.Track>
+</SwipeButton>
+
+// Destructive variant
+<SwipeButton onSuccess={handleDelete} className="w-72">
+  <SwipeButton.Track>
+    <SwipeButton.Fill />
+    <SwipeButton.Overlay>Swipe to delete</SwipeButton.Overlay>
+    <SwipeButton.Thumb variant="destructive" />
+  </SwipeButton.Track>
+</SwipeButton>
+
+// Hold-to-confirm (1 second)
+<SwipeButton onSuccess={handleConfirm} hold={1000} className="w-72">
+  <SwipeButton.Track>
+    <SwipeButton.Fill />
+    <SwipeButton.Overlay>Swipe + hold to confirm</SwipeButton.Overlay>
+    <SwipeButton.Thumb variant="destructive" />
+  </SwipeButton.Track>
+</SwipeButton>
+
+// Auto-reset after success
+<SwipeButton onSuccess={onConfirm} resetOnSuccess resetDelay={800} className="w-72">
+  <SwipeButton.Track>
+    <SwipeButton.Fill />
+    <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
+    <SwipeButton.Thumb variant="success" />
+  </SwipeButton.Track>
+</SwipeButton>
+```
+
+**SwipeButton Root Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `onSuccess` | `() => void` | — | Fired when swipe (+ optional hold) completes |
+| `onFail` | `() => void` | — | Fired on release without completing |
+| `threshold` | `number` | `0.85` | Fraction (0–1) of track width required |
+| `hold` | `number` | `0` | Ms to hold at threshold before success. 0 = instant |
+| `resetOnSuccess` | `boolean` | `false` | Thumb springs back after success |
+| `resetDelay` | `number` | `1200` | Ms before reset when `resetOnSuccess` is true |
+| `reverseSwipe` | `boolean` | `false` | Swipe right-to-left |
+| `disabled` | `boolean` | `false` | Prevents interaction |
+
+**SwipeButton.Thumb variant:** `"default"` | `"destructive"` | `"success"` | `"warning"`
+
+---
+
 ### Carousel
 
 ```tsx
@@ -1085,6 +1148,163 @@ toast.promise(saveData(), {
   error: "Failed to save.",
 });
 ```
+
+---
+
+### Chart
+
+Recharts-based data visualization. Wraps `recharts` with themed defaults and a consistent API. Powered by `Chart.Container`, which applies the `CHART_COLORS` palette and wires up `ChartTooltipContent`.
+
+Sub-components: `Chart.Container`, `Chart.Tooltip`, `Chart.TooltipContent`, `Chart.Legend`, `Chart.Grid`, `Chart.XAxis`, `Chart.YAxis`, `Chart.PolarGrid`, `Chart.PolarAxis`
+
+```tsx
+import { Chart } from "@almach/ui";
+import {
+  Line, LineChart,
+  Bar, BarChart,
+  Area, AreaChart,
+  Pie, PieChart, Cell,
+  Radar, RadarChart,
+} from "recharts";
+
+const data = [
+  { month: "Jan", value: 186, prev: 120 },
+  { month: "Feb", value: 305, prev: 200 },
+  { month: "Mar", value: 237, prev: 180 },
+];
+
+// Line chart
+<Chart.Container className="h-64 w-full">
+  <LineChart data={data}>
+    <Chart.Grid />
+    <Chart.XAxis dataKey="month" />
+    <Chart.YAxis />
+    <Chart.Tooltip />
+    <Chart.Legend />
+    <Line type="monotone" dataKey="value" stroke="var(--color-chart-1)" strokeWidth={2} dot={false} />
+    <Line type="monotone" dataKey="prev" stroke="var(--color-chart-2)" strokeWidth={2} dot={false} />
+  </LineChart>
+</Chart.Container>
+
+// Bar chart
+<Chart.Container className="h-64 w-full">
+  <BarChart data={data}>
+    <Chart.Grid />
+    <Chart.XAxis dataKey="month" />
+    <Chart.YAxis />
+    <Chart.Tooltip />
+    <Bar dataKey="value" fill="var(--color-chart-1)" radius={[4, 4, 0, 0]} />
+  </BarChart>
+</Chart.Container>
+
+// Area chart
+<Chart.Container className="h-64 w-full">
+  <AreaChart data={data}>
+    <Chart.Grid />
+    <Chart.XAxis dataKey="month" />
+    <Chart.YAxis />
+    <Chart.Tooltip />
+    <Area type="monotone" dataKey="value" stroke="var(--color-chart-1)" fill="var(--color-chart-1)" fillOpacity={0.15} />
+  </AreaChart>
+</Chart.Container>
+
+// Pie chart
+const pieData = [
+  { name: "A", value: 400 },
+  { name: "B", value: 300 },
+  { name: "C", value: 200 },
+];
+<Chart.Container className="h-64 w-full">
+  <PieChart>
+    <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80}>
+      {pieData.map((_, i) => (
+        <Cell key={i} fill={`var(--color-chart-${(i % 5) + 1})`} />
+      ))}
+    </Pie>
+    <Chart.Tooltip />
+    <Chart.Legend />
+  </PieChart>
+</Chart.Container>
+
+// Radar chart
+const radarData = [
+  { subject: "Speed", A: 120, B: 90 },
+  { subject: "Power", A: 90, B: 110 },
+  { subject: "Range", A: 86, B: 130 },
+];
+<Chart.Container className="h-64 w-full">
+  <RadarChart data={radarData}>
+    <Chart.PolarGrid />
+    <Chart.PolarAxis dataKey="subject" />
+    <Radar name="A" dataKey="A" stroke="var(--color-chart-1)" fill="var(--color-chart-1)" fillOpacity={0.4} />
+    <Radar name="B" dataKey="B" stroke="var(--color-chart-2)" fill="var(--color-chart-2)" fillOpacity={0.4} />
+    <Chart.Legend />
+  </RadarChart>
+</Chart.Container>
+```
+
+**Chart colors (CSS variables):** `--color-chart-1` through `--color-chart-5` — override in your `:root` to match your brand.
+
+**`Chart.Container` Props:**
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `className` | `string` | Applied to the ResponsiveContainer wrapper |
+| `children` | `React.ReactNode` | A single recharts `*Chart` element |
+
+---
+
+### ScrollArea
+
+Themed scrollable container that replaces the browser's native scrollbar with a thin, hover-revealed custom scrollbar. Composed of sub-components for fine-grained control.
+
+Sub-components: `ScrollArea.Root`, `ScrollArea.Viewport`, `ScrollArea.Content`, `ScrollArea.Scrollbar` (alias: `ScrollArea.ScrollBar`), `ScrollArea.Thumb`, `ScrollArea.Corner`
+
+```tsx
+import { ScrollArea } from "@almach/ui";
+
+// Vertical scroll (add className="group" to enable hover-show)
+<ScrollArea className="group h-48 w-64 rounded-md">
+  <ScrollArea.Viewport>
+    <ScrollArea.Content className="p-3">
+      {items.map((item) => (
+        <p key={item} className="py-1 text-sm">{item}</p>
+      ))}
+    </ScrollArea.Content>
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical">
+    <ScrollArea.Thumb />
+  </ScrollArea.Scrollbar>
+</ScrollArea>
+
+// Horizontal scroll
+<ScrollArea className="group w-64 rounded-md">
+  <ScrollArea.Viewport>
+    <ScrollArea.Content className="flex gap-3 p-3" style={{ width: "max-content" }}>
+      {items.map((item) => <div key={item} className="flex-shrink-0 w-20">{item}</div>)}
+    </ScrollArea.Content>
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="horizontal">
+    <ScrollArea.Thumb />
+  </ScrollArea.Scrollbar>
+</ScrollArea>
+
+// Both axes
+<ScrollArea className="group h-48 w-64 rounded-md">
+  <ScrollArea.Viewport>
+    <ScrollArea.Content className="p-3" style={{ width: "480px" }}>
+      {/* wide content */}
+    </ScrollArea.Content>
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar orientation="vertical"><ScrollArea.Thumb /></ScrollArea.Scrollbar>
+  <ScrollArea.Scrollbar orientation="horizontal"><ScrollArea.Thumb /></ScrollArea.Scrollbar>
+  <ScrollArea.Corner />
+</ScrollArea>
+```
+
+**Notes:**
+- Add `className="group"` to the root so the `group-hover:opacity-100` on `Scrollbar` works.
+- `ScrollArea.Scrollbar` `orientation` prop: `"vertical"` (default) | `"horizontal"`.
 
 ---
 

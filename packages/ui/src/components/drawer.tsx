@@ -331,7 +331,22 @@ interface DrawerPortalProps {
 
 function DrawerPortal({ children }: DrawerPortalProps) {
   const { open } = useDrawerCtx();
-  if (!open) return null;
+  const [mounted, setMounted] = React.useState(open);
+
+  React.useEffect(() => {
+    if (open) {
+      setMounted(true);
+      return;
+    }
+    const ms = resolveMotionDurationMs(
+      MOTION_VAR_OVERLAY_DURATION,
+      MOTION_DURATION_SLOW,
+    );
+    const id = window.setTimeout(() => setMounted(false), ms);
+    return () => window.clearTimeout(id);
+  }, [open]);
+
+  if (!mounted) return null;
   return createPortal(children, document.body);
 }
 DrawerPortal.displayName = "Drawer.Portal";
@@ -359,8 +374,6 @@ function DrawerBackdrop({
         variant === "blur" && "bg-black/40 backdrop-blur-sm",
         variant === "transparent" && "bg-transparent",
         MOTION_OVERLAY,
-        "[--tw-duration:var(--theme-motion-overlay-duration,0.22s)]",
-        "transition-opacity",
         "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
         "supports-[-webkit-touch-callout:none]:absolute",
         className,

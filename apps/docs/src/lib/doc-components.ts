@@ -54,6 +54,11 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         slug: "textarea",
         description: "Multi-line text input.",
       },
+      {
+        name: "Swipe Button",
+        slug: "swipe-button",
+        description: "Confirm-by-swiping interaction with spring physics.",
+      },
     ],
   },
   {
@@ -110,6 +115,11 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         name: "Swipe Actions",
         slug: "swipe-actions",
         description: "Reveal actions by swiping a list item.",
+      },
+      {
+        name: "Scroll Area",
+        slug: "scroll-area",
+        description: "Themed scrollable container with custom scrollbars.",
       },
     ],
   },
