@@ -54,7 +54,7 @@ function VariantTile({
     >
       <Card
         className={cn(
-          "overflow-hidden border-border/70 bg-card/40 transition-colors",
+          "border-border/70 bg-card/40 transition-colors",
           selected ? "border-primary/55 bg-primary/5" : "hover:border-border",
         )}
       >
@@ -103,7 +103,7 @@ function ExampleViewer({ example }: { example: ExampleProps }) {
   }, [example.title]);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border/70 bg-card/40">
+    <div className="rounded-xl border border-border/70 bg-card/40">
       <div
         role="tablist"
         aria-label="Example view"

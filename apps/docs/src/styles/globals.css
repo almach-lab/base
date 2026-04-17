@@ -1,18 +1,14 @@
 @import "tailwindcss";
-@plugin "tailwindcss-animate";
+@import "@almach/ui/styles";
 
 /*
- * Tailwind v4 won't auto-scan packages outside the app directory.
- * @source explicitly adds those paths so component class names are
- * included in the CSS build in both local monorepo dev and package builds.
+ * Tell Tailwind where to scan for class names used inside @almach/ui.
+ * Both paths are needed: source for monorepo dev, dist for installed builds.
  */
 @source "../../../../packages/ui/src/**/*.{ts,tsx}";
 @source "../node_modules/@almach/ui/dist/**/*.js";
 
-/* Component library base tokens */
-@import "@almach/ui/styles";
-
-/* Almach docs theme */
+/* ── Light mode tokens ───────────────────────────────────────────────────── */
 :root {
   color-scheme: light;
 
@@ -34,6 +30,7 @@
   --ring: var(--theme-primary-light, 221 83% 53%);
 }
 
+/* ── Dark mode tokens ────────────────────────────────────────────────────── */
 .dark {
   color-scheme: dark;
 
@@ -55,9 +52,48 @@
   --ring: var(--theme-primary-dark, 217 91% 60%);
 }
 
-/* View transition: animate only page content, not the shell */
-/* The main content area has transition:name="page-content" in Layout.astro.  */
-/* Header/sidebar have no transition:name so they get the instant root swap.  */
+/* ── Mobile sidebar slide animation ─────────────────────────────────────── */
+/*
+ * The overlay starts hidden (display:none via Tailwind's `hidden` class).
+ * JS removes `hidden` then adds `sidebar-open` on the next frame to
+ * trigger these transitions. On close, `sidebar-open` is removed first,
+ * then `hidden` is restored after the transition completes.
+ */
+#mobile-sidebar {
+  transform: translateX(-100%);
+  transition:
+    transform var(--theme-motion-overlay-duration, 220ms)
+    var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+  will-change: transform;
+}
+
+#mobile-overlay.sidebar-open #mobile-sidebar {
+  transform: translateX(0);
+}
+
+#mobile-backdrop {
+  opacity: 0;
+  transition:
+    opacity var(--theme-motion-overlay-duration, 220ms)
+    var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+#mobile-overlay.sidebar-open #mobile-backdrop {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mobile-sidebar,
+  #mobile-backdrop {
+    transition-duration: 1ms;
+  }
+}
+
+/* ── View transitions ────────────────────────────────────────────────────── */
+/*
+ * Only animate the page content area (transition:name="page-content").
+ * The shell (header/sidebars) uses the instant root swap.
+ */
 ::view-transition-old(page-content) {
   animation-name: vt-fade-out;
   animation-duration: var(--theme-motion-interactive-duration, 150ms);
@@ -78,7 +114,7 @@
   animation-fill-mode: both;
 }
 
-/* Suppress the default root animation so shell never flickers */
+/* Suppress the default root animation so the shell never flickers */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
@@ -96,12 +132,11 @@
   }
 }
 
-/* Shiki dual-theme */
+/* ── Shiki dual-theme ────────────────────────────────────────────────────── */
 /*
  * Token colours come from per-span CSS vars (--shiki-light / --shiki-dark).
- * All background-color values are forced transparent so the outer code-block
- * container controls the background. This prevents the white-row artifact
- * caused by Shiki writing background-color: #fff on the <pre> and spans.
+ * All backgrounds are forced transparent so the outer code-block container
+ * controls the background, preventing the white-row artifact.
  */
 .shiki-dual-theme .shiki,
 .shiki-dual-theme .shiki code,
