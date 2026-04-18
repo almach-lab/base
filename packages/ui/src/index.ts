@@ -85,6 +85,7 @@ export { Progress } from "./components/progress.js";
 export { Radio } from "./components/radio.js";
 
 export { ScrollArea, ScrollBar } from "./components/scroll-area.js";
+export { Sidebar, useSidebar } from "./components/sidebar.js";
 export type {
   SelectSearchableOption,
   SelectSearchableProps,
