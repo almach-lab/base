@@ -1,4 +1,4 @@
-import { Badge, Button, Sidebar } from "@almach/ui";
+import { Button, Sidebar } from "@almach/ui";
 import {
   BookOpen,
   ChevronRight,
@@ -22,9 +22,19 @@ export function SidebarPage() {
           description: "Groups, labels, and menu buttons with active state.",
           centered: false,
           preview: <BasicNav />,
-          code: `<Sidebar.Provider>
+          code: `import { Sidebar } from "@almach/ui";
+import { BookOpen, Inbox, LayoutDashboard, Settings } from "lucide-react";
+
+const items = [
+  { label: "Dashboard", icon: LayoutDashboard, active: true },
+  { label: "Inbox",     icon: Inbox,           badge: "4" },
+  { label: "Docs",      icon: BookOpen },
+  { label: "Settings",  icon: Settings },
+];
+
+<Sidebar.Provider>
   <Sidebar collapsible="none" className="w-56 rounded-lg border">
-    <Sidebar.Header className="px-2 pt-3 pb-1">
+    <Sidebar.Header className="px-4 pb-1 pt-3">
       <span className="text-xs font-semibold text-muted-foreground">My App</span>
     </Sidebar.Header>
     <Sidebar.Content>
@@ -32,16 +42,17 @@ export function SidebarPage() {
         <Sidebar.GroupLabel>Navigation</Sidebar.GroupLabel>
         <Sidebar.GroupContent>
           <Sidebar.Menu>
-            <Sidebar.MenuItem>
-              <Sidebar.MenuButton isActive asChild>
-                <a href="#"><LayoutDashboard />Dashboard</a>
-              </Sidebar.MenuButton>
-            </Sidebar.MenuItem>
-            <Sidebar.MenuItem>
-              <Sidebar.MenuButton asChild>
-                <a href="#"><Inbox />Inbox<Sidebar.MenuBadge>4</Sidebar.MenuBadge></a>
-              </Sidebar.MenuButton>
-            </Sidebar.MenuItem>
+            {items.map(({ label, icon: Icon, active, badge }) => (
+              <Sidebar.MenuItem key={label}>
+                <Sidebar.MenuButton asChild isActive={active}>
+                  <a href="#">
+                    <Icon />
+                    <span>{label}</span>
+                  </a>
+                </Sidebar.MenuButton>
+                {badge && <Sidebar.MenuBadge>{badge}</Sidebar.MenuBadge>}
+              </Sidebar.MenuItem>
+            ))}
           </Sidebar.Menu>
         </Sidebar.GroupContent>
       </Sidebar.Group>
@@ -54,58 +65,95 @@ export function SidebarPage() {
           description: "Nested items under a collapsible parent.",
           centered: false,
           preview: <SubMenuNav />,
-          code: `<Sidebar.Menu>
-  <Sidebar.MenuItem>
-    <Sidebar.MenuButton asChild>
-      <a href="#"><Users />Team</a>
-    </Sidebar.MenuButton>
-    <Sidebar.MenuSub>
-      <Sidebar.MenuSubItem>
-        <Sidebar.MenuSubButton asChild>
-          <a href="#">Members</a>
-        </Sidebar.MenuSubButton>
-      </Sidebar.MenuSubItem>
-      <Sidebar.MenuSubItem>
-        <Sidebar.MenuSubButton asChild>
-          <a href="#">Invites</a>
-        </Sidebar.MenuSubButton>
-      </Sidebar.MenuSubItem>
-    </Sidebar.MenuSub>
-  </Sidebar.MenuItem>
-</Sidebar.Menu>`,
-        },
-        {
-          title: "Icon-collapse mode",
-          description:
-            "Ctrl/Cmd+B or the trigger button collapses the sidebar to icons. Tooltips reveal labels.",
-          centered: false,
-          preview: <IconCollapseDemo />,
-          code: `<Sidebar.Provider defaultOpen={false}>
-  <Sidebar collapsible="icon" className="border rounded-lg">
+          code: `import { Sidebar } from "@almach/ui";
+import { ChevronRight, LayoutDashboard, Settings, Users } from "lucide-react";
+
+<Sidebar.Provider>
+  <Sidebar collapsible="none" className="w-56 rounded-lg border">
     <Sidebar.Content>
       <Sidebar.Group>
-        <Sidebar.GroupLabel>App</Sidebar.GroupLabel>
+        <Sidebar.GroupLabel>Main</Sidebar.GroupLabel>
         <Sidebar.GroupContent>
           <Sidebar.Menu>
-            {items.map(({ label, icon: Icon, href }) => (
-              <Sidebar.MenuItem key={label}>
-                <Sidebar.MenuButton asChild tooltip={label}>
-                  <a href={href}><Icon /><span>{label}</span></a>
-                </Sidebar.MenuButton>
-              </Sidebar.MenuItem>
-            ))}
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton asChild isActive>
+                <a href="#"><LayoutDashboard /><span>Dashboard</span></a>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton asChild>
+                <a href="#">
+                  <Users /><span>Team</span>
+                  <ChevronRight className="ml-auto h-3.5 w-3.5 opacity-50" />
+                </a>
+              </Sidebar.MenuButton>
+              <Sidebar.MenuSub>
+                {["Members", "Invites", "Roles"].map((item) => (
+                  <Sidebar.MenuSubItem key={item}>
+                    <Sidebar.MenuSubButton asChild>
+                      <a href="#">{item}</a>
+                    </Sidebar.MenuSubButton>
+                  </Sidebar.MenuSubItem>
+                ))}
+              </Sidebar.MenuSub>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton asChild>
+                <a href="#"><Settings /><span>Settings</span></a>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
           </Sidebar.Menu>
         </Sidebar.GroupContent>
       </Sidebar.Group>
     </Sidebar.Content>
-    <Sidebar.Rail />
   </Sidebar>
-  <Sidebar.Inset>
-    <header className="p-4 flex items-center gap-2">
-      <Sidebar.Trigger />
-      <span className="text-sm font-medium">Dashboard</span>
-    </header>
-  </Sidebar.Inset>
+</Sidebar.Provider>`,
+        },
+        {
+          title: "Icon-collapse mode",
+          description:
+            "Click the rail or press Ctrl/Cmd+B to collapse to icon-only width. Tooltips reveal labels when collapsed.",
+          centered: false,
+          preview: <IconCollapseDemo />,
+          code: `import { Sidebar } from "@almach/ui";
+import { BookOpen, Inbox, LayoutDashboard, Settings, Users } from "lucide-react";
+
+const items = [
+  { label: "Dashboard", icon: LayoutDashboard },
+  { label: "Inbox",     icon: Inbox },
+  { label: "Team",      icon: Users },
+  { label: "Docs",      icon: BookOpen },
+  { label: "Settings",  icon: Settings },
+];
+
+<Sidebar.Provider>
+  <div className="flex h-72 overflow-hidden rounded-lg border">
+    <Sidebar collapsible="icon">
+      <Sidebar.Content>
+        <Sidebar.Group>
+          <Sidebar.GroupLabel>App</Sidebar.GroupLabel>
+          <Sidebar.GroupContent>
+            <Sidebar.Menu>
+              {items.map(({ label, icon: Icon }, i) => (
+                <Sidebar.MenuItem key={label}>
+                  <Sidebar.MenuButton asChild isActive={i === 0} tooltip={label}>
+                    <a href="#"><Icon /><span>{label}</span></a>
+                  </Sidebar.MenuButton>
+                </Sidebar.MenuItem>
+              ))}
+            </Sidebar.Menu>
+          </Sidebar.GroupContent>
+        </Sidebar.Group>
+      </Sidebar.Content>
+      <Sidebar.Rail />
+    </Sidebar>
+    <Sidebar.Inset>
+      <header className="flex h-10 items-center gap-2 border-b px-3">
+        <Sidebar.Trigger />
+        <span className="text-sm font-medium">Dashboard</span>
+      </header>
+    </Sidebar.Inset>
+  </div>
 </Sidebar.Provider>`,
         },
         {
@@ -114,27 +162,53 @@ export function SidebarPage() {
             "Header slot for branding, Footer slot for user profile or settings.",
           centered: false,
           preview: <HeaderFooterNav />,
-          code: `<Sidebar collapsible="none" className="w-56 rounded-lg border">
-  <Sidebar.Header className="border-b px-3 py-2">
-    <div className="flex items-center gap-2">
-      <div className="h-6 w-6 rounded bg-primary" />
-      <span className="text-sm font-semibold">Acme Inc</span>
-    </div>
-  </Sidebar.Header>
-  <Sidebar.Content>
-    {/* nav groups */}
-  </Sidebar.Content>
-  <Sidebar.Footer className="border-t px-3 py-2">
-    <div className="flex items-center gap-2">
-      <div className="h-7 w-7 rounded-full bg-muted" />
-      <div className="flex-1 truncate">
-        <p className="text-xs font-medium">Alice Johnson</p>
-        <p className="text-[10px] text-muted-foreground">alice@example.com</p>
+          code: `import { Button, Sidebar } from "@almach/ui";
+import { LayoutDashboard, Settings, Users } from "lucide-react";
+
+<Sidebar.Provider>
+  <Sidebar collapsible="none" className="w-56 rounded-lg border">
+    <Sidebar.Header className="border-b px-3 py-2.5">
+      <div className="flex items-center gap-2">
+        <div className="h-6 w-6 rounded bg-primary" />
+        <span className="text-sm font-semibold">Acme Inc</span>
       </div>
-      <Settings className="h-3.5 w-3.5 text-muted-foreground" />
-    </div>
-  </Sidebar.Footer>
-</Sidebar>`,
+    </Sidebar.Header>
+    <Sidebar.Content>
+      <Sidebar.Group>
+        <Sidebar.GroupLabel>Workspace</Sidebar.GroupLabel>
+        <Sidebar.GroupContent>
+          <Sidebar.Menu>
+            {[
+              { label: "Dashboard", icon: LayoutDashboard, active: true },
+              { label: "Team",      icon: Users },
+              { label: "Settings",  icon: Settings },
+            ].map(({ label, icon: Icon, active }) => (
+              <Sidebar.MenuItem key={label}>
+                <Sidebar.MenuButton asChild isActive={active}>
+                  <a href="#"><Icon /><span>{label}</span></a>
+                </Sidebar.MenuButton>
+              </Sidebar.MenuItem>
+            ))}
+          </Sidebar.Menu>
+        </Sidebar.GroupContent>
+      </Sidebar.Group>
+    </Sidebar.Content>
+    <Sidebar.Footer className="border-t px-3 py-2.5">
+      <div className="flex items-center gap-2">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
+          AJ
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-medium">Alice Johnson</p>
+          <p className="truncate text-[10px] text-muted-foreground">alice@example.com</p>
+        </div>
+        <Button variant="ghost" size="icon-sm">
+          <Settings className="h-3.5 w-3.5" />
+        </Button>
+      </div>
+    </Sidebar.Footer>
+  </Sidebar>
+</Sidebar.Provider>`,
         },
       ]}
       props={[
@@ -153,6 +227,13 @@ export function SidebarPage() {
           name: "Sidebar.Provider › onOpenChange",
           type: "(open: boolean) => void",
           description: "Called when the sidebar opens or closes.",
+        },
+        {
+          name: "Sidebar.Provider › mobileBreakpoint",
+          type: "number",
+          default: "768",
+          description:
+            "Max-width in px below which the sidebar switches to mobile overlay mode.",
         },
         {
           name: "Sidebar › side",
@@ -224,8 +305,8 @@ function BasicNav() {
         collapsible="none"
         className="h-72 w-56 rounded-lg border border-sidebar-border/70"
       >
-        <Sidebar.Header className="px-2 pb-1 pt-3">
-          <span className="px-2 text-xs font-semibold text-muted-foreground">
+        <Sidebar.Header className="px-4 pb-1 pt-3">
+          <span className="text-xs font-semibold text-muted-foreground">
             My App
           </span>
         </Sidebar.Header>
@@ -247,13 +328,7 @@ function BasicNav() {
                         <span>{label}</span>
                       </a>
                     </Sidebar.MenuButton>
-                    {badge && (
-                      <Sidebar.MenuBadge>
-                        <Badge variant="secondary" className="h-4 text-[10px]">
-                          {badge}
-                        </Badge>
-                      </Sidebar.MenuBadge>
-                    )}
+                    {badge && <Sidebar.MenuBadge>{badge}</Sidebar.MenuBadge>}
                   </Sidebar.MenuItem>
                 ))}
               </Sidebar.Menu>
@@ -290,7 +365,7 @@ function SubMenuNav() {
                     <a href="#">
                       <Users />
                       <span>Team</span>
-                      <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground" />
+                      <ChevronRight className="ml-auto h-3.5 w-3.5 opacity-50" />
                     </a>
                   </Sidebar.MenuButton>
                   <Sidebar.MenuSub>
@@ -330,7 +405,7 @@ function IconCollapseDemo() {
   ];
 
   return (
-    <Sidebar.Provider defaultOpen={false} contained>
+    <Sidebar.Provider contained>
       <div className="flex h-72 w-full overflow-hidden rounded-lg border border-sidebar-border/70">
         <Sidebar collapsible="icon">
           <Sidebar.Content>
@@ -364,8 +439,9 @@ function IconCollapseDemo() {
             <span className="text-sm font-medium">Dashboard</span>
           </header>
           <div className="p-4 text-sm text-muted-foreground">
-            Toggle with the rail or{" "}
-            <kbd className="rounded border px-1 font-mono text-xs">⌘B</kbd>
+            Click the rail or press{" "}
+            <kbd className="rounded border px-1 font-mono text-xs">⌘B</kbd> to
+            collapse.
           </div>
         </Sidebar.Inset>
       </div>

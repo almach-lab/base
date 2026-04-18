@@ -33,45 +33,6 @@ const topNavItems = [
   { name: "Query", href: "/query" },
 ];
 
-const sidebarGroups = [
-  {
-    title: "Introduction",
-    items: [
-      { name: "Getting Started", href: "/getting-started" },
-      { name: "For LLMs", href: "/llms" },
-    ],
-  },
-  {
-    title: "Components",
-    items: [{ name: "Overview", href: "/components" }],
-  },
-  ...DOC_COMPONENT_GROUPS.map((group) => ({
-    title: group.name,
-    items: group.items.map((item) => ({
-      name: item.name,
-      href: `/components/${item.slug}`,
-    })),
-  })),
-  {
-    title: "Blocks",
-    items: [
-      { name: "Overview", href: "/blocks" },
-      { name: "Dashboard Overview", href: "/blocks#dashboard-overview" },
-      { name: "Analytics Panel", href: "/blocks#analytics-panel" },
-      { name: "Revenue Tracker", href: "/blocks#revenue-tracker" },
-      { name: "Activity Feed", href: "/blocks#activity-feed" },
-      { name: "Team Performance", href: "/blocks#team-performance" },
-    ],
-  },
-  {
-    title: "Packages",
-    items: [
-      { name: "Forms", href: "/forms" },
-      { name: "Query", href: "/query" },
-    ],
-  },
-];
-
 const isHome = currentPath === "/";
 const isComponentsPage = currentPath === "/components";
 const pageAnchors = isComponentsPage

@@ -1,6 +1,5 @@
-import { Sidebar } from "@almach/ui";
-import { cn } from "@almach/utils";
-import React from "react";
+import { Sidebar, useSidebar } from "@almach/ui";
+import * as React from "react";
 import { DOC_COMPONENT_GROUPS } from "../lib/doc-components";
 
 // ── Logo ───────────────────────────────────────────────────────────────────
@@ -20,7 +19,7 @@ function AlmachLogo({ className }: { className?: string }) {
   );
 }
 
-// ── Sidebar groups data ────────────────────────────────────────────────────
+// ── Nav data ───────────────────────────────────────────────────────────────
 
 const SIDEBAR_GROUPS = [
   {
@@ -61,140 +60,132 @@ const SIDEBAR_GROUPS = [
   },
 ];
 
-// ── Component ──────────────────────────────────────────────────────────────
+// ── Shared nav groups ──────────────────────────────────────────────────────
 
-interface DocSidebarProps {
+function NavGroups({
+  currentPath,
+  onNavigate,
+}: {
   currentPath: string;
+  onNavigate: () => void;
+}) {
+  return (
+    <>
+      {SIDEBAR_GROUPS.map((group) => (
+        <Sidebar.Group key={group.title} className="mb-1 p-0">
+          <Sidebar.GroupLabel className="mb-1 px-2">
+            {group.title}
+          </Sidebar.GroupLabel>
+          <Sidebar.GroupContent>
+            <Sidebar.Menu>
+              {group.items.map((item) => (
+                <Sidebar.MenuItem key={item.href}>
+                  <Sidebar.MenuButton
+                    asChild
+                    isActive={currentPath === item.href}
+                    size="sm"
+                    onClick={onNavigate}
+                  >
+                    <a
+                      href={item.href}
+                      aria-current={
+                        currentPath === item.href ? "page" : undefined
+                      }
+                    >
+                      {item.name}
+                    </a>
+                  </Sidebar.MenuButton>
+                </Sidebar.MenuItem>
+              ))}
+            </Sidebar.Menu>
+          </Sidebar.GroupContent>
+        </Sidebar.Group>
+      ))}
+    </>
+  );
 }
 
-export function DocSidebar({ currentPath }: DocSidebarProps) {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+// ── Inner component (accesses sidebar context) ─────────────────────────────
 
-  React.useEffect(() => {
-    const toggle = () => setMobileOpen((v) => !v);
-    window.addEventListener("almach-sidebar-toggle", toggle);
-    return () => window.removeEventListener("almach-sidebar-toggle", toggle);
-  }, []);
+function DocSidebarInner({ currentPath }: { currentPath: string }) {
+  const { openMobile, setOpenMobile, toggleSidebar } = useSidebar();
 
-  // Sync aria-expanded on the header toggle button
+  // Bridge the Astro header toggle button to the React sidebar
   React.useEffect(() => {
-    const btn = document.getElementById("sidebar-toggle");
-    if (btn) btn.setAttribute("aria-expanded", String(mobileOpen));
-    // Lock body scroll when mobile sidebar is open
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    const handler = () => toggleSidebar();
+    window.addEventListener("almach-sidebar-toggle", handler);
+    return () => window.removeEventListener("almach-sidebar-toggle", handler);
+  }, [toggleSidebar]);
+
+  // Sync aria-expanded on the header button + lock body scroll
+  React.useEffect(() => {
+    document
+      .getElementById("sidebar-toggle")
+      ?.setAttribute("aria-expanded", String(openMobile));
+    document.body.style.overflow = openMobile ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [mobileOpen]);
+  }, [openMobile]);
 
   // Close on Escape
   React.useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && mobileOpen) setMobileOpen(false);
+      if (e.key === "Escape" && openMobile) setOpenMobile(false);
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
-  }, [mobileOpen]);
+  }, [openMobile, setOpenMobile]);
 
-  const navGroups = SIDEBAR_GROUPS.map((group) => (
-    <Sidebar.Group key={group.title} className="mb-1 p-0">
-      <Sidebar.GroupLabel className="mb-1 px-2">
-        {group.title}
-      </Sidebar.GroupLabel>
-      <Sidebar.GroupContent>
-        <Sidebar.Menu>
-          {group.items.map((item) => (
-            <Sidebar.MenuItem key={item.href}>
-              <Sidebar.MenuButton
-                asChild
-                isActive={currentPath === item.href}
-                size="sm"
-                onClick={() => setMobileOpen(false)}
-              >
-                <a
-                  href={item.href}
-                  data-nav-href={item.href}
-                  aria-current={currentPath === item.href ? "page" : undefined}
-                >
-                  <span>{item.name}</span>
-                </a>
-              </Sidebar.MenuButton>
-            </Sidebar.MenuItem>
-          ))}
-        </Sidebar.Menu>
-      </Sidebar.GroupContent>
-    </Sidebar.Group>
-  ));
+  const close = React.useCallback(() => setOpenMobile(false), [setOpenMobile]);
 
   return (
     <>
-      {/* ── Mobile backdrop ───────────────────────────────────────────── */}
-      <div
-        className={cn(
-          "fixed inset-0 z-50 lg:hidden",
-          "transition-opacity [transition-duration:var(--theme-motion-overlay-duration,220ms)] motion-reduce:transition-none",
-          mobileOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0",
-        )}
-        onClick={() => setMobileOpen(false)}
-        aria-hidden="true"
-      >
-        <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
+      {/* Mobile overlay sidebar (< 1024px) */}
+      <div className="lg:hidden">
+        <Sidebar collapsible="offcanvas">
+          <Sidebar.Header className="h-[3.25rem] flex-row items-center justify-between border-b border-sidebar-border/70 px-4 py-0">
+            <a
+              href="/"
+              className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+              aria-label="Almach home"
+              onClick={close}
+            >
+              <AlmachLogo className="h-5 w-5" />
+              <span className="text-sm font-bold text-sidebar-foreground">
+                Almach
+              </span>
+            </a>
+            <button
+              type="button"
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+              aria-label="Close navigation"
+              onClick={close}
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </Sidebar.Header>
+          <Sidebar.Content className="px-3 py-4">
+            <nav aria-label="Mobile navigation">
+              <NavGroups currentPath={currentPath} onNavigate={close} />
+            </nav>
+          </Sidebar.Content>
+        </Sidebar>
       </div>
 
-      {/* ── Mobile sidebar ────────────────────────────────────────────── */}
-      <aside
-        id="doc-sidebar-mobile"
-        aria-label="Navigation menu"
-        aria-modal={mobileOpen}
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col",
-          "border-r border-sidebar-border/70 bg-sidebar shadow-xl lg:hidden",
-          "transition-transform [transition-duration:var(--theme-motion-overlay-duration,220ms)] [transition-timing-function:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))] motion-reduce:transition-none",
-          mobileOpen ? "translate-x-0" : "-translate-x-full",
-        )}
-      >
-        <Sidebar.Header className="h-[3.25rem] flex-row items-center justify-between border-b border-sidebar-border/70 px-4 py-0">
-          <a
-            href="/"
-            className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-            aria-label="Almach home"
-            onClick={() => setMobileOpen(false)}
-          >
-            <AlmachLogo className="h-5 w-5" />
-            <span className="text-sm font-bold text-sidebar-foreground">
-              Almach
-            </span>
-          </a>
-          <button
-            type="button"
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-            aria-label="Close navigation"
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </Sidebar.Header>
-
-        <Sidebar.Content className="px-3 py-4">
-          <nav aria-label="Mobile navigation">{navGroups}</nav>
-        </Sidebar.Content>
-      </aside>
-
-      {/* ── Desktop sidebar ───────────────────────────────────────────── */}
+      {/* Desktop sticky sidebar (>= 1024px) */}
       <aside
         className="hidden w-56 shrink-0 border-r border-sidebar-border/70 bg-sidebar lg:flex lg:flex-col"
         aria-label="Documentation navigation"
@@ -202,11 +193,28 @@ export function DocSidebar({ currentPath }: DocSidebarProps) {
         <div className="sticky top-[3.25rem] flex h-[calc(100vh-3.25rem)] flex-col">
           <Sidebar.Content className="px-2 py-3">
             <nav aria-label="Documentation navigation" className="pb-8 pr-1">
-              {navGroups}
+              <NavGroups currentPath={currentPath} onNavigate={() => {}} />
             </nav>
           </Sidebar.Content>
         </div>
       </aside>
     </>
+  );
+}
+
+// ── Exported component ─────────────────────────────────────────────────────
+
+interface DocSidebarProps {
+  currentPath: string;
+}
+
+export function DocSidebar({ currentPath }: DocSidebarProps) {
+  return (
+    <Sidebar.Provider
+      mobileBreakpoint={1024}
+      className="min-h-0 w-auto shrink-0"
+    >
+      <DocSidebarInner currentPath={currentPath} />
+    </Sidebar.Provider>
   );
 }

@@ -2,7 +2,7 @@ import { cn } from "@almach/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
 import * as React from "react";
-import { useIsMobile } from "../hooks/use-media-query.js";
+import { useMediaQuery } from "../hooks/use-media-query.js";
 import { Separator } from "./separator.js";
 import { Skeleton } from "./skeleton.js";
 import { Tooltip } from "./tooltip.js";
@@ -24,6 +24,7 @@ interface SidebarContextValue {
   isMobile: boolean;
   toggleSidebar: () => void;
   contained: boolean;
+  mobileBreakpoint: number;
 }
 
 const SidebarCtx = React.createContext<SidebarContextValue | null>(null);
@@ -37,6 +38,7 @@ const SIDEBAR_CONTEXT_DEFAULT: SidebarContextValue = {
   isMobile: false,
   toggleSidebar: () => {},
   contained: false,
+  mobileBreakpoint: 768,
 };
 
 function useSidebar(): SidebarContextValue {
@@ -50,6 +52,7 @@ interface SidebarProviderProps extends React.ComponentPropsWithoutRef<"div"> {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   contained?: boolean;
+  mobileBreakpoint?: number;
 }
 
 const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
@@ -59,6 +62,7 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
       open: openProp,
       onOpenChange,
       contained = false,
+      mobileBreakpoint = 768,
       className,
       style,
       children,
@@ -66,7 +70,7 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
     },
     ref,
   ) => {
-    const isMobile = useIsMobile();
+    const isMobile = useMediaQuery(`(max-width: ${mobileBreakpoint}px)`);
     const [openState, setOpenState] = React.useState(defaultOpen);
     const [openMobile, setOpenMobile] = React.useState(false);
 
@@ -107,6 +111,7 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         setOpenMobile,
         toggleSidebar,
         contained,
+        mobileBreakpoint,
       }),
       [
         state,
@@ -117,6 +122,7 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         setOpenMobile,
         toggleSidebar,
         contained,
+        mobileBreakpoint,
       ],
     );
 
