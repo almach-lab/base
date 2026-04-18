@@ -417,18 +417,18 @@ const showRightRail = !isHome && pageAnchors.length > 0;
         aria-modal="true"
         aria-label="Navigation menu"
       >
-        <div id="mobile-backdrop" class="absolute inset-0 bg-background/70 backdrop-blur-sm"></div>
+        <div id="mobile-backdrop" class="absolute inset-0 bg-background/60 backdrop-blur-sm"></div>
 
-        <aside id="mobile-sidebar" class="absolute inset-y-0 left-0 flex min-h-0 w-72 max-w-[85vw] flex-col border-r border-border/70 bg-background shadow-xl">
+        <aside id="mobile-sidebar" class="absolute inset-y-0 left-0 flex min-h-0 w-72 max-w-[85vw] flex-col border-r border-sidebar-border/70 bg-sidebar shadow-xl">
           <!-- Sidebar header -->
-          <div class="flex h-12 shrink-0 items-center justify-between border-b px-4">
+          <div class="flex h-12 shrink-0 items-center justify-between border-b border-sidebar-border/70 px-4">
             <a href="/" class="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1" aria-label="Almach home">
-              <Logo class="h-5 w-5 text-foreground" />
-              <span class="text-sm font-bold">Almach</span>
+              <Logo class="h-5 w-5 text-sidebar-foreground" />
+              <span class="text-sm font-bold text-sidebar-foreground">Almach</span>
             </a>
             <button
               id="sidebar-close"
-              class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+              class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
               aria-label="Close navigation"
             >
               <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -442,7 +442,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
             <nav aria-label="Mobile navigation">
               {sidebarGroups.map((group) => (
                 <div class="mb-5">
-                  <p class="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/60">
+                  <p class="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/40">
                     {group.title}
                   </p>
                   <div class="space-y-0.5">
@@ -452,12 +452,11 @@ const showRightRail = !isHome && pageAnchors.length > 0;
                         data-nav-href={item.href}
                         class={`relative flex items-center rounded-md px-3 py-1.5 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
                           currentPath === item.href
-                            ? "bg-primary/12 font-medium text-primary"
-                            : "text-muted-foreground hover:bg-accent/70 hover:text-foreground"
+                            ? "bg-sidebar-primary/12 font-medium text-sidebar-primary"
+                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                         }`}
                         aria-current={currentPath === item.href ? "page" : undefined}
                       >
-
                         {item.name}
                       </a>
                     ))}
@@ -478,13 +477,13 @@ const showRightRail = !isHome && pageAnchors.length > 0;
         ) : (
           <div class="mx-auto flex w-full max-w-[1440px] flex-1">
             <!-- Desktop sidebar -->
-            <aside class="hidden w-56 shrink-0 border-r border-border/70 bg-muted/10 xl:block" aria-label="Documentation navigation">
-              <div class="sticky top-12 h-[calc(100vh-3rem)] px-2 py-2.5">
+            <aside class="hidden w-56 shrink-0 border-r border-sidebar-border/70 bg-sidebar xl:block" aria-label="Documentation navigation">
+              <div class="sticky top-12 h-[calc(100vh-3rem)] px-2 py-3">
                 <div class="h-full overflow-y-auto pr-1">
                   <nav aria-label="Documentation navigation" class="px-1 pb-8">
                     {sidebarGroups.map((group) => (
                       <div class="mb-4">
-                        <p class="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/60">
+                        <p class="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/40">
                           {group.title}
                         </p>
                         <div class="space-y-0.5">
@@ -492,10 +491,10 @@ const showRightRail = !isHome && pageAnchors.length > 0;
                             <a
                               href={item.href}
                               data-nav-href={item.href}
-                            class={`relative flex items-center rounded-md px-2.5 py-1.5 text-[12px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
+                              class={`relative flex items-center rounded-md px-2.5 py-1.5 text-[12px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
                                 currentPath === item.href
-                                  ? "bg-primary/12 font-medium text-primary"
-                                  : "text-muted-foreground hover:bg-accent/70 hover:text-foreground"
+                                  ? "bg-sidebar-primary/12 font-medium text-sidebar-primary"
+                                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                               }`}
                               aria-current={currentPath === item.href ? "page" : undefined}
                             >
@@ -518,17 +517,17 @@ const showRightRail = !isHome && pageAnchors.length > 0;
 
             {
               showRightRail && (
-                <aside class="hidden w-52 shrink-0 border-l border-border/70 bg-muted/10 px-2 py-2.5 xl:block" aria-label="On this page">
+                <aside class="hidden w-52 shrink-0 border-l border-sidebar-border/70 bg-sidebar px-2 py-3 xl:block" aria-label="On this page">
                   <div class="sticky top-12 h-[calc(100vh-3rem)]">
                     <div class="h-full overflow-y-auto pr-1">
                       <div class="space-y-6 px-2 pb-8">
                         <div class="space-y-2.5">
-                          <p class="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/70">On this page</p>
-                          <nav class="space-y-1">
+                          <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/40">On this page</p>
+                          <nav class="space-y-0.5">
                             {pageAnchors.map((anchor) => (
                               <a
                                 href={`#${anchor.id}`}
-                                class="block rounded-md px-2 py-1.5 text-[12px] text-muted-foreground transition-colors hover:bg-accent/70 hover:text-foreground"
+                                class="block rounded-md px-2 py-1.5 text-[12px] text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
                               >
                                 {anchor.name}
                               </a>
@@ -712,13 +711,38 @@ const showRightRail = !isHome && pageAnchors.length > 0;
         const backdrop = document.getElementById("mobile-backdrop");
         const closeBtn = document.getElementById("sidebar-close");
 
+        function getSidebarDurationMs(): number {
+          const raw = getComputedStyle(document.documentElement)
+            .getPropertyValue("--theme-motion-overlay-duration")
+            .trim();
+          if (raw.endsWith("ms")) return parseInt(raw, 10) || 220;
+          if (raw.endsWith("s")) return parseFloat(raw) * 1000 || 220;
+          return 220;
+        }
+
+        let closeTimer: ReturnType<typeof setTimeout> | null = null;
+
         const open = () => {
+          if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
           overlay?.classList.remove("hidden");
+          // One rAF so display:block takes effect before the transition fires
+          requestAnimationFrame(() => {
+            overlay?.classList.add("sidebar-open");
+          });
           toggle?.setAttribute("aria-expanded", "true");
+          document.body.style.overflow = "hidden";
         };
+
         const close = () => {
-          overlay?.classList.add("hidden");
+          overlay?.classList.remove("sidebar-open");
           toggle?.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
+          closeTimer = setTimeout(() => {
+            if (!overlay?.classList.contains("sidebar-open")) {
+              overlay?.classList.add("hidden");
+            }
+            closeTimer = null;
+          }, getSidebarDurationMs());
         };
 
         toggle?.addEventListener("click", open);
@@ -728,7 +752,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
           a.addEventListener("click", close);
         });
         document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && !overlay?.classList.contains("hidden")) close();
+          if (e.key === "Escape" && overlay?.classList.contains("sidebar-open")) close();
         });
       }
 

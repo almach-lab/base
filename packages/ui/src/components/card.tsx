@@ -9,7 +9,7 @@ const CardRoot = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm",
+      "rounded-xl border bg-card text-card-foreground shadow-sm",
       className,
     )}
     {...props}
@@ -139,7 +139,8 @@ const CardLayers = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "overflow-hidden rounded-xl border bg-card divide-y divide-border",
+      "rounded-xl border bg-card divide-y divide-border",
+      "[&>*:first-child]:rounded-t-xl [&>*:last-child]:rounded-b-xl",
       className,
     )}
     {...props}
@@ -222,7 +223,7 @@ const CardGroup = React.forwardRef<HTMLDivElement, CardGroupProps>(
           {label}
         </p>
       )}
-      <div className="overflow-hidden rounded-xl border bg-card divide-y">
+      <div className="rounded-xl border bg-card divide-y [&>*:first-child]:rounded-t-xl [&>*:last-child]:rounded-b-xl">
         {children}
       </div>
       {hint && <p className="px-1 text-xs text-muted-foreground">{hint}</p>}

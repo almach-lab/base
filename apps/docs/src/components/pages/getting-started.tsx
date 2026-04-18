@@ -220,31 +220,22 @@ export function GettingStartedPage() {
           id="step-styles"
           n={2}
           title="Add styles"
-          description="Import Tailwind and the Almach design tokens in your root CSS file. Then tell Tailwind where to scan for class names inside the packages."
+          description="Import Tailwind and the Almach design tokens in your root CSS file. Add one @source directive so Tailwind scans the package for class names."
         >
           <CodeBlock
             filename="globals.css"
             lang="css"
             code={`@import "tailwindcss";
+@import "@almach/ui/styles";
 
-/* Monorepo source scan (local dev) */
-@source "../../../../packages/ui/src/**/*.{ts,tsx}";
-
-/* Package scan (installed/build output) */
-@source "../node_modules/@almach/ui/dist/**/*.js";
-
-@import "@almach/ui/styles";`}
+@source "../node_modules/@almach/ui/dist/**/*.js";`}
           />
           <Note>
-            <strong className="text-foreground">Monorepo?</strong> Point{" "}
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
-              @source
-            </code>{" "}
-            at both workspace source and dist so local dev and packaged builds
-            both work:{" "}
-            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
-              @source "../../../../packages/ui/src/**/*.{"{ts,tsx}"}";
-            </code>
+            Adjust the <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">@source</code>{" "}
+            path so it points to your project's <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">node_modules</code>{" "}
+            relative to the CSS file. For Next.js App Router{" "}
+            (<code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">src/app/globals.css</code>)
+            use <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">../../../node_modules/@almach/ui/dist/**/*.js</code>.
           </Note>
         </Step>
 
