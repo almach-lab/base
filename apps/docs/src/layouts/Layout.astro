@@ -27,6 +27,7 @@ const pageTitle =
 const topNavItems = [
   { name: "Getting Started", href: "/getting-started" },
   { name: "Components", href: "/components" },
+  { name: "Blocks", href: "/blocks" },
   { name: "Forms", href: "/forms" },
   { name: "Query", href: "/query" },
 ];
@@ -50,6 +51,17 @@ const sidebarGroups = [
       href: `/components/${item.slug}`,
     })),
   })),
+  {
+    title: "Blocks",
+    items: [
+      { name: "Overview", href: "/blocks" },
+      { name: "Dashboard Overview", href: "/blocks#dashboard-overview" },
+      { name: "Analytics Panel", href: "/blocks#analytics-panel" },
+      { name: "Revenue Tracker", href: "/blocks#revenue-tracker" },
+      { name: "Activity Feed", href: "/blocks#activity-feed" },
+      { name: "Team Performance", href: "/blocks#team-performance" },
+    ],
+  },
   {
     title: "Packages",
     items: [

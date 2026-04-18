@@ -42,6 +42,7 @@ export {
   PolarRadiusAxis,
   Radar,
   RadarChart,
+  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
