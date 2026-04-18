@@ -219,7 +219,7 @@ export function SidebarPage() {
 
 function BasicNav() {
   return (
-    <Sidebar.Provider>
+    <Sidebar.Provider contained>
       <Sidebar
         collapsible="none"
         className="h-72 w-56 rounded-lg border border-sidebar-border/70"
@@ -267,7 +267,7 @@ function BasicNav() {
 
 function SubMenuNav() {
   return (
-    <Sidebar.Provider>
+    <Sidebar.Provider contained>
       <Sidebar
         collapsible="none"
         className="h-72 w-56 rounded-lg border border-sidebar-border/70"
@@ -330,7 +330,7 @@ function IconCollapseDemo() {
   ];
 
   return (
-    <Sidebar.Provider defaultOpen={false}>
+    <Sidebar.Provider defaultOpen={false} contained>
       <div className="flex h-72 w-full overflow-hidden rounded-lg border border-sidebar-border/70">
         <Sidebar collapsible="icon">
           <Sidebar.Content>
@@ -375,7 +375,7 @@ function IconCollapseDemo() {
 
 function HeaderFooterNav() {
   return (
-    <Sidebar.Provider>
+    <Sidebar.Provider contained>
       <Sidebar
         collapsible="none"
         className="h-80 w-56 rounded-lg border border-sidebar-border/70"
