@@ -171,7 +171,8 @@ interface AppShellProps {
     | "forms"
     | "query"
     | "components"
-    | "component";
+    | "component"
+    | "blocks";
   componentSlug?: string;
 }
 
@@ -196,6 +197,9 @@ const staticPages: Record<StaticPage, PageComponent> = {
     import("./pages/components-index").then((m) => ({
       default: m.ComponentsIndexPage,
     })),
+  ),
+  blocks: lazy(() =>
+    import("./pages/blocks").then((m) => ({ default: m.BlocksPage })),
   ),
 };
 

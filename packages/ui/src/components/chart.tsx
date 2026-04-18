@@ -17,6 +17,7 @@ import {
   PolarRadiusAxis,
   Radar,
   RadarChart,
+  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,
@@ -116,7 +117,11 @@ const ChartTooltip = (props: React.ComponentProps<typeof Tooltip>) => (
 ChartTooltip.displayName = "Chart.Tooltip";
 
 const ChartGrid = (props: React.ComponentProps<typeof CartesianGrid>) => (
-  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" {...props} />
+  <CartesianGrid
+    strokeDasharray="3 3"
+    stroke="var(--color-border)"
+    {...props}
+  />
 );
 ChartGrid.displayName = "Chart.Grid";
 
@@ -225,6 +230,7 @@ export {
   PolarRadiusAxis,
   Radar,
   RadarChart,
+  ReferenceLine,
   ResponsiveContainer,
   Scatter,
   ScatterChart,

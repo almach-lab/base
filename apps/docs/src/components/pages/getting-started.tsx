@@ -231,11 +231,23 @@ export function GettingStartedPage() {
 @source "../node_modules/@almach/ui/dist/**/*.js";`}
           />
           <Note>
-            Adjust the <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">@source</code>{" "}
-            path so it points to your project's <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">node_modules</code>{" "}
-            relative to the CSS file. For Next.js App Router{" "}
-            (<code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">src/app/globals.css</code>)
-            use <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">../../../node_modules/@almach/ui/dist/**/*.js</code>.
+            Adjust the{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              @source
+            </code>{" "}
+            path so it points to your project's{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              node_modules
+            </code>{" "}
+            relative to the CSS file. For Next.js App Router (
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              src/app/globals.css
+            </code>
+            ) use{" "}
+            <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs text-foreground">
+              ../../../node_modules/@almach/ui/dist/**/*.js
+            </code>
+            .
           </Note>
         </Step>
 

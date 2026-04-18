@@ -61,8 +61,7 @@
  */
 #mobile-sidebar {
   transform: translateX(-100%);
-  transition:
-    transform var(--theme-motion-overlay-duration, 220ms)
+  transition: transform var(--theme-motion-overlay-duration, 220ms)
     var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
   will-change: transform;
 }
@@ -73,8 +72,7 @@
 
 #mobile-backdrop {
   opacity: 0;
-  transition:
-    opacity var(--theme-motion-overlay-duration, 220ms)
+  transition: opacity var(--theme-motion-overlay-duration, 220ms)
     var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
