@@ -602,7 +602,6 @@ const SidebarMenuButton = React.forwardRef<
       React.cloneElement(
         React.Children.only(children as React.ReactElement),
         {
-          ref,
           "data-sidebar": "menu-button",
           "data-active": isActive,
           className: cn(
@@ -610,7 +609,7 @@ const SidebarMenuButton = React.forwardRef<
             className,
           ),
           ...props,
-        },
+        } as React.HTMLAttributes<HTMLElement>,
       )
     ) : (
       <button
