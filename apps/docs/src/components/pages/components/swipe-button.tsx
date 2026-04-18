@@ -138,7 +138,8 @@ export function SwipeButtonPage() {
           name: "resetOnSuccess",
           type: "boolean",
           default: "false",
-          description: "If true, the thumb springs back to the start after success.",
+          description:
+            "If true, the thumb springs back to the start after success.",
         },
         {
           name: "resetDelay",

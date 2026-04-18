@@ -2,9 +2,9 @@ import {
   Area,
   Badge,
   Bar,
-  CHART_COLORS,
   Card,
   Cell,
+  CHART_COLORS,
   Chart,
   Line,
   Pie,
@@ -72,11 +72,41 @@ const radarData = [
 ];
 
 const transactions = [
-  { id: "TXN-001", name: "Acme Corp", amount: "+$4,200", status: "completed", time: "2m ago" },
-  { id: "TXN-002", name: "Globex Inc", amount: "+$1,800", status: "completed", time: "18m ago" },
-  { id: "TXN-003", name: "Initech", amount: "-$350", status: "refunded", time: "1h ago" },
-  { id: "TXN-004", name: "Umbrella Ltd", amount: "+$9,100", status: "pending", time: "3h ago" },
-  { id: "TXN-005", name: "Soylent Corp", amount: "+$670", status: "completed", time: "5h ago" },
+  {
+    id: "TXN-001",
+    name: "Acme Corp",
+    amount: "+$4,200",
+    status: "completed",
+    time: "2m ago",
+  },
+  {
+    id: "TXN-002",
+    name: "Globex Inc",
+    amount: "+$1,800",
+    status: "completed",
+    time: "18m ago",
+  },
+  {
+    id: "TXN-003",
+    name: "Initech",
+    amount: "-$350",
+    status: "refunded",
+    time: "1h ago",
+  },
+  {
+    id: "TXN-004",
+    name: "Umbrella Ltd",
+    amount: "+$9,100",
+    status: "pending",
+    time: "3h ago",
+  },
+  {
+    id: "TXN-005",
+    name: "Soylent Corp",
+    amount: "+$670",
+    status: "completed",
+    time: "5h ago",
+  },
 ];
 
 const teamMetrics = [
@@ -117,10 +147,16 @@ function StatCard({
           ) : (
             <ArrowDownRight className="h-3 w-3 text-red-500" />
           )}
-          <span className={positive ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}>
+          <span
+            className={
+              positive
+                ? "text-green-600 dark:text-green-400"
+                : "text-red-600 dark:text-red-400"
+            }
+          >
             {change}
-          </span>
-          {" "}from last month
+          </span>{" "}
+          from last month
         </p>
       </Card.Content>
     </Card>
@@ -133,15 +169,43 @@ function DashboardOverviewBlock() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Total revenue" value="$45,231" change="+20.1%" positive icon={CircleDollarSign} />
-        <StatCard label="Active users" value="2,350" change="+12.5%" positive icon={Users} />
-        <StatCard label="New orders" value="189" change="+4.3%" positive icon={ShoppingCart} />
-        <StatCard label="Churn rate" value="1.2%" change="-0.4%" positive={false} icon={TrendingUp} />
+        <StatCard
+          label="Total revenue"
+          value="$45,231"
+          change="+20.1%"
+          positive
+          icon={CircleDollarSign}
+        />
+        <StatCard
+          label="Active users"
+          value="2,350"
+          change="+12.5%"
+          positive
+          icon={Users}
+        />
+        <StatCard
+          label="New orders"
+          value="189"
+          change="+4.3%"
+          positive
+          icon={ShoppingCart}
+        />
+        <StatCard
+          label="Churn rate"
+          value="1.2%"
+          change="-0.4%"
+          positive={false}
+          icon={TrendingUp}
+        />
       </div>
       <Card>
-        <Card.Header action={<BarChart3 className="h-4 w-4 text-muted-foreground" />}>
+        <Card.Header
+          action={<BarChart3 className="h-4 w-4 text-muted-foreground" />}
+        >
           <Card.Title className="text-sm">Revenue vs Target</Card.Title>
-          <Card.Description className="text-xs">Monthly performance for H1 2025</Card.Description>
+          <Card.Description className="text-xs">
+            Monthly performance for H1 2025
+          </Card.Description>
         </Card.Header>
         <Card.Content>
           <Chart.Container height={200} className="w-full">
@@ -151,12 +215,21 @@ function DashboardOverviewBlock() {
               <Chart.YAxis />
               <Chart.Tooltip />
               <Chart.Legend />
-              <Bar dataKey="revenue" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey="revenue"
+                fill={CHART_COLORS[0]}
+                radius={[4, 4, 0, 0]}
+              />
               <ReferenceLine
                 y={6000}
                 stroke={CHART_COLORS[3]}
                 strokeDasharray="4 4"
-                label={{ value: "Target", fill: CHART_COLORS[3], fontSize: 11, position: "insideTopRight" }}
+                label={{
+                  value: "Target",
+                  fill: CHART_COLORS[3],
+                  fontSize: 11,
+                  position: "insideTopRight",
+                }}
               />
             </Chart.Bar>
           </Chart.Container>
@@ -172,22 +245,37 @@ function AnalyticsPanelBlock() {
       <Card>
         <Card.Header>
           <Card.Title className="text-sm">Weekly Sessions</Card.Title>
-          <Card.Description className="text-xs">Sessions and conversions by day</Card.Description>
+          <Card.Description className="text-xs">
+            Sessions and conversions by day
+          </Card.Description>
         </Card.Header>
         <Card.Content>
           <Chart.Container height={200} className="w-full">
             <Chart.Area data={visitorData}>
               <defs>
                 <linearGradient id="fillSessions" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={CHART_COLORS[0]} stopOpacity={0.3} />
-                  <stop offset="95%" stopColor={CHART_COLORS[0]} stopOpacity={0} />
+                  <stop
+                    offset="5%"
+                    stopColor={CHART_COLORS[0]}
+                    stopOpacity={0.3}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor={CHART_COLORS[0]}
+                    stopOpacity={0}
+                  />
                 </linearGradient>
               </defs>
               <Chart.Grid />
               <Chart.XAxis dataKey="day" />
               <Chart.YAxis />
               <Chart.Tooltip />
-              <Area dataKey="sessions" stroke={CHART_COLORS[0]} fill="url(#fillSessions)" strokeWidth={2} />
+              <Area
+                dataKey="sessions"
+                stroke={CHART_COLORS[0]}
+                fill="url(#fillSessions)"
+                strokeWidth={2}
+              />
             </Chart.Area>
           </Chart.Container>
         </Card.Content>
@@ -196,7 +284,9 @@ function AnalyticsPanelBlock() {
       <Card>
         <Card.Header>
           <Card.Title className="text-sm">Budget breakdown</Card.Title>
-          <Card.Description className="text-xs">Allocation by department</Card.Description>
+          <Card.Description className="text-xs">
+            Allocation by department
+          </Card.Description>
         </Card.Header>
         <Card.Content className="flex items-center justify-center">
           <Chart.Container height={200} className="w-full">
@@ -233,7 +323,10 @@ function RevenueTrackerBlock() {
     <Card>
       <Card.Header
         action={
-          <Badge variant="outline" className="text-xs text-green-600 border-green-300 dark:text-green-400">
+          <Badge
+            variant="outline"
+            className="text-xs text-green-600 border-green-300 dark:text-green-400"
+          >
             +{pct}%
           </Badge>
         }
@@ -255,7 +348,12 @@ function RevenueTrackerBlock() {
             <Chart.Tooltip />
             <Chart.Legend />
             <Bar dataKey="b2b" stackId="a" fill={CHART_COLORS[0]} />
-            <Bar dataKey="b2c" stackId="a" fill={CHART_COLORS[1]} radius={[4, 4, 0, 0]} />
+            <Bar
+              dataKey="b2c"
+              stackId="a"
+              fill={CHART_COLORS[1]}
+              radius={[4, 4, 0, 0]}
+            />
             <Line
               dataKey="b2b"
               stroke={CHART_COLORS[3]}
@@ -275,9 +373,13 @@ function ActivityFeedBlock() {
     <div className="grid gap-4 sm:grid-cols-5">
       <div className="sm:col-span-3">
         <Card className="h-full">
-          <Card.Header action={<Activity className="h-4 w-4 text-muted-foreground" />}>
+          <Card.Header
+            action={<Activity className="h-4 w-4 text-muted-foreground" />}
+          >
             <Card.Title className="text-sm">Session activity</Card.Title>
-            <Card.Description className="text-xs">Sessions vs conversions this week</Card.Description>
+            <Card.Description className="text-xs">
+              Sessions vs conversions this week
+            </Card.Description>
           </Card.Header>
           <Card.Content>
             <Chart.Container height={200} className="w-full">
@@ -287,8 +389,18 @@ function ActivityFeedBlock() {
                 <Chart.YAxis />
                 <Chart.Tooltip />
                 <Chart.Legend />
-                <Line dataKey="sessions" stroke={CHART_COLORS[0]} strokeWidth={2} dot={false} />
-                <Line dataKey="conversions" stroke={CHART_COLORS[1]} strokeWidth={2} dot={false} />
+                <Line
+                  dataKey="sessions"
+                  stroke={CHART_COLORS[0]}
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  dataKey="conversions"
+                  stroke={CHART_COLORS[1]}
+                  strokeWidth={2}
+                  dot={false}
+                />
               </Chart.Line>
             </Chart.Container>
           </Card.Content>
@@ -297,12 +409,17 @@ function ActivityFeedBlock() {
 
       <div className="sm:col-span-2">
         <Card className="h-full">
-          <Card.Header action={<Bell className="h-4 w-4 text-muted-foreground" />}>
+          <Card.Header
+            action={<Bell className="h-4 w-4 text-muted-foreground" />}
+          >
             <Card.Title className="text-sm">Recent transactions</Card.Title>
           </Card.Header>
           <Card.Content className="space-y-3">
             {transactions.map((tx) => (
-              <div key={tx.id} className="flex items-center justify-between gap-3 text-xs">
+              <div
+                key={tx.id}
+                className="flex items-center justify-between gap-3 text-xs"
+              >
                 <div className="min-w-0">
                   <p className="truncate font-medium">{tx.name}</p>
                   <p className="text-muted-foreground">{tx.time}</p>
@@ -320,7 +437,13 @@ function ActivityFeedBlock() {
                   >
                     {tx.status}
                   </Badge>
-                  <span className={tx.amount.startsWith("+") ? "text-green-600 dark:text-green-400 font-medium" : "text-red-500 font-medium"}>
+                  <span
+                    className={
+                      tx.amount.startsWith("+")
+                        ? "text-green-600 dark:text-green-400 font-medium"
+                        : "text-red-500 font-medium"
+                    }
+                  >
                     {tx.amount}
                   </span>
                 </div>
@@ -339,7 +462,9 @@ function TeamPerformanceBlock() {
       <Card>
         <Card.Header>
           <Card.Title className="text-sm">Team radar</Card.Title>
-          <Card.Description className="text-xs">Current vs previous quarter</Card.Description>
+          <Card.Description className="text-xs">
+            Current vs previous quarter
+          </Card.Description>
         </Card.Header>
         <Card.Content>
           <Chart.Container height={220} className="w-full">
@@ -365,9 +490,13 @@ function TeamPerformanceBlock() {
       </Card>
 
       <Card>
-        <Card.Header action={<CreditCard className="h-4 w-4 text-muted-foreground" />}>
+        <Card.Header
+          action={<CreditCard className="h-4 w-4 text-muted-foreground" />}
+        >
           <Card.Title className="text-sm">Engineering metrics</Card.Title>
-          <Card.Description className="text-xs">Current sprint health</Card.Description>
+          <Card.Description className="text-xs">
+            Current sprint health
+          </Card.Description>
         </Card.Header>
         <Card.Content className="space-y-4">
           {teamMetrics.map(({ name, value, color }) => (
@@ -646,7 +775,9 @@ function BlockCard({ block }: { block: Block }) {
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <h2 className="text-base font-semibold">{block.title}</h2>
-          <p className="mt-0.5 text-sm text-muted-foreground">{block.description}</p>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {block.description}
+          </p>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {block.tags.map((tag) => (
@@ -715,10 +846,13 @@ export function BlocksPage() {
         <Badge variant="outline" className="w-fit font-mono text-[11px]">
           @almach/ui
         </Badge>
-        <h1 className="text-3xl font-semibold tracking-tight md:text-[2.1rem]">Blocks</h1>
+        <h1 className="text-3xl font-semibold tracking-tight md:text-[2.1rem]">
+          Blocks
+        </h1>
         <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-          Pre-built dashboard and layout blocks composing Card, Chart, Badge, Progress, and other
-          components together. Copy and adapt them to your app.
+          Pre-built dashboard and layout blocks composing Card, Chart, Badge,
+          Progress, and other components together. Copy and adapt them to your
+          app.
         </p>
       </div>
 

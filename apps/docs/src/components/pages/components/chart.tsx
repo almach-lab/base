@@ -612,12 +612,7 @@ export function ChartPage() {
               <Chart.Scatter>
                 <Chart.Grid />
                 <Chart.XAxis dataKey="x" type="number" name="Effort" unit="h" />
-                <Chart.YAxis
-                  dataKey="y"
-                  type="number"
-                  name="Impact"
-                  unit="%"
-                />
+                <Chart.YAxis dataKey="y" type="number" name="Impact" unit="%" />
                 <Chart.Tooltip cursor={{ strokeDasharray: "3 3" }} />
                 <Scatter
                   data={scatterData}

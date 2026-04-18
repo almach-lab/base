@@ -1,6 +1,6 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-04-06T03:47:04.836Z
+Generated: 2026-04-18T02:00:47.437Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
@@ -16,7 +16,7 @@ Total modules: 35
 - calendar: 1 value export(s), 1 type export(s)
 - card: 2 value export(s), 0 type export(s)
 - carousel: 1 value export(s), 0 type export(s)
-- chart: 28 value export(s), 0 type export(s)
+- chart: 29 value export(s), 0 type export(s)
 - checkbox: 1 value export(s), 0 type export(s)
 - collapsible: 1 value export(s), 0 type export(s)
 - command: 1 value export(s), 0 type export(s)
@@ -348,7 +348,7 @@ export function Example() {
 
 ### Exported Symbols
 
-- Values: `Area`, `AreaChart`, `Bar`, `BarChart`, `Cell`, `Chart`, `CHART_COLORS`, `ChartContainer`, `ChartGrid`, `ChartLegend`, `ChartPolarAxis`, `ChartPolarGrid`, `ChartTooltip`, `ChartTooltipContent`, `ChartXAxis`, `ChartYAxis`, `Line`, `LineChart`, `Pie`, `PieChart`, `PolarAngleAxis`, `PolarGrid`, `PolarRadiusAxis`, `Radar`, `RadarChart`, `ResponsiveContainer`, `Scatter`, `ScatterChart`
+- Values: `Area`, `AreaChart`, `Bar`, `BarChart`, `Cell`, `Chart`, `CHART_COLORS`, `ChartContainer`, `ChartGrid`, `ChartLegend`, `ChartPolarAxis`, `ChartPolarGrid`, `ChartTooltip`, `ChartTooltipContent`, `ChartXAxis`, `ChartYAxis`, `Line`, `LineChart`, `Pie`, `PieChart`, `PolarAngleAxis`, `PolarGrid`, `PolarRadiusAxis`, `Radar`, `RadarChart`, `ReferenceLine`, `ResponsiveContainer`, `Scatter`, `ScatterChart`
 - Types: (none)
 
 ## Checkbox

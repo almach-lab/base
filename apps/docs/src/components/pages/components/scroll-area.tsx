@@ -115,8 +115,7 @@ export function ScrollAreaPage() {
         {
           name: "ScrollArea.Corner",
           type: "div props",
-          description:
-            "Fills the corner gap when both scrollbars are visible.",
+          description: "Fills the corner gap when both scrollbars are visible.",
         },
       ]}
     />
