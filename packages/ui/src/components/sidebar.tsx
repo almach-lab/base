@@ -103,7 +103,15 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         setOpenMobile,
         toggleSidebar,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+      [
+        state,
+        open,
+        setOpen,
+        isMobile,
+        openMobile,
+        setOpenMobile,
+        toggleSidebar,
+      ],
     );
 
     return (
@@ -599,18 +607,15 @@ const SidebarMenuButton = React.forwardRef<
     const { isMobile, state } = useSidebar();
 
     const button = asChild ? (
-      React.cloneElement(
-        React.Children.only(children as React.ReactElement),
-        {
-          "data-sidebar": "menu-button",
-          "data-active": isActive,
-          className: cn(
-            sidebarMenuButtonVariants({ variant, size, isActive }),
-            className,
-          ),
-          ...props,
-        } as React.HTMLAttributes<HTMLElement>,
-      )
+      React.cloneElement(React.Children.only(children as React.ReactElement), {
+        "data-sidebar": "menu-button",
+        "data-active": isActive,
+        className: cn(
+          sidebarMenuButtonVariants({ variant, size, isActive }),
+          className,
+        ),
+        ...props,
+      } as React.HTMLAttributes<HTMLElement>)
     ) : (
       <button
         ref={ref}

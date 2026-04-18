@@ -1,5 +1,5 @@
-import { cn } from "@almach/utils";
 import { Sidebar } from "@almach/ui";
+import { cn } from "@almach/utils";
 import React from "react";
 import { DOC_COMPONENT_GROUPS } from "../lib/doc-components";
 
@@ -114,9 +114,7 @@ export function DocSidebar({ currentPath }: DocSidebarProps) {
                 <a
                   href={item.href}
                   data-nav-href={item.href}
-                  aria-current={
-                    currentPath === item.href ? "page" : undefined
-                  }
+                  aria-current={currentPath === item.href ? "page" : undefined}
                 >
                   <span>{item.name}</span>
                 </a>
