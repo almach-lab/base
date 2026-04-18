@@ -23,6 +23,7 @@ interface SidebarContextValue {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
+  contained: boolean;
 }
 
 const SidebarCtx = React.createContext<SidebarContextValue | null>(null);
@@ -35,6 +36,7 @@ const SIDEBAR_CONTEXT_DEFAULT: SidebarContextValue = {
   setOpenMobile: () => {},
   isMobile: false,
   toggleSidebar: () => {},
+  contained: false,
 };
 
 function useSidebar(): SidebarContextValue {
@@ -47,6 +49,7 @@ interface SidebarProviderProps extends React.ComponentPropsWithoutRef<"div"> {
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  contained?: boolean;
 }
 
 const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
@@ -55,6 +58,7 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
       defaultOpen = true,
       open: openProp,
       onOpenChange,
+      contained = false,
       className,
       style,
       children,
@@ -102,6 +106,7 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        contained,
       }),
       [
         state,
@@ -111,6 +116,7 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        contained,
       ],
     );
 
@@ -127,7 +133,8 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
               } as React.CSSProperties
             }
             className={cn(
-              "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
+              "group/sidebar-wrapper flex w-full has-[[data-variant=inset]]:bg-sidebar",
+              contained ? "relative overflow-hidden" : "min-h-svh",
               className,
             )}
             {...props}
@@ -161,7 +168,8 @@ const SidebarRoot = React.forwardRef<HTMLDivElement, SidebarRootProps>(
     },
     ref,
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+    const { isMobile, state, openMobile, setOpenMobile, contained } =
+      useSidebar();
 
     if (collapsible === "none") {
       return (
@@ -222,7 +230,8 @@ const SidebarRoot = React.forwardRef<HTMLDivElement, SidebarRootProps>(
         {/* Width spacer */}
         <div
           className={cn(
-            "relative h-svh w-[--sidebar-width] bg-transparent",
+            "relative w-[--sidebar-width] bg-transparent",
+            contained ? "h-full" : "h-svh",
             "transition-[width] [transition-duration:var(--theme-motion-overlay-duration,200ms)] [transition-timing-function:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))] motion-reduce:transition-none",
             "group-data-[collapsible=offcanvas]:w-0",
             variant === "floating" || variant === "inset"
@@ -230,10 +239,11 @@ const SidebarRoot = React.forwardRef<HTMLDivElement, SidebarRootProps>(
               : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]",
           )}
         />
-        {/* Fixed panel */}
+        {/* Positioned panel */}
         <div
           className={cn(
-            "fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] flex-col",
+            "z-10 hidden w-[--sidebar-width] flex-col",
+            contained ? "absolute inset-y-0 h-full" : "fixed inset-y-0 h-svh",
             "transition-[left,right,width] [transition-duration:var(--theme-motion-overlay-duration,200ms)] [transition-timing-function:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))] motion-reduce:transition-none md:flex",
             side === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
