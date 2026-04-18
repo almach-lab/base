@@ -1,11 +1,11 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-04-18T02:03:15.575Z
+Generated: 2026-04-18T02:38:29.826Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
 
-Total modules: 35
+Total modules: 36
 
 ## Index
 
@@ -33,6 +33,7 @@ Total modules: 35
 - scroll-area: 2 value export(s), 0 type export(s)
 - select: 1 value export(s), 2 type export(s)
 - separator: 1 value export(s), 0 type export(s)
+- sidebar: 2 value export(s), 0 type export(s)
 - skeleton: 1 value export(s), 0 type export(s)
 - swipe-actions: 2 value export(s), 4 type export(s)
 - swipe-button: 1 value export(s), 2 type export(s)
@@ -1013,6 +1014,43 @@ export function Example() {
 ### Exported Symbols
 
 - Values: `Separator`
+- Types: (none)
+
+## Sidebar
+
+Module: `sidebar`
+
+### Import
+
+```tsx
+import { Sidebar } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Sidebar } from "@almach/ui";
+
+export function Example() {
+  return <Sidebar />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Sidebar`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Sidebar`, `useSidebar`
 - Types: (none)
 
 ## Skeleton
