@@ -130,6 +130,10 @@
     "exports": ["Separator"],
     "typeExports": []
   },
+  "sidebar": {
+    "exports": ["Sidebar", "useSidebar"],
+    "typeExports": []
+  },
   "skeleton": {
     "exports": ["Skeleton"],
     "typeExports": []

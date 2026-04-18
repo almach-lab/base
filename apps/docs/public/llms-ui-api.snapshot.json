@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-18T02:03:15.578Z",
+  "generatedAt": "2026-04-18T02:38:29.829Z",
   "components": {
     "alert": {
       "exports": [
@@ -204,6 +204,13 @@
     "separator": {
       "exports": [
         "Separator"
+      ],
+      "typeExports": []
+    },
+    "sidebar": {
+      "exports": [
+        "Sidebar",
+        "useSidebar"
       ],
       "typeExports": []
     },

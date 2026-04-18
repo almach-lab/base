@@ -1,6 +1,7 @@
 ---
 import "../styles/globals.css";
 import { ClientRouter } from "astro:transitions";
+import { DocSidebar } from "../components/DocSidebar";
 import Logo from "../components/Logo.astro";
 import { SearchCommand } from "../components/SearchCommand";
 import { ThemeCustomizer } from "../components/ThemeCustomizer";
@@ -207,7 +208,8 @@ const showRightRail = !isHome && pageAnchors.length > 0;
                 class="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 lg:hidden"
                 aria-label="Open navigation"
                 aria-expanded="false"
-                aria-controls="mobile-overlay"
+                aria-controls="doc-sidebar-mobile"
+                onclick="window.dispatchEvent(new CustomEvent('almach-sidebar-toggle'))"
               >
                 <!-- Hamburger -->
                 <svg class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" viewBox="0 0 24 24">
@@ -400,7 +402,7 @@ const showRightRail = !isHome && pageAnchors.length > 0;
 
       <!-- ── Mobile quick links ─────────────────────────────────────────── -->
       {!isHome && (
-        <div class="border-b border-border/70 bg-background/95 md:hidden">
+        <div class="border-b border-border/70 bg-background/95 lg:hidden">
           <div class="mx-auto w-full max-w-screen-xl overflow-x-auto px-3 py-2">
             <nav class="flex min-w-max items-center gap-1" aria-label="Quick navigation">
               {topNavItems.map((item) => (
@@ -421,65 +423,6 @@ const showRightRail = !isHome && pageAnchors.length > 0;
         </div>
       )}
 
-      <!-- ── Mobile sidebar overlay ──────────────────────────────────────── -->
-      <div
-        id="mobile-overlay"
-        class="fixed inset-0 z-50 hidden lg:hidden"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Navigation menu"
-      >
-        <div id="mobile-backdrop" class="absolute inset-0 bg-background/60 backdrop-blur-sm"></div>
-
-        <aside id="mobile-sidebar" class="absolute inset-y-0 left-0 flex min-h-0 w-72 max-w-[85vw] flex-col border-r border-sidebar-border/70 bg-sidebar shadow-xl">
-          <!-- Sidebar header -->
-          <div class="flex h-12 shrink-0 items-center justify-between border-b border-sidebar-border/70 px-4">
-            <a href="/" class="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1" aria-label="Almach home">
-              <Logo class="h-5 w-5 text-sidebar-foreground" />
-              <span class="text-sm font-bold text-sidebar-foreground">Almach</span>
-            </a>
-            <button
-              id="sidebar-close"
-              class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-              aria-label="Close navigation"
-            >
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-              </svg>
-            </button>
-          </div>
-
-          <!-- Nav items -->
-          <div class="flex-1 overflow-y-auto overscroll-contain touch-pan-y px-3 py-4 [-webkit-overflow-scrolling:touch]">
-            <nav aria-label="Mobile navigation">
-              {sidebarGroups.map((group) => (
-                <div class="mb-5">
-                  <p class="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/40">
-                    {group.title}
-                  </p>
-                  <div class="space-y-0.5">
-                    {group.items.map((item) => (
-                      <a
-                        href={item.href}
-                        data-nav-href={item.href}
-                        class={`relative flex items-center rounded-md px-3 py-1.5 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                          currentPath === item.href
-                            ? "bg-sidebar-primary/12 font-medium text-sidebar-primary"
-                            : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                        }`}
-                        aria-current={currentPath === item.href ? "page" : undefined}
-                      >
-                        {item.name}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </nav>
-          </div>
-        </aside>
-      </div>
-
       <!-- ── Page content ────────────────────────────────────────────────── -->
       {
         isHome ? (
@@ -488,48 +431,18 @@ const showRightRail = !isHome && pageAnchors.length > 0;
           </main>
         ) : (
           <div class="mx-auto flex w-full max-w-[1440px] flex-1">
-            <!-- Desktop sidebar -->
-            <aside class="hidden w-56 shrink-0 border-r border-sidebar-border/70 bg-sidebar xl:block" aria-label="Documentation navigation">
-              <div class="sticky top-12 h-[calc(100vh-3rem)] px-2 py-3">
-                <div class="h-full overflow-y-auto pr-1">
-                  <nav aria-label="Documentation navigation" class="px-1 pb-8">
-                    {sidebarGroups.map((group) => (
-                      <div class="mb-4">
-                        <p class="mb-1.5 px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/40">
-                          {group.title}
-                        </p>
-                        <div class="space-y-0.5">
-                          {group.items.map((item) => (
-                            <a
-                              href={item.href}
-                              data-nav-href={item.href}
-                              class={`relative flex items-center rounded-md px-2.5 py-1.5 text-[12px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                                currentPath === item.href
-                                  ? "bg-sidebar-primary/12 font-medium text-sidebar-primary"
-                                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
-                              }`}
-                              aria-current={currentPath === item.href ? "page" : undefined}
-                            >
-                              {item.name}
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </nav>
-                </div>
-              </div>
-            </aside>
+            <!-- Sidebar (desktop sticky + mobile overlay) -->
+            <DocSidebar currentPath={currentPath} client:only="react" />
 
             <main class="min-w-0 flex-1" id="main-content" transition:name="page-content">
-              <div class="mx-auto w-full max-w-4xl px-0 md:px-2 xl:max-w-[70rem] xl:px-3">
+              <div class="mx-auto w-full max-w-4xl px-0 md:px-2 lg:max-w-[70rem] lg:px-3">
                 <slot />
               </div>
             </main>
 
             {
               showRightRail && (
-                <aside class="hidden w-52 shrink-0 border-l border-sidebar-border/70 bg-sidebar px-2 py-3 xl:block" aria-label="On this page">
+                <aside class="hidden w-52 shrink-0 border-l border-sidebar-border/70 bg-sidebar px-2 py-3 lg:block" aria-label="On this page">
                   <div class="sticky top-12 h-[calc(100vh-3rem)]">
                     <div class="h-full overflow-y-auto pr-1">
                       <div class="space-y-6 px-2 pb-8">
@@ -716,58 +629,6 @@ const showRightRail = !isHome && pageAnchors.length > 0;
         });
       }
 
-      // ── Mobile sidebar ────────────────────────────────────────────────────
-      function setupMobileSidebar() {
-        const toggle = document.getElementById("sidebar-toggle");
-        const overlay = document.getElementById("mobile-overlay");
-        const backdrop = document.getElementById("mobile-backdrop");
-        const closeBtn = document.getElementById("sidebar-close");
-
-        function getSidebarDurationMs(): number {
-          const raw = getComputedStyle(document.documentElement)
-            .getPropertyValue("--theme-motion-overlay-duration")
-            .trim();
-          if (raw.endsWith("ms")) return parseInt(raw, 10) || 220;
-          if (raw.endsWith("s")) return parseFloat(raw) * 1000 || 220;
-          return 220;
-        }
-
-        let closeTimer: ReturnType<typeof setTimeout> | null = null;
-
-        const open = () => {
-          if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
-          overlay?.classList.remove("hidden");
-          // One rAF so display:block takes effect before the transition fires
-          requestAnimationFrame(() => {
-            overlay?.classList.add("sidebar-open");
-          });
-          toggle?.setAttribute("aria-expanded", "true");
-          document.body.style.overflow = "hidden";
-        };
-
-        const close = () => {
-          overlay?.classList.remove("sidebar-open");
-          toggle?.setAttribute("aria-expanded", "false");
-          document.body.style.overflow = "";
-          closeTimer = setTimeout(() => {
-            if (!overlay?.classList.contains("sidebar-open")) {
-              overlay?.classList.add("hidden");
-            }
-            closeTimer = null;
-          }, getSidebarDurationMs());
-        };
-
-        toggle?.addEventListener("click", open);
-        backdrop?.addEventListener("click", close);
-        closeBtn?.addEventListener("click", close);
-        document.getElementById("mobile-sidebar")?.querySelectorAll("a[data-nav-href]").forEach((a) => {
-          a.addEventListener("click", close);
-        });
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && overlay?.classList.contains("sidebar-open")) close();
-        });
-      }
-
       // ── LLM copy ──────────────────────────────────────────────────────────
       async function copyLLMs() {
         try {
@@ -840,7 +701,6 @@ const showRightRail = !isHome && pageAnchors.length > 0;
       function setup() {
         setupThemeToggle();
         setupMoreMenu();
-        setupMobileSidebar();
         setupCustomizerToggle();
         setupLLMCopyButton();
       }
