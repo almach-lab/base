@@ -121,6 +121,11 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         slug: "scroll-area",
         description: "Themed scrollable container with custom scrollbars.",
       },
+      {
+        name: "Sidebar",
+        slug: "sidebar",
+        description: "Collapsible navigation sidebar with nested menus.",
+      },
     ],
   },
   {

@@ -149,6 +149,11 @@ const componentPages: Record<
       default: m.ScrollAreaPage,
     })),
   ),
+  sidebar: lazy(() =>
+    import("./pages/components/sidebar").then((m) => ({
+      default: m.SidebarPage,
+    })),
+  ),
   tooltip: lazy(() =>
     import("./pages/components/tooltip").then((m) => ({
       default: m.TooltipPage,
