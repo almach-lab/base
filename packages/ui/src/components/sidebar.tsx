@@ -27,10 +27,18 @@ interface SidebarContextValue {
 
 const SidebarCtx = React.createContext<SidebarContextValue | null>(null);
 
+const SIDEBAR_CONTEXT_DEFAULT: SidebarContextValue = {
+  state: "expanded",
+  open: true,
+  setOpen: () => {},
+  openMobile: false,
+  setOpenMobile: () => {},
+  isMobile: false,
+  toggleSidebar: () => {},
+};
+
 function useSidebar(): SidebarContextValue {
-  const ctx = React.useContext(SidebarCtx);
-  if (!ctx) throw new Error("useSidebar must be used within SidebarProvider");
-  return ctx;
+  return React.useContext(SidebarCtx) ?? SIDEBAR_CONTEXT_DEFAULT;
 }
 
 // ── SidebarProvider ────────────────────────────────────────────────────────
@@ -583,6 +591,7 @@ const SidebarMenuButton = React.forwardRef<
       size = "default",
       tooltip,
       className,
+      children,
       ...props
     },
     ref,
@@ -591,7 +600,7 @@ const SidebarMenuButton = React.forwardRef<
 
     const button = asChild ? (
       React.cloneElement(
-        React.Children.only(props.children as React.ReactElement),
+        React.Children.only(children as React.ReactElement),
         {
           ref,
           "data-sidebar": "menu-button",
@@ -601,7 +610,6 @@ const SidebarMenuButton = React.forwardRef<
             className,
           ),
           ...props,
-          children: undefined,
         },
       )
     ) : (
@@ -615,7 +623,9 @@ const SidebarMenuButton = React.forwardRef<
           className,
         )}
         {...props}
-      />
+      >
+        {children}
+      </button>
     );
 
     if (!tooltip) return button;
