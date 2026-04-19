@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.2.0
+
+### Minor Changes
+
+- auto release from 205258a..1cdb1f3
+
 ## 0.1.1
 
 ### Patch Changes
