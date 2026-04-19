@@ -23,6 +23,7 @@
     "astro": "^6.0.6",
     "lucide-react": "^0.479.0",
     "react": "^19.0.0",
+    "react-aria-components": "^1.6.0",
     "react-day-picker": "^9.14.0",
     "react-dom": "^19.0.0",
     "satori": "^0.26.0",
