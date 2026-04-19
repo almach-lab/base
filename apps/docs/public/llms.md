@@ -1,6 +1,6 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-04-18T02:53:54.672Z
+Generated: 2026-04-19T10:15:59.841Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
@@ -1030,28 +1030,113 @@ import { Sidebar } from "@almach/ui";
 
 ```tsx
 import { Sidebar } from "@almach/ui";
+import { LayoutDashboard, Settings } from "lucide-react";
 
-export function Example() {
-  return <Sidebar />;
+export function AppLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Sidebar.Provider>
+      <Sidebar collapsible="icon">
+        <Sidebar.Header className="border-b px-3 py-2">
+          <span className="text-sm font-semibold">My App</span>
+        </Sidebar.Header>
+        <Sidebar.Content>
+          <Sidebar.Group>
+            <Sidebar.GroupLabel>Navigation</Sidebar.GroupLabel>
+            <Sidebar.GroupContent>
+              <Sidebar.Menu>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuButton asChild isActive tooltip="Dashboard">
+                    <a href="/dashboard">
+                      <LayoutDashboard />
+                      <span>Dashboard</span>
+                    </a>
+                  </Sidebar.MenuButton>
+                </Sidebar.MenuItem>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuButton asChild tooltip="Settings">
+                    <a href="/settings">
+                      <Settings />
+                      <span>Settings</span>
+                    </a>
+                  </Sidebar.MenuButton>
+                </Sidebar.MenuItem>
+              </Sidebar.Menu>
+            </Sidebar.GroupContent>
+          </Sidebar.Group>
+        </Sidebar.Content>
+        <Sidebar.Rail />
+      </Sidebar>
+      <Sidebar.Inset>
+        <header className="flex h-12 items-center gap-2 border-b px-4">
+          <Sidebar.Trigger />
+          <h1 className="text-sm font-medium">Dashboard</h1>
+        </header>
+        <main className="p-4">{children}</main>
+      </Sidebar.Inset>
+    </Sidebar.Provider>
+  );
 }
 ```
 
 ### Most Common Tasks
 
-- Use the exported component in controlled or uncontrolled form.
+- Build an app navigation sidebar with groups, labels, and menu buttons.
+- Collapse to icon-only width on desktop with tooltips (collapsible='icon').
+- Slide off-screen on mobile using a react-aria Modal overlay (collapsible='offcanvas').
+- Add a close button with Sidebar.Close inside mobile/collapsible sidebars.
+- Nest sub-menus under a parent item using Sidebar.MenuSub.
+- Wire into an Astro layout using a custom event for the mobile hamburger toggle.
+- Control open state with Sidebar.Provider open + onOpenChange props.
 
 ### Anatomy
 
+- `Sidebar.Provider`
 - `Sidebar`
+- `Sidebar.Trigger`
+- `Sidebar.Close`
+- `Sidebar.Rail`
+- `Sidebar.Inset`
+- `Sidebar.Header`
+- `Sidebar.Content`
+- `Sidebar.Footer`
+- `Sidebar.Separator`
+- `Sidebar.Group`
+- `Sidebar.GroupLabel`
+- `Sidebar.GroupAction`
+- `Sidebar.GroupContent`
+- `Sidebar.Menu`
+- `Sidebar.MenuItem`
+- `Sidebar.MenuButton`
+- `Sidebar.MenuAction`
+- `Sidebar.MenuBadge`
+- `Sidebar.MenuSkeleton`
+- `Sidebar.MenuSub`
+- `Sidebar.MenuSubItem`
+- `Sidebar.MenuSubButton`
 
 ### API Notes
 
-- Refer to the component page for full prop and behavior details.
+- Sidebar.Provider: wrap the layout; defaultOpen/open/onOpenChange control state; Ctrl/Cmd+B toggles sidebar; sidebarWidth/sidebarWidthIcon customize dimensions.
+- Sidebar: side ('left'|'right'), variant ('sidebar'|'floating'|'inset'), collapsible ('offcanvas'|'icon'|'none').
+- Sidebar.MenuButton: isActive highlights current page; tooltip string shown when collapsed to icons; variant ('default'|'outline'); size ('sm'|'default'|'lg').
+- Sidebar.Close: button that calls setOpen(false) on desktop and setOpenMobile(false) on mobile — renders an X icon by default.
+- Sidebar.Rail: drag handle that toggles the sidebar; add as last child of Sidebar.
+- Sidebar.Inset: wraps main content for the 'inset' variant; peer-driven CSS keeps it responsive.
+- useSidebar hook: exposes state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar.
+- Mobile: sidebar renders as a react-aria ModalOverlay + Modal + Dialog, providing focus trap, Escape dismiss, and body scroll lock automatically.
 
 ### Exported Symbols
 
 - Values: `Sidebar`, `useSidebar`
 - Types: (none)
+
+### Accessibility Notes
+
+- Mobile sidebar uses react-aria Dialog with role='dialog' and aria-modal='true'.
+- Focus is trapped within the mobile sidebar when open; Escape closes it.
+- icon-collapse mode shows tooltips (Sidebar.MenuButton tooltip prop) for icon labels.
+- Sidebar.Trigger and Sidebar.Close include sr-only text for screen readers.
+- Sidebar.MenuButton sets aria-current='page' via the isActive prop.
 
 ## Skeleton
 

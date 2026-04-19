@@ -1,7 +1,12 @@
 import { cn } from "@almach/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
+import { PanelLeft, X } from "lucide-react";
 import * as React from "react";
+import {
+  Dialog as AriaDialog,
+  Modal as AriaModal,
+  ModalOverlay,
+} from "react-aria-components";
 import { useIsMobile } from "../hooks/use-media-query.js";
 import { Separator } from "./separator.js";
 import { Skeleton } from "./skeleton.js";
@@ -24,6 +29,8 @@ interface SidebarContextValue {
   isMobile: boolean;
   toggleSidebar: () => void;
   contained: boolean;
+  sidebarWidth: string;
+  sidebarWidthIcon: string;
 }
 
 const SidebarCtx = React.createContext<SidebarContextValue | null>(null);
@@ -37,6 +44,8 @@ const SIDEBAR_CONTEXT_DEFAULT: SidebarContextValue = {
   isMobile: false,
   toggleSidebar: () => {},
   contained: false,
+  sidebarWidth: SIDEBAR_WIDTH,
+  sidebarWidthIcon: SIDEBAR_WIDTH_ICON,
 };
 
 function useSidebar(): SidebarContextValue {
@@ -50,6 +59,8 @@ interface SidebarProviderProps extends React.ComponentPropsWithoutRef<"div"> {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   contained?: boolean;
+  sidebarWidth?: string;
+  sidebarWidthIcon?: string;
 }
 
 const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
@@ -59,6 +70,8 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
       open: openProp,
       onOpenChange,
       contained = false,
+      sidebarWidth = SIDEBAR_WIDTH,
+      sidebarWidthIcon = SIDEBAR_WIDTH_ICON,
       className,
       style,
       children,
@@ -107,6 +120,8 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         setOpenMobile,
         toggleSidebar,
         contained,
+        sidebarWidth,
+        sidebarWidthIcon,
       }),
       [
         state,
@@ -117,6 +132,8 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
         setOpenMobile,
         toggleSidebar,
         contained,
+        sidebarWidth,
+        sidebarWidthIcon,
       ],
     );
 
@@ -127,8 +144,8 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
             ref={ref}
             style={
               {
-                "--sidebar-width": SIDEBAR_WIDTH,
-                "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+                "--sidebar-width": sidebarWidth,
+                "--sidebar-width-icon": sidebarWidthIcon,
                 ...style,
               } as React.CSSProperties
             }
@@ -168,8 +185,15 @@ const SidebarRoot = React.forwardRef<HTMLDivElement, SidebarRootProps>(
     },
     ref,
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile, contained } =
-      useSidebar();
+    const {
+      isMobile,
+      state,
+      openMobile,
+      setOpenMobile,
+      contained,
+      sidebarWidth,
+      sidebarWidthIcon,
+    } = useSidebar();
 
     if (collapsible === "none") {
       return (
@@ -186,35 +210,58 @@ const SidebarRoot = React.forwardRef<HTMLDivElement, SidebarRootProps>(
       );
     }
 
+    // Mobile: react-aria ModalOverlay provides focus trap, Escape dismiss,
+    // and body scroll lock automatically.
     if (isMobile) {
       return (
-        <>
-          {openMobile && (
-            <div
-              className="fixed inset-0 z-50"
-              onClick={() => setOpenMobile(false)}
-              aria-hidden="true"
-            >
-              <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
-            </div>
-          )}
-          <div
-            data-state={openMobile ? "open" : "closed"}
+        <ModalOverlay
+          isOpen={openMobile}
+          onOpenChange={setOpenMobile}
+          style={
+            {
+              "--sidebar-width": sidebarWidth,
+              "--sidebar-width-icon": sidebarWidthIcon,
+            } as React.CSSProperties
+          }
+          className={({ isEntering, isExiting }) =>
+            cn(
+              "fixed inset-0 z-50 bg-background/60 backdrop-blur-sm",
+              "[animation-duration:var(--theme-motion-overlay-duration,220ms)]",
+              isEntering && "animate-in fade-in",
+              isExiting && "animate-out fade-out",
+            )
+          }
+        >
+          <AriaModal
             data-side={side}
-            className={cn(
-              "fixed inset-y-0 z-50 flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground shadow-lg",
-              "transition-transform [transition-duration:var(--theme-motion-overlay-duration,220ms)] [transition-timing-function:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))] motion-reduce:transition-none",
-              side === "left"
-                ? "left-0 data-[state=closed]:-translate-x-full"
-                : "right-0 data-[state=closed]:translate-x-full",
-              className,
-            )}
-            ref={ref}
-            {...props}
+            data-sidebar="sidebar"
+            className={({ isEntering, isExiting }) =>
+              cn(
+                "absolute inset-y-0 flex h-full w-[--sidebar-width] flex-col",
+                "bg-sidebar text-sidebar-foreground shadow-lg",
+                "[animation-duration:var(--theme-motion-overlay-duration,220ms)]",
+                side === "left" ? "left-0" : "right-0",
+                isEntering &&
+                  (side === "left"
+                    ? "animate-in slide-in-from-left"
+                    : "animate-in slide-in-from-right"),
+                isExiting &&
+                  (side === "left"
+                    ? "animate-out slide-out-to-left"
+                    : "animate-out slide-out-to-right"),
+                className,
+              )
+            }
           >
-            {children}
-          </div>
-        </>
+            <AriaDialog
+              ref={ref as React.Ref<HTMLElement>}
+              aria-label="Navigation"
+              className="flex h-full min-h-0 flex-col outline-none"
+            >
+              {children}
+            </AriaDialog>
+          </AriaModal>
+        </ModalOverlay>
       );
     }
 
@@ -310,6 +357,44 @@ const SidebarTrigger = React.forwardRef<
   );
 });
 SidebarTrigger.displayName = "SidebarTrigger";
+
+// ── SidebarClose ───────────────────────────────────────────────────────────
+
+const SidebarClose = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentPropsWithoutRef<"button">
+>(({ className, onClick, children, ...props }, ref) => {
+  const { setOpenMobile, setOpen, isMobile } = useSidebar();
+  return (
+    <button
+      ref={ref}
+      data-sidebar="close"
+      type="button"
+      className={cn(
+        "inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-md",
+        "text-sidebar-foreground/70 outline-none",
+        "transition-colors [transition-duration:var(--theme-motion-interactive-duration,0.15s)] motion-reduce:transition-none",
+        "hover:bg-sidebar-accent hover:text-sidebar-foreground",
+        "focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+        className,
+      )}
+      onClick={(e) => {
+        onClick?.(e);
+        if (isMobile) setOpenMobile(false);
+        else setOpen(false);
+      }}
+      {...props}
+    >
+      {children ?? (
+        <>
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close sidebar</span>
+        </>
+      )}
+    </button>
+  );
+});
+SidebarClose.displayName = "SidebarClose";
 
 // ── SidebarRail ────────────────────────────────────────────────────────────
 
@@ -841,6 +926,7 @@ export { useSidebar };
 export const Sidebar = Object.assign(SidebarRoot, {
   Provider: SidebarProvider,
   Trigger: SidebarTrigger,
+  Close: SidebarClose,
   Rail: SidebarRail,
   Inset: SidebarInset,
   Header: SidebarHeader,

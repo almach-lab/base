@@ -1,6 +1,12 @@
-import { Sidebar } from "@almach/ui";
+import { Sidebar, useIsMobile } from "@almach/ui";
 import { cn } from "@almach/utils";
+import { X } from "lucide-react";
 import React from "react";
+import {
+  Dialog as AriaDialog,
+  Modal as AriaModal,
+  ModalOverlay,
+} from "react-aria-components";
 import { DOC_COMPONENT_GROUPS } from "../lib/doc-components";
 
 // ── Logo ───────────────────────────────────────────────────────────────────
@@ -69,7 +75,14 @@ interface DocSidebarProps {
 
 export function DocSidebar({ currentPath }: DocSidebarProps) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const isMobile = useIsMobile();
 
+  // Auto-close when resizing to desktop
+  React.useEffect(() => {
+    if (!isMobile) setMobileOpen(false);
+  }, [isMobile]);
+
+  // Listen for toggle events dispatched by the Astro header button
   React.useEffect(() => {
     const toggle = () => setMobileOpen((v) => !v);
     window.addEventListener("almach-sidebar-toggle", toggle);
@@ -80,20 +93,6 @@ export function DocSidebar({ currentPath }: DocSidebarProps) {
   React.useEffect(() => {
     const btn = document.getElementById("sidebar-toggle");
     if (btn) btn.setAttribute("aria-expanded", String(mobileOpen));
-    // Lock body scroll when mobile sidebar is open
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileOpen]);
-
-  // Close on Escape
-  React.useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && mobileOpen) setMobileOpen(false);
-    };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
   }, [mobileOpen]);
 
   const navGroups = SIDEBAR_GROUPS.map((group) => (
@@ -113,7 +112,6 @@ export function DocSidebar({ currentPath }: DocSidebarProps) {
               >
                 <a
                   href={item.href}
-                  data-nav-href={item.href}
                   aria-current={currentPath === item.href ? "page" : undefined}
                 >
                   <span>{item.name}</span>
@@ -128,71 +126,64 @@ export function DocSidebar({ currentPath }: DocSidebarProps) {
 
   return (
     <>
-      {/* ── Mobile backdrop ───────────────────────────────────────────── */}
-      <div
-        className={cn(
-          "fixed inset-0 z-50 lg:hidden",
-          "transition-opacity [transition-duration:var(--theme-motion-overlay-duration,220ms)] motion-reduce:transition-none",
-          mobileOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0",
-        )}
-        onClick={() => setMobileOpen(false)}
-        aria-hidden="true"
+      {/* ── Mobile sidebar — react-aria handles focus trap, Escape, scroll lock ── */}
+      <ModalOverlay
+        isOpen={mobileOpen}
+        onOpenChange={setMobileOpen}
+        className={({ isEntering, isExiting }) =>
+          cn(
+            "fixed inset-0 z-50 bg-background/60 backdrop-blur-sm lg:hidden",
+            "[animation-duration:220ms]",
+            isEntering && "animate-in fade-in",
+            isExiting && "animate-out fade-out",
+          )
+        }
       >
-        <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
-      </div>
-
-      {/* ── Mobile sidebar ────────────────────────────────────────────── */}
-      <aside
-        id="doc-sidebar-mobile"
-        aria-label="Navigation menu"
-        aria-modal={mobileOpen}
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col",
-          "border-r border-sidebar-border/70 bg-sidebar shadow-xl lg:hidden",
-          "transition-transform [transition-duration:var(--theme-motion-overlay-duration,220ms)] [transition-timing-function:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))] motion-reduce:transition-none",
-          mobileOpen ? "translate-x-0" : "-translate-x-full",
-        )}
-      >
-        <Sidebar.Header className="h-[3.25rem] flex-row items-center justify-between border-b border-sidebar-border/70 px-4 py-0">
-          <a
-            href="/"
-            className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-            aria-label="Almach home"
-            onClick={() => setMobileOpen(false)}
+        <AriaModal
+          className={({ isEntering, isExiting }) =>
+            cn(
+              "absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col",
+              "border-r border-sidebar-border/70 bg-sidebar shadow-xl",
+              "[animation-duration:220ms]",
+              isEntering && "animate-in slide-in-from-left",
+              isExiting && "animate-out slide-out-to-left",
+            )
+          }
+        >
+          <AriaDialog
+            aria-label="Documentation navigation"
+            className="flex h-full min-h-0 flex-col outline-none"
           >
-            <AlmachLogo className="h-5 w-5" />
-            <span className="text-sm font-bold text-sidebar-foreground">
-              Almach
-            </span>
-          </a>
-          <button
-            type="button"
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-            aria-label="Close navigation"
-            onClick={() => setMobileOpen(false)}
-          >
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </Sidebar.Header>
+            {/* Header */}
+            <div className="flex h-[3.25rem] shrink-0 flex-row items-center justify-between border-b border-sidebar-border/70 px-4">
+              <a
+                href="/"
+                className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                aria-label="Almach home"
+                onClick={() => setMobileOpen(false)}
+              >
+                <AlmachLogo className="h-5 w-5" />
+                <span className="text-sm font-bold text-sidebar-foreground">
+                  Almach
+                </span>
+              </a>
+              <button
+                type="button"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-sidebar-foreground/60 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+                aria-label="Close navigation"
+                onClick={() => setMobileOpen(false)}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
-        <Sidebar.Content className="px-3 py-4">
-          <nav aria-label="Mobile navigation">{navGroups}</nav>
-        </Sidebar.Content>
-      </aside>
+            {/* Scrollable nav */}
+            <div className="flex-1 overflow-y-auto px-3 py-4">
+              <nav aria-label="Mobile navigation">{navGroups}</nav>
+            </div>
+          </AriaDialog>
+        </AriaModal>
+      </ModalOverlay>
 
       {/* ── Desktop sidebar ───────────────────────────────────────────── */}
       <aside
@@ -200,11 +191,11 @@ export function DocSidebar({ currentPath }: DocSidebarProps) {
         aria-label="Documentation navigation"
       >
         <div className="sticky top-[3.25rem] flex h-[calc(100vh-3.25rem)] flex-col">
-          <Sidebar.Content className="px-2 py-3">
+          <div className="flex-1 overflow-y-auto px-2 py-3">
             <nav aria-label="Documentation navigation" className="pb-8 pr-1">
               {navGroups}
             </nav>
-          </Sidebar.Content>
+          </div>
         </div>
       </aside>
     </>

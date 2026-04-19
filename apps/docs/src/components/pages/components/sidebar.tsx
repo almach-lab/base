@@ -14,7 +14,7 @@ export function SidebarPage() {
   return (
     <ComponentDoc
       name="Sidebar"
-      description="A compound navigation sidebar with collapsible groups, nested sub-menus, badges, and action slots. Built on top of a context-driven Provider that handles open/closed state and a Ctrl/Cmd+B keyboard shortcut."
+      description="A composable navigation sidebar with collapsible groups, nested sub-menus, badges, and action slots. Built on a context-driven Provider with Ctrl/Cmd+B keyboard shortcut. On mobile, the sidebar renders as a react-aria Modal overlay — giving you focus trap, Escape dismiss, and body scroll lock automatically."
       pkg="@almach/ui"
       examples={[
         {
@@ -22,32 +22,64 @@ export function SidebarPage() {
           description: "Groups, labels, and menu buttons with active state.",
           centered: false,
           preview: <BasicNav />,
-          code: `<Sidebar.Provider>
-  <Sidebar collapsible="none" className="w-56 rounded-lg border">
-    <Sidebar.Header className="px-2 pt-3 pb-1">
-      <span className="text-xs font-semibold text-muted-foreground">My App</span>
-    </Sidebar.Header>
-    <Sidebar.Content>
-      <Sidebar.Group>
-        <Sidebar.GroupLabel>Navigation</Sidebar.GroupLabel>
-        <Sidebar.GroupContent>
-          <Sidebar.Menu>
-            <Sidebar.MenuItem>
-              <Sidebar.MenuButton isActive asChild>
-                <a href="#"><LayoutDashboard />Dashboard</a>
-              </Sidebar.MenuButton>
-            </Sidebar.MenuItem>
-            <Sidebar.MenuItem>
-              <Sidebar.MenuButton asChild>
-                <a href="#"><Inbox />Inbox<Sidebar.MenuBadge>4</Sidebar.MenuBadge></a>
-              </Sidebar.MenuButton>
-            </Sidebar.MenuItem>
-          </Sidebar.Menu>
-        </Sidebar.GroupContent>
-      </Sidebar.Group>
-    </Sidebar.Content>
-  </Sidebar>
-</Sidebar.Provider>`,
+          code: `import { Sidebar } from "@almach/ui";
+import { LayoutDashboard, Inbox, BookOpen, Settings } from "lucide-react";
+
+export function AppSidebar() {
+  return (
+    <Sidebar.Provider>
+      <Sidebar collapsible="none" className="w-56 rounded-lg border">
+        <Sidebar.Header className="px-2 pt-3 pb-1">
+          <span className="px-2 text-xs font-semibold text-muted-foreground">
+            My App
+          </span>
+        </Sidebar.Header>
+        <Sidebar.Content>
+          <Sidebar.Group>
+            <Sidebar.GroupLabel>Navigation</Sidebar.GroupLabel>
+            <Sidebar.GroupContent>
+              <Sidebar.Menu>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuButton asChild isActive>
+                    <a href="/dashboard">
+                      <LayoutDashboard />
+                      <span>Dashboard</span>
+                    </a>
+                  </Sidebar.MenuButton>
+                </Sidebar.MenuItem>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuButton asChild>
+                    <a href="/inbox">
+                      <Inbox />
+                      <span>Inbox</span>
+                    </a>
+                  </Sidebar.MenuButton>
+                  <Sidebar.MenuBadge>4</Sidebar.MenuBadge>
+                </Sidebar.MenuItem>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuButton asChild>
+                    <a href="/docs">
+                      <BookOpen />
+                      <span>Docs</span>
+                    </a>
+                  </Sidebar.MenuButton>
+                </Sidebar.MenuItem>
+                <Sidebar.MenuItem>
+                  <Sidebar.MenuButton asChild>
+                    <a href="/settings">
+                      <Settings />
+                      <span>Settings</span>
+                    </a>
+                  </Sidebar.MenuButton>
+                </Sidebar.MenuItem>
+              </Sidebar.Menu>
+            </Sidebar.GroupContent>
+          </Sidebar.Group>
+        </Sidebar.Content>
+      </Sidebar>
+    </Sidebar.Provider>
+  );
+}`,
         },
         {
           title: "With sub-menu",
@@ -57,19 +89,20 @@ export function SidebarPage() {
           code: `<Sidebar.Menu>
   <Sidebar.MenuItem>
     <Sidebar.MenuButton asChild>
-      <a href="#"><Users />Team</a>
+      <a href="#">
+        <Users />
+        <span>Team</span>
+        <ChevronRight className="ml-auto h-3.5 w-3.5 text-muted-foreground" />
+      </a>
     </Sidebar.MenuButton>
     <Sidebar.MenuSub>
-      <Sidebar.MenuSubItem>
-        <Sidebar.MenuSubButton asChild>
-          <a href="#">Members</a>
-        </Sidebar.MenuSubButton>
-      </Sidebar.MenuSubItem>
-      <Sidebar.MenuSubItem>
-        <Sidebar.MenuSubButton asChild>
-          <a href="#">Invites</a>
-        </Sidebar.MenuSubButton>
-      </Sidebar.MenuSubItem>
+      {["Members", "Invites", "Roles"].map((item) => (
+        <Sidebar.MenuSubItem key={item}>
+          <Sidebar.MenuSubButton asChild>
+            <a href="#">{item}</a>
+          </Sidebar.MenuSubButton>
+        </Sidebar.MenuSubItem>
+      ))}
     </Sidebar.MenuSub>
   </Sidebar.MenuItem>
 </Sidebar.Menu>`,
@@ -77,36 +110,59 @@ export function SidebarPage() {
         {
           title: "Icon-collapse mode",
           description:
-            "Ctrl/Cmd+B or the trigger button collapses the sidebar to icons. Tooltips reveal labels.",
+            "Ctrl/Cmd+B or the trigger collapses to icons. Tooltips reveal labels. The rail provides a drag handle.",
           centered: false,
           preview: <IconCollapseDemo />,
-          code: `<Sidebar.Provider defaultOpen={false}>
-  <Sidebar collapsible="icon" className="border rounded-lg">
-    <Sidebar.Content>
-      <Sidebar.Group>
-        <Sidebar.GroupLabel>App</Sidebar.GroupLabel>
-        <Sidebar.GroupContent>
-          <Sidebar.Menu>
-            {items.map(({ label, icon: Icon, href }) => (
-              <Sidebar.MenuItem key={label}>
-                <Sidebar.MenuButton asChild tooltip={label}>
-                  <a href={href}><Icon /><span>{label}</span></a>
-                </Sidebar.MenuButton>
-              </Sidebar.MenuItem>
-            ))}
-          </Sidebar.Menu>
-        </Sidebar.GroupContent>
-      </Sidebar.Group>
-    </Sidebar.Content>
-    <Sidebar.Rail />
-  </Sidebar>
-  <Sidebar.Inset>
-    <header className="p-4 flex items-center gap-2">
-      <Sidebar.Trigger />
-      <span className="text-sm font-medium">Dashboard</span>
-    </header>
-  </Sidebar.Inset>
-</Sidebar.Provider>`,
+          code: `import { Sidebar } from "@almach/ui";
+import { LayoutDashboard, Inbox, Users, BookOpen, Settings } from "lucide-react";
+
+const items = [
+  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { label: "Inbox", icon: Inbox, href: "/inbox" },
+  { label: "Team", icon: Users, href: "/team" },
+  { label: "Docs", icon: BookOpen, href: "/docs" },
+  { label: "Settings", icon: Settings, href: "/settings" },
+];
+
+export function AppLayout({ children }) {
+  return (
+    <Sidebar.Provider>
+      <Sidebar collapsible="icon">
+        <Sidebar.Content>
+          <Sidebar.Group>
+            <Sidebar.GroupLabel>Application</Sidebar.GroupLabel>
+            <Sidebar.GroupContent>
+              <Sidebar.Menu>
+                {items.map(({ label, icon: Icon, href }, i) => (
+                  <Sidebar.MenuItem key={label}>
+                    <Sidebar.MenuButton
+                      asChild
+                      isActive={i === 0}
+                      tooltip={label}
+                    >
+                      <a href={href}>
+                        <Icon />
+                        <span>{label}</span>
+                      </a>
+                    </Sidebar.MenuButton>
+                  </Sidebar.MenuItem>
+                ))}
+              </Sidebar.Menu>
+            </Sidebar.GroupContent>
+          </Sidebar.Group>
+        </Sidebar.Content>
+        <Sidebar.Rail />
+      </Sidebar>
+      <Sidebar.Inset>
+        <header className="flex h-12 items-center gap-2 border-b px-4">
+          <Sidebar.Trigger />
+          <span className="text-sm font-medium">Dashboard</span>
+        </header>
+        <main className="p-4">{children}</main>
+      </Sidebar.Inset>
+    </Sidebar.Provider>
+  );
+}`,
         },
         {
           title: "With header and footer",
@@ -115,26 +171,120 @@ export function SidebarPage() {
           centered: false,
           preview: <HeaderFooterNav />,
           code: `<Sidebar collapsible="none" className="w-56 rounded-lg border">
-  <Sidebar.Header className="border-b px-3 py-2">
+  <Sidebar.Header className="border-b px-3 py-2.5">
     <div className="flex items-center gap-2">
       <div className="h-6 w-6 rounded bg-primary" />
       <span className="text-sm font-semibold">Acme Inc</span>
     </div>
   </Sidebar.Header>
   <Sidebar.Content>
-    {/* nav groups */}
+    <Sidebar.Group>
+      <Sidebar.GroupLabel>Workspace</Sidebar.GroupLabel>
+      <Sidebar.GroupContent>
+        <Sidebar.Menu>
+          {/* menu items */}
+        </Sidebar.Menu>
+      </Sidebar.GroupContent>
+    </Sidebar.Group>
   </Sidebar.Content>
-  <Sidebar.Footer className="border-t px-3 py-2">
+  <Sidebar.Footer className="border-t px-3 py-2.5">
     <div className="flex items-center gap-2">
-      <div className="h-7 w-7 rounded-full bg-muted" />
-      <div className="flex-1 truncate">
-        <p className="text-xs font-medium">Alice Johnson</p>
-        <p className="text-[10px] text-muted-foreground">alice@example.com</p>
+      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-xs font-medium">
+        AJ
       </div>
-      <Settings className="h-3.5 w-3.5 text-muted-foreground" />
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-xs font-medium">Alice Johnson</p>
+        <p className="truncate text-[10px] text-muted-foreground">
+          alice@example.com
+        </p>
+      </div>
+      <Button variant="ghost" size="icon-sm">
+        <Settings className="h-3.5 w-3.5" />
+      </Button>
     </div>
   </Sidebar.Footer>
 </Sidebar>`,
+        },
+        {
+          title: "Astro layout integration",
+          description:
+            "How to wire the sidebar into an Astro docs-style layout with a mobile toggle in the header.",
+          centered: false,
+          preview: <AstroLayoutDemo />,
+          code: `// layouts/Layout.astro
+---
+import { DocSidebar } from "../components/DocSidebar";
+---
+<header class="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
+  <div class="flex h-14 items-center gap-2 px-4">
+    <!-- Mobile toggle — dispatches a custom event the React island listens to -->
+    <button
+      id="sidebar-toggle"
+      class="lg:hidden ..."
+      aria-label="Open navigation"
+      aria-expanded="false"
+      aria-controls="doc-sidebar-mobile"
+      onclick="window.dispatchEvent(new CustomEvent('almach-sidebar-toggle'))"
+    >
+      <!-- hamburger icon -->
+    </button>
+    <a href="/">My Site</a>
+  </div>
+</header>
+
+<div class="flex flex-1">
+  <!-- React island — handles mobile overlay + desktop sticky sidebar -->
+  <DocSidebar currentPath={Astro.url.pathname} client:only="react" />
+
+  <main class="min-w-0 flex-1">
+    <slot />
+  </main>
+</div>
+
+// components/DocSidebar.tsx
+import { Sidebar } from "@almach/ui";
+import { ModalOverlay, Modal, Dialog } from "react-aria-components";
+
+export function DocSidebar({ currentPath }) {
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  // Listen for the Astro header button
+  React.useEffect(() => {
+    const toggle = () => setMobileOpen((v) => !v);
+    window.addEventListener("almach-sidebar-toggle", toggle);
+    return () => window.removeEventListener("almach-sidebar-toggle", toggle);
+  }, []);
+
+  return (
+    <>
+      {/* Mobile — react-aria handles focus trap, Escape, scroll lock */}
+      <ModalOverlay
+        isOpen={mobileOpen}
+        onOpenChange={setMobileOpen}
+        className="fixed inset-0 z-50 bg-background/60 backdrop-blur-sm lg:hidden"
+      >
+        <Modal className="absolute inset-y-0 left-0 w-64 bg-sidebar shadow-xl">
+          <Dialog aria-label="Navigation" className="flex h-full flex-col outline-none">
+            <header className="flex items-center justify-between border-b px-4 py-3">
+              <span className="font-semibold">My Site</span>
+              <Sidebar.Close onClick={() => setMobileOpen(false)} />
+            </header>
+            <div className="flex-1 overflow-y-auto px-3 py-4">
+              {/* navigation items */}
+            </div>
+          </Dialog>
+        </Modal>
+      </ModalOverlay>
+
+      {/* Desktop — sticky sidebar */}
+      <aside class="hidden w-56 border-r bg-sidebar lg:flex lg:flex-col">
+        <div class="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto px-2 py-3">
+          {/* navigation items */}
+        </div>
+      </aside>
+    </>
+  );
+}`,
         },
       ]}
       props={[
@@ -153,6 +303,20 @@ export function SidebarPage() {
           name: "Sidebar.Provider › onOpenChange",
           type: "(open: boolean) => void",
           description: "Called when the sidebar opens or closes.",
+        },
+        {
+          name: "Sidebar.Provider › sidebarWidth",
+          type: "string",
+          default: '"16rem"',
+          description:
+            "Custom sidebar width — sets the --sidebar-width CSS variable.",
+        },
+        {
+          name: "Sidebar.Provider › sidebarWidthIcon",
+          type: "string",
+          default: '"3rem"',
+          description:
+            "Width when collapsed to icons — sets the --sidebar-width-icon CSS variable.",
         },
         {
           name: "Sidebar › side",
@@ -426,6 +590,61 @@ function HeaderFooterNav() {
           </div>
         </Sidebar.Footer>
       </Sidebar>
+    </Sidebar.Provider>
+  );
+}
+
+function AstroLayoutDemo() {
+  const [open, setOpen] = React.useState(true);
+
+  const navItems = [
+    { label: "Getting Started", href: "#", active: true },
+    { label: "Components", href: "#" },
+    { label: "Theming", href: "#" },
+    { label: "API Reference", href: "#" },
+  ];
+
+  return (
+    <Sidebar.Provider open={open} onOpenChange={setOpen} contained>
+      <div className="flex h-80 w-full overflow-hidden rounded-lg border border-sidebar-border/70">
+        <Sidebar collapsible="offcanvas">
+          <Sidebar.Header className="flex-row items-center justify-between border-b border-sidebar-border/70 px-4 py-0 h-10">
+            <span className="text-sm font-bold text-sidebar-foreground">
+              Docs
+            </span>
+            <Sidebar.Close className="-mr-1" />
+          </Sidebar.Header>
+          <Sidebar.Content>
+            <Sidebar.Group>
+              <Sidebar.GroupLabel>Introduction</Sidebar.GroupLabel>
+              <Sidebar.GroupContent>
+                <Sidebar.Menu>
+                  {navItems.map(({ label, href, active }) => (
+                    <Sidebar.MenuItem key={label}>
+                      <Sidebar.MenuButton asChild isActive={active} size="sm">
+                        <a href={href}>
+                          <span>{label}</span>
+                        </a>
+                      </Sidebar.MenuButton>
+                    </Sidebar.MenuItem>
+                  ))}
+                </Sidebar.Menu>
+              </Sidebar.GroupContent>
+            </Sidebar.Group>
+          </Sidebar.Content>
+        </Sidebar>
+        <Sidebar.Inset className="min-h-0">
+          <header className="flex h-10 items-center gap-2 border-b px-3">
+            <Sidebar.Trigger />
+            <span className="text-xs font-medium text-muted-foreground">
+              Getting Started
+            </span>
+          </header>
+          <div className="p-4 text-sm text-muted-foreground">
+            Click the trigger to collapse / close the sidebar.
+          </div>
+        </Sidebar.Inset>
+      </div>
     </Sidebar.Provider>
   );
 }
