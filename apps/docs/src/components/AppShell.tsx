@@ -1,13 +1,19 @@
 import { BasedQueryProvider } from "@almach/query";
 import { Toaster } from "@almach/ui";
 import React, { lazy, Suspense } from "react";
+import { BlocksPage } from "./pages/blocks";
+import { ComponentsIndexPage } from "./pages/components-index";
+import { FormsPage } from "./pages/forms";
+import { GettingStartedPage } from "./pages/getting-started";
+import { HomePage } from "./pages/home";
+import { QueryPage } from "./pages/query";
 import {
   ComponentDocSkeleton,
   GenericPageSkeleton,
   HomeSkeleton,
 } from "./PageSkeleton";
 
-type PageComponent = React.LazyExoticComponent<() => React.JSX.Element>;
+type PageComponent = React.ComponentType;
 
 // Component doc pages (lazy loaded)
 const componentPages: Record<
@@ -150,7 +156,7 @@ const componentPages: Record<
     })),
   ),
   sidebar: lazy(() =>
-    import("./pages/components/sidebar").then((m) => ({
+    import("./pages/components/sidebar.tsx").then((m) => ({
       default: m.SidebarPage,
     })),
   ),
@@ -184,28 +190,12 @@ interface AppShellProps {
 type StaticPage = Exclude<AppShellProps["page"], "component">;
 
 const staticPages: Record<StaticPage, PageComponent> = {
-  home: lazy(() =>
-    import("./pages/home").then((m) => ({ default: m.HomePage })),
-  ),
-  "getting-started": lazy(() =>
-    import("./pages/getting-started").then((m) => ({
-      default: m.GettingStartedPage,
-    })),
-  ),
-  forms: lazy(() =>
-    import("./pages/forms").then((m) => ({ default: m.FormsPage })),
-  ),
-  query: lazy(() =>
-    import("./pages/query").then((m) => ({ default: m.QueryPage })),
-  ),
-  components: lazy(() =>
-    import("./pages/components-index").then((m) => ({
-      default: m.ComponentsIndexPage,
-    })),
-  ),
-  blocks: lazy(() =>
-    import("./pages/blocks").then((m) => ({ default: m.BlocksPage })),
-  ),
+  home: HomePage,
+  "getting-started": GettingStartedPage,
+  forms: FormsPage,
+  query: QueryPage,
+  components: ComponentsIndexPage,
+  blocks: BlocksPage,
 };
 
 class AppShellErrorBoundary extends React.Component<

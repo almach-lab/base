@@ -88,11 +88,11 @@ export function CodeBlock({
 
       {html ? (
         <div
-          className="overflow-x-auto [&>pre]:p-3 [&>pre]:font-mono [&>pre]:text-[12px] [&>pre]:leading-relaxed [&>pre]:!bg-transparent [&_code]:!bg-transparent shiki-dual-theme"
+          className="overflow-x-auto font-mono [&>pre]:p-3 [&>pre]:font-mono [&>pre]:text-[12.5px] [&>pre]:leading-6 [&>pre]:tracking-[0.01em] [&>pre]:[font-variant-ligatures:none] [&>pre]:!bg-transparent [&_code]:!bg-transparent shiki-dual-theme"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       ) : (
-        <pre className="overflow-x-auto p-3 font-mono text-[12px] leading-relaxed">
+        <pre className="overflow-x-auto p-3 font-mono text-[12.5px] leading-6 tracking-[0.01em] [font-variant-ligatures:none]">
           <code>{code.trim()}</code>
         </pre>
       )}

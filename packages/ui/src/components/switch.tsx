@@ -5,9 +5,8 @@ import { Switch as SwitchPrimitive } from "react-aria-components";
 
 const switchTrack = cva(
   [
-    "relative inline-flex shrink-0 cursor-pointer items-center rounded-full",
-    "border-2 border-transparent",
-    "transition-colors duration-150 ease-out",
+    "relative inline-flex shrink-0 cursor-pointer items-center rounded-full border border-transparent",
+    "bg-muted text-foreground shadow-inner transition-[background-color,box-shadow,opacity] duration-150 ease-out",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
     "disabled:cursor-not-allowed disabled:opacity-50",
   ],
@@ -25,8 +24,7 @@ const switchTrack = cva(
 
 const switchThumb = cva(
   [
-    "pointer-events-none block rounded-full bg-white",
-    "shadow-[0_1px_3px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.08]",
+    "pointer-events-none block rounded-full bg-background shadow-sm ring-1 ring-border/80",
     "transition-transform duration-150 ease-out",
   ],
   {
@@ -54,21 +52,20 @@ const Switch = React.forwardRef<HTMLLabelElement, SwitchProps>(
     <SwitchPrimitive
       ref={ref}
       className={cn(switchTrack({ size }), className)}
-      style={{
-        background: "var(--switch-off)",
-      }}
       {...props}
     >
       {({ isSelected }) => (
         <>
           <span
-            className="absolute inset-0 rounded-full"
-            style={{
-              background: isSelected ? "var(--switch-on)" : "var(--switch-off)",
-            }}
+            aria-hidden="true"
+            className={cn(
+              "absolute inset-0 rounded-full transition-colors duration-150 ease-out",
+              isSelected ? "bg-primary" : "bg-muted",
+            )}
           />
           <span
             className={cn(
+              "relative z-10",
               relativeThumbClass(size),
               isSelected ? selectedTranslate(size) : "translate-x-0",
             )}
@@ -84,9 +81,9 @@ function relativeThumbClass(size: VariantProps<typeof switchTrack>["size"]) {
 }
 
 function selectedTranslate(size: VariantProps<typeof switchTrack>["size"]) {
-  if (size === "sm") return "translate-x-[16px]";
-  if (size === "lg") return "translate-x-[26px]";
-  return "translate-x-[20px]";
+  if (size === "sm") return "translate-x-[18px]";
+  if (size === "lg") return "translate-x-[28px]";
+  return "translate-x-[22px]";
 }
 
 Switch.displayName = "Switch";

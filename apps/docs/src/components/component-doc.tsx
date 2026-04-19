@@ -12,29 +12,6 @@ export interface ExampleProps {
   centered?: boolean;
 }
 
-function sanitizeTilePreview(node: React.ReactNode): React.ReactNode {
-  if (!React.isValidElement(node)) {
-    return node;
-  }
-
-  const props = node.props as Record<string, unknown>;
-  const {
-    id: _id,
-    htmlFor: _htmlFor,
-    "aria-labelledby": _ariaLabelledBy,
-    "aria-describedby": _ariaDescribedBy,
-    children,
-    ...rest
-  } = props;
-
-  const safeChildren = React.Children.map(
-    children as React.ReactNode,
-    (child) => sanitizeTilePreview(child),
-  );
-
-  return React.cloneElement(node, rest, safeChildren);
-}
-
 function VariantTile({
   example,
   selected,
@@ -44,10 +21,19 @@ function VariantTile({
   selected: boolean;
   onClick: () => void;
 }) {
+  const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
+      onKeyDown={onKeyDown}
       aria-pressed={selected}
       aria-label={`View ${example.title} example`}
       className="group block w-full cursor-pointer rounded-xl text-left outline-none transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
@@ -67,7 +53,7 @@ function VariantTile({
           >
             {/* Tile previews are visual-only to avoid nested interactive controls in selector cards. */}
             <div className="pointer-events-none select-none">
-              {sanitizeTilePreview(example.preview)}
+              {example.preview}
             </div>
           </div>
         </div>
@@ -90,7 +76,7 @@ function VariantTile({
           )}
         </Card.Footer>
       </Card>
-    </button>
+    </div>
   );
 }
 

@@ -1,4 +1,5 @@
 import { Command } from "@almach/ui";
+import { navigate as transitionNavigate } from "astro:transitions/client";
 import {
   BarChart2,
   BookOpen,
@@ -6,6 +7,7 @@ import {
   FileText,
   Layers,
   LayoutGrid,
+  Search,
   Zap,
 } from "lucide-react";
 import * as React from "react";
@@ -76,7 +78,15 @@ export function SearchCommand() {
 
   // ⌘K / Ctrl+K to open
   React.useEffect(() => {
+    const isEditable = (target: EventTarget | null) => {
+      if (!(target instanceof HTMLElement)) return false;
+      if (target.isContentEditable) return true;
+      const tag = target.tagName.toLowerCase();
+      return tag === "input" || tag === "textarea" || tag === "select";
+    };
+
     const handler = (e: KeyboardEvent) => {
+      if (isEditable(e.target)) return;
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((o) => !o);
@@ -104,9 +114,14 @@ export function SearchCommand() {
     };
   }, [open, hasSearchables]);
 
-  const navigate = (href: string) => {
+  const handleNavigate = (href: string) => {
     setOpen(false);
-    window.location.href = href;
+
+    try {
+      void transitionNavigate(href);
+    } catch {
+      window.location.assign(href);
+    }
   };
 
   return (
@@ -118,40 +133,20 @@ export function SearchCommand() {
         aria-label="Search documentation"
         aria-haspopup="dialog"
       >
-        <svg
-          className="h-[15px] w-[15px]"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
+        <Search className="h-4 w-4" aria-hidden="true" />
       </button>
 
       {/* Desktop: expanded search bar */}
       <button
         onClick={() => setOpen(true)}
-        className="hidden h-9 min-w-[220px] cursor-pointer items-center gap-2.5 rounded-lg border border-input bg-muted/30 px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 lg:flex xl:min-w-[260px]"
+        className="hidden h-9 min-w-55 cursor-pointer items-center gap-2.5 rounded-lg border border-input bg-muted/30 px-3 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 lg:flex xl:min-w-65"
         aria-label="Search documentation"
         aria-haspopup="dialog"
       >
-        <svg
-          className="h-3.5 w-3.5 shrink-0"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
-        <span className="flex-1 text-left">Search docs…</span>
+        <Search className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+        <span className="flex-1 text-left">Search documentation...</span>
         <kbd className="flex items-center gap-0.5 rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] leading-none text-muted-foreground">
-          Ctrl K
+          Ctrl+K
         </kbd>
       </button>
 
@@ -168,7 +163,7 @@ export function SearchCommand() {
                 {group.items.map((item) => (
                   <Command.Item
                     key={item.href}
-                    onSelect={() => navigate(item.href)}
+                    onSelect={() => handleNavigate(item.href)}
                   >
                     <group.icon className="h-4 w-4 text-muted-foreground" />
                     {item.label}

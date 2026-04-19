@@ -1,16 +1,19 @@
 @import "tailwindcss";
 @import "@almach/ui/styles";
 
-/*
- * Tell Tailwind where to scan for class names used inside @almach/ui.
- * Both paths are needed: source for monorepo dev, dist for installed builds.
- */
-@source "../../../../packages/ui/src/**/*.{ts,tsx}";
-@source "../node_modules/@almach/ui/dist/**/*.js";
+@custom-variant dark (&:where(.dark, .dark *));
 
-/* ── Light mode tokens ───────────────────────────────────────────────────── */
+/* Scan @almach/ui classes in monorepo + installed package output */
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+@source "../../../../node_modules/@almach/ui/dist/**/*.js";
+
 :root {
   color-scheme: light;
+  --theme-motion-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-sans: "Geist Sans", "Inter", "Segoe UI", ui-sans-serif, system-ui,
+    sans-serif;
+  --font-mono: "JetBrains Mono", "Geist Mono", "SFMono-Regular", "SF Mono",
+    "Fira Code", ui-monospace, monospace;
 
   --background: var(--theme-background-light, 0 0% 100%);
   --foreground: var(--theme-foreground-light, 240 10% 3.9%);
@@ -25,12 +28,48 @@
   --border: var(--theme-border-light, 240 5.9% 90%);
   --input: var(--theme-input-light, 240 5.9% 90%);
 
-  --primary: var(--theme-primary-light, 221 83% 53%);
+  /* ThemeCustomizer default preset is Golden */
+  --primary: var(--theme-primary-light, 43 90% 44%);
   --primary-foreground: 0 0% 100%;
-  --ring: var(--theme-primary-light, 221 83% 53%);
+  --secondary: var(--theme-secondary-light, var(--accent));
+  --secondary-foreground: var(
+    --theme-secondary-foreground-light,
+    var(--accent-foreground)
+  );
+  --destructive: var(--theme-destructive-light, 0 84% 60%);
+  --destructive-foreground: var(--theme-destructive-foreground-light, 0 0% 100%);
+  --success: var(--theme-success-light, 142 72% 38%);
+  --success-foreground: var(--theme-success-foreground-light, 0 0% 100%);
+  --warning: var(--theme-warning-light, 38 92% 50%);
+  --warning-foreground: var(--theme-warning-foreground-light, 26 83% 14%);
+  --ring: var(--theme-primary-light, 43 90% 44%);
+
+  --sidebar: var(--theme-sidebar-light, var(--background));
+  --sidebar-foreground: var(--theme-sidebar-foreground-light, var(--foreground));
+  --sidebar-primary: var(--theme-sidebar-primary-light, var(--primary));
+  --sidebar-primary-foreground: var(
+    --theme-sidebar-primary-foreground-light,
+    0 0% 100%
+  );
+  --sidebar-accent: var(--theme-sidebar-accent-light, var(--accent));
+  --sidebar-accent-foreground: var(
+    --theme-sidebar-accent-foreground-light,
+    var(--accent-foreground)
+  );
+  --sidebar-border: var(--theme-sidebar-border-light, var(--border));
+  --sidebar-ring: var(--theme-sidebar-ring-light, var(--ring));
 }
 
-/* ── Dark mode tokens ────────────────────────────────────────────────────── */
+html,
+body {
+  min-height: 100%;
+  background-color: hsl(var(--background));
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
 .dark {
   color-scheme: dark;
 
@@ -47,106 +86,134 @@
   --border: var(--theme-border-dark, 222 13% 18%);
   --input: var(--theme-input-dark, 222 13% 18%);
 
-  --primary: var(--theme-primary-dark, 217 91% 60%);
+  --primary: var(--theme-primary-dark, 43 92% 58%);
   --primary-foreground: 0 0% 100%;
-  --ring: var(--theme-primary-dark, 217 91% 60%);
-}
-
-/* ── Mobile sidebar slide animation ─────────────────────────────────────── */
-/*
- * The overlay starts hidden (display:none via Tailwind's `hidden` class).
- * JS removes `hidden` then adds `sidebar-open` on the next frame to
- * trigger these transitions. On close, `sidebar-open` is removed first,
- * then `hidden` is restored after the transition completes.
- */
-#mobile-sidebar {
-  transform: translateX(-100%);
-  transition: transform var(--theme-motion-overlay-duration, 220ms)
-    var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
-  will-change: transform;
-}
-
-#mobile-overlay.sidebar-open #mobile-sidebar {
-  transform: translateX(0);
-}
-
-#mobile-backdrop {
-  opacity: 0;
-  transition: opacity var(--theme-motion-overlay-duration, 220ms)
-    var(--theme-motion-ease-standard, cubic-bezier(0.22, 1, 0.36, 1));
-}
-
-#mobile-overlay.sidebar-open #mobile-backdrop {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #mobile-sidebar,
-  #mobile-backdrop {
-    transition-duration: 1ms;
-  }
-}
-
-/* ── View transitions ────────────────────────────────────────────────────── */
-/*
- * Only animate the page content area (transition:name="page-content").
- * The shell (header/sidebars) uses the instant root swap.
- */
-::view-transition-old(page-content) {
-  animation-name: vt-fade-out;
-  animation-duration: var(--theme-motion-interactive-duration, 150ms);
-  animation-timing-function: var(
-    --theme-motion-ease-standard,
-    cubic-bezier(0.22, 1, 0.36, 1)
+  --secondary: var(--theme-secondary-dark, var(--accent));
+  --secondary-foreground: var(
+    --theme-secondary-foreground-dark,
+    var(--accent-foreground)
   );
-  animation-fill-mode: both;
+  --destructive: var(--theme-destructive-dark, 0 72% 48%);
+  --destructive-foreground: var(--theme-destructive-foreground-dark, 0 0% 98%);
+  --success: var(--theme-success-dark, 142 60% 46%);
+  --success-foreground: var(--theme-success-foreground-dark, 145 80% 10%);
+  --warning: var(--theme-warning-dark, 38 90% 56%);
+  --warning-foreground: var(--theme-warning-foreground-dark, 26 83% 14%);
+  --ring: var(--theme-primary-dark, 43 92% 58%);
+
+  --sidebar: var(--theme-sidebar-dark, var(--background));
+  --sidebar-foreground: var(--theme-sidebar-foreground-dark, var(--foreground));
+  --sidebar-primary: var(--theme-sidebar-primary-dark, var(--primary));
+  --sidebar-primary-foreground: var(
+    --theme-sidebar-primary-foreground-dark,
+    0 0% 100%
+  );
+  --sidebar-accent: var(--theme-sidebar-accent-dark, var(--accent));
+  --sidebar-accent-foreground: var(
+    --theme-sidebar-accent-foreground-dark,
+    var(--accent-foreground)
+  );
+  --sidebar-border: var(--theme-sidebar-border-dark, var(--border));
+  --sidebar-ring: var(--theme-sidebar-ring-dark, var(--ring));
+}
+
+/* ── View Transitions ────────────────────────────────────────────────────── */
+::view-transition-old(page-content) {
+  animation: page-content-out 160ms var(--theme-motion-standard) both;
 }
 
 ::view-transition-new(page-content) {
-  animation-name: vt-fade-in;
-  animation-duration: var(--theme-motion-overlay-duration, 180ms);
-  animation-timing-function: var(
-    --theme-motion-ease-standard,
-    cubic-bezier(0.22, 1, 0.36, 1)
-  );
-  animation-fill-mode: both;
+  animation: page-content-in 180ms var(--theme-motion-standard) both;
 }
 
-/* Suppress the default root animation so the shell never flickers */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
 }
 
-@keyframes vt-fade-out {
-  to {
-    opacity: 0;
-  }
+::view-transition-group(page-content) {
+  animation-duration: 180ms;
+  animation-timing-function: var(--theme-motion-standard);
 }
 
-@keyframes vt-fade-in {
-  from {
-    opacity: 0;
-  }
+::view-transition-image-pair(page-content) {
+  isolation: isolate;
 }
 
-/* ── Shiki dual-theme ────────────────────────────────────────────────────── */
-/*
- * Token colours come from per-span CSS vars (--shiki-light / --shiki-dark).
- * All backgrounds are forced transparent so the outer code-block container
- * controls the background, preventing the white-row artifact.
- */
+/* ── Mobile Sidebar Logic ────────────────────────────────────────────────── */
+#mobile-sidebar {
+  transform: translateX(-100%);
+  transition: transform 220ms var(--theme-motion-standard);
+  will-change: transform;
+}
+
+.sidebar-open #mobile-sidebar {
+  transform: translateX(0);
+}
+
+#mobile-backdrop {
+  opacity: 0;
+  transition: opacity 220ms var(--theme-motion-standard);
+}
+
+.sidebar-open #mobile-backdrop {
+  opacity: 1;
+}
+
+/* ── Shiki Code Highlighting ─────────────────────────────────────────────── */
 .shiki-dual-theme .shiki,
-.shiki-dual-theme .shiki code,
-.shiki-dual-theme .shiki .line,
 .shiki-dual-theme .shiki span {
   background-color: transparent;
-}
-
-.shiki-dual-theme .shiki span {
   color: var(--shiki-light);
 }
 
 .dark .shiki-dual-theme .shiki span {
   color: var(--shiki-dark);
+}
+
+.shiki-dual-theme .shiki,
+.shiki-dual-theme .shiki code,
+.shiki-dual-theme .shiki pre,
+.shiki-dual-theme .shiki .line,
+.shiki-dual-theme .shiki span {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(page-content),
+  ::view-transition-new(page-content),
+  ::view-transition-group(page-content) {
+    animation: none;
+  }
+
+  #mobile-sidebar,
+  #mobile-backdrop {
+    transition-duration: 0s;
+  }
+}
+
+@keyframes page-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes page-content-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
 }

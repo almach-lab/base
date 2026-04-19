@@ -92,7 +92,7 @@ function Step({
     <div id={id} className="relative flex scroll-mt-20 gap-5">
       {/* Connector line */}
       {!last && (
-        <div className="absolute left-[17px] top-9 bottom-0 w-px bg-border" />
+        <div className="absolute left-4.25 top-9 bottom-0 w-px bg-border" />
       )}
 
       {/* Step number */}
