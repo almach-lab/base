@@ -94,6 +94,64 @@ function useIsDesktop() {
   return isDesktop;
 }
 
+function SidebarGroupItems({
+  items,
+  currentPath,
+  onItemClick,
+}: {
+  items: SidebarItem[];
+  currentPath: string;
+  onItemClick: () => void;
+}) {
+  return (
+    <div className="ml-2 border-l border-sidebar-border/55 py-1 pl-2">
+      {items.map((item) => {
+        const isActive = isItemActive(currentPath, item.href);
+        return (
+          <a
+            key={item.href}
+            href={item.href}
+            aria-current={isActive ? "page" : undefined}
+            onClick={onItemClick}
+            className={cn(
+              "mb-0.5 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
+              isActive
+                ? "bg-sidebar-accent text-sidebar-foreground shadow-[inset_0_0_0_1px_hsl(var(--sidebar-border)/0.55)]"
+                : "text-sidebar-foreground/72 hover:bg-sidebar-accent/65 hover:text-sidebar-foreground",
+            )}
+          >
+            {item.icon && (
+              <span className="shrink-0 text-sidebar-foreground/70">{item.icon}</span>
+            )}
+            <span className="truncate">{item.name}</span>
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
+function SidebarGroup({
+  title,
+  items,
+  currentPath,
+  onItemClick,
+}: {
+  title: string;
+  items: SidebarItem[];
+  currentPath: string;
+  onItemClick: () => void;
+}) {
+  return (
+    <section className="flex flex-col gap-1">
+      <p className="select-none px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/55">
+        {title}
+      </p>
+      <SidebarGroupItems items={items} currentPath={currentPath} onItemClick={onItemClick} />
+    </section>
+  );
+}
+
 function SidebarMenuGroup({
   title,
   defaultOpen,
@@ -147,28 +205,7 @@ function SidebarMenuGroup({
         )}
       >
         <div className="min-h-0">
-          <div className="ml-2 border-l border-sidebar-border/55 py-1 pl-2">
-            {items.map((item) => {
-              const isActive = isItemActive(currentPath, item.href);
-              return (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  aria-current={isActive ? "page" : undefined}
-                  onClick={onItemClick}
-                  className={cn(
-                    "mb-0.5 flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
-                    isActive
-                      ? "bg-sidebar-accent text-sidebar-foreground shadow-[inset_0_0_0_1px_hsl(var(--sidebar-border)/0.55)]"
-                      : "text-sidebar-foreground/72 hover:bg-sidebar-accent/65 hover:text-sidebar-foreground",
-                  )}
-                >
-                  {item.icon && <span className="shrink-0 text-sidebar-foreground/70">{item.icon}</span>}
-                  <span className="truncate">{item.name}</span>
-                </a>
-              );
-            })}
-          </div>
+          <SidebarGroupItems items={items} currentPath={currentPath} onItemClick={onItemClick} />
         </div>
       </div>
     </section>
@@ -178,24 +215,34 @@ function SidebarMenuGroup({
 function SidebarNav({
   currentPath,
   onItemClick,
+  collapsible = false,
 }: {
   currentPath: string;
   onItemClick: () => void;
+  collapsible?: boolean;
 }) {
   return (
     <nav className="flex flex-col gap-1 px-2.5 pb-4" aria-label="Documentation sidebar">
-      {DOCS_NAV_GROUPS.map((group) => (
-        <SidebarMenuGroup
-          key={group.title}
-          title={group.title}
-          items={group.items}
-          currentPath={currentPath}
-          onItemClick={onItemClick}
-          {...(group.defaultOpen !== undefined
-            ? { defaultOpen: group.defaultOpen }
-            : {})}
-        />
-      ))}
+      {DOCS_NAV_GROUPS.map((group) =>
+        collapsible ? (
+          <SidebarMenuGroup
+            key={group.title}
+            title={group.title}
+            items={group.items}
+            currentPath={currentPath}
+            onItemClick={onItemClick}
+            {...(group.defaultOpen !== undefined ? { defaultOpen: group.defaultOpen } : {})}
+          />
+        ) : (
+          <SidebarGroup
+            key={group.title}
+            title={group.title}
+            items={group.items}
+            currentPath={currentPath}
+            onItemClick={onItemClick}
+          />
+        ),
+      )}
     </nav>
   );
 }
@@ -284,7 +331,7 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
     <>
       <aside className="hidden h-[calc(100vh-3.5rem)] w-64 shrink-0 border-r border-sidebar-border/60 bg-sidebar/80 lg:sticky lg:top-14 lg:flex lg:flex-col">
         <div className="min-h-0 flex-1 overflow-y-auto py-2">
-          <SidebarNav currentPath={normalizedCurrentPath} onItemClick={() => undefined} />
+          <SidebarNav currentPath={normalizedCurrentPath} onItemClick={() => undefined} collapsible={false} />
         </div>
       </aside>
 
@@ -325,6 +372,7 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
             <SidebarNav
               currentPath={normalizedCurrentPath}
               onItemClick={() => setOpenMobile(false)}
+              collapsible={true}
             />
           </div>
         </aside>

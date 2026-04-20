@@ -70,15 +70,15 @@ export function HomePage() {
   const [plan, setPlan] = useState("starter");
 
   return (
-    <div className="bg-[radial-gradient(860px_420px_at_50%_-120px,color-mix(in_srgb,var(--color-primary)_18%,transparent),transparent),linear-gradient(to_bottom,var(--color-background),var(--color-background))]">
+    <div className="-mt-24 pt-24 bg-[radial-gradient(860px_420px_at_50%_-120px,color-mix(in_srgb,var(--color-primary)_18%,transparent),transparent),linear-gradient(to_bottom,var(--color-background),var(--color-background))]">
       <section className="border-b border-border/70">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-12 md:grid-cols-12 md:px-6 md:py-14">
-          <div className="space-y-4 md:col-span-7">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-16 md:grid-cols-12 md:px-6 md:py-20 lg:py-24">
+          <div className="space-y-5 md:col-span-7">
             <Badge variant="outline" className="w-fit text-[11px]">
               <Sparkles className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
               New generation React toolkit
             </Badge>
-            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-[2.6rem]">
+            <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
               Build polished products faster with one cohesive system.
             </h1>
             <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
@@ -104,7 +104,7 @@ export function HomePage() {
               ].map((item) => (
                 <div
                   key={item.label}
-                  className="rounded-xl border border-border/70 bg-background/65 px-3 py-2"
+                  className="rounded-xl border border-border/70 bg-background/65 px-3 py-3"
                 >
                   <p className="text-[11px] text-muted-foreground">
                     {item.label}
@@ -180,10 +180,10 @@ export function HomePage() {
       </section>
 
       <section className="border-b border-border/70">
-        <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-12">
+        <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-semibold tracking-tight">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
                 Interactive studio
               </h2>
               <p className="text-sm text-muted-foreground">
@@ -303,9 +303,9 @@ export function HomePage() {
       </section>
 
       <section>
-        <div className="mx-auto max-w-7xl px-4 py-10 md:px-6 md:py-12">
-          <div className="mb-5">
-            <h2 className="text-2xl font-semibold tracking-tight">
+        <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               One ecosystem, three focused packages
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -344,7 +344,7 @@ export function HomePage() {
                 key={item.pkg}
                 className="border-border/70 bg-card/50 shadow-sm"
               >
-                <Card.Content className="space-y-3 p-4">
+                <Card.Content className="space-y-3 p-5">
                   <Badge
                     variant="outline"
                     className="w-fit font-mono text-[11px]"

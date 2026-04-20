@@ -1,15 +1,13 @@
 ---
 import "../styles/globals.css";
 import { ClientRouter } from "astro:transitions";
-import { Github, Menu, Palette } from "lucide-react";
 
 import { DocSidebar } from "../components/DocSidebar";
 import Logo from "../components/Logo.astro";
-import { MobileMoreMenu } from "../components/MobileMoreMenu";
+import DocsHeader from "../components/navigation/DocsHeader.astro";
+import LandingHeader from "../components/navigation/LandingHeader.astro";
 import { OnThisPage } from "../components/OnThisPage";
-import { SearchCommand } from "../components/SearchCommand";
 import { ThemeCustomizer } from "../components/ThemeCustomizer";
-import { ThemeModeToggle } from "../components/ThemeModeToggle";
 
 const {
   title = "Almach",
@@ -17,27 +15,20 @@ const {
   currentPath = Astro.url.pathname,
 } = Astro.props;
 
-const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://almach.kita.blue";
+const siteUrl =
+  Astro.site?.toString().replace(/\/$/, "") ?? "https://almach.kita.blue";
 const canonicalUrl = `${siteUrl}${currentPath}`;
 const pageTitle =
-  title === "Almach"
-    ? "Almach — UI Components for React"
-    : `${title} · Almach`;
-
-const topNavItems = [
-  { name: "Docs", href: "/getting-started" },
-  { name: "Components", href: "/components" },
-  { name: "Blocks", href: "/blocks" },
-  { name: "Forms", href: "/forms" },
-  { name: "Query", href: "/query" },
-];
+  title === "Almach" ? "Almach — UI Components for React" : `${title} · Almach`;
 
 const isHome = currentPath === "/";
-const showDocsShell = !isHome;
-const iconButtonClass =
-  "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
-const navLinkBaseClass =
-  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors";
+const headerClass = isHome
+  ? "fixed top-4 z-50 inset-x-0 bg-transparent"
+  : "sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur-xl";
+const landingMainClass = "flex-1 pt-16 sm:pt-18";
+const footerContainerClass = isHome
+  ? "mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:px-6 lg:px-8"
+  : "mx-auto flex w-full max-w-400 flex-col items-center justify-between gap-4 px-6 py-6 text-xs text-muted-foreground sm:flex-row";
 ---
 
 <!doctype html>
@@ -150,10 +141,7 @@ const navLinkBaseClass =
                 "--theme-accent-foreground-dark",
                 surface.accentForegroundDark,
               );
-              root.style.setProperty(
-                "--theme-border-dark",
-                surface.borderDark,
-              );
+              root.style.setProperty("--theme-border-dark", surface.borderDark);
               root.style.setProperty("--theme-input-dark", surface.inputDark);
               root.style.setProperty(
                 "--theme-secondary-dark",
@@ -167,12 +155,18 @@ const navLinkBaseClass =
 
             const status = theme?.statusTokens;
             if (status) {
-              root.style.setProperty("--theme-success-light", status.successLight);
+              root.style.setProperty(
+                "--theme-success-light",
+                status.successLight,
+              );
               root.style.setProperty(
                 "--theme-success-foreground-light",
                 status.successForegroundLight,
               );
-              root.style.setProperty("--theme-warning-light", status.warningLight);
+              root.style.setProperty(
+                "--theme-warning-light",
+                status.warningLight,
+              );
               root.style.setProperty(
                 "--theme-warning-foreground-light",
                 status.warningForegroundLight,
@@ -185,12 +179,18 @@ const navLinkBaseClass =
                 "--theme-destructive-foreground-light",
                 status.destructiveForegroundLight,
               );
-              root.style.setProperty("--theme-success-dark", status.successDark);
+              root.style.setProperty(
+                "--theme-success-dark",
+                status.successDark,
+              );
               root.style.setProperty(
                 "--theme-success-foreground-dark",
                 status.successForegroundDark,
               );
-              root.style.setProperty("--theme-warning-dark", status.warningDark);
+              root.style.setProperty(
+                "--theme-warning-dark",
+                status.warningDark,
+              );
               root.style.setProperty(
                 "--theme-warning-foreground-dark",
                 status.warningForegroundDark,
@@ -206,13 +206,18 @@ const navLinkBaseClass =
             }
 
             if (theme?.primaryLight) {
-              root.style.setProperty("--theme-primary-light", theme.primaryLight);
+              root.style.setProperty(
+                "--theme-primary-light",
+                theme.primaryLight,
+              );
             }
             if (theme?.primaryDark) {
               root.style.setProperty("--theme-primary-dark", theme.primaryDark);
             }
 
-            const activePrimary = isDark ? theme?.primaryDark : theme?.primaryLight;
+            const activePrimary = isDark
+              ? theme?.primaryDark
+              : theme?.primaryLight;
             if (activePrimary) {
               root.style.setProperty("--primary", activePrimary);
               root.style.setProperty("--ring", activePrimary);
@@ -238,7 +243,10 @@ const navLinkBaseClass =
               );
             }
             if (theme?.ease) {
-              root.style.setProperty("--theme-motion-ease-standard", theme.ease);
+              root.style.setProperty(
+                "--theme-motion-ease-standard",
+                theme.ease,
+              );
             }
           } catch {
             // noop
@@ -249,8 +257,14 @@ const navLinkBaseClass =
 
         if (!window.__almachApplyTheme) {
           window.__almachApplyTheme = applyStoredTheme;
-          document.addEventListener("astro:before-swap", window.__almachApplyTheme);
-          document.addEventListener("astro:after-swap", window.__almachApplyTheme);
+          document.addEventListener(
+            "astro:before-swap",
+            window.__almachApplyTheme,
+          );
+          document.addEventListener(
+            "astro:after-swap",
+            window.__almachApplyTheme,
+          );
         }
 
         window.__almachApplyTheme();
@@ -260,76 +274,19 @@ const navLinkBaseClass =
 
   <body class="bg-background text-foreground antialiased">
     <div class="flex min-h-screen flex-col">
-      <header class="sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur-xl">
-        <div class="mx-auto flex h-14 w-full max-w-400 items-center gap-3 px-4 lg:px-6 xl:px-8">
-          <div class="flex items-center gap-2.5 lg:gap-3">
-            {showDocsShell && (
-              <button
-                id="sidebar-toggle"
-                class={`${iconButtonClass} lg:hidden`}
-                aria-label="Toggle sidebar"
-                aria-controls="mobile-sidebar"
-                onclick="window.dispatchEvent(new CustomEvent('almach-sidebar-toggle'))"
-              >
-                <Menu className="h-5 w-5" aria-hidden="true" />
-              </button>
-            )}
-
-            <a href="/" class="flex items-center gap-2.5" aria-label="Almach homepage">
-              <Logo class="h-5.5 w-5.5" />
-              <span class="text-base font-semibold tracking-tight">Almach</span>
-            </a>
-          </div>
-
-          <nav class="hidden items-center gap-0.5 pl-2 lg:flex" aria-label="Main navigation">
-            {topNavItems.map((item) => (
-              <a
-                href={item.href}
-                class={`${navLinkBaseClass} ${
-                  currentPath === item.href || currentPath.startsWith(`${item.href}/`)
-                    ? "bg-accent text-foreground shadow-[inset_0_0_0_1px_hsl(var(--border))]"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
-                }`}
-              >
-                {item.name}
-              </a>
-            ))}
-          </nav>
-
-          <div class="ml-auto flex items-center gap-1.5">
-            <SearchCommand client:load />
-
-            <div class="hidden items-center gap-1 lg:flex">
-              <div class="mx-1.5 h-5 w-px bg-border" aria-hidden="true"></div>
-
-              <button
-                id="customizer-toggle"
-                class={iconButtonClass}
-                aria-label="Open theme customizer"
-                onclick="window.dispatchEvent(new CustomEvent('almach-customizer-toggle'))"
-              >
-                <Palette className="h-5 w-5" aria-hidden="true" />
-              </button>
-
-              <a
-                href="https://github.com/almach-lab/base"
-                target="_blank"
-                rel="noopener noreferrer"
-                class={iconButtonClass}
-                aria-label="GitHub"
-              >
-                <Github className="h-5 w-5" aria-hidden="true" />
-              </a>
-            </div>
-
-            <MobileMoreMenu client:load />
-          </div>
-        </div>
+      <header class={headerClass}>
+        {
+          isHome ? (
+            <LandingHeader currentPath={currentPath} />
+          ) : (
+            <DocsHeader currentPath={currentPath} />
+          )
+        }
       </header>
 
       {
         isHome ? (
-          <main class="flex-1" id="main-content" transition:name="page-content">
+          <main class={landingMainClass} id="main-content" transition:name="page-content">
             <slot />
           </main>
         ) : (
@@ -337,7 +294,7 @@ const navLinkBaseClass =
             <DocSidebar currentPath={currentPath} client:load />
 
             <main
-              class="min-w-0 flex-1 px-4 py-6 md:px-8 md:py-7 lg:px-10 xl:px-12"
+              class="min-w-0 flex-1 px-4 py-8 md:px-8 md:py-10 lg:px-10"
               id="main-content"
               transition:name="page-content"
             >
@@ -354,12 +311,14 @@ const navLinkBaseClass =
       }
 
       <footer class="mt-auto border-t border-border/60">
-        <div class="mx-auto flex w-full max-w-400 flex-col items-center justify-between gap-4 px-6 py-6 text-xs text-muted-foreground sm:flex-row">
+        <div class={footerContainerClass}>
           <div class="flex items-center gap-2">
             <Logo class="h-4 w-4" />
             Almach · MIT License
           </div>
-          <div class="text-center sm:text-right">Built with React · Astro · Tailwind CSS v4</div>
+          <div class="text-center sm:text-right">
+            Built with React · Astro · Tailwind CSS v4
+          </div>
         </div>
       </footer>
     </div>

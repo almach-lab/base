@@ -1,0 +1,65 @@
+---
+import { Github, Menu, Palette } from "lucide-react";
+
+import HeaderBrand from "../HeaderBrand.astro";
+import { MobileMoreMenu } from "../MobileMoreMenu";
+import { SearchCommand } from "../SearchCommand";
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+const iconButtonClass =
+  "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const shellClass =
+  "mx-auto flex h-14 w-full max-w-400 items-center justify-between gap-3 px-3 sm:px-4 lg:px-6 xl:px-8";
+---
+
+<div class={shellClass}>
+  <div class="flex items-center gap-2.5 lg:gap-3">
+    <button
+      id="sidebar-toggle"
+      class={`${iconButtonClass} lg:hidden`}
+      aria-label="Toggle sidebar"
+      aria-controls="mobile-sidebar"
+      onclick="window.dispatchEvent(new CustomEvent('almach-sidebar-toggle'))"
+    >
+      <Menu className="h-5 w-5" aria-hidden="true" />
+    </button>
+
+    <HeaderBrand />
+  </div>
+
+  <div class="flex items-center gap-1.5">
+    <div class="hidden sm:block">
+      <SearchCommand client:load />
+    </div>
+
+    <div class="hidden items-center gap-1 lg:flex">
+      <div class="mx-1.5 h-5 w-px bg-border" aria-hidden="true"></div>
+
+      <button
+        id="customizer-toggle"
+        class={iconButtonClass}
+        aria-label="Open theme customizer"
+        onclick="window.dispatchEvent(new CustomEvent('almach-customizer-toggle'))"
+      >
+        <Palette className="h-5 w-5" aria-hidden="true" />
+      </button>
+
+      <a
+        href="https://github.com/almach-lab/base"
+        target="_blank"
+        rel="noopener noreferrer"
+        class={iconButtonClass}
+        aria-label="GitHub"
+      >
+        <Github className="h-5 w-5" aria-hidden="true" />
+      </a>
+    </div>
+
+    <MobileMoreMenu client:load />
+  </div>
+</div>

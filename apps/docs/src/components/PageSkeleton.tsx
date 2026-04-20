@@ -50,7 +50,7 @@ export function HomeSkeleton() {
   return (
     <div>
       <section className="border-b">
-        <div className="mx-auto max-w-screen-xl px-4 py-28 md:px-6 lg:py-36">
+        <div className="mx-auto max-w-screen-xl px-4 py-16 md:px-6 md:py-20 lg:py-24">
           <div className="mx-auto max-w-2xl space-y-6 animate-pulse">
             <Bone className="h-6 w-52 rounded-full bg-muted/50" />
             <Bone className="h-16 w-64" />

@@ -1,0 +1,103 @@
+---
+import { ArrowRight, ExternalLink, Github, Menu } from "lucide-react";
+
+import HeaderBrand from "../HeaderBrand.astro";
+import { ThemeModeToggle } from "../ThemeModeToggle";
+import { LANDING_NAV_ITEMS, isNavItemActive } from "./nav-items";
+
+const { currentPath } = Astro.props as { currentPath: string };
+
+const iconButtonClass =
+  "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const navLinkBaseClass =
+  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const shellClass =
+  "flex h-14 sm:h-15 w-full items-center justify-between rounded-2xl border border-border/70 bg-background/70 px-3 sm:px-4 lg:px-5 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/55 shadow-[0_8px_30px_hsl(var(--foreground)/0.08)]";
+const mobilePanelClass =
+  "absolute right-0 top-full z-50 mt-2 w-60 rounded-xl border border-border/70 bg-background/92 p-2 backdrop-blur-xl shadow-xl";
+const ctaClass =
+  "rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-accent";
+const mobileMenuItemClass =
+  "flex w-full items-center rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
+const getNavLinkClass = (href: string) =>
+  `${navLinkBaseClass} ${
+    isNavItemActive(currentPath, href)
+      ? "bg-accent text-foreground shadow-[inset_0_0_0_1px_hsl(var(--border))]"
+      : "text-muted-foreground hover:bg-accent hover:text-foreground"
+  }`;
+
+const getAriaCurrent = (href: string) =>
+  isNavItemActive(currentPath, href) ? "page" : undefined;
+---
+
+<div class="mx-auto flex w-full max-w-6xl items-center px-3 sm:px-6 lg:px-8">
+  <div class={shellClass}>
+    <HeaderBrand />
+
+    <div class="flex items-center gap-2 sm:gap-3">
+      <details class="relative sm:hidden">
+        <summary class={`${iconButtonClass} list-none [&::-webkit-details-marker]:hidden`} aria-label="Open navigation menu">
+          <Menu className="h-5 w-5" aria-hidden="true" />
+        </summary>
+
+        <div class={mobilePanelClass}>
+          {LANDING_NAV_ITEMS.map((item) => (
+            <a
+              href={item.href}
+              class={`${getNavLinkClass(item.href)} mb-1 block px-3 py-2`}
+              aria-current={getAriaCurrent(item.href)}
+            >
+              {item.name}
+            </a>
+          ))}
+
+          <div class="my-1 h-px bg-border" aria-hidden="true"></div>
+
+          <a href="/getting-started" class={mobileMenuItemClass}>
+            Get Started
+            <ArrowRight className="ml-auto h-3.5 w-3.5 opacity-70" aria-hidden="true" />
+          </a>
+
+          <a
+            href="https://github.com/almach-lab/base"
+            target="_blank"
+            rel="noopener noreferrer"
+            class={mobileMenuItemClass}
+          >
+            GitHub
+            <ExternalLink className="ml-auto h-3.5 w-3.5 opacity-70" aria-hidden="true" />
+          </a>
+        </div>
+      </details>
+
+      <nav class="hidden items-center gap-0.5 sm:flex" aria-label="Landing navigation">
+        {LANDING_NAV_ITEMS.map((item) => (
+          <a
+            href={item.href}
+            class={getNavLinkClass(item.href)}
+            aria-current={getAriaCurrent(item.href)}
+          >
+            {item.name}
+          </a>
+        ))}
+      </nav>
+
+      <a href="/getting-started" class={`hidden sm:inline-flex ${ctaClass}`}>
+        Get Started
+      </a>
+
+      <ThemeModeToggle client:load />
+
+      <a
+        href="https://github.com/almach-lab/base"
+        target="_blank"
+        rel="noopener noreferrer"
+        class={`hidden sm:flex ${iconButtonClass}`}
+        aria-label="GitHub"
+      >
+        <Github className="h-5 w-5" aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+</div>
