@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.3.0
+
+### Minor Changes
+
+- Enhance Switch component styles and functionality with improved visual design and interaction states.
+
 ## 0.2.0
 
 ### Minor Changes
