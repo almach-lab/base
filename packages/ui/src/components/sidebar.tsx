@@ -166,7 +166,9 @@ export const SidebarRoot = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        isContained ? "group peer flex h-full w-full" : "group peer hidden lg:block",
+        isContained
+          ? "group peer flex h-full w-full"
+          : "group peer hidden lg:block",
       )}
       data-state={open ? "expanded" : "collapsed"}
       data-variant={variant}
@@ -245,14 +247,16 @@ export function SidebarMenuButton({
   const childArray = React.Children.toArray(children);
   const textLabel = childArray
     .map((child) =>
-      typeof child === "string" || typeof child === "number" ? String(child) : "",
+      typeof child === "string" || typeof child === "number"
+        ? String(child)
+        : "",
     )
     .join(" ")
     .trim();
-  const iconChild = childArray.find(
-    (child) => React.isValidElement(child),
+  const iconChild = childArray.find((child) => React.isValidElement(child));
+  const expandedChildren = (
+    <div className="flex flex-1 items-center gap-3 truncate">{children}</div>
   );
-  const expandedChildren = <div className="flex flex-1 items-center gap-3 truncate">{children}</div>;
   const collapsedChildren = (
     <>
       <div className="flex flex-1 items-center justify-center gap-0 truncate">

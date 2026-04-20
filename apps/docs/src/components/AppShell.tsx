@@ -1,17 +1,17 @@
 import { BasedQueryProvider } from "@almach/query";
 import { Toaster } from "@almach/ui";
 import React, { lazy, Suspense } from "react";
+import {
+  ComponentDocSkeleton,
+  GenericPageSkeleton,
+  HomeSkeleton,
+} from "./PageSkeleton";
 import { BlocksPage } from "./pages/blocks";
 import { ComponentsIndexPage } from "./pages/components-index";
 import { FormsPage } from "./pages/forms";
 import { GettingStartedPage } from "./pages/getting-started";
 import { HomePage } from "./pages/home";
 import { QueryPage } from "./pages/query";
-import {
-  ComponentDocSkeleton,
-  GenericPageSkeleton,
-  HomeSkeleton,
-} from "./PageSkeleton";
 
 type PageComponent = React.ComponentType;
 

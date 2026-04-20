@@ -1,5 +1,5 @@
-import { Command } from "@almach/ui";
 import { navigate as transitionNavigate } from "astro:transitions/client";
+import { Command } from "@almach/ui";
 import {
   BarChart2,
   BookOpen,

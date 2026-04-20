@@ -95,7 +95,10 @@ export function MobileMoreMenu() {
             onClick={() => setIsOpen(false)}
           >
             GitHub
-            <ExternalLink className="ml-auto h-3.5 w-3.5 opacity-60" aria-hidden="true" />
+            <ExternalLink
+              className="ml-auto h-3.5 w-3.5 opacity-60"
+              aria-hidden="true"
+            />
           </a>
         </div>
       )}

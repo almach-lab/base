@@ -4,12 +4,12 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --radius-sm:   calc(var(--radius) - 0.125rem);
-  --radius-md:   var(--radius);
-  --radius-lg:   calc(var(--radius) + 0.125rem);
-  --radius-xl:   calc(var(--radius) + 0.375rem);
-  --radius-2xl:  calc(var(--radius) + 0.625rem);
-  --radius-3xl:  calc(var(--radius) + 1rem);
+  --radius-sm: calc(var(--radius) - 0.125rem);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 0.125rem);
+  --radius-xl: calc(var(--radius) + 0.375rem);
+  --radius-2xl: calc(var(--radius) + 0.625rem);
+  --radius-3xl: calc(var(--radius) + 1rem);
   --radius-full: 9999px;
 }
 
@@ -20,10 +20,11 @@
 :root {
   color-scheme: light;
   --theme-motion-standard: cubic-bezier(0.22, 1, 0.36, 1);
-  --font-sans: "Geist Sans", "Inter", "Segoe UI", ui-sans-serif, system-ui,
-    sans-serif;
-  --font-mono: "JetBrains Mono", "Geist Mono", "SFMono-Regular", "SF Mono",
-    "Fira Code", ui-monospace, monospace;
+  --font-sans:
+    "Geist Sans", "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    "JetBrains Mono", "Geist Mono", "SFMono-Regular", "SF Mono", "Fira Code",
+    ui-monospace, monospace;
 
   --background: var(--theme-background-light, 0 0% 100%);
   --foreground: var(--theme-foreground-light, 240 10% 3.9%);
@@ -47,7 +48,10 @@
     var(--accent-foreground)
   );
   --destructive: var(--theme-destructive-light, 0 84% 60%);
-  --destructive-foreground: var(--theme-destructive-foreground-light, 0 0% 100%);
+  --destructive-foreground: var(
+    --theme-destructive-foreground-light,
+    0 0% 100%
+  );
   --success: var(--theme-success-light, 142 72% 38%);
   --success-foreground: var(--theme-success-foreground-light, 0 0% 100%);
   --warning: var(--theme-warning-light, 38 92% 50%);
@@ -55,7 +59,10 @@
   --ring: var(--theme-primary-light, 43 90% 44%);
 
   --sidebar: var(--theme-sidebar-light, var(--background));
-  --sidebar-foreground: var(--theme-sidebar-foreground-light, var(--foreground));
+  --sidebar-foreground: var(
+    --theme-sidebar-foreground-light,
+    var(--foreground)
+  );
   --sidebar-primary: var(--theme-sidebar-primary-light, var(--primary));
   --sidebar-primary-foreground: var(
     --theme-sidebar-primary-foreground-light,
@@ -188,7 +195,9 @@ html {
 .shiki-dual-theme .shiki span {
   font-family: var(--font-mono);
   font-variant-ligatures: none;
-  font-feature-settings: "liga" 0, "calt" 0;
+  font-feature-settings:
+    "liga" 0,
+    "calt" 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

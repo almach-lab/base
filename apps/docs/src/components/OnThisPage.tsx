@@ -123,7 +123,10 @@ export function OnThisPage() {
         On this page
       </p>
 
-      <nav className="border-l border-sidebar-border/60 pl-2.5" aria-label="On this page">
+      <nav
+        className="border-l border-sidebar-border/60 pl-2.5"
+        aria-label="On this page"
+      >
         {headings.map((heading) => {
           const isActive = heading.id === activeId;
 

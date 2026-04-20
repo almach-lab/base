@@ -851,7 +851,12 @@ function seededIndex(seed: number, salt: number, length: number) {
   return mixed % length;
 }
 
-function clampNumber(value: unknown, min: number, max: number, fallback: number) {
+function clampNumber(
+  value: unknown,
+  min: number,
+  max: number,
+  fallback: number,
+) {
   if (typeof value !== "number" || Number.isNaN(value)) return fallback;
   if (value < min) return min;
   if (value > max) return max;
@@ -1331,12 +1336,7 @@ export function ThemeCustomizer() {
         easingValue: activeEase,
       });
     },
-    [
-      overlayMs,
-      interactiveMs,
-      activeEase,
-      applyThemeAndPersist,
-    ],
+    [overlayMs, interactiveMs, activeEase, applyThemeAndPersist],
   );
 
   const randomizeTheme = useCallback(() => {
@@ -1675,7 +1675,8 @@ export function ThemeCustomizer() {
                       />
                     </div>
                     <p className="text-[10px] text-muted-foreground">
-                      {pack.note ?? `${pack.color} · ${pack.surface} · radius ${pack.radius}`}
+                      {pack.note ??
+                        `${pack.color} · ${pack.surface} · radius ${pack.radius}`}
                     </p>
                   </button>
                 );

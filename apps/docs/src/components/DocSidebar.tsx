@@ -121,7 +121,9 @@ function SidebarGroupItems({
             )}
           >
             {item.icon && (
-              <span className="shrink-0 text-sidebar-foreground/70">{item.icon}</span>
+              <span className="shrink-0 text-sidebar-foreground/70">
+                {item.icon}
+              </span>
             )}
             <span className="truncate">{item.name}</span>
           </a>
@@ -147,7 +149,11 @@ function SidebarGroup({
       <p className="select-none px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/55">
         {title}
       </p>
-      <SidebarGroupItems items={items} currentPath={currentPath} onItemClick={onItemClick} />
+      <SidebarGroupItems
+        items={items}
+        currentPath={currentPath}
+        onItemClick={onItemClick}
+      />
     </section>
   );
 }
@@ -205,7 +211,11 @@ function SidebarMenuGroup({
         )}
       >
         <div className="min-h-0">
-          <SidebarGroupItems items={items} currentPath={currentPath} onItemClick={onItemClick} />
+          <SidebarGroupItems
+            items={items}
+            currentPath={currentPath}
+            onItemClick={onItemClick}
+          />
         </div>
       </div>
     </section>
@@ -222,7 +232,10 @@ function SidebarNav({
   collapsible?: boolean;
 }) {
   return (
-    <nav className="flex flex-col gap-1 px-2.5 pb-4" aria-label="Documentation sidebar">
+    <nav
+      className="flex flex-col gap-1 px-2.5 pb-4"
+      aria-label="Documentation sidebar"
+    >
       {DOCS_NAV_GROUPS.map((group) =>
         collapsible ? (
           <SidebarMenuGroup
@@ -231,7 +244,9 @@ function SidebarNav({
             items={group.items}
             currentPath={currentPath}
             onItemClick={onItemClick}
-            {...(group.defaultOpen !== undefined ? { defaultOpen: group.defaultOpen } : {})}
+            {...(group.defaultOpen !== undefined
+              ? { defaultOpen: group.defaultOpen }
+              : {})}
           />
         ) : (
           <SidebarGroup
@@ -331,7 +346,11 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
     <>
       <aside className="hidden h-[calc(100vh-3.5rem)] w-64 shrink-0 border-r border-sidebar-border/60 bg-sidebar/80 lg:sticky lg:top-14 lg:flex lg:flex-col">
         <div className="min-h-0 flex-1 overflow-y-auto py-2">
-          <SidebarNav currentPath={normalizedCurrentPath} onItemClick={() => undefined} collapsible={false} />
+          <SidebarNav
+            currentPath={normalizedCurrentPath}
+            onItemClick={() => undefined}
+            collapsible={false}
+          />
         </div>
       </aside>
 

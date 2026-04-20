@@ -24,7 +24,8 @@ export function SidebarPage() {
       examples={[
         {
           title: "Basic navigation",
-          description: "Grouped links with active state and a compact sidebar shell.",
+          description:
+            "Grouped links with active state and a compact sidebar shell.",
           centered: false,
           preview: <BasicNav />,
           code: `import { Sidebar } from "@almach/ui";
