@@ -189,10 +189,6 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
       );
       if (open) {
         setMounted(true);
-        // Double RAF: the first frame lets the browser paint the "closed"
-        // (opacity-0 / scale-[0.96]) state; the second frame triggers the
-        // CSS transition to "open". A single RAF can be absorbed into the
-        // same paint as the mount commit, so the enter animation never fires.
         let raf2: number | null = null;
         const raf1 = window.requestAnimationFrame(() => {
           raf2 = window.requestAnimationFrame(() => {
@@ -322,7 +318,6 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
             "w-[calc(100%-2rem)] max-w-lg max-h-[calc(100svh-4rem)] overflow-y-auto",
             "rounded-lg bg-background p-6 shadow-xl outline-none",
             "transition-[opacity,transform] motion-reduce:transition-none motion-reduce:transform-none will-change-transform",
-            // Keep viewport-centering stable; animate with opacity/scale only.
             "data-[state=open]:opacity-100 data-[state=open]:scale-100",
             "data-[state=closed]:opacity-0 data-[state=closed]:scale-[0.96]",
             className,

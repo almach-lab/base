@@ -36,8 +36,6 @@ export function useSidebar() {
   return context;
 }
 
-// ── Provider ──────────────────────────────────────────────────────────────
-
 export function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -131,8 +129,6 @@ export function SidebarProvider({
   );
 }
 
-// ── Root ──────────────────────────────────────────────────────────────────
-
 export const SidebarRoot = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
@@ -220,8 +216,6 @@ export const SidebarRoot = React.forwardRef<
   );
 });
 
-// ── Trigger (with RTL support) ────────────────────────────────────────────
-
 export function SidebarTrigger({ className }: { className?: string }) {
   const { toggleSidebar, isMobile, open, openMobile, contentId } = useSidebar();
   const expanded = isMobile ? openMobile : open;
@@ -242,8 +236,6 @@ export function SidebarTrigger({ className }: { className?: string }) {
     </button>
   );
 }
-
-// ── Menu Components ───────────────────────────────────────────────────────
 
 const menuButtonVariants = cva(
   "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-ring outline-none",
@@ -427,8 +419,6 @@ export function SidebarMenuItem({
   );
 }
 
-// ── Layout Parts ──────────────────────────────────────────────────────────
-
 export function SidebarHeader({
   className,
   ...props
@@ -459,8 +449,6 @@ export function SidebarFooter({
     />
   );
 }
-
-// ── Main Export ───────────────────────────────────────────────────────────
 
 export const Sidebar = Object.assign(SidebarRoot, {
   Provider: SidebarProvider,

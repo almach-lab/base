@@ -172,9 +172,7 @@ function useDrawerDrag({
 
       try {
         popup.releasePointerCapture(event.pointerId);
-      } catch {
-        // Pointer capture may already be released.
-      }
+      } catch {}
 
       const dimension = isVertical ? popup.offsetHeight : popup.offsetWidth;
       const shouldDismiss =
