@@ -11,6 +11,7 @@ import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
 interface DialogCtxValue {
   open: boolean;
   setOpen: (open: boolean) => void;
+  triggerRef: React.RefObject<HTMLElement | null>;
 }
 
 const DialogCtx = React.createContext<DialogCtxValue | null>(null);
@@ -37,6 +38,7 @@ function DialogRoot({
   children,
 }: DialogRootProps) {
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const triggerRef = React.useRef<HTMLElement | null>(null);
   const isOpen = open ?? internalOpen;
   const setOpen = React.useCallback(
     (next: boolean) => {
@@ -46,7 +48,7 @@ function DialogRoot({
     [open, onOpenChange],
   );
   return (
-    <DialogCtx.Provider value={{ open: isOpen, setOpen }}>
+    <DialogCtx.Provider value={{ open: isOpen, setOpen, triggerRef }}>
       {children}
     </DialogCtx.Provider>
   );
@@ -73,13 +75,14 @@ interface DialogTriggerProps
 }
 const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
   ({ asChild, children, onClick, ...props }, ref) => {
-    const { open, setOpen } = useDialogCtx();
+    const { open, setOpen, triggerRef } = useDialogCtx();
     if (asChild && React.isValidElement(children)) {
       const child = children as React.ReactElement<{
         onClick?: (e: React.MouseEvent<HTMLElement>) => void;
       }>;
       return React.cloneElement(child, {
         onClick: (e: React.MouseEvent<HTMLElement>) => {
+          triggerRef.current = e.currentTarget;
           child.props.onClick?.(e);
           if (!e.defaultPrevented) setOpen(!open);
         },
@@ -87,7 +90,16 @@ const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
     }
     return (
       <button
-        ref={ref}
+        ref={(node) => {
+          triggerRef.current = node;
+          if (typeof ref === "function") {
+            ref(node);
+            return;
+          }
+          if (ref) {
+            ref.current = node;
+          }
+        }}
         type="button"
         onClick={(e) => {
           onClick?.(e);
@@ -164,9 +176,11 @@ DialogContent.displayName = "Dialog.Content";
 
 const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
   ({ className, children, hideClose, ...props }, ref) => {
-    const { open, setOpen } = useDialogCtx();
+    const { open, setOpen, triggerRef } = useDialogCtx();
     const [mounted, setMounted] = React.useState(open);
     const [isVisible, setIsVisible] = React.useState(false);
+    const contentRef = React.useRef<HTMLDivElement | null>(null);
+    const restoreFocusRef = React.useRef<HTMLElement | null>(null);
 
     React.useEffect(() => {
       const motionMs = resolveMotionDurationMs(
@@ -201,18 +215,23 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
 
     React.useEffect(() => {
       if (!mounted) return;
+      restoreFocusRef.current = document.activeElement as HTMLElement | null;
+
       const onKeyDown = (event: KeyboardEvent) => {
         if (event.key === "Escape") setOpen(false);
         if (event.key === "Tab") trapFocus(event);
       };
       window.addEventListener("keydown", onKeyDown);
-      return () => window.removeEventListener("keydown", onKeyDown);
+      return () => {
+        window.removeEventListener("keydown", onKeyDown);
+        const target =
+          triggerRef.current ?? restoreFocusRef.current ?? document.body;
+        target?.focus?.();
+      };
     }, [mounted, setOpen]);
 
     const trapFocus = (event: KeyboardEvent) => {
-      const el = document.querySelector(
-        '[data-dialog-content="true"]',
-      ) as HTMLElement | null;
+      const el = contentRef.current;
       if (!el) return;
       const focusable = el.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
@@ -239,6 +258,22 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
       return () => unlockBodyScroll();
     }, [mounted]);
 
+    React.useEffect(() => {
+      if (!mounted || !isVisible) {
+        return;
+      }
+
+      const content = contentRef.current;
+      if (!content) {
+        return;
+      }
+
+      const initialFocusable = content.querySelector<HTMLElement>(
+        "[autofocus], button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])",
+      );
+      (initialFocusable ?? content).focus();
+    }, [isVisible, mounted]);
+
     if (!mounted) return null;
 
     const state = isVisible ? "open" : "closed";
@@ -247,7 +282,11 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
       <DialogPortal>
         <DialogOverlay
           data-state={state}
-          onClick={() => setOpen(false)}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              setOpen(false);
+            }
+          }}
           style={{
             transitionDuration: `var(--theme-motion-overlay-duration, ${DIALOG_ANIMATION_MS}ms)`,
             transitionTimingFunction: `var(--theme-motion-ease-standard, ${DIALOG_EASE})`,
@@ -258,9 +297,19 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
           )}
         />
         <div
-          ref={ref}
+          ref={(node) => {
+            contentRef.current = node;
+            if (typeof ref === "function") {
+              ref(node);
+              return;
+            }
+            if (ref) {
+              ref.current = node;
+            }
+          }}
           role="dialog"
           aria-modal="true"
+          tabIndex={-1}
           data-dialog-content="true"
           data-state={state}
           onClick={(event) => event.stopPropagation()}

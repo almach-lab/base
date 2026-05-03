@@ -23,6 +23,7 @@ interface SidebarContextValue {
   isMobile: boolean;
   toggleSidebar: () => void;
   contained: boolean;
+  contentId: string;
 }
 
 const SidebarContext = React.createContext<SidebarContextValue | null>(null);
@@ -63,6 +64,7 @@ export function SidebarProvider({
   const isMobile = useIsMobile();
   const [openState, setOpenState] = React.useState(defaultOpen);
   const [openMobileState, setOpenMobileState] = React.useState(false);
+  const contentId = React.useId();
 
   const open = openProp ?? openState;
   const setOpen = (value: boolean) => {
@@ -84,6 +86,14 @@ export function SidebarProvider({
     }
   }, [isMobile, open, openMobile, setOpen, setOpenMobile]);
 
+  React.useEffect(() => {
+    if (isMobile) {
+      return;
+    }
+
+    setOpenMobile(false);
+  }, [isMobile]);
+
   const state = open ? "expanded" : "collapsed";
 
   return (
@@ -97,6 +107,7 @@ export function SidebarProvider({
         isMobile,
         toggleSidebar,
         contained,
+        contentId,
       }}
     >
       <div
@@ -135,6 +146,7 @@ export const SidebarRoot = React.forwardRef<
     openMobile,
     setOpenMobile,
     contained: containedFromProvider,
+    contentId,
   } = useSidebar();
   const isContained = contained ?? containedFromProvider;
   const desktopWidthClass = open
@@ -159,6 +171,7 @@ export const SidebarRoot = React.forwardRef<
           )}
         >
           <AriaDialog
+            id={contentId}
             aria-label="Navigation Sidebar"
             className="flex h-full flex-col outline-none"
           >
@@ -174,11 +187,13 @@ export const SidebarRoot = React.forwardRef<
       ref={ref}
       className={cn(
         isContained ? "group peer shrink-0" : "group peer hidden md:block",
+        variant === "inset" && "px-3 py-3",
       )}
       data-state={open ? "expanded" : "collapsed"}
       data-variant={variant}
     >
       <div
+        id={contentId}
         className={cn(
           isContained
             ? cn(
@@ -193,6 +208,8 @@ export const SidebarRoot = React.forwardRef<
             (isContained
               ? "m-3 h-[calc(100%-1.5rem)] rounded-2xl shadow-xl"
               : "m-3 h-[calc(100vh-1.5rem)] rounded-2xl shadow-xl"),
+          variant === "inset" &&
+            "rounded-2xl border border-sidebar-border/60 shadow-sm",
           className,
         )}
         {...props}
@@ -206,16 +223,20 @@ export const SidebarRoot = React.forwardRef<
 // ── Trigger (with RTL support) ────────────────────────────────────────────
 
 export function SidebarTrigger({ className }: { className?: string }) {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, isMobile, open, openMobile, contentId } = useSidebar();
+  const expanded = isMobile ? openMobile : open;
 
   return (
     <button
+      type="button"
       onClick={toggleSidebar}
       className={cn(
         "flex h-9 w-9 items-center justify-center rounded-lg text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
       aria-label="Toggle sidebar"
+      aria-controls={contentId}
+      aria-expanded={expanded}
     >
       <PanelLeft className="size-4 rtl:rotate-180" />
     </button>
@@ -344,6 +365,7 @@ export function SidebarMenuSub({
   isOpen: boolean;
 }) {
   const { state } = useSidebar();
+  const panelId = React.useId();
 
   if (state === "collapsed") {
     return null;
@@ -351,15 +373,18 @@ export function SidebarMenuSub({
 
   return (
     <div
+      id={panelId}
+      aria-hidden={!isOpen}
+      data-state={isOpen ? "open" : "closed"}
       className={cn(
-        "grid transition-all duration-300",
+        "grid transition-all duration-200 ease-out",
         isOpen
           ? "grid-rows-[1fr] opacity-100"
           : "grid-rows-[0fr] opacity-0 overflow-hidden",
       )}
     >
       <div className="min-h-0 overflow-hidden">
-        <div className="flex flex-col gap-0.5 pl-6 pr-2 py-1 ml-4 border-l border-sidebar-border/60">
+        <div className="ml-4 flex flex-col gap-0.5 border-l border-sidebar-border/60 py-1 pl-6 pr-2">
           {children}
         </div>
       </div>
@@ -385,7 +410,7 @@ export function SidebarMenuItem({
         }>,
         {
           isOpen,
-          onToggle: () => setIsOpen(!isOpen),
+          onToggle: () => setIsOpen((value) => !value),
         },
       );
     }

@@ -30,7 +30,9 @@ interface SelectContextValue {
   onValueChange: ((value: string) => void) | undefined;
   items: Map<string, string>;
   registerItem: (value: string, label: string) => void;
+  unregisterItem: (value: string) => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
+  contentId: string;
 }
 
 const SelectCtx = React.createContext<SelectContextValue | null>(null);
@@ -60,12 +62,14 @@ function SelectRoot({
   const [open, setOpen] = React.useState(false);
   const itemsRef = React.useRef(new Map<string, string>());
   const triggerRef = React.useRef<HTMLButtonElement | null>(null);
+  const contentId = React.useId();
   const currentValue = value ?? internalValue;
 
   const registerItem = React.useCallback((itemValue: string, label: string) => {
-    if (!itemsRef.current.has(itemValue)) {
-      itemsRef.current.set(itemValue, label);
-    }
+    itemsRef.current.set(itemValue, label);
+  }, []);
+  const unregisterItem = React.useCallback((itemValue: string) => {
+    itemsRef.current.delete(itemValue);
   }, []);
 
   const handleChange = React.useCallback(
@@ -86,7 +90,9 @@ function SelectRoot({
         onValueChange: handleChange,
         items: itemsRef.current,
         registerItem,
+        unregisterItem,
         triggerRef,
+        contentId,
       }}
     >
       {children}
@@ -131,7 +137,7 @@ const SelectTrigger = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & { error?: boolean }
 >(({ className, children, error, onClick, ...props }, ref) => {
-  const { open, setOpen, triggerRef, isDisabled } = useSelectCtx();
+  const { open, setOpen, triggerRef, isDisabled, contentId } = useSelectCtx();
   return (
     <button
       ref={(node) => {
@@ -159,7 +165,9 @@ const SelectTrigger = React.forwardRef<
         if (isDisabled) return;
         if (!e.defaultPrevented) setOpen(!open);
       }}
+      aria-controls={open ? contentId : undefined}
       aria-expanded={open}
+      aria-haspopup="listbox"
       disabled={isDisabled}
       {...props}
     >
@@ -179,6 +187,7 @@ const SelectItem = React.forwardRef<
     onValueChange,
     setOpen,
     registerItem,
+    unregisterItem,
     isDisabled,
   } = useSelectCtx();
   const text = React.Children.toArray(children)
@@ -187,7 +196,8 @@ const SelectItem = React.forwardRef<
     .trim();
   React.useEffect(() => {
     registerItem(value, text || value);
-  }, [registerItem, text, value]);
+    return () => unregisterItem(value);
+  }, [registerItem, text, unregisterItem, value]);
 
   const selected = selectedValue === value;
   return (
@@ -224,7 +234,7 @@ const SelectContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, ...props }, ref) => {
-  const { open, setOpen, triggerRef } = useSelectCtx();
+  const { open, setOpen, triggerRef, contentId } = useSelectCtx();
   const contentRef = React.useRef<HTMLDivElement | null>(null);
   const [position, setPosition] = React.useState<{
     top: number;
@@ -282,6 +292,7 @@ const SelectContent = React.forwardRef<
   if (!open) return null;
   return createPortal(
     <div
+      id={contentId}
       ref={(node) => {
         contentRef.current = node;
         if (typeof ref === "function") {
@@ -292,6 +303,7 @@ const SelectContent = React.forwardRef<
           ref.current = node;
         }
       }}
+      role="listbox"
       className={cn(
         "fixed z-50",
         selectPopupClasses,
@@ -396,6 +408,9 @@ function SelectSearchable({
   className,
 }: SelectSearchableProps) {
   const [open, setOpen] = React.useState(false);
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const listboxId = React.useId();
   const selected = options.find((o) => o.value === value);
 
   const handleSelect = (val: string) => {
@@ -403,13 +418,45 @@ function SelectSearchable({
     setOpen(false);
   };
 
+  React.useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  React.useEffect(() => {
+    if (open) {
+      inputRef.current?.focus();
+    }
+  }, [open]);
+
   return (
-    <div className="relative">
+    <div ref={rootRef} className="relative">
       <button
         type="button"
         role="combobox"
         aria-expanded={open}
         aria-haspopup="listbox"
+        aria-controls={open ? listboxId : undefined}
         disabled={disabled}
         className={cn(
           selectTriggerClasses,
@@ -447,6 +494,7 @@ function SelectSearchable({
                 aria-hidden="true"
               />
               <CommandPrimitive.Input
+                ref={inputRef}
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder}
                 className="flex h-9 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
@@ -454,6 +502,7 @@ function SelectSearchable({
             </div>
 
             <CommandPrimitive.List
+              id={listboxId}
               className="max-h-56 overflow-y-auto overflow-x-hidden p-1"
               role="listbox"
               aria-label="Options"

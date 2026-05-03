@@ -25,6 +25,7 @@ type DrawerBackdropVariant = "opaque" | "blur" | "transparent";
 interface DrawerContextValue {
   open: boolean;
   setOpen: (open: boolean) => void;
+  triggerRef: React.RefObject<HTMLElement | null>;
 }
 
 const DrawerCtx = React.createContext<DrawerContextValue | null>(null);
@@ -38,11 +39,13 @@ function useDrawerCtx() {
 function useDrawerDrag({
   side,
   open,
+  visible,
   isDismissable,
   setOpen,
 }: {
   side: DrawerSide;
   open: boolean;
+  visible: boolean;
   isDismissable: boolean;
   setOpen: (open: boolean) => void;
 }) {
@@ -84,6 +87,12 @@ function useDrawerDrag({
     popupRef.current.style.transform = "";
     popupRef.current.style.transition = "";
   }, [open]);
+
+  React.useEffect(() => {
+    if (visible || !popupRef.current) return;
+    popupRef.current.style.transform = "";
+    popupRef.current.style.transition = "";
+  }, [visible]);
 
   const onPointerDown = React.useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -228,6 +237,7 @@ function DrawerRoot({
   children,
 }: DrawerRootProps) {
   const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
+  const triggerRef = React.useRef<HTMLElement | null>(null);
   const isControlled = open !== undefined;
   const isOpen = isControlled ? open : internalOpen;
 
@@ -240,7 +250,7 @@ function DrawerRoot({
   );
 
   return (
-    <DrawerCtx.Provider value={{ open: isOpen, setOpen }}>
+    <DrawerCtx.Provider value={{ open: isOpen, setOpen, triggerRef }}>
       {children}
     </DrawerCtx.Provider>
   );
@@ -255,7 +265,7 @@ interface DrawerTriggerProps
 
 const DrawerTrigger = React.forwardRef<HTMLButtonElement, DrawerTriggerProps>(
   ({ asChild, children, onClick, ...props }, ref) => {
-    const { open, setOpen } = useDrawerCtx();
+    const { open, setOpen, triggerRef } = useDrawerCtx();
 
     if (asChild && React.isValidElement(children)) {
       const child = children as React.ReactElement<{
@@ -263,6 +273,7 @@ const DrawerTrigger = React.forwardRef<HTMLButtonElement, DrawerTriggerProps>(
       }>;
       return React.cloneElement(child, {
         onClick: (e: React.MouseEvent<HTMLElement>) => {
+          triggerRef.current = e.currentTarget;
           child.props.onClick?.(e);
           if (!e.defaultPrevented) setOpen(!open);
         },
@@ -271,7 +282,10 @@ const DrawerTrigger = React.forwardRef<HTMLButtonElement, DrawerTriggerProps>(
 
     return (
       <button
-        ref={ref}
+        ref={(node) => {
+          triggerRef.current = node;
+          assignRef(ref, node);
+        }}
         type="button"
         onClick={(e) => {
           onClick?.(e);
@@ -500,15 +514,18 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
     },
     ref,
   ) => {
-    const { open, setOpen } = useDrawerCtx();
+    const { open, setOpen, triggerRef } = useDrawerCtx();
     const { popupRef, dragHandlers } = useDrawerDrag({
       side,
       open,
+      visible: open,
       isDismissable,
       setOpen,
     });
     const [mounted, setMounted] = React.useState(open);
     const [isVisible, setIsVisible] = React.useState(false);
+    const contentRef = React.useRef<HTMLDivElement | null>(null);
+    const restoreFocusRef = React.useRef<HTMLElement | null>(null);
 
     React.useEffect(() => {
       const overlayMs = resolveMotionDurationMs(
@@ -522,10 +539,16 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
       const motionMs = Math.max(overlayMs, panelMs);
       if (open) {
         setMounted(true);
-        const rafId = window.requestAnimationFrame(() => {
-          setIsVisible(true);
+        let raf2: number | null = null;
+        const raf1 = window.requestAnimationFrame(() => {
+          raf2 = window.requestAnimationFrame(() => {
+            setIsVisible(true);
+          });
         });
-        return () => window.cancelAnimationFrame(rafId);
+        return () => {
+          window.cancelAnimationFrame(raf1);
+          if (raf2 !== null) window.cancelAnimationFrame(raf2);
+        };
       }
 
       setIsVisible(false);
@@ -539,19 +562,24 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
 
     React.useEffect(() => {
       if (!mounted) return;
+      restoreFocusRef.current = document.activeElement as HTMLElement | null;
+
       const onKeyDown = (event: KeyboardEvent) => {
         if (!isKeyboardDismissDisabled && event.key === "Escape")
           setOpen(false);
         if (event.key === "Tab") trapFocus(event);
       };
       window.addEventListener("keydown", onKeyDown);
-      return () => window.removeEventListener("keydown", onKeyDown);
+      return () => {
+        window.removeEventListener("keydown", onKeyDown);
+        const target =
+          triggerRef.current ?? restoreFocusRef.current ?? document.body;
+        target?.focus?.();
+      };
     }, [mounted, setOpen, isKeyboardDismissDisabled]);
 
     const trapFocus = (event: KeyboardEvent) => {
-      const el = document.querySelector(
-        '[data-slot="drawer-dialog"]',
-      ) as HTMLElement | null;
+      const el = contentRef.current;
       if (!el) return;
       const focusable = el.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
@@ -578,6 +606,22 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
       return () => unlockBodyScroll();
     }, [mounted]);
 
+    React.useEffect(() => {
+      if (!mounted || !isVisible) {
+        return;
+      }
+
+      const content = contentRef.current;
+      if (!content) {
+        return;
+      }
+
+      const initialFocusable = content.querySelector<HTMLElement>(
+        "[autofocus], button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])",
+      );
+      (initialFocusable ?? content).focus();
+    }, [isVisible, mounted]);
+
     if (!mounted) return null;
 
     const state = isVisible ? "open" : "closed";
@@ -587,18 +631,22 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
         <DrawerBackdrop
           variant={backdrop}
           state={state}
-          onClick={() => {
-            if (isDismissable) setOpen(false);
+          onClick={(event) => {
+            if (event.target === event.currentTarget && isDismissable) {
+              setOpen(false);
+            }
           }}
         />
         <DrawerViewport side={side} className={viewportClassName}>
           <DrawerPopup
             ref={(node) => {
               popupRef.current = node;
+              contentRef.current = node;
               assignRef(ref, node);
             }}
             role="dialog"
             aria-modal="true"
+            tabIndex={-1}
             side={side}
             state={state}
             showHandle={showHandle}
