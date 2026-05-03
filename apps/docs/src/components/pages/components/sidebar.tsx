@@ -1,62 +1,166 @@
-import { Button, Sidebar } from "@almach/ui";
+import { Badge, Button, Sidebar } from "@almach/ui";
 import {
+  Bell,
   BookOpen,
+  Briefcase,
+  Compass,
+  CreditCard,
+  FileText,
+  FolderKanban,
+  HelpCircle,
   Inbox,
   LayoutDashboard,
+  MessageSquare,
   Settings,
+  Sparkles,
   Users,
 } from "lucide-react";
-import * as React from "react";
+import type * as React from "react";
 import { ComponentDoc } from "../../component-doc";
 
-const sidebarDemoClassName =
-  "h-72 w-56 rounded-xl border border-sidebar-border/70 bg-sidebar/35 shadow-sm";
+const previewSidebarClassName =
+  "h-[24rem] w-[17rem] rounded-2xl border border-sidebar-border/70 bg-sidebar shadow-sm";
 
-const sidebarLayoutDemoClassName =
-  "flex h-80 w-full overflow-hidden rounded-xl border border-sidebar-border/70 bg-sidebar/25 shadow-sm";
+const shellPreviewClassName =
+  "flex h-[28rem] w-full overflow-hidden rounded-2xl border border-border/70 bg-background shadow-sm";
+
+type NavItem = {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  active?: boolean;
+};
+
+const productItems: NavItem[] = [
+  { label: "Overview", icon: LayoutDashboard, active: true },
+  { label: "Inbox", icon: Inbox },
+  { label: "Projects", icon: FolderKanban },
+  { label: "Messages", icon: MessageSquare },
+];
+
+const workspaceItems: NavItem[] = [
+  { label: "Team", icon: Users, active: true },
+  { label: "Billing", icon: CreditCard },
+  { label: "Docs", icon: BookOpen },
+  { label: "Settings", icon: Settings },
+];
 
 export function SidebarPage() {
   return (
     <ComponentDoc
       name="Sidebar"
-      description="A compact navigation sidebar with grouped items, nested submenus, and simple layout slots. Built on a context-driven provider with Ctrl/Cmd+B support and mobile overlay behavior for docs-style navigation."
+      description="A clean navigation sidebar for product apps, docs shells, and account settings layouts. The component supports compact collapse, mobile overlays, nested navigation, and contained app-shell layouts without awkward motion."
       pkg="@almach/ui"
       examples={[
         {
-          title: "Basic navigation",
+          title: "Product navigation",
           description:
-            "Grouped links with active state and a compact sidebar shell.",
+            "A clean product sidebar with grouped destinations and strong visual hierarchy.",
           centered: false,
-          preview: <BasicNav />,
+          preview: <ProductSidebarPreview />,
           code: `import { Sidebar } from "@almach/ui";
-import { BookOpen, Inbox, LayoutDashboard, Settings } from "lucide-react";
+import { FolderKanban, Inbox, LayoutDashboard, MessageSquare } from "lucide-react";
 
-export function AppSidebar() {
+export function ProductSidebar() {
   return (
-    <Sidebar.Provider>
-      <Sidebar className="w-56 rounded-lg border">
-        <Sidebar.Header className="border-b px-3 py-2.5">
-          <span className="text-xs font-semibold text-muted-foreground">
-            My App
-          </span>
+    <Sidebar.Provider contained>
+      <Sidebar className="h-96 w-68 rounded-2xl border border-sidebar-border/70 bg-sidebar shadow-sm">
+        <Sidebar.Header className="border-b border-sidebar-border/60 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              A
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">Almach Studio</p>
+              <p className="truncate text-xs text-sidebar-foreground/65">
+                Product workspace
+              </p>
+            </div>
+          </div>
         </Sidebar.Header>
-        <Sidebar.Content className="p-2">
-          <Sidebar.MenuItem>
+        <Sidebar.Content className="space-y-6 px-3 py-4">
+          <div className="space-y-1">
+            <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/45">
+              Core
+            </p>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton isActive>
+                <LayoutDashboard className="size-4" />
+                <span>Overview</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <Inbox className="size-4" />
+                <span>Inbox</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <FolderKanban className="size-4" />
+                <span>Projects</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <MessageSquare className="size-4" />
+                <span>Messages</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+          </div>
+        </Sidebar.Content>
+      </Sidebar>
+    </Sidebar.Provider>
+  );
+}`,
+        },
+        {
+          title: "Nested workspace menu",
+          description:
+            "A parent section with a calm, readable nested structure for teams and workspace tools.",
+          centered: false,
+          preview: <NestedSidebarPreview />,
+          code: `import { Sidebar } from "@almach/ui";
+import { Briefcase, CreditCard, Settings, Users } from "lucide-react";
+
+export function WorkspaceSidebar() {
+  return (
+    <Sidebar.Provider contained>
+      <Sidebar className="h-96 w-68 rounded-2xl border border-sidebar-border/70 bg-sidebar shadow-sm">
+        <Sidebar.Header className="border-b border-sidebar-border/60 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-sidebar-foreground">
+              <Briefcase className="size-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">Operations</p>
+              <p className="truncate text-xs text-sidebar-foreground/65">
+                Internal workspace
+              </p>
+            </div>
+          </div>
+        </Sidebar.Header>
+        <Sidebar.Content className="px-3 py-4">
+          <Sidebar.MenuItem defaultOpen>
             <Sidebar.MenuButton isActive>
-              <LayoutDashboard className="size-4" />
-              <span>Dashboard</span>
+              <Users className="size-4" />
+              <span>Team</span>
             </Sidebar.MenuButton>
+            <Sidebar.MenuSub isOpen>
+              <a href="#" className="rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                Members
+              </a>
+              <a href="#" className="rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                Roles
+              </a>
+              <a href="#" className="rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                Permissions
+              </a>
+            </Sidebar.MenuSub>
           </Sidebar.MenuItem>
           <Sidebar.MenuItem>
             <Sidebar.MenuButton>
-              <Inbox className="size-4" />
-              <span>Inbox</span>
-            </Sidebar.MenuButton>
-          </Sidebar.MenuItem>
-          <Sidebar.MenuItem>
-            <Sidebar.MenuButton>
-              <BookOpen className="size-4" />
-              <span>Docs</span>
+              <CreditCard className="size-4" />
+              <span>Billing</span>
             </Sidebar.MenuButton>
           </Sidebar.MenuItem>
           <Sidebar.MenuItem>
@@ -72,129 +176,130 @@ export function AppSidebar() {
 }`,
         },
         {
-          title: "With sub-menu",
-          description: "Nested links inside a parent menu item.",
+          title: "Inset app shell",
+          description:
+            "A realistic application shell with a collapsible inset sidebar and a clean content canvas.",
           centered: false,
-          preview: <SubMenuNav />,
-          code: `import { Sidebar } from "@almach/ui";
-import { LayoutDashboard, Settings, Users } from "lucide-react";
+          preview: <InsetShellPreview />,
+          code: `import { Badge, Sidebar } from "@almach/ui";
+import { Compass, FileText, LayoutDashboard, Sparkles } from "lucide-react";
 
-export function TeamSidebar() {
-  return (
-    <Sidebar.MenuItem defaultOpen>
-      <Sidebar.MenuButton isActive>
-        <LayoutDashboard className="size-4" />
-        <span>Dashboard</span>
-      </Sidebar.MenuButton>
-      <Sidebar.MenuSub isOpen>
-        <a href="#">Members</a>
-        <a href="#">Invites</a>
-        <a href="#">Roles</a>
-      </Sidebar.MenuSub>
-    </Sidebar.MenuItem>
-  );
-}`,
-        },
-        {
-          title: "Shell layout",
-          description: "Use the sidebar inside a two-column app shell.",
-          centered: false,
-          preview: <ShellLayoutDemo />,
-          code: `import { Sidebar } from "@almach/ui";
-import { LayoutDashboard, Users, Settings } from "lucide-react";
-
-export function ShellLayout() {
+export function InsetSidebarShell() {
   return (
     <Sidebar.Provider contained defaultOpen>
-      <div className="flex h-80 overflow-hidden rounded-xl border">
-        <Sidebar className="w-56">
-          <Sidebar.Header className="border-b px-3 py-2.5">
-            <div className="flex items-center gap-2">
+      <div className="flex h-[28rem] overflow-hidden rounded-2xl border border-border/70 bg-background shadow-sm">
+        <Sidebar variant="inset" className="m-3">
+          <Sidebar.Header className="gap-3 px-3 py-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">Atlas</p>
+                <p className="truncate text-xs text-sidebar-foreground/65">
+                  Product docs
+                </p>
+              </div>
               <Sidebar.Trigger />
-              <span>Docs</span>
             </div>
+            <Badge variant="outline" className="w-fit text-[10px]">
+              Live
+            </Badge>
           </Sidebar.Header>
-          <Sidebar.Content className="p-2">
+          <Sidebar.Content className="px-2 pb-3">
             <Sidebar.MenuItem>
               <Sidebar.MenuButton isActive>
                 <LayoutDashboard className="size-4" />
-                <span>Dashboard</span>
+                <span>Overview</span>
               </Sidebar.MenuButton>
             </Sidebar.MenuItem>
             <Sidebar.MenuItem>
               <Sidebar.MenuButton>
-                <Users className="size-4" />
-                <span>Team</span>
+                <Compass className="size-4" />
+                <span>Explore</span>
               </Sidebar.MenuButton>
             </Sidebar.MenuItem>
             <Sidebar.MenuItem>
               <Sidebar.MenuButton>
-                <Settings className="size-4" />
-                <span>Settings</span>
+                <FileText className="size-4" />
+                <span>Documents</span>
               </Sidebar.MenuButton>
             </Sidebar.MenuItem>
           </Sidebar.Content>
         </Sidebar>
-        <main className="flex-1 p-4">Main content</main>
+        <main className="flex-1 p-5">
+          <div className="rounded-2xl border border-border/70 bg-card p-5">
+            <div className="mb-4 flex items-center gap-2">
+              <Sparkles className="size-4 text-primary" />
+              <h2 className="text-base font-semibold">Overview</h2>
+            </div>
+            <p className="max-w-xl text-sm text-muted-foreground">
+              Build calm app shells with a contained sidebar and a content region that stays visually balanced.
+            </p>
+          </div>
+        </main>
       </div>
     </Sidebar.Provider>
   );
 }`,
         },
         {
-          title: "Header and footer",
-          description: "Branding at the top and account actions at the bottom.",
+          title: "Workspace and account",
+          description:
+            "A fuller layout with account controls, utility links, and a stable footer section.",
           centered: false,
-          preview: <HeaderFooterNav />,
+          preview: <WorkspaceSidebarPreview />,
           code: `import { Button, Sidebar } from "@almach/ui";
-import { LayoutDashboard, Settings, Users } from "lucide-react";
+import { Bell, BookOpen, HelpCircle, Settings, Users } from "lucide-react";
 
-export function AccountSidebar() {
+export function WorkspaceAccountSidebar() {
   return (
-    <Sidebar className="w-56 rounded-lg border">
-      <Sidebar.Header className="border-b px-3 py-2.5">
-        <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded bg-primary" />
-          <span className="text-sm font-semibold">Acme Inc</span>
-        </div>
-      </Sidebar.Header>
-      <Sidebar.Content className="p-2">
-        <Sidebar.MenuItem>
-          <Sidebar.MenuButton isActive>
-            <LayoutDashboard className="size-4" />
-            <span>Dashboard</span>
-          </Sidebar.MenuButton>
-        </Sidebar.MenuItem>
-        <Sidebar.MenuItem>
-          <Sidebar.MenuButton>
-            <Users className="size-4" />
-            <span>Team</span>
-          </Sidebar.MenuButton>
-        </Sidebar.MenuItem>
-        <Sidebar.MenuItem>
-          <Sidebar.MenuButton>
+    <Sidebar.Provider contained>
+      <Sidebar className="h-96 w-68 rounded-2xl border border-sidebar-border/70 bg-sidebar shadow-sm">
+        <Sidebar.Header className="gap-3 border-b border-sidebar-border/60 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/12 text-primary">
+              AJ
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">Alice Johnson</p>
+              <p className="truncate text-xs text-sidebar-foreground/65">
+                alice@example.com
+              </p>
+            </div>
+          </div>
+        </Sidebar.Header>
+        <Sidebar.Content className="space-y-6 px-3 py-4">
+          <div className="space-y-1">
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton isActive>
+                <Users className="size-4" />
+                <span>Team</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <Bell className="size-4" />
+                <span>Notifications</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <BookOpen className="size-4" />
+                <span>Guides</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+          </div>
+        </Sidebar.Content>
+        <Sidebar.Footer className="space-y-2 border-t border-sidebar-border/60 px-3 py-3">
+          <Button variant="ghost" className="w-full justify-start">
             <Settings className="size-4" />
-            <span>Settings</span>
-          </Sidebar.MenuButton>
-        </Sidebar.MenuItem>
-      </Sidebar.Content>
-      <Sidebar.Footer className="border-t px-3 py-2.5">
-        <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-xs font-medium">
-            AJ
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-medium">Alice Johnson</p>
-            <p className="truncate text-[10px] text-muted-foreground">
-              alice@example.com
-            </p>
-          </div>
-          <Button variant="ghost" size="icon-sm">
-            <Settings className="h-3.5 w-3.5" />
+            Preferences
           </Button>
-        </div>
-      </Sidebar.Footer>
-    </Sidebar>
+          <Button variant="ghost" className="w-full justify-start">
+            <HelpCircle className="size-4" />
+            Help center
+          </Button>
+        </Sidebar.Footer>
+      </Sidebar>
+    </Sidebar.Provider>
   );
 }`,
         },
@@ -204,114 +309,63 @@ export function AccountSidebar() {
           name: "Sidebar.Provider › defaultOpen",
           type: "boolean",
           default: "true",
-          description: "Initial open state for uncontrolled usage.",
+          description: "Initial desktop open state for uncontrolled usage.",
         },
         {
           name: "Sidebar.Provider › open",
           type: "boolean",
-          description: "Controlled open state.",
+          description: "Controlled desktop open state.",
         },
         {
-          name: "Sidebar.Provider › onOpenChange",
-          type: "(open: boolean) => void",
-          description: "Called when the sidebar opens or closes.",
+          name: "Sidebar.Provider › openMobile",
+          type: "boolean",
+          description: "Controlled mobile overlay state.",
         },
         {
           name: "Sidebar › variant",
           type: '"sidebar" | "floating" | "inset"',
           default: '"sidebar"',
-          description: "Visual style for the root sidebar container.",
+          description:
+            "Chooses a standard rail, floating panel, or inset shell.",
         },
         {
           name: "Sidebar.MenuButton › isActive",
           type: "boolean",
           default: "false",
-          description: "Highlights the button as the current page.",
+          description: "Highlights the current destination.",
         },
         {
           name: "Sidebar.MenuItem › defaultOpen",
           type: "boolean",
           default: "false",
-          description: "Starts the menu item with its submenu open.",
+          description: "Starts a nested section expanded.",
         },
       ]}
     />
   );
 }
 
-function BasicNav() {
+function ProductSidebarPreview() {
   return (
     <Sidebar.Provider contained>
-      <Sidebar className={sidebarDemoClassName}>
-        <Sidebar.Header className="border-b px-3 py-2.5">
-          <span className="text-xs font-semibold text-muted-foreground">
-            My App
-          </span>
-        </Sidebar.Header>
-        <Sidebar.Content className="p-2">
-          {[
-            { label: "Dashboard", icon: LayoutDashboard, active: true },
-            { label: "Inbox", icon: Inbox },
-            { label: "Docs", icon: BookOpen },
-            { label: "Settings", icon: Settings },
-          ].map(({ label, icon: Icon, active }) => (
-            <Sidebar.MenuItem key={label}>
-              <Sidebar.MenuButton isActive={active}>
-                <Icon className="size-4" />
-                <span>{label}</span>
-              </Sidebar.MenuButton>
-            </Sidebar.MenuItem>
-          ))}
-        </Sidebar.Content>
-      </Sidebar>
-    </Sidebar.Provider>
-  );
-}
-
-function SubMenuNav() {
-  return (
-    <Sidebar.Provider contained>
-      <Sidebar className={sidebarDemoClassName}>
-        <Sidebar.Header className="border-b px-3 py-2.5">
-          <span className="text-xs font-semibold text-muted-foreground">
-            Team
-          </span>
-        </Sidebar.Header>
-        <Sidebar.Content className="p-2">
-          <Sidebar.MenuItem defaultOpen>
-            <Sidebar.MenuButton isActive>
-              <Users className="size-4" />
-              <span>Team</span>
-            </Sidebar.MenuButton>
-            <Sidebar.MenuSub isOpen>
-              <a href="#">Members</a>
-              <a href="#">Invites</a>
-              <a href="#">Roles</a>
-            </Sidebar.MenuSub>
-          </Sidebar.MenuItem>
-        </Sidebar.Content>
-      </Sidebar>
-    </Sidebar.Provider>
-  );
-}
-
-function ShellLayoutDemo() {
-  return (
-    <Sidebar.Provider contained defaultOpen>
-      <div className={sidebarLayoutDemoClassName}>
-        <Sidebar className="w-56">
-          <Sidebar.Header className="border-b px-3 py-2.5">
-            <div className="flex items-center gap-2">
-              <Sidebar.Trigger />
-              <span className="text-sm font-semibold">Docs</span>
+      <Sidebar className={previewSidebarClassName}>
+        <Sidebar.Header className="border-b border-sidebar-border/60 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-sm font-semibold text-primary-foreground">
+              A
             </div>
-          </Sidebar.Header>
-          <Sidebar.Content className="p-2">
-            {[
-              { label: "Dashboard", icon: LayoutDashboard, active: true },
-              { label: "Team", icon: Users },
-              { label: "Settings", icon: Settings },
-            ].map(({ label, icon: Icon, active }) => (
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">Almach Studio</p>
+              <p className="truncate text-xs text-sidebar-foreground/65">
+                Product workspace
+              </p>
+            </div>
+          </div>
+        </Sidebar.Header>
+
+        <Sidebar.Content className="space-y-6 px-3 py-4">
+          <SidebarSection title="Core">
+            {productItems.map(({ label, icon: Icon, active }) => (
               <Sidebar.MenuItem key={label}>
                 <Sidebar.MenuButton isActive={active}>
                   <Icon className="size-4" />
@@ -319,57 +373,227 @@ function ShellLayoutDemo() {
                 </Sidebar.MenuButton>
               </Sidebar.MenuItem>
             ))}
+          </SidebarSection>
+
+          <SidebarSection title="Utility">
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <Bell className="size-4" />
+                <span>Notifications</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <HelpCircle className="size-4" />
+                <span>Support</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+          </SidebarSection>
+        </Sidebar.Content>
+      </Sidebar>
+    </Sidebar.Provider>
+  );
+}
+
+function NestedSidebarPreview() {
+  return (
+    <Sidebar.Provider contained>
+      <Sidebar className={previewSidebarClassName}>
+        <Sidebar.Header className="border-b border-sidebar-border/60 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-sidebar-foreground">
+              <Briefcase className="size-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">Operations</p>
+              <p className="truncate text-xs text-sidebar-foreground/65">
+                Internal workspace
+              </p>
+            </div>
+          </div>
+        </Sidebar.Header>
+
+        <Sidebar.Content className="space-y-6 px-3 py-4">
+          <SidebarSection title="Workspace">
+            <Sidebar.MenuItem defaultOpen>
+              <Sidebar.MenuButton isActive>
+                <Users className="size-4" />
+                <span>Team</span>
+              </Sidebar.MenuButton>
+              <Sidebar.MenuSub isOpen>
+                <SidebarSubLink href="#">Members</SidebarSubLink>
+                <SidebarSubLink href="#">Roles</SidebarSubLink>
+                <SidebarSubLink href="#">Permissions</SidebarSubLink>
+              </Sidebar.MenuSub>
+            </Sidebar.MenuItem>
+            {workspaceItems.slice(1).map(({ label, icon: Icon }) => (
+              <Sidebar.MenuItem key={label}>
+                <Sidebar.MenuButton>
+                  <Icon className="size-4" />
+                  <span>{label}</span>
+                </Sidebar.MenuButton>
+              </Sidebar.MenuItem>
+            ))}
+          </SidebarSection>
+        </Sidebar.Content>
+      </Sidebar>
+    </Sidebar.Provider>
+  );
+}
+
+function InsetShellPreview() {
+  return (
+    <Sidebar.Provider contained defaultOpen>
+      <div className={shellPreviewClassName}>
+        <Sidebar variant="inset" className="m-3">
+          <Sidebar.Header className="gap-3 px-3 py-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">Atlas</p>
+                <p className="truncate text-xs text-sidebar-foreground/65">
+                  Product docs
+                </p>
+              </div>
+              <Sidebar.Trigger />
+            </div>
+            <Badge variant="outline" className="w-fit text-[10px]">
+              Live
+            </Badge>
+          </Sidebar.Header>
+
+          <Sidebar.Content className="px-2 pb-3">
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton isActive>
+                <LayoutDashboard className="size-4" />
+                <span>Overview</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <Compass className="size-4" />
+                <span>Explore</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <FileText className="size-4" />
+                <span>Documents</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
           </Sidebar.Content>
+
+          <Sidebar.Footer className="px-2 py-2">
+            <Button variant="ghost" className="w-full justify-start">
+              <Sparkles className="size-4" />
+              Quick actions
+            </Button>
+          </Sidebar.Footer>
         </Sidebar>
-        <main className="flex-1 p-4 text-sm text-muted-foreground">
-          Main content
+
+        <main className="flex-1 p-5">
+          <div className="h-full rounded-2xl border border-border/70 bg-card p-5">
+            <div className="mb-4 flex items-center gap-2">
+              <Sparkles className="size-4 text-primary" />
+              <h2 className="text-base font-semibold">Overview</h2>
+            </div>
+            <p className="max-w-xl text-sm leading-6 text-muted-foreground">
+              This example shows a contained app shell with an inset sidebar
+              that feels lighter than a full-height rail and collapses without
+              jumpy layout shifts.
+            </p>
+          </div>
         </main>
       </div>
     </Sidebar.Provider>
   );
 }
 
-function HeaderFooterNav() {
+function WorkspaceSidebarPreview() {
   return (
     <Sidebar.Provider contained>
-      <Sidebar className="h-80 w-56 rounded-xl border border-sidebar-border/70 bg-sidebar/35 shadow-sm">
-        <Sidebar.Header className="border-b border-sidebar-border/70 px-3 py-2.5">
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded bg-primary" />
-            <span className="text-sm font-semibold">Acme Inc</span>
-          </div>
-        </Sidebar.Header>
-        <Sidebar.Content className="p-2">
-          {[
-            { label: "Dashboard", icon: LayoutDashboard, active: true },
-            { label: "Team", icon: Users },
-            { label: "Settings", icon: Settings },
-          ].map(({ label, icon: Icon, active }) => (
-            <Sidebar.MenuItem key={label}>
-              <Sidebar.MenuButton isActive={active}>
-                <Icon className="size-4" />
-                <span>{label}</span>
-              </Sidebar.MenuButton>
-            </Sidebar.MenuItem>
-          ))}
-        </Sidebar.Content>
-        <Sidebar.Footer className="border-t border-sidebar-border/70 px-3 py-2.5">
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
+      <Sidebar className={previewSidebarClassName}>
+        <Sidebar.Header className="gap-3 border-b border-sidebar-border/60 px-4 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/12 text-sm font-semibold text-primary">
               AJ
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-medium">Alice Johnson</p>
-              <p className="truncate text-[10px] text-muted-foreground">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">Alice Johnson</p>
+              <p className="truncate text-xs text-sidebar-foreground/65">
                 alice@example.com
               </p>
             </div>
-            <Button variant="ghost" size="icon-sm">
-              <Settings className="h-3.5 w-3.5" />
-            </Button>
           </div>
+        </Sidebar.Header>
+
+        <Sidebar.Content className="space-y-6 px-3 py-4">
+          <SidebarSection title="Workspace">
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton isActive>
+                <Users className="size-4" />
+                <span>Team</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <Bell className="size-4" />
+                <span>Notifications</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+            <Sidebar.MenuItem>
+              <Sidebar.MenuButton>
+                <BookOpen className="size-4" />
+                <span>Guides</span>
+              </Sidebar.MenuButton>
+            </Sidebar.MenuItem>
+          </SidebarSection>
+        </Sidebar.Content>
+
+        <Sidebar.Footer className="space-y-2 border-t border-sidebar-border/60 px-3 py-3">
+          <Button variant="ghost" className="w-full justify-start">
+            <Settings className="size-4" />
+            Preferences
+          </Button>
+          <Button variant="ghost" className="w-full justify-start">
+            <HelpCircle className="size-4" />
+            Help center
+          </Button>
         </Sidebar.Footer>
       </Sidebar>
     </Sidebar.Provider>
+  );
+}
+
+function SidebarSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1">
+      <p className="px-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-sidebar-foreground/45">
+        {title}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function SidebarSubLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      className="rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+    >
+      {children}
+    </a>
   );
 }

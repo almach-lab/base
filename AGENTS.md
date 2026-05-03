@@ -93,6 +93,13 @@ Component checklist:
 - [ ] `displayName` set
 - [ ] Exported from `packages/ui/src/index.ts`
 
+Component standardization rules:
+- Keep component files plain and utilitarian. Do not add decorative section banners, AI-style prose comments, or narrative inline commentary.
+- Prefer small internal helpers over long explanatory comments. If a comment is unavoidable, it must explain a non-obvious constraint in one short sentence.
+- Keep component APIs consistent: controlled props use `open`/`value` plus `on...Change`, boolean dismiss props use `is...`, and DOM props should pass through cleanly.
+- Prefer shared motion tokens and semantic classes over per-component ad hoc timings, colors, or easing values.
+- Demo pages in `apps/docs` should show realistic product layouts, not placeholder boxes or generic filler copy.
+
 ---
 
 ## Adding a New Form Field

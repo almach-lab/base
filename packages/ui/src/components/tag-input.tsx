@@ -13,6 +13,7 @@ export interface TagInputProps {
   max?: number;
   disabled?: boolean;
   error?: boolean;
+  name?: string;
   /** Called to validate/transform a tag before adding. Return null to reject. */
   transform?: (tag: string) => string | null;
   className?: string;
@@ -27,21 +28,27 @@ export function TagInput({
   max,
   disabled,
   error,
+  name,
   transform,
   className,
 }: TagInputProps) {
-  const [tags, setTags] = React.useState<string[]>(value ?? []);
-  // id passed to the inner input for label association
+  const isControlled = value !== undefined;
+  const [internalTags, setInternalTags] = React.useState<string[]>(value ?? []);
   const [input, setInput] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const listId = React.useId();
+  const tags = isControlled ? value : internalTags;
 
-  // Sync from controlled value
   React.useEffect(() => {
-    if (value !== undefined) setTags(value);
-  }, [value]);
+    if (isControlled) {
+      setInternalTags(value);
+    }
+  }, [isControlled, value]);
 
   const emit = (next: string[]) => {
-    setTags(next);
+    if (!isControlled) {
+      setInternalTags(next);
+    }
     onChange?.(next);
   };
 
@@ -74,6 +81,10 @@ export function TagInput({
 
   return (
     <div
+      role="group"
+      aria-invalid={error || undefined}
+      aria-disabled={disabled || undefined}
+      aria-describedby={tags.length > 0 ? listId : undefined}
       className={cn(
         "flex min-h-9 w-full flex-wrap items-center gap-1.5 rounded-lg border bg-background px-2.5 py-1.5",
         "ring-offset-background transition-colors",
@@ -84,29 +95,33 @@ export function TagInput({
       )}
       onClick={() => inputRef.current?.focus()}
     >
-      {tags.map((tag, i) => (
-        <span
-          key={tag}
-          className="inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground"
-        >
-          {tag}
-          {!disabled && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                removeTag(i);
-              }}
-              className="flex h-3.5 w-3.5 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none"
-              aria-label={`Remove ${tag}`}
+      {tags.length > 0 ? (
+        <div id={listId} className="contents">
+          {tags.map((tag, i) => (
+            <span
+              key={`${tag}-${i}`}
+              className="inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground"
             >
-              <X className="h-2.5 w-2.5" />
-            </button>
-          )}
-        </span>
-      ))}
+              {tag}
+              {!disabled && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeTag(i);
+                  }}
+                  className="flex h-3.5 w-3.5 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  aria-label={`Remove ${tag}`}
+                >
+                  <X className="h-2.5 w-2.5" />
+                </button>
+              )}
+            </span>
+          ))}
+        </div>
+      ) : null}
 
-      {!isAtMax && !disabled && (
+      {!isAtMax && !disabled ? (
         <input
           ref={inputRef}
           id={id}
@@ -117,8 +132,13 @@ export function TagInput({
           placeholder={tags.length === 0 ? placeholder : ""}
           className="min-w-[6rem] flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           disabled={disabled}
+          aria-invalid={error || undefined}
+          autoComplete="off"
         />
-      )}
+      ) : null}
+      {name ? (
+        <input type="hidden" name={name} value={JSON.stringify(tags)} />
+      ) : null}
     </div>
   );
 }

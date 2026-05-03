@@ -6,14 +6,31 @@ import {
   GenericPageSkeleton,
   HomeSkeleton,
 } from "./PageSkeleton";
-import { BlocksPage } from "./pages/blocks";
-import { ComponentsIndexPage } from "./pages/components-index";
-import { FormsPage } from "./pages/forms";
-import { GettingStartedPage } from "./pages/getting-started";
-import { HomePage } from "./pages/home";
-import { QueryPage } from "./pages/query";
 
 type PageComponent = React.ComponentType;
+
+const HomePage = lazy(() =>
+  import("./pages/home").then((m) => ({ default: m.HomePage })),
+);
+const GettingStartedPage = lazy(() =>
+  import("./pages/getting-started").then((m) => ({
+    default: m.GettingStartedPage,
+  })),
+);
+const FormsPage = lazy(() =>
+  import("./pages/forms").then((m) => ({ default: m.FormsPage })),
+);
+const QueryPage = lazy(() =>
+  import("./pages/query").then((m) => ({ default: m.QueryPage })),
+);
+const ComponentsIndexPage = lazy(() =>
+  import("./pages/components-index").then((m) => ({
+    default: m.ComponentsIndexPage,
+  })),
+);
+const BlocksPage = lazy(() =>
+  import("./pages/blocks").then((m) => ({ default: m.BlocksPage })),
+);
 
 // Component doc pages (lazy loaded)
 const componentPages: Record<

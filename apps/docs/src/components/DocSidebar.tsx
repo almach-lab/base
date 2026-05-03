@@ -266,8 +266,7 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
   const normalizedCurrentPath = normalizePath(currentPath);
   const isDesktop = useIsDesktop();
   const [openMobile, setOpenMobile] = React.useState(false);
-  const [renderMobileLayer, setRenderMobileLayer] = React.useState(false);
-  const [mobileLayerActive, setMobileLayerActive] = React.useState(false);
+  const [isMobileLayerMounted, setIsMobileLayerMounted] = React.useState(false);
 
   React.useEffect(() => {
     const toggle = () => setOpenMobile((value) => !value);
@@ -305,6 +304,12 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
   }, [openMobile]);
 
   React.useEffect(() => {
+    if (isDesktop) {
+      setOpenMobile(false);
+    }
+  }, [isDesktop]);
+
+  React.useEffect(() => {
     if (!openMobile || isDesktop) {
       return;
     }
@@ -317,30 +322,24 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
     };
   }, [openMobile, isDesktop]);
 
-  const showMobileSidebar = openMobile && !isDesktop;
-
   React.useEffect(() => {
-    if (showMobileSidebar) {
-      setRenderMobileLayer(true);
-      const frame = window.requestAnimationFrame(() => {
-        setMobileLayerActive(true);
-      });
-
-      return () => window.cancelAnimationFrame(frame);
+    if (openMobile && !isDesktop) {
+      setIsMobileLayerMounted(true);
+      return;
     }
 
-    setMobileLayerActive(false);
-
-    if (!renderMobileLayer) {
+    if (!isMobileLayerMounted) {
       return;
     }
 
     const timeout = window.setTimeout(() => {
-      setRenderMobileLayer(false);
+      setIsMobileLayerMounted(false);
     }, 220);
 
     return () => window.clearTimeout(timeout);
-  }, [showMobileSidebar, renderMobileLayer]);
+  }, [isDesktop, isMobileLayerMounted, openMobile]);
+
+  const showMobileSidebar = openMobile && !isDesktop;
 
   return (
     <>
@@ -358,11 +357,11 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
         id="mobile-overlay"
         className={cn(
           "fixed inset-0 z-50 lg:hidden",
-          !renderMobileLayer && "hidden",
-          !mobileLayerActive && "pointer-events-none",
-          mobileLayerActive && "sidebar-open",
+          !isMobileLayerMounted && "hidden",
+          !showMobileSidebar && "pointer-events-none",
+          showMobileSidebar && "sidebar-open",
         )}
-        aria-hidden={!mobileLayerActive}
+        aria-hidden={!showMobileSidebar}
       >
         <button
           id="mobile-backdrop"
@@ -374,6 +373,9 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
 
         <aside
           id="mobile-sidebar"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Documentation navigation"
           className="relative flex h-full w-[min(20rem,84vw)] flex-col border-r border-sidebar-border bg-sidebar"
         >
           <div className="flex h-14 items-center justify-between border-b border-sidebar-border/60 px-4">
