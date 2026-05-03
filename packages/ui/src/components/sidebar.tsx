@@ -44,6 +44,8 @@ export function SidebarProvider({
   openMobile: openMobileProp,
   onOpenMobileChange,
   contained = false,
+  sidebarWidth = SIDEBAR_WIDTH,
+  sidebarWidthIcon = SIDEBAR_WIDTH_ICON,
   className,
   children,
   ...props
@@ -54,6 +56,8 @@ export function SidebarProvider({
   openMobile?: boolean;
   onOpenMobileChange?: (open: boolean) => void;
   contained?: boolean;
+  sidebarWidth?: string;
+  sidebarWidthIcon?: string;
   className?: string;
 }>) {
   const isMobile = useIsMobile();
@@ -98,8 +102,8 @@ export function SidebarProvider({
       <div
         style={
           {
-            "--sidebar-width": SIDEBAR_WIDTH,
-            "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+            "--sidebar-width": sidebarWidth,
+            "--sidebar-width-icon": sidebarWidthIcon,
           } as React.CSSProperties
         }
         className={cn(
@@ -142,14 +146,17 @@ export const SidebarRoot = React.forwardRef<
       <ModalOverlay
         isOpen={openMobile}
         onOpenChange={setOpenMobile}
-        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden
+        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm
                    data-[entering]:animate-in data-[exiting]:animate-out
                    data-[entering]:fade-in data-[exiting]:fade-out"
       >
         <AriaModal
-          className="fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-sidebar border-r border-sidebar-border shadow-2xl
-                             data-[entering]:animate-in data-[exiting]:animate-out
-                             data-[entering]:slide-in-from-left data-[exiting]:slide-out-to-left duration-300"
+          className={cn(
+            "fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-sidebar border-r border-sidebar-border shadow-2xl",
+            "data-[entering]:animate-in data-[exiting]:animate-out",
+            "data-[entering]:slide-in-from-left data-[exiting]:slide-out-to-left duration-300",
+            className,
+          )}
         >
           <AriaDialog
             aria-label="Navigation Sidebar"
@@ -168,7 +175,7 @@ export const SidebarRoot = React.forwardRef<
       className={cn(
         isContained
           ? "group peer flex h-full w-full"
-          : "group peer hidden lg:block",
+          : "group peer hidden md:block",
       )}
       data-state={open ? "expanded" : "collapsed"}
       data-variant={variant}
