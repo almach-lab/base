@@ -23,7 +23,6 @@ interface AlertRootProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof alertVariants> {}
 
-// Root element
 function AlertRoot({
   className,
   variant = "default",
@@ -41,7 +40,6 @@ function AlertRoot({
 }
 AlertRoot.displayName = "Alert";
 
-// Icon slot
 function AlertIcon({
   className,
   ...props
@@ -55,7 +53,6 @@ function AlertIcon({
 }
 AlertIcon.displayName = "Alert.Icon";
 
-// Text column
 function AlertBody({
   className,
   ...props
@@ -69,7 +66,6 @@ function AlertBody({
 }
 AlertBody.displayName = "Alert.Body";
 
-// Title
 function AlertTitle({
   className,
   ...props
@@ -86,7 +82,6 @@ function AlertTitle({
 }
 AlertTitle.displayName = "Alert.Title";
 
-// Description
 function AlertDescription({
   className,
   ...props
@@ -103,7 +98,6 @@ function AlertDescription({
 }
 AlertDescription.displayName = "Alert.Description";
 
-// Compound object
 const Alert = Object.assign(AlertRoot, {
   Icon: AlertIcon,
   Body: AlertBody,
