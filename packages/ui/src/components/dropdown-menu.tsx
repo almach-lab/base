@@ -10,12 +10,12 @@ import {
   type MenuSectionProps as AriaMenuSectionProps,
   MenuTrigger as AriaMenuTrigger,
   type MenuTriggerProps as AriaMenuTriggerProps,
-  Pressable,
   SubmenuTrigger as AriaSubmenuTrigger,
   Collection,
   composeRenderProps,
   Header,
   Popover,
+  Pressable,
   Separator,
   type SeparatorProps,
   type SubmenuTriggerProps,
@@ -107,9 +107,7 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
   }
 
   const triggerNode = triggerProps.asChild ? (
-    <Pressable>
-      {React.Children.only(triggerProps.children) as any}
-    </Pressable>
+    <Pressable>{React.Children.only(triggerProps.children) as any}</Pressable>
   ) : (
     <Pressable>
       <button type="button">{triggerProps.children}</button>

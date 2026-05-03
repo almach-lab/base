@@ -173,9 +173,7 @@ export const SidebarRoot = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        isContained
-          ? "group peer shrink-0"
-          : "group peer hidden md:block",
+        isContained ? "group peer shrink-0" : "group peer hidden md:block",
       )}
       data-state={open ? "expanded" : "collapsed"}
       data-variant={variant}
