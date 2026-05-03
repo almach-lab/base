@@ -1,7 +1,6 @@
 import { cn } from "@almach/utils";
 import * as React from "react";
 
-// ── Root ───────────────────────────────────────────────────────────────────────
 const CardRoot = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -17,7 +16,6 @@ const CardRoot = React.forwardRef<
 ));
 CardRoot.displayName = "Card";
 
-// ── Header ─────────────────────────────────────────────────────────────────────
 interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Right-side element: icon, badge, button, etc. */
   action?: React.ReactNode;
@@ -41,7 +39,6 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 );
 CardHeader.displayName = "Card.Header";
 
-// ── Title ──────────────────────────────────────────────────────────────────────
 const CardTitle = React.forwardRef<
   HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
@@ -57,7 +54,6 @@ const CardTitle = React.forwardRef<
 ));
 CardTitle.displayName = "Card.Title";
 
-// ── Description ────────────────────────────────────────────────────────────────
 const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
@@ -70,7 +66,6 @@ const CardDescription = React.forwardRef<
 ));
 CardDescription.displayName = "Card.Description";
 
-// ── Content ────────────────────────────────────────────────────────────────────
 const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -79,7 +74,6 @@ const CardContent = React.forwardRef<
 ));
 CardContent.displayName = "Card.Content";
 
-// ── Section ────────────────────────────────────────────────────────────────────
 const CardSection = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -88,7 +82,6 @@ const CardSection = React.forwardRef<
 ));
 CardSection.displayName = "Card.Section";
 
-// ── Row ────────────────────────────────────────────────────────────────────────
 interface CardRowProps extends React.HTMLAttributes<HTMLDivElement> {
   action?: React.ReactNode;
 }
@@ -115,7 +108,6 @@ const CardRow = React.forwardRef<HTMLDivElement, CardRowProps>(
 );
 CardRow.displayName = "Card.Row";
 
-// ── Footer ─────────────────────────────────────────────────────────────────────
 const CardFooter = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -127,10 +119,6 @@ const CardFooter = React.forwardRef<
   />
 ));
 CardFooter.displayName = "Card.Footer";
-
-// ── Layers ─────────────────────────────────────────────────────────────────────
-// Layered card: sections divided by borders, each with its own background.
-// Inspired by Claude/macOS-style stacked panels.
 
 const CardLayers = React.forwardRef<
   HTMLDivElement,
@@ -148,7 +136,6 @@ const CardLayers = React.forwardRef<
 ));
 CardLayers.displayName = "Card.Layers";
 
-// ── Layer.Header ───────────────────────────────────────────────────────────────
 interface CardLayerHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   action?: React.ReactNode;
 }
@@ -171,7 +158,6 @@ const CardLayerHeader = React.forwardRef<HTMLDivElement, CardLayerHeaderProps>(
 );
 CardLayerHeader.displayName = "Card.LayerHeader";
 
-// ── Layer.Body ─────────────────────────────────────────────────────────────────
 const CardLayerBody = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -180,7 +166,6 @@ const CardLayerBody = React.forwardRef<
 ));
 CardLayerBody.displayName = "Card.LayerBody";
 
-// ── Layer.Row ──────────────────────────────────────────────────────────────────
 interface CardLayerRowProps extends React.HTMLAttributes<HTMLDivElement> {
   action?: React.ReactNode;
 }
@@ -207,7 +192,6 @@ const CardLayerRow = React.forwardRef<HTMLDivElement, CardLayerRowProps>(
 );
 CardLayerRow.displayName = "Card.LayerRow";
 
-// ── Group.Root ─────────────────────────────────────────────────────────────────
 interface CardGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Small-caps label shown above the group */
   label?: string;
@@ -232,7 +216,6 @@ const CardGroup = React.forwardRef<HTMLDivElement, CardGroupProps>(
 );
 CardGroup.displayName = "Card.Group";
 
-// ── Group.Row ──────────────────────────────────────────────────────────────────
 interface CardGroupRowProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Left-side primary label */
   label?: string;
@@ -303,7 +286,6 @@ const CardGroupRow = React.forwardRef<HTMLDivElement, CardGroupRowProps>(
 );
 CardGroupRow.displayName = "Card.GroupRow";
 
-// ── Compound ───────────────────────────────────────────────────────────────────
 const Card = Object.assign(CardRoot, {
   Header: CardHeader,
   Title: CardTitle,
@@ -324,5 +306,4 @@ const Card = Object.assign(CardRoot, {
 
 export { Card };
 
-// Backward-compat: Group was previously a standalone export
 export const Group = Object.assign(CardGroup, { Row: CardGroupRow });

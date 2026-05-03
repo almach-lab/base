@@ -16,10 +16,8 @@ import { ChevronDown, ChevronsUpDown, ChevronUp } from "lucide-react";
 import * as React from "react";
 import { Button } from "./button.js";
 
-/* ─── Re-export TanStack types for consumers ────────────────────────────── */
 export type { ColumnDef };
 
-/* ─── Primitive HTML table parts ──────────────────────────────────────────── */
 function TableRoot({
   className,
   ...props
@@ -114,7 +112,6 @@ function TableCaption({
   );
 }
 
-/* ─── DataTable ────────────────────────────────────────────────────────────── */
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -292,7 +289,6 @@ function DataTable<TData, TValue>({
   );
 }
 
-/* ─── Compound export ─────────────────────────────────────────────────────── */
 export const Table = Object.assign(TableRoot, {
   Header: TableHeader,
   Body: TableBody,

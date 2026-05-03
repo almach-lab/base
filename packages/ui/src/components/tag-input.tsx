@@ -4,7 +4,6 @@ import { cn } from "@almach/utils";
 import { X } from "lucide-react";
 import * as React from "react";
 
-/* ── Types ────────────────────────────────────────────────────────────────── */
 export interface TagInputProps {
   id?: string;
   value?: string[];
@@ -19,7 +18,6 @@ export interface TagInputProps {
   className?: string;
 }
 
-/* ── TagInput ─────────────────────────────────────────────────────────────── */
 export function TagInput({
   id,
   value,
