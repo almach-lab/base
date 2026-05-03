@@ -100,11 +100,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         className?: string;
         disabled?: boolean;
         "aria-busy"?: boolean;
+        children?: React.ReactNode;
       }>;
       const childProps: {
         className: string;
         disabled: boolean;
         "aria-busy"?: boolean;
+        children?: React.ReactNode;
       } = {
         className: cn(classes, child.props.className),
         disabled: disabledState || loading,
@@ -112,11 +114,23 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
       if (loading) {
         childProps["aria-busy"] = true;
+        childProps.children = (
+          <>
+            <Loader2 className="animate-spin" aria-hidden="true" />
+            {child.props.children}
+          </>
+        );
+      } else if (leftIcon || rightIcon) {
+        childProps.children = (
+          <>
+            {leftIcon}
+            {child.props.children}
+            {rightIcon}
+          </>
+        );
       }
 
-      return React.cloneElement(child, {
-        ...childProps,
-      });
+      return React.cloneElement(child, childProps);
     }
 
     const ariaButtonProps = loading ? { "aria-busy": true as const } : {};

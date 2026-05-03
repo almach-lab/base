@@ -24,7 +24,7 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
         "disabled:cursor-not-allowed disabled:opacity-50",
         "active:scale-[0.98]",
         "data-[selected]:border-primary data-[selected]:bg-primary data-[selected]:text-primary-foreground",
-        error && "aria-[invalid=true]:border-destructive",
+        error && "border-destructive",
         className,
       )}
       {...(error ? { "aria-invalid": true as const } : {})}

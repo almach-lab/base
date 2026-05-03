@@ -1,12 +1,13 @@
 {
-  "generatedAt": "2026-04-19T10:15:59.844Z",
+  "generatedAt": "2026-05-03T04:09:48.207Z",
   "components": {
     "alert": {
       "exports": [
-        "Alert"
+        "Alert",
+        "alertVariants"
       ],
       "typeExports": [
-        "AlertVariant"
+        "AlertRootProps"
       ]
     },
     "avatar": {

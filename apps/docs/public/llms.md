@@ -1,6 +1,6 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-04-19T10:15:59.841Z
+Generated: 2026-05-03T04:09:48.206Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
@@ -9,7 +9,7 @@ Total modules: 36
 
 ## Index
 
-- alert: 1 value export(s), 1 type export(s)
+- alert: 2 value export(s), 1 type export(s)
 - avatar: 2 value export(s), 1 type export(s)
 - badge: 2 value export(s), 1 type export(s)
 - button: 2 value export(s), 1 type export(s)
@@ -80,8 +80,8 @@ export function Example() {
 
 ### Exported Symbols
 
-- Values: `Alert`
-- Types: `AlertVariant`
+- Values: `Alert`, `alertVariants`
+- Types: `AlertRootProps`
 
 ## Avatar
 

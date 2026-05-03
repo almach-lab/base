@@ -365,18 +365,6 @@ function SelectSeparator({
 const SelectGroup = ({ children }: { children?: React.ReactNode }) => (
   <div>{children}</div>
 );
-const SelectScrollUpButton = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={className} {...props} />
-);
-const SelectScrollDownButton = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={className} {...props} />
-);
 
 export interface SelectSearchableOption {
   value: string;
@@ -521,8 +509,6 @@ const Select = Object.assign(SelectRoot, {
   Description: SelectDescription,
   Item: SelectItem,
   Separator: SelectSeparator,
-  ScrollUpButton: SelectScrollUpButton,
-  ScrollDownButton: SelectScrollDownButton,
   Searchable: SelectSearchable,
 });
 

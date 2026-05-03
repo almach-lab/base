@@ -1,32 +1,27 @@
 import { cn } from "@almach/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 
-type AlertVariant = "default" | "destructive" | "success" | "warning";
+const alertVariants = cva("relative w-full rounded-xl border p-4 flex gap-3", {
+  variants: {
+    variant: {
+      default: "bg-background text-foreground",
+      destructive:
+        "border-destructive/30 bg-destructive/5 text-destructive [&_svg]:text-destructive",
+      success:
+        "border-success/30 bg-success/5 text-success [&_svg]:text-success",
+      warning:
+        "border-warning/30 bg-warning/5 text-warning [&_svg]:text-warning",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
 
-const alertStyles: Record<AlertVariant, React.CSSProperties> = {
-  default: {},
-  destructive: {
-    backgroundColor:
-      "color-mix(in srgb, var(--color-destructive) 5%, transparent)",
-    borderColor:
-      "color-mix(in srgb, var(--color-destructive) 30%, transparent)",
-    color: "var(--color-destructive)",
-  },
-  success: {
-    backgroundColor: "color-mix(in srgb, var(--color-success) 5%, transparent)",
-    borderColor: "color-mix(in srgb, var(--color-success) 30%, transparent)",
-    color: "var(--color-success)",
-  },
-  warning: {
-    backgroundColor: "color-mix(in srgb, var(--color-warning) 5%, transparent)",
-    borderColor: "color-mix(in srgb, var(--color-warning) 30%, transparent)",
-    color: "var(--color-warning)",
-  },
-};
-
-interface AlertRootProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: AlertVariant;
-}
+interface AlertRootProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof alertVariants> {}
 
 // Root element
 function AlertRoot({
@@ -38,11 +33,8 @@ function AlertRoot({
   return (
     <div
       role="alert"
-      className={cn(
-        "relative w-full rounded-xl border p-4 flex gap-3",
-        className,
-      )}
-      style={{ ...alertStyles[variant], ...style }}
+      className={cn(alertVariants({ variant }), className)}
+      style={style}
       {...props}
     />
   );
@@ -119,4 +111,4 @@ const Alert = Object.assign(AlertRoot, {
   Description: AlertDescription,
 });
 
-export { Alert, type AlertRootProps, type AlertVariant };
+export { Alert, type AlertRootProps, alertVariants };

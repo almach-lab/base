@@ -1,7 +1,7 @@
 {
   "alert": {
-    "exports": ["Alert"],
-    "typeExports": ["AlertVariant"]
+    "exports": ["Alert", "alertVariants"],
+    "typeExports": ["AlertRootProps"]
   },
   "avatar": {
     "exports": ["Avatar", "avatarVariants"],

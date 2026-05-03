@@ -85,6 +85,22 @@ function CarouselRoot({
     scrollTo(index === count - 1 ? (loop ? 0 : count - 1) : index + 1);
   }, [index, count, loop, scrollTo]);
 
+  React.useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        scrollPrev();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        scrollNext();
+      }
+    };
+    el.addEventListener("keydown", onKeyDown);
+    return () => el.removeEventListener("keydown", onKeyDown);
+  }, [scrollPrev, scrollNext]);
+
   return (
     <CarouselContext.Provider
       value={{
@@ -102,6 +118,8 @@ function CarouselRoot({
       <div
         role="region"
         aria-roledescription="carousel"
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: carousel region needs focus for keyboard nav
+        tabIndex={0}
         className={cn("relative", className)}
         {...props}
       >

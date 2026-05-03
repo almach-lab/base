@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@almach/utils";
 import {
   type CSSProperties,
   createContext,
@@ -716,14 +717,14 @@ function SwipeButtonRoot({
         data-holding={isHolding || undefined}
         data-reverse={reverseSwipe || undefined}
         data-progress={Math.round(progress)}
-        className={[
+        className={cn(
           "relative isolate flex items-center w-full h-[52px]",
           "rounded-full overflow-hidden select-none touch-none",
           "bg-secondary border border-border/40",
           "font-sans text-[13px] text-muted-foreground",
           disabled ? "opacity-50 cursor-not-allowed" : "cursor-default",
           className,
-        ].join(" ")}
+        )}
         style={style}
         {...props}
       >
@@ -749,10 +750,10 @@ const Fill = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
       <div
         ref={ref}
         aria-hidden
-        className={[
+        className={cn(
           "absolute inset-y-0 bg-primary/15 -z-10 rounded-full overflow-hidden",
           className,
-        ].join(" ")}
+        )}
         style={{
           ...posStyle,
           transform: "translate3d(0,0,0)",
@@ -800,13 +801,13 @@ const Track = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
       <div
         ref={ref}
         aria-hidden
-        className={[
+        className={cn(
           "absolute inset-0 flex items-center pointer-events-none z-40 rounded-full overflow-hidden",
           "text-foreground font-medium [text-shadow:0_1px_1px_rgba(0,0,0,0.35)]",
           "transition-opacity duration-150",
           succeeded ? "opacity-0" : "opacity-100",
           className,
-        ].join(" ")}
+        )}
         style={{
           ...(isSwiping ? { clipPath } : {}),
           transform: `translate3d(${offset}px,0,0)`,
@@ -846,13 +847,12 @@ const Overlay = forwardRef<HTMLDivElement, SwipeButtonOverlayProps>(
       <div
         ref={ref}
         aria-hidden={!succeeded}
-        className={[
-          // z-20 — sits ABOVE the thumb (z-10) once fully expanded on success
+        className={cn(
           "absolute inset-y-0 flex items-center justify-center z-20 rounded-full overflow-hidden",
           "bg-primary text-primary-foreground font-medium",
           "pointer-events-none whitespace-nowrap overflow-hidden",
           className,
-        ].join(" ")}
+        )}
         style={{
           ...posStyle,
           transition: succeeded ? SPRING_SNAP : "none",
@@ -931,7 +931,7 @@ const Thumb = forwardRef<HTMLDivElement, SwipeButtonThumbProps>(
         onMouseDown={handleDragStart}
         onTouchStart={handleDragStart}
         onKeyDown={handleKeyDown}
-        className={[
+        className={cn(
           "absolute inset-y-0 my-auto rounded-full z-30",
           "flex items-center justify-center",
           "cursor-grab active:cursor-grabbing",
@@ -941,7 +941,7 @@ const Thumb = forwardRef<HTMLDivElement, SwipeButtonThumbProps>(
           "[&>svg:not(.hold-ring)]:size-5 [&>svg:not(.hold-ring)]:pointer-events-none [&>svg:not(.hold-ring)]:shrink-0",
           variantClasses[variant],
           className,
-        ].join(" ")}
+        )}
         style={{
           width: thumbSize,
           height: thumbSize,

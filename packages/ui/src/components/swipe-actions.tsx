@@ -581,11 +581,11 @@ export interface SwipeActionProps
 }
 
 const variantStyles: Record<SwipeActionVariant, string> = {
-  default: "bg-primary     text-primary-foreground",
+  default: "bg-primary text-primary-foreground",
   destructive: "bg-destructive text-destructive-foreground",
-  success: "bg-success     text-success-foreground",
-  warning: "bg-warning     text-warning-foreground",
-  secondary: "bg-secondary   text-secondary-foreground",
+  success: "bg-success text-success-foreground",
+  warning: "bg-warning text-warning-foreground",
+  secondary: "bg-secondary text-secondary-foreground",
 };
 
 function SwipeAction({

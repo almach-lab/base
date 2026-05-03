@@ -15,9 +15,9 @@ type TooltipProviderProps = {
   children: React.ReactNode;
 };
 
-const TooltipDelayCtx = React.createContext(700);
+const TooltipDelayCtx = React.createContext(400);
 
-function TooltipProvider({ delay = 700, children }: TooltipProviderProps) {
+function TooltipProvider({ delay = 400, children }: TooltipProviderProps) {
   return (
     <TooltipDelayCtx.Provider value={delay}>
       {children}

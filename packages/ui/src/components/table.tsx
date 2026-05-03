@@ -182,6 +182,7 @@ function DataTable<TData, TValue>({
           value={globalFilter}
           onChange={(e) => setGlobalFilter(e.target.value)}
           placeholder="Search…"
+          aria-label="Search table"
           className="flex h-9 w-full max-w-xs rounded-lg border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
       )}

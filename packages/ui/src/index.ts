@@ -1,7 +1,7 @@
 /* ─── Components ──────────────────────────────────────────────────────────── */
 
-export type { AlertVariant } from "./components/alert.js";
-export { Alert } from "./components/alert.js";
+export type { AlertRootProps } from "./components/alert.js";
+export { Alert, alertVariants } from "./components/alert.js";
 export type { AvatarProps } from "./components/avatar.js";
 export { Avatar, avatarVariants } from "./components/avatar.js";
 export type { BadgeProps } from "./components/badge.js";

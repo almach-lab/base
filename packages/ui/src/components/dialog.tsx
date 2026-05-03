@@ -203,10 +203,35 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
       if (!mounted) return;
       const onKeyDown = (event: KeyboardEvent) => {
         if (event.key === "Escape") setOpen(false);
+        if (event.key === "Tab") trapFocus(event);
       };
       window.addEventListener("keydown", onKeyDown);
       return () => window.removeEventListener("keydown", onKeyDown);
     }, [mounted, setOpen]);
+
+    const trapFocus = (event: KeyboardEvent) => {
+      const el = document.querySelector(
+        '[data-dialog-content="true"]',
+      ) as HTMLElement | null;
+      if (!el) return;
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+      if (event.shiftKey) {
+        if (document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
 
     React.useEffect(() => {
       if (!mounted) return;
@@ -234,6 +259,9 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
         />
         <div
           ref={ref}
+          role="dialog"
+          aria-modal="true"
+          data-dialog-content="true"
           data-state={state}
           onClick={(event) => event.stopPropagation()}
           style={{

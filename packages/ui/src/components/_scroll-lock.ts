@@ -29,7 +29,6 @@ function lockBodyScroll() {
     body.style.overflow = "hidden";
     html.style.overflow = "hidden";
     body.style.overscrollBehavior = "contain";
-    body.style.touchAction = "none";
   }
 
   scrollLockCount += 1;

@@ -542,10 +542,35 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
       const onKeyDown = (event: KeyboardEvent) => {
         if (!isKeyboardDismissDisabled && event.key === "Escape")
           setOpen(false);
+        if (event.key === "Tab") trapFocus(event);
       };
       window.addEventListener("keydown", onKeyDown);
       return () => window.removeEventListener("keydown", onKeyDown);
     }, [mounted, setOpen, isKeyboardDismissDisabled]);
+
+    const trapFocus = (event: KeyboardEvent) => {
+      const el = document.querySelector(
+        '[data-slot="drawer-dialog"]',
+      ) as HTMLElement | null;
+      if (!el) return;
+      const focusable = el.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+      if (event.shiftKey) {
+        if (document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
 
     React.useEffect(() => {
       if (!mounted) return;
@@ -572,6 +597,8 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
               popupRef.current = node;
               assignRef(ref, node);
             }}
+            role="dialog"
+            aria-modal="true"
             side={side}
             state={state}
             showHandle={showHandle}

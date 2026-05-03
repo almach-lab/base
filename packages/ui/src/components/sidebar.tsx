@@ -245,7 +245,13 @@ export function SidebarMenuButton({
   asChild = false,
   className,
   ...props
-}: any) {
+}: React.PropsWithChildren<{
+  isActive?: boolean;
+  onToggle?: () => void;
+  isOpen?: boolean;
+  asChild?: boolean;
+  className?: string;
+}>) {
   const { state } = useSidebar();
   const hasSubmenu = !!onToggle;
   const collapsed = state === "collapsed";
@@ -286,12 +292,28 @@ export function SidebarMenuButton({
       onClick?: React.MouseEventHandler<HTMLElement>;
     };
 
-    return React.cloneElement(children as React.ReactElement, {
+    const cloneProps: {
+      className: string;
+      onClick?: React.MouseEventHandler<HTMLElement>;
+      children: React.ReactNode;
+    } = {
       className: cn(sharedClassName, childProps.className),
-      onClick: onToggle ?? childProps.onClick,
-      ...props,
       children: content,
-    });
+    };
+
+    const resolvedOnClick = onToggle ?? childProps.onClick;
+    if (resolvedOnClick) {
+      cloneProps.onClick = resolvedOnClick;
+    }
+
+    return React.cloneElement(
+      children as React.ReactElement<{
+        className?: string;
+        onClick?: React.MouseEventHandler<HTMLElement>;
+        children?: React.ReactNode;
+      }>,
+      cloneProps,
+    );
   }
 
   return (
@@ -356,10 +378,16 @@ export function SidebarMenuItem({
 
   const content = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
-      return React.cloneElement(child as any, {
-        isOpen,
-        onToggle: () => setIsOpen(!isOpen),
-      });
+      return React.cloneElement(
+        child as React.ReactElement<{
+          isOpen?: boolean;
+          onToggle?: () => void;
+        }>,
+        {
+          isOpen,
+          onToggle: () => setIsOpen(!isOpen),
+        },
+      );
     }
     return child;
   });
