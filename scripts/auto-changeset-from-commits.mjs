@@ -57,6 +57,14 @@ if (changedPackages.length === 0) {
 changedPackages.sort();
 
 const releaseType = inferReleaseType(commits);
+
+if (!releaseType) {
+  console.log(
+    "Only release commits detected. Skipping auto-changeset generation.",
+  );
+  process.exit(0);
+}
+
 const shortSha = toSha.slice(0, 7);
 
 if (!existsSync(".changeset")) {
@@ -94,19 +102,31 @@ function inferReleaseType(rawCommits) {
     .filter(Boolean);
 
   let hasMinor = false;
+  let hasValidCommit = false;
 
   for (const entry of entries) {
+    const firstLine = entry.split("\n")[0] ?? "";
+    
+    if (firstLine.startsWith("chore: version packages") || firstLine.startsWith("Version Packages")) {
+      continue;
+    }
+    
+    hasValidCommit = true;
+
     if (/\bBREAKING CHANGE\b/i.test(entry)) {
       return "major";
     }
 
-    const firstLine = entry.split("\n")[0] ?? "";
     if (/^[a-z]+(\([^)]+\))?!:/i.test(firstLine)) {
       return "major";
     }
     if (/^feat(\([^)]+\))?:/i.test(firstLine)) {
       hasMinor = true;
     }
+  }
+
+  if (!hasValidCommit) {
+    return null;
   }
 
   return hasMinor ? "minor" : "patch";

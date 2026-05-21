@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+echo "Building packages..."
+bun run build:packages
+
 cleanup() {
   [[ -f bun.lock.bak ]] && mv bun.lock.bak bun.lock
   git checkout -- package.json packages/*/package.json apps/*/package.json 2>/dev/null || true

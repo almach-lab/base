@@ -20,6 +20,7 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: write
+      pull-requests: write
       id-token: write
 
     steps:
@@ -50,49 +51,14 @@ jobs:
       - name: Generate changeset from conventional commits
         run: node scripts/auto-changeset-from-commits.mjs "${{ github.event.before }}" "${{ github.sha }}"
 
-      - name: Check for pending changesets
-        id: check
-        run: |
-          COUNT=$(find .changeset -name '*.md' ! -name 'README.md' | wc -l)
-          if [ "$COUNT" -gt 0 ]; then
-            echo "has_changesets=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_changesets=false" >> "$GITHUB_OUTPUT"
-          fi
-          echo "Pending changesets: $COUNT"
-
-      - name: Stop when there are no pending changesets
-        if: steps.check.outputs.has_changesets != 'true'
-        run: |
-          echo "No pending changesets. Skipping release."
-          echo "## Release skipped" >> "$GITHUB_STEP_SUMMARY"
-          echo "No pending \`.changeset/*.md\` files were found on \`main\`." >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Version packages
-        if: steps.check.outputs.has_changesets == 'true'
-        run: bun changeset version
-
-      - name: Commit version bumps
-        if: steps.check.outputs.has_changesets == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if ! git diff --staged --quiet; then
-            git commit -m "chore: version packages"
-            git push
-          fi
-
-      - name: Build packages
-        if: steps.check.outputs.has_changesets == 'true'
-        run: bun run build:packages
-
-      - name: Publish packages and create GitHub releases
-        if: steps.check.outputs.has_changesets == 'true'
-        id: publish
+      - name: Create Release Pull Request or Publish
+        id: changesets
         uses: changesets/action@v1
         with:
+          version: bun changeset version
           publish: bun run release
+          commit: "chore: version packages"
+          title: "Version Packages"
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -100,11 +66,11 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Release summary
-        if: steps.publish.outputs.published == 'true'
+        if: steps.changesets.outputs.published == 'true'
         run: |
           echo "## Published" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo '${{ steps.publish.outputs.publishedPackages }}' \
+          echo '${{ steps.changesets.outputs.publishedPackages }}' \
             | node -e "
                 const pkgs = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
                 pkgs.forEach(p => console.log('- **' + p.name + '** -> v' + p.version));
