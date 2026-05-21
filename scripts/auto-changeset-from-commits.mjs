@@ -60,7 +60,7 @@ const releaseType = inferReleaseType(commits);
 
 if (!releaseType) {
   console.log(
-    "Only release commits detected. Skipping auto-changeset generation.",
+    "Only release or merge commits detected. Skipping auto-changeset generation.",
   );
   process.exit(0);
 }
@@ -109,7 +109,10 @@ function inferReleaseType(rawCommits) {
 
     if (
       firstLine.startsWith("chore: version packages") ||
-      firstLine.startsWith("Version Packages")
+      firstLine.startsWith("Version Packages") ||
+      firstLine.startsWith("Merge pull request") ||
+      firstLine.startsWith("Merge branch") ||
+      firstLine.includes("chore(release)")
     ) {
       continue;
     }
