@@ -9,7 +9,7 @@ const envFile = ".env";
 const tagArg = rawArgs.find((arg) => arg.startsWith("--tag="));
 const publishTag = tagArg ? tagArg.slice("--tag=".length) : "reset-v0";
 
-function loadEnvFile(path) {
+function loadEnvFile(path: string): void {
   if (!existsSync(path)) return;
   const text = readFileSync(path, "utf8");
   for (const line of text.split(/\r?\n/)) {

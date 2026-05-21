@@ -36,16 +36,16 @@ const npmToken = process.env.NPM_TOKEN || "";
 const deprecateMessage =
   "This release line is deprecated after a clean reset. Use the latest documented release line.";
 
-function log(msg) {
+function log(msg: string): void {
   console.log(`[reset-remote] ${msg}`);
 }
 
-function fail(msg) {
+function fail(msg: string): never {
   console.error(`[reset-remote] ${msg}`);
   process.exit(1);
 }
 
-function loadEnvFile(path) {
+function loadEnvFile(path: string): void {
   const text = readFileSync(path, "utf8");
   const lines = text.split(/\r?\n/);
 
@@ -72,8 +72,8 @@ function loadEnvFile(path) {
   }
 }
 
-function printHelp() {
-  console.log(`Usage: node scripts/reset-remote-releases.mjs [options]
+function printHelp(): void {
+  console.log(`Usage: bun scripts/reset-remote-releases.ts [options]
 
 Options:
   --apply                Execute destructive/deprecating actions (default is dry-run)
@@ -90,9 +90,9 @@ Required env when applying:
 `);
 }
 
-function parseVersion(version) {
+function parseVersion(version: string) {
   const [core] = version.split("-");
-  const [majorRaw, minorRaw, patchRaw] = core.split(".");
+  const [majorRaw, minorRaw, patchRaw] = core?.split(".") ?? [];
   const major = Number(majorRaw);
   const minor = Number(minorRaw);
   const patch = Number(patchRaw);
@@ -100,24 +100,27 @@ function parseVersion(version) {
   return { major, minor, patch };
 }
 
-function compareVersions(a, b) {
+function compareVersions(
+  a: { major: number; minor: number; patch: number },
+  b: { major: number; minor: number; patch: number },
+) {
   if (a.major !== b.major) return a.major - b.major;
   if (a.minor !== b.minor) return a.minor - b.minor;
   return a.patch - b.patch;
 }
 
-function shouldIncludeVersion(version) {
+function shouldIncludeVersion(version: string): boolean {
   const parsed = parseVersion(version);
   const parsedMin = parseVersion(minVersion);
   if (!parsed || !parsedMin) return true;
   return compareVersions(parsed, parsedMin) >= 0;
 }
 
-function getPublishablePackages() {
+function getPublishablePackages(): string[] {
   const root = "packages";
   if (!existsSync(root)) return [];
 
-  const names = [];
+  const names: string[] = [];
   for (const dir of readdirSync(root)) {
     const path = join(root, dir, "package.json");
     if (!existsSync(path)) continue;
@@ -131,7 +134,7 @@ function getPublishablePackages() {
   return names.sort((a, b) => a.localeCompare(b));
 }
 
-async function fetchJson(url, init) {
+async function fetchJson(url: string, init: RequestInit) {
   const res = await fetch(url, init);
   if (!res.ok) {
     const text = await res.text();
@@ -166,13 +169,13 @@ async function cleanupGithubReleases() {
     "X-GitHub-Api-Version": "2022-11-28",
   };
 
-  const releases = [];
+  const releases: any[] = [];
   let page = 1;
   while (true) {
-    const pageItems = await fetchJson(
+    const pageItems = (await fetchJson(
       `https://api.github.com/repos/${repo}/releases?per_page=100&page=${page}`,
       { headers },
-    );
+    )) as any[];
     if (!Array.isArray(pageItems) || pageItems.length === 0) break;
     releases.push(...pageItems);
     if (pageItems.length < 100) break;
@@ -216,7 +219,7 @@ async function cleanupGithubReleases() {
   }
 }
 
-function runNpm(command) {
+function runNpm(command: string): string {
   const commandWithAuth = npmToken
     ? `${command} --//registry.npmjs.org/:_authToken=${npmToken}`
     : command;
@@ -228,11 +231,10 @@ function runNpm(command) {
       ...process.env,
       ...(npmToken ? { NODE_AUTH_TOKEN: npmToken, NPM_TOKEN: npmToken } : {}),
     },
-    shell: true,
   }).trim();
 }
 
-function getNpmVersions(pkgName) {
+function getNpmVersions(pkgName: string): string[] {
   try {
     const out = runNpm(`npm view ${pkgName} versions --json`);
     const parsed = JSON.parse(out || "[]");
@@ -243,11 +245,11 @@ function getNpmVersions(pkgName) {
   }
 }
 
-function deprecateNpmVersion(spec) {
+function deprecateNpmVersion(spec: string): void {
   runNpm(`npm deprecate ${spec} "${deprecateMessage}"`);
 }
 
-function tryUnpublishNpmVersion(spec) {
+function tryUnpublishNpmVersion(spec: string): boolean {
   try {
     runNpm(`npm unpublish ${spec} --force`);
     return true;

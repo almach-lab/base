@@ -14,12 +14,14 @@ const OUT_JSON_PATH = resolve(
 
 const mode = process.argv.includes("--check") ? "check" : "update";
 
-function toModuleMap(indexSource) {
-  const map = new Map();
+function toModuleMap(
+  indexSource: string,
+): Record<string, { exports: string[]; typeExports: string[] }> {
+  const map = new Map<string, { exports: string[]; typeExports: string[] }>();
   const exportPattern =
     /export\s+(type\s+)?\{([\s\S]*?)\}\s+from\s+"\.\/components\/([^".]+)\.js";/g;
 
-  const parseSymbols = (rawList) => {
+  const parseSymbols = (rawList: string): string[] => {
     const normalized = rawList
       .replace(/\/\*[\s\S]*?\*\//g, "")
       .replace(/\/\/.*$/gm, "");
@@ -57,13 +59,16 @@ function toModuleMap(indexSource) {
     const typeExports = [...new Set(value.typeExports)].sort((a, b) =>
       a.localeCompare(b),
     );
-    return [module, { exports, typeExports }];
+    return [module, { exports, typeExports }] as const;
   });
 
   return Object.fromEntries(entries.sort(([a], [b]) => a.localeCompare(b)));
 }
 
-function inferPrimaryExport(moduleName, exports) {
+function inferPrimaryExport(
+  moduleName: string,
+  exports: string[],
+): string | undefined {
   if (exports.length === 1) return exports[0];
 
   const modulePrefix = moduleName
@@ -78,12 +83,16 @@ function inferPrimaryExport(moduleName, exports) {
   return firstComponent ?? exports[0] ?? modulePrefix;
 }
 
-function formatTitle(symbol) {
+function formatTitle(symbol?: string): string {
   if (!symbol) return "Component";
   return symbol.charAt(0).toUpperCase() + symbol.slice(1);
 }
 
-function renderExample(moduleName, primaryExport, meta) {
+function renderExample(
+  moduleName: string,
+  primaryExport: string | undefined,
+  meta: any,
+): string {
   if (typeof meta.example === "string" && meta.example.trim().length > 0) {
     return meta.example.trim();
   }
@@ -117,16 +126,19 @@ function renderExample(moduleName, primaryExport, meta) {
   ].join("\n");
 }
 
-function readJson(path, fallback) {
+function readJson(path: string, fallback: any): any {
   if (!existsSync(path)) return fallback;
   return JSON.parse(readFileSync(path, "utf-8"));
 }
 
-function renderMarkdown(moduleMap, metadata) {
+function renderMarkdown(
+  moduleMap: Record<string, { exports: string[]; typeExports: string[] }>,
+  metadata: any,
+): string {
   const now = new Date().toISOString();
   const modules = Object.keys(moduleMap);
 
-  const lines = [];
+  const lines: string[] = [];
   lines.push("# Almach UI LLM API Snapshot");
   lines.push("");
   lines.push(`Generated: ${now}`);
@@ -223,7 +235,7 @@ function renderMarkdown(moduleMap, metadata) {
   return `${lines.join("\n")}\n`;
 }
 
-function ensureDir(filePath) {
+function ensureDir(filePath: string): void {
   mkdirSync(dirname(filePath), { recursive: true });
 }
 

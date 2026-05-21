@@ -21,12 +21,12 @@
     "docs": "bun run --cwd apps/docs dev",
     "deploy": "bun run --cwd apps/docs deploy",
     "release": "bash scripts/release.sh",
-    "release:publish-env": "node scripts/publish-from-env.mjs",
-    "release:reset-baseline": "node scripts/reset-release-baseline.mjs",
-    "release:reset-remote": "node scripts/reset-remote-releases.mjs",
-    "llms:snapshot:update": "node scripts/generate-llm-ui-snapshot.mjs",
-    "llms:snapshot:check": "node scripts/generate-llm-ui-snapshot.mjs --check",
-    "postinstall": "node scripts/fix-esm.js"
+    "release:publish-env": "bun scripts/publish-from-env.ts",
+    "release:reset-baseline": "bun scripts/reset-release-baseline.ts",
+    "release:reset-remote": "bun scripts/reset-remote-releases.ts",
+    "llms:snapshot:update": "bun scripts/generate-llm-ui-snapshot.ts",
+    "llms:snapshot:check": "bun scripts/generate-llm-ui-snapshot.ts --check",
+    "postinstall": "bun scripts/fix-esm.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",

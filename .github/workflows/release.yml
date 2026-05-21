@@ -51,7 +51,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Generate changeset from conventional commits
-        run: node scripts/auto-changeset-from-commits.mjs "${{ github.event.before }}" "${{ github.sha }}"
+        run: bun scripts/auto-changeset-from-commits.ts "${{ github.event.before }}" "${{ github.sha }}"
 
       - name: Create Release Pull Request or Publish
         id: changesets

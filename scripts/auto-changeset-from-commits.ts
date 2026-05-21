@@ -29,7 +29,7 @@ const affectedPackageDirs = new Set(
       const match = file.match(/^packages\/([^/]+)\//);
       return match ? `packages/${match[1]}` : null;
     })
-    .filter(Boolean),
+    .filter((d): d is string => d !== null),
 );
 
 if (affectedPackageDirs.size === 0) {
@@ -39,7 +39,7 @@ if (affectedPackageDirs.size === 0) {
   process.exit(0);
 }
 
-const changedPackages = [];
+const changedPackages: string[] = [];
 for (const dir of affectedPackageDirs) {
   const pkgPath = join(dir, "package.json");
   if (!existsSync(pkgPath)) continue;
@@ -87,7 +87,7 @@ console.log(
   `Generated ${changesetFile} for: ${changedPackages.join(", ")} (${releaseType})`,
 );
 
-function run(command) {
+function run(command: string): string {
   try {
     return execSync(command, { encoding: "utf8" }).trim();
   } catch {
@@ -95,7 +95,9 @@ function run(command) {
   }
 }
 
-function inferReleaseType(rawCommits) {
+function inferReleaseType(
+  rawCommits: string,
+): "major" | "minor" | "patch" | null {
   const entries = rawCommits
     .split("\u001e")
     .map((s) => s.trim())
@@ -138,7 +140,10 @@ function inferReleaseType(rawCommits) {
   return hasMinor ? "minor" : "patch";
 }
 
-function resolveFromSha(fromCandidate, toShaValue) {
+function resolveFromSha(
+  fromCandidate: string | undefined,
+  toShaValue: string,
+): string {
   const candidate = fromCandidate?.trim() || "";
   const zero = "0000000000000000000000000000000000000000";
 
@@ -168,7 +173,7 @@ function resolveFromSha(fromCandidate, toShaValue) {
   return "";
 }
 
-function commitExists(sha) {
+function commitExists(sha: string): boolean {
   try {
     const type = execSync(`git cat-file -t ${sha}`, {
       encoding: "utf8",

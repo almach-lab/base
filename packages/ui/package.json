@@ -162,7 +162,7 @@
     "src/styles"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node ../../scripts/fix-esm.js dist",
+    "build": "tsc -p tsconfig.build.json && bun ../../scripts/fix-esm.ts dist",
     "dev": "tsc -p tsconfig.build.json --watch",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
