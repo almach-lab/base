@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: [lint, typecheck, "build:docs"]
+        command: [lint, typecheck, "build"]
     steps:
       - uses: actions/checkout@v4
 
