@@ -5,11 +5,11 @@
     "": {
       "name": "based",
       "devDependencies": {
-        "@biomejs/biome": "^2.4.15",
-        "@changesets/cli": "^2.31.0",
-        "@types/bun": "^1.3.14",
-        "@types/node": "^25.9.1",
-        "typescript": "^6.0.3",
+        "@biomejs/biome": "latest",
+        "@changesets/cli": "latest",
+        "@types/bun": "latest",
+        "@types/node": "latest",
+        "typescript": "latest",
       },
     },
     "apps/docs": {
@@ -87,7 +87,7 @@
     },
     "packages/ui": {
       "name": "@almach/ui",
-      "version": "0.3.8",
+      "version": "0.3.9",
       "dependencies": {
         "@internationalized/date": "^3.10.0",
         "@tanstack/react-table": "^8.21.3",
