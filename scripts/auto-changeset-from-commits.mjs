@@ -106,11 +106,14 @@ function inferReleaseType(rawCommits) {
 
   for (const entry of entries) {
     const firstLine = entry.split("\n")[0] ?? "";
-    
-    if (firstLine.startsWith("chore: version packages") || firstLine.startsWith("Version Packages")) {
+
+    if (
+      firstLine.startsWith("chore: version packages") ||
+      firstLine.startsWith("Version Packages")
+    ) {
       continue;
     }
-    
+
     hasValidCommit = true;
 
     if (/\bBREAKING CHANGE\b/i.test(entry)) {
