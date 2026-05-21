@@ -86,14 +86,12 @@ export function HomePage() {
               into one workflow so teams ship clean interfaces with fewer bugs.
             </p>
             <div className="flex flex-wrap items-center gap-2.5">
-              <Button asChild>
-                <a href="/getting-started">
-                  Start building
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </a>
+              <Button href="/getting-started">
+                Start building
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
-              <Button asChild variant="outline">
-                <a href="/components">Explore components</a>
+              <Button variant="outline" href="/components">
+                Explore components
               </Button>
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
@@ -152,11 +150,11 @@ export function HomePage() {
                 </div>
                 <div className="space-y-1.5 text-sm">
                   <label className="flex items-center gap-2">
-                    <Checkbox defaultChecked className="h-4 w-4" />
+                    <Checkbox className="h-4 w-4" />
                     <span>Visual QA</span>
                   </label>
                   <label className="flex items-center gap-2">
-                    <Checkbox defaultChecked className="h-4 w-4" />
+                    <Checkbox className="h-4 w-4" />
                     <span>Docs snapshot</span>
                   </label>
                   <label className="flex items-center gap-2">
@@ -364,15 +362,13 @@ export function HomePage() {
                     <code>{item.sample}</code>
                   </pre>
                   <Button
-                    asChild
                     variant="outline"
                     size="sm"
                     className="w-full"
+                    href={item.href}
                   >
-                    <a href={item.href}>
-                      Open docs
-                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </a>
+                    Open docs
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Button>
                 </Card.Content>
               </Card>
