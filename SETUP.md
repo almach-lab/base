@@ -18,14 +18,22 @@
 3. Set permissions: **Read and write** on all `@almach/*` packages
 4. Copy the token
 
+### Configure GitHub Actions for Releases
+
+To allow the automated release process to open Pull Requests and trigger CI checks:
+
+1. Go to your repository **Settings → Actions → General**.
+2. Under **Workflow permissions**, make sure **Read and write permissions** is selected.
+3. Check the box for **"Allow GitHub Actions to create and approve pull requests"**.
+
 ### Add to GitHub Secrets
 
 **Settings → Secrets and variables → Actions → New repository secret**
 
 | Secret name | Value |
 |-------------|-------|
-
-| `GH_PAT` | GitHub Personal Access Token (repo, workflow scope) to allow Release PRs to trigger CI |
+| `NPM_TOKEN` | The npm token you just created |
+| `GH_PAT` | (Optional) A GitHub Personal Access Token (repo, workflow scope). Provide this if you want the Release PRs to automatically trigger CI checks. If missing, defaults to the built-in token. |
 
 ### How releases work
 
@@ -118,8 +126,7 @@ bun run release
 
 | Secret | Where used | How to get it |
 |--------|-----------|---------------|
-
+| `NPM_TOKEN` | `release.yml` | npmjs.com → Granular Access Token (read/write) |
 | `GH_PAT` | `release.yml` | GitHub → Settings → Developer settings → PAT (repo, workflow scope) |
 | `CLOUDFLARE_API_TOKEN` | docs deployment workflow (if enabled) | Cloudflare → Profile → API Tokens → Pages Edit template |
 | `CLOUDFLARE_ACCOUNT_ID` | docs deployment workflow (if enabled) | Cloudflare dashboard URL |
-
