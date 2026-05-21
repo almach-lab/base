@@ -1,12 +1,19 @@
 import { cn } from "@almach/utils";
-import type * as React from "react";
+import * as React from "react";
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
+export interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-function Skeleton({ className, ...props }: SkeletonProps) {
-  return (
-    <div className={cn("rounded-md skeleton-shimmer", className)} {...props} />
-  );
-}
+const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn("rounded-md skeleton-shimmer", className)}
+        {...props}
+      />
+    );
+  },
+);
+Skeleton.displayName = "Skeleton";
 
 export { Skeleton };

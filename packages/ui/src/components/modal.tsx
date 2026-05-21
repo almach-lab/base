@@ -441,7 +441,7 @@ function ModalNavButton({
       {...(onClick !== undefined && { onPress: onClick })}
       className={cn(
         "h-11 w-full justify-start border-input bg-muted px-4 text-foreground",
-        "hover:bg-accent hover:border-accent",
+        "data-[hovered]:bg-accent data-[hovered]:border-accent",
         className,
       )}
     >

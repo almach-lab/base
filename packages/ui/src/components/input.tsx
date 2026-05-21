@@ -33,9 +33,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
             "disabled:cursor-not-allowed disabled:opacity-50",
             "file:border-0 file:bg-transparent file:text-sm file:font-medium",
-            leftElement ? "pl-9 pr-3" : "px-3",
-            rightElement ? "pr-9" : "",
-            !leftElement && !rightElement && "px-3",
+            leftElement ? "pl-9" : "pl-3",
+            rightElement ? "pr-9" : "pr-3",
+
             error && "border-destructive focus-visible:ring-destructive",
             className,
           )}

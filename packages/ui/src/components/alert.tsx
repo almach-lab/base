@@ -1,6 +1,6 @@
 import { cn } from "@almach/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import type * as React from "react";
+import * as React from "react";
 
 const alertVariants = cva("relative w-full rounded-xl border p-4 flex gap-3", {
   variants: {
@@ -19,59 +19,60 @@ const alertVariants = cva("relative w-full rounded-xl border p-4 flex gap-3", {
   },
 });
 
-interface AlertRootProps
+export interface AlertRootProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof alertVariants> {}
 
-function AlertRoot({
-  className,
-  variant = "default",
-  style,
-  ...props
-}: AlertRootProps) {
-  return (
-    <div
-      role="alert"
-      className={cn(alertVariants({ variant }), className)}
-      style={style}
-      {...props}
-    />
-  );
-}
+const AlertRoot = React.forwardRef<HTMLDivElement, AlertRootProps>(
+  ({ className, variant = "default", style, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        role="alert"
+        className={cn(alertVariants({ variant }), className)}
+        style={style}
+        {...props}
+      />
+    );
+  },
+);
 AlertRoot.displayName = "Alert";
 
-function AlertIcon({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+const AlertIcon = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
   return (
     <div
+      ref={ref}
       className={cn("mt-0.5 shrink-0 [&_svg]:size-4", className)}
       {...props}
     />
   );
-}
+});
 AlertIcon.displayName = "Alert.Icon";
 
-function AlertBody({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+const AlertBody = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
   return (
     <div
+      ref={ref}
       className={cn("flex min-w-0 flex-1 flex-col gap-1", className)}
       {...props}
     />
   );
-}
+});
 AlertBody.displayName = "Alert.Body";
 
-function AlertTitle({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
+const AlertTitle = React.forwardRef<
+  HTMLHeadingElement,
+  React.HTMLAttributes<HTMLHeadingElement>
+>(({ className, ...props }, ref) => {
   return (
     <h5
+      ref={ref}
       className={cn(
         "text-sm font-semibold leading-none tracking-tight",
         className,
@@ -79,15 +80,16 @@ function AlertTitle({
       {...props}
     />
   );
-}
+});
 AlertTitle.displayName = "Alert.Title";
 
-function AlertDescription({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLParagraphElement>) {
+const AlertDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => {
   return (
     <div
+      ref={ref}
       className={cn(
         "text-sm opacity-90 [&_p]:leading-relaxed mt-0.5",
         className,
@@ -95,7 +97,7 @@ function AlertDescription({
       {...props}
     />
   );
-}
+});
 AlertDescription.displayName = "Alert.Description";
 
 const Alert = Object.assign(AlertRoot, {
@@ -105,4 +107,4 @@ const Alert = Object.assign(AlertRoot, {
   Description: AlertDescription,
 });
 
-export { Alert, type AlertRootProps, alertVariants };
+export { Alert, alertVariants };
