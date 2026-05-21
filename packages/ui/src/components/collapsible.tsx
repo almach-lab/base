@@ -30,7 +30,7 @@ const CollapsibleTrigger = React.forwardRef<
     className={cn(
       "group flex w-full cursor-pointer items-center justify-between rounded-sm py-3 text-sm font-medium",
       "transition-[color,background-color,text-decoration-color] duration-150 ease-out",
-      "hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "data-[hovered]:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       className,
     )}
     {...props}

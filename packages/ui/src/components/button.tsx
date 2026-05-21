@@ -2,7 +2,7 @@ import { cn } from "@almach/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2 } from "lucide-react";
 import * as React from "react";
-import { Button as AriaButton } from "react-aria-components";
+import { Button as AriaButton, Link as AriaLink } from "react-aria-components";
 import { MOTION_INTERACTIVE } from "./_motion.js";
 
 const buttonVariants = cva(
@@ -11,27 +11,27 @@ const buttonVariants = cva(
     "cursor-pointer select-none rounded-lg text-sm",
     MOTION_INTERACTIVE,
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-    "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-40",
-    "active:scale-[0.985]",
+    "data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40",
+    "data-[pressed]:scale-[0.985]",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",
   ],
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-sm data-[hovered]:bg-primary/90",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground shadow-sm data-[hovered]:bg-destructive/90",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-background shadow-sm data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground data-[hovered]:bg-secondary/80",
+        ghost: "data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
+        link: "text-primary underline-offset-4 data-[hovered]:underline",
         success:
-          "bg-success text-success-foreground shadow-sm hover:bg-success/90",
+          "bg-success text-success-foreground shadow-sm data-[hovered]:bg-success/90",
         warning:
-          "bg-warning text-warning-foreground shadow-sm hover:bg-warning/90",
+          "bg-warning text-warning-foreground shadow-sm data-[hovered]:bg-warning/90",
       },
       size: {
         sm: "h-8 px-3 text-xs [&_svg]:size-3.5",
@@ -54,7 +54,9 @@ type AriaButtonProps = React.ComponentPropsWithoutRef<typeof AriaButton>;
 export interface ButtonProps
   extends Omit<AriaButtonProps, "className" | "children" | "isDisabled">,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+  href?: string;
+  target?: string;
+  rel?: string;
   loading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
@@ -64,25 +66,31 @@ export interface ButtonProps
   isDisabled?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = React.forwardRef<
+  HTMLButtonElement | HTMLAnchorElement,
+  ButtonProps
+>(
   (
     {
       className,
       variant,
       size,
-      asChild = false,
       loading = false,
       leftIcon,
       rightIcon,
       children,
       disabled,
       isDisabled,
+      href,
+      target,
+      rel,
       ...props
     },
     ref,
   ) => {
+    const isDisabledState = disabled ?? isDisabled ?? false;
     const classes = cn(buttonVariants({ variant, size, className }));
-    const disabledState = disabled ?? isDisabled ?? false;
+
     const content = (
       <>
         {loading ? (
@@ -90,58 +98,34 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           leftIcon
         )}
-        {!asChild ? children : null}
+        {children}
         {!loading && rightIcon}
       </>
     );
 
-    if (asChild && React.isValidElement(children)) {
-      const child = children as React.ReactElement<{
-        className?: string;
-        disabled?: boolean;
-        "aria-busy"?: boolean;
-        children?: React.ReactNode;
-      }>;
-      const childProps: {
-        className: string;
-        disabled: boolean;
-        "aria-busy"?: boolean;
-        children?: React.ReactNode;
-      } = {
-        className: cn(classes, child.props.className),
-        disabled: disabledState || loading,
-      };
-
-      if (loading) {
-        childProps["aria-busy"] = true;
-        childProps.children = (
-          <>
-            <Loader2 className="animate-spin" aria-hidden="true" />
-            {child.props.children}
-          </>
-        );
-      } else if (leftIcon || rightIcon) {
-        childProps.children = (
-          <>
-            {leftIcon}
-            {child.props.children}
-            {rightIcon}
-          </>
-        );
-      }
-
-      return React.cloneElement(child, childProps);
+    if (href) {
+      return (
+        <AriaLink
+          {...(props as any)}
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          href={href}
+          target={target}
+          rel={rel}
+          className={classes}
+          isDisabled={isDisabledState || loading}
+        >
+          {content}
+        </AriaLink>
+      );
     }
-
-    const ariaButtonProps = loading ? { "aria-busy": true as const } : {};
 
     return (
       <AriaButton
         {...props}
-        ref={ref}
+        ref={ref as React.Ref<HTMLButtonElement>}
         className={classes}
-        isDisabled={disabledState || loading}
-        {...ariaButtonProps}
+        isDisabled={isDisabledState || loading}
+        aria-busy={loading || undefined}
       >
         {content}
       </AriaButton>

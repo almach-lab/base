@@ -1,7 +1,10 @@
 import { cn } from "@almach/utils";
 import { Check } from "lucide-react";
 import * as React from "react";
-import { Checkbox as CheckboxPrimitive } from "react-aria-components";
+import {
+  Checkbox as CheckboxPrimitive,
+  composeRenderProps,
+} from "react-aria-components";
 
 type CheckboxPrimitiveProps = React.ComponentPropsWithoutRef<
   typeof CheckboxPrimitive
@@ -17,30 +20,45 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
   ({ className, error, children, ...props }, ref) => (
     <CheckboxPrimitive
       ref={ref}
-      className={cn(
-        "flex size-5 shrink-0 items-center justify-center rounded-sm border border-input bg-background",
-        "cursor-pointer select-none transition-[background-color,border-color,transform] duration-150 ease-out",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-        "disabled:cursor-not-allowed disabled:opacity-50",
-        "active:scale-[0.98]",
-        "data-[selected]:border-primary data-[selected]:bg-primary data-[selected]:text-primary-foreground",
-        error && "border-destructive",
-        className,
+      className={composeRenderProps(className, (nextClassName, renderProps) =>
+        cn(
+          "group flex items-center gap-2.5 cursor-pointer select-none",
+          renderProps.isDisabled && "cursor-not-allowed opacity-50",
+          nextClassName,
+        ),
       )}
       {...(error ? { "aria-invalid": true as const } : {})}
       {...props}
     >
-      {({ isSelected }) => (
+      {({ isSelected, isHovered, isPressed, isFocusVisible }) => (
         <>
-          <span
+          <div
             className={cn(
-              "flex items-center justify-center text-current",
-              !isSelected && "hidden",
+              "flex size-4 shrink-0 items-center justify-center rounded-sm border border-input bg-background",
+              "transition-all duration-150 ease-out",
+              isFocusVisible &&
+                "ring-2 ring-ring ring-offset-2 ring-offset-background",
+              isSelected && "border-primary bg-primary text-primary-foreground",
+              isHovered && !isSelected && "border-muted-foreground",
+              isPressed && "scale-[0.92]",
+              error && !isSelected && "border-destructive",
+              error && isFocusVisible && "ring-destructive",
             )}
           >
-            <Check className="h-3 w-3" strokeWidth={2.5} />
-          </span>
-          {children}
+            <Check
+              className={cn(
+                "h-3 w-3 transition-transform duration-100",
+                isSelected ? "scale-100" : "scale-0",
+              )}
+              strokeWidth={3}
+              aria-hidden="true"
+            />
+          </div>
+          {children && (
+            <span className="text-sm font-medium leading-none text-foreground">
+              {children}
+            </span>
+          )}
         </>
       )}
     </CheckboxPrimitive>

@@ -101,9 +101,9 @@ function CalendarHeader() {
         slot="previous"
         className={cn(
           "inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background text-foreground",
-          "transition-colors duration-150 hover:bg-accent hover:text-accent-foreground",
+          "transition-colors duration-150 data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-          "disabled:cursor-not-allowed disabled:opacity-40",
+          "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40",
         )}
       >
         {direction === "rtl" ? (
@@ -119,9 +119,9 @@ function CalendarHeader() {
         slot="next"
         className={cn(
           "inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background text-foreground",
-          "transition-colors duration-150 hover:bg-accent hover:text-accent-foreground",
+          "transition-colors duration-150 data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-          "disabled:cursor-not-allowed disabled:opacity-40",
+          "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40",
         )}
       >
         {direction === "rtl" ? (
@@ -195,20 +195,21 @@ function createCellClassName(
       state.isOutsideMonth && "text-muted-foreground opacity-50",
       (state.isDisabled || state.isUnavailable) &&
         "text-muted-foreground opacity-50",
-      !selected && "hover:bg-accent hover:text-accent-foreground",
+      !selected &&
+        "data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
       state.isInvalid && "text-destructive",
 
       mode !== "range" &&
         selected &&
-        "bg-foreground text-background hover:bg-foreground/90",
+        "bg-foreground text-background data-[hovered]:bg-foreground/90",
 
       isRangeMiddle &&
-        "rounded-none bg-primary/25 text-primary-foreground/95 hover:bg-primary/30",
+        "rounded-none bg-primary/25 text-primary-foreground/95 data-[hovered]:bg-primary/30",
       isRangeMiddle && isWeekStart && "rounded-l-full",
       isRangeMiddle && isWeekEnd && "rounded-r-full",
 
       (isRangeStart || isRangeEnd) &&
-        "z-10 rounded-full bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+        "z-10 rounded-full bg-primary text-primary-foreground shadow-sm data-[hovered]:bg-primary/90",
 
       isRangeStart &&
         !isSingleDayRange &&
