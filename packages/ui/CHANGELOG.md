@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 0.3.11
+
+### Patch Changes
+
+- auto release from 119bc1e..2c42cc3
+
 ## 0.3.10
 
 ### Patch Changes
