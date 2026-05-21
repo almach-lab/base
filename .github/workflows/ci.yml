@@ -35,9 +35,13 @@ permissions: read-all
 
 jobs:
   ci:
-    name: CI
+    name: Check (${{ matrix.command }})
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        command: [lint, typecheck, "build:docs"]
     steps:
       - uses: actions/checkout@v4
 
@@ -55,11 +59,5 @@ jobs:
       - name: Install
         run: bun install --frozen-lockfile
 
-      - name: Lint
-        run: bun run lint
-
-      - name: Typecheck & Build Packages
-        run: bun run typecheck
-
-      - name: Build docs
-        run: bun run build:docs
+      - name: Run ${{ matrix.command }}
+        run: bun run ${{ matrix.command }}
