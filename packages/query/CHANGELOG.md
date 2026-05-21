@@ -1,5 +1,13 @@
 # @almach/query
 
+## 0.0.3
+
+### Patch Changes
+
+- auto release from f95fcf0..66d87f9
+- Updated dependencies
+  - @almach/utils@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
