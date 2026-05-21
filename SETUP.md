@@ -24,7 +24,8 @@
 
 | Secret name | Value |
 |-------------|-------|
-| `NPM_TOKEN` | The token you just created |
+
+| `GH_PAT` | GitHub Personal Access Token (repo, workflow scope) to allow Release PRs to trigger CI |
 
 ### How releases work
 
@@ -117,6 +118,8 @@ bun run release
 
 | Secret | Where used | How to get it |
 |--------|-----------|---------------|
-| `NPM_TOKEN` | `release.yml` | npmjs.com → Granular Access Token (read/write) |
+
+| `GH_PAT` | `release.yml` | GitHub → Settings → Developer settings → PAT (repo, workflow scope) |
 | `CLOUDFLARE_API_TOKEN` | docs deployment workflow (if enabled) | Cloudflare → Profile → API Tokens → Pages Edit template |
 | `CLOUDFLARE_ACCOUNT_ID` | docs deployment workflow (if enabled) | Cloudflare dashboard URL |
+
