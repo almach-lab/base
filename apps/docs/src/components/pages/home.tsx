@@ -226,7 +226,7 @@ export function HomePage() {
                     <Separator />
                     <div className="space-y-2 text-sm">
                       <label className="flex items-center gap-2">
-                        <Checkbox defaultChecked className="h-4 w-4" />
+                        <Checkbox className="h-4 w-4" />
                         <span>Ship with analytics enabled</span>
                       </label>
                       <label className="flex items-center gap-2">
