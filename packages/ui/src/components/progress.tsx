@@ -26,7 +26,7 @@ const progressVariants = cva("relative w-full overflow-hidden rounded-full", {
 
 export interface ProgressProps
   extends Omit<React.ComponentPropsWithoutRef<typeof ProgressBar>, "value">,
-  VariantProps<typeof progressVariants> {
+    VariantProps<typeof progressVariants> {
   value?: number;
 }
 
@@ -43,7 +43,7 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
           <div className="h-full w-full rounded-full bg-secondary" />
           <div
             className="progress-fill absolute inset-y-0 left-0 rounded-full transition-[width] duration-500 ease-out"
-            style={{ width: percentage + "%" }}
+            style={{ width: `${percentage}%` }}
           />
         </>
       )}
