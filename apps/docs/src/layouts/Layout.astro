@@ -74,150 +74,35 @@ const footerContainerClass = isHome
               return;
             }
 
-            const theme = JSON.parse(raw);
+                        const theme = JSON.parse(raw);
             const surface = theme?.surfaceTokens;
 
             if (surface) {
-              root.style.setProperty(
-                "--theme-background-light",
-                surface.backgroundLight,
-              );
-              root.style.setProperty(
-                "--theme-foreground-light",
-                surface.foregroundLight,
-              );
-              root.style.setProperty("--theme-card-light", surface.cardLight);
-              root.style.setProperty(
-                "--theme-card-foreground-light",
-                surface.cardForegroundLight,
-              );
-              root.style.setProperty("--theme-muted-light", surface.mutedLight);
-              root.style.setProperty(
-                "--theme-muted-foreground-light",
-                surface.mutedForegroundLight,
-              );
-              root.style.setProperty(
-                "--theme-accent-light",
-                surface.accentLight,
-              );
-              root.style.setProperty(
-                "--theme-accent-foreground-light",
-                surface.accentForegroundLight,
-              );
-              root.style.setProperty(
-                "--theme-border-light",
-                surface.borderLight,
-              );
-              root.style.setProperty("--theme-input-light", surface.inputLight);
-              root.style.setProperty(
-                "--theme-secondary-light",
-                surface.accentLight,
-              );
-              root.style.setProperty(
-                "--theme-secondary-foreground-light",
-                surface.accentForegroundLight,
-              );
-
-              root.style.setProperty(
-                "--theme-background-dark",
-                surface.backgroundDark,
-              );
-              root.style.setProperty(
-                "--theme-foreground-dark",
-                surface.foregroundDark,
-              );
-              root.style.setProperty("--theme-card-dark", surface.cardDark);
-              root.style.setProperty(
-                "--theme-card-foreground-dark",
-                surface.cardForegroundDark,
-              );
-              root.style.setProperty("--theme-muted-dark", surface.mutedDark);
-              root.style.setProperty(
-                "--theme-muted-foreground-dark",
-                surface.mutedForegroundDark,
-              );
-              root.style.setProperty("--theme-accent-dark", surface.accentDark);
-              root.style.setProperty(
-                "--theme-accent-foreground-dark",
-                surface.accentForegroundDark,
-              );
-              root.style.setProperty("--theme-border-dark", surface.borderDark);
-              root.style.setProperty("--theme-input-dark", surface.inputDark);
-              root.style.setProperty(
-                "--theme-secondary-dark",
-                surface.accentDark,
-              );
-              root.style.setProperty(
-                "--theme-secondary-foreground-dark",
-                surface.accentForegroundDark,
-              );
+              root.style.setProperty("--background", isDark ? surface.backgroundDark : surface.backgroundLight);
+              root.style.setProperty("--foreground", isDark ? surface.foregroundDark : surface.foregroundLight);
+              root.style.setProperty("--card", isDark ? surface.cardDark : surface.cardLight);
+              root.style.setProperty("--card-foreground", isDark ? surface.cardForegroundDark : surface.cardForegroundLight);
+              root.style.setProperty("--muted", isDark ? surface.mutedDark : surface.mutedLight);
+              root.style.setProperty("--muted-foreground", isDark ? surface.mutedForegroundDark : surface.mutedForegroundLight);
+              root.style.setProperty("--accent", isDark ? surface.accentDark : surface.accentLight);
+              root.style.setProperty("--accent-foreground", isDark ? surface.accentForegroundDark : surface.accentForegroundLight);
+              root.style.setProperty("--border", isDark ? surface.borderDark : surface.borderLight);
+              root.style.setProperty("--input", isDark ? surface.inputDark : surface.inputLight);
+              root.style.setProperty("--secondary", isDark ? surface.accentDark : surface.accentLight);
+              root.style.setProperty("--secondary-foreground", isDark ? surface.accentForegroundDark : surface.accentForegroundLight);
             }
 
             const status = theme?.statusTokens;
             if (status) {
-              root.style.setProperty(
-                "--theme-success-light",
-                status.successLight,
-              );
-              root.style.setProperty(
-                "--theme-success-foreground-light",
-                status.successForegroundLight,
-              );
-              root.style.setProperty(
-                "--theme-warning-light",
-                status.warningLight,
-              );
-              root.style.setProperty(
-                "--theme-warning-foreground-light",
-                status.warningForegroundLight,
-              );
-              root.style.setProperty(
-                "--theme-destructive-light",
-                status.destructiveLight,
-              );
-              root.style.setProperty(
-                "--theme-destructive-foreground-light",
-                status.destructiveForegroundLight,
-              );
-              root.style.setProperty(
-                "--theme-success-dark",
-                status.successDark,
-              );
-              root.style.setProperty(
-                "--theme-success-foreground-dark",
-                status.successForegroundDark,
-              );
-              root.style.setProperty(
-                "--theme-warning-dark",
-                status.warningDark,
-              );
-              root.style.setProperty(
-                "--theme-warning-foreground-dark",
-                status.warningForegroundDark,
-              );
-              root.style.setProperty(
-                "--theme-destructive-dark",
-                status.destructiveDark,
-              );
-              root.style.setProperty(
-                "--theme-destructive-foreground-dark",
-                status.destructiveForegroundDark,
-              );
+              root.style.setProperty("--success", isDark ? status.successDark : status.successLight);
+              root.style.setProperty("--success-foreground", isDark ? status.successForegroundDark : status.successForegroundLight);
+              root.style.setProperty("--warning", isDark ? status.warningDark : status.warningLight);
+              root.style.setProperty("--warning-foreground", isDark ? status.warningForegroundDark : status.warningForegroundLight);
+              root.style.setProperty("--destructive", isDark ? status.destructiveDark : status.destructiveLight);
+              root.style.setProperty("--destructive-foreground", isDark ? status.destructiveForegroundDark : status.destructiveForegroundLight);
             }
 
-            if (theme?.primaryLight) {
-              root.style.setProperty(
-                "--theme-primary-light",
-                theme.primaryLight,
-              );
-            }
-            if (theme?.primaryDark) {
-              root.style.setProperty("--theme-primary-dark", theme.primaryDark);
-            }
-
-            const activePrimary = isDark
-              ? theme?.primaryDark
-              : theme?.primaryLight;
+            const activePrimary = isDark ? theme?.primaryDark : theme?.primaryLight;
             if (activePrimary) {
               root.style.setProperty("--primary", activePrimary);
               root.style.setProperty("--ring", activePrimary);
@@ -227,26 +112,14 @@ const footerContainerClass = isHome
               root.style.setProperty("--radius", theme.radius);
             }
             if (typeof theme?.overlayMs === "number") {
-              root.style.setProperty(
-                "--theme-motion-overlay-duration-ms",
-                String(theme.overlayMs),
-              );
-              root.style.setProperty(
-                "--theme-motion-overlay-duration",
-                `${theme.overlayMs}ms`,
-              );
+              root.style.setProperty("--theme-motion-overlay-duration-ms", String(theme.overlayMs));
+              root.style.setProperty("--theme-motion-overlay-duration", `${theme.overlayMs}ms`);
             }
             if (typeof theme?.interactiveMs === "number") {
-              root.style.setProperty(
-                "--theme-motion-interactive-duration",
-                `${theme.interactiveMs}ms`,
-              );
+              root.style.setProperty("--theme-motion-interactive-duration", `${theme.interactiveMs}ms`);
             }
             if (theme?.ease) {
-              root.style.setProperty(
-                "--theme-motion-ease-standard",
-                theme.ease,
-              );
+              root.style.setProperty("--theme-motion-ease-standard", theme.ease);
             }
           } catch {
             // noop

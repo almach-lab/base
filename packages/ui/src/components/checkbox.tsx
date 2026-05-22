@@ -10,14 +10,36 @@ type CheckboxPrimitiveProps = React.ComponentPropsWithoutRef<
   typeof CheckboxPrimitive
 >;
 
+import { cva, type VariantProps } from "class-variance-authority";
+
+const checkboxVariants = cva(
+  [
+    "flex shrink-0 items-center justify-center rounded-sm border border-input bg-background",
+    "transition-all duration-150 ease-out",
+  ],
+  {
+    variants: {
+      size: {
+        sm: "size-3.5 [&_svg]:size-2.5",
+        default: "size-4 [&_svg]:size-3",
+        lg: "size-5 rounded [&_svg]:size-3.5",
+      },
+    },
+    defaultVariants: {
+      size: "default",
+    },
+  },
+);
+
 export interface CheckboxProps
-  extends Omit<CheckboxPrimitiveProps, "children"> {
+  extends Omit<CheckboxPrimitiveProps, "children">,
+    VariantProps<typeof checkboxVariants> {
   error?: boolean;
   children?: React.ReactNode;
 }
 
 const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
-  ({ className, error, children, ...props }, ref) => (
+  ({ className, size = "default", error, children, ...props }, ref) => (
     <CheckboxPrimitive
       ref={ref}
       className={composeRenderProps(className, (nextClassName, renderProps) =>
@@ -34,8 +56,7 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
         <>
           <div
             className={cn(
-              "flex size-4 shrink-0 items-center justify-center rounded-sm border border-input bg-background",
-              "transition-all duration-150 ease-out",
+              checkboxVariants({ size }),
               isFocusVisible &&
                 "ring-2 ring-ring ring-offset-2 ring-offset-background",
               isSelected && "border-primary bg-primary text-primary-foreground",
@@ -47,7 +68,7 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
           >
             <Check
               className={cn(
-                "h-3 w-3 transition-transform duration-100",
+                "transition-transform duration-100",
                 isSelected ? "scale-100" : "scale-0",
               )}
               strokeWidth={3}
@@ -66,4 +87,4 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
 );
 Checkbox.displayName = "Checkbox";
 
-export { Checkbox };
+export { Checkbox, checkboxVariants };

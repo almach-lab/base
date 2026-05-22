@@ -48,7 +48,7 @@ export {
   ScatterChart,
 } from "./components/chart.js";
 
-export { Checkbox } from "./components/checkbox.js";
+export { Checkbox, checkboxVariants } from "./components/checkbox.js";
 
 export { Collapsible } from "./components/collapsible.js";
 
@@ -72,7 +72,7 @@ export type {
   InputDateProps,
   InputProps,
 } from "./components/input.js";
-export { DateInput, Input } from "./components/input.js";
+export { DateInput, Input, inputVariants } from "./components/input.js";
 
 export { Label } from "./components/label.js";
 export type { ViewComponent, ViewsRegistry } from "./components/modal.js";
@@ -80,7 +80,7 @@ export { Modal, useModal } from "./components/modal.js";
 
 export { Popover } from "./components/popover.js";
 
-export { Progress } from "./components/progress.js";
+export { Progress, progressVariants } from "./components/progress.js";
 
 export { Radio } from "./components/radio.js";
 
@@ -120,7 +120,7 @@ export {
 export type { TagInputProps } from "./components/tag-input.js";
 export { TagInput } from "./components/tag-input.js";
 export type { TextareaProps } from "./components/textarea.js";
-export { Textarea } from "./components/textarea.js";
+export { Textarea, textareaVariants } from "./components/textarea.js";
 export type { ToastConfirmOptions, ToastOptions } from "./components/toast.js";
 export { toast } from "./components/toast.js";
 export { Toaster } from "./components/toaster.js";

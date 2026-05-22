@@ -892,154 +892,6 @@ function getStatusTokensForSurface(surfaceName: string): StatusTokens {
   return STATUS_TOKENS_DEFAULT;
 }
 
-function applySurfaceVars(tokens: SurfaceTokens, statusTokens: StatusTokens) {
-  const root = document.documentElement;
-  root.style.setProperty("--theme-background-light", tokens.backgroundLight);
-  root.style.setProperty("--theme-foreground-light", tokens.foregroundLight);
-  root.style.setProperty("--theme-sidebar-light", tokens.backgroundLight);
-  root.style.setProperty(
-    "--theme-sidebar-foreground-light",
-    tokens.foregroundLight,
-  );
-  root.style.setProperty("--theme-card-light", tokens.cardLight);
-  root.style.setProperty(
-    "--theme-card-foreground-light",
-    tokens.cardForegroundLight,
-  );
-  root.style.setProperty("--theme-muted-light", tokens.mutedLight);
-  root.style.setProperty(
-    "--theme-muted-foreground-light",
-    tokens.mutedForegroundLight,
-  );
-  root.style.setProperty("--theme-accent-light", tokens.accentLight);
-  root.style.setProperty(
-    "--theme-accent-foreground-light",
-    tokens.accentForegroundLight,
-  );
-  root.style.setProperty("--theme-border-light", tokens.borderLight);
-  root.style.setProperty("--theme-input-light", tokens.inputLight);
-  root.style.setProperty("--theme-secondary-light", tokens.accentLight);
-  root.style.setProperty(
-    "--theme-secondary-foreground-light",
-    tokens.accentForegroundLight,
-  );
-  root.style.setProperty("--theme-success-light", statusTokens.successLight);
-  root.style.setProperty(
-    "--theme-success-foreground-light",
-    statusTokens.successForegroundLight,
-  );
-  root.style.setProperty("--theme-warning-light", statusTokens.warningLight);
-  root.style.setProperty(
-    "--theme-warning-foreground-light",
-    statusTokens.warningForegroundLight,
-  );
-  root.style.setProperty(
-    "--theme-destructive-light",
-    statusTokens.destructiveLight,
-  );
-  root.style.setProperty(
-    "--theme-destructive-foreground-light",
-    statusTokens.destructiveForegroundLight,
-  );
-  root.style.setProperty("--theme-sidebar-primary-light", tokens.accentLight);
-  root.style.setProperty(
-    "--theme-sidebar-primary-foreground-light",
-    tokens.accentForegroundLight,
-  );
-  root.style.setProperty("--theme-sidebar-accent-light", tokens.accentLight);
-  root.style.setProperty(
-    "--theme-sidebar-accent-foreground-light",
-    tokens.accentForegroundLight,
-  );
-  root.style.setProperty("--theme-sidebar-border-light", tokens.borderLight);
-  root.style.setProperty("--theme-sidebar-ring-light", tokens.accentLight);
-
-  root.style.setProperty("--theme-background-dark", tokens.backgroundDark);
-  root.style.setProperty("--theme-foreground-dark", tokens.foregroundDark);
-  root.style.setProperty("--theme-sidebar-dark", tokens.backgroundDark);
-  root.style.setProperty(
-    "--theme-sidebar-foreground-dark",
-    tokens.foregroundDark,
-  );
-  root.style.setProperty("--theme-card-dark", tokens.cardDark);
-  root.style.setProperty(
-    "--theme-card-foreground-dark",
-    tokens.cardForegroundDark,
-  );
-  root.style.setProperty("--theme-muted-dark", tokens.mutedDark);
-  root.style.setProperty(
-    "--theme-muted-foreground-dark",
-    tokens.mutedForegroundDark,
-  );
-  root.style.setProperty("--theme-accent-dark", tokens.accentDark);
-  root.style.setProperty(
-    "--theme-accent-foreground-dark",
-    tokens.accentForegroundDark,
-  );
-  root.style.setProperty("--theme-border-dark", tokens.borderDark);
-  root.style.setProperty("--theme-input-dark", tokens.inputDark);
-  root.style.setProperty("--theme-secondary-dark", tokens.accentDark);
-  root.style.setProperty(
-    "--theme-secondary-foreground-dark",
-    tokens.accentForegroundDark,
-  );
-  root.style.setProperty("--theme-success-dark", statusTokens.successDark);
-  root.style.setProperty(
-    "--theme-success-foreground-dark",
-    statusTokens.successForegroundDark,
-  );
-  root.style.setProperty("--theme-warning-dark", statusTokens.warningDark);
-  root.style.setProperty(
-    "--theme-warning-foreground-dark",
-    statusTokens.warningForegroundDark,
-  );
-  root.style.setProperty(
-    "--theme-destructive-dark",
-    statusTokens.destructiveDark,
-  );
-  root.style.setProperty(
-    "--theme-destructive-foreground-dark",
-    statusTokens.destructiveForegroundDark,
-  );
-  root.style.setProperty("--theme-sidebar-primary-dark", tokens.accentDark);
-  root.style.setProperty(
-    "--theme-sidebar-primary-foreground-dark",
-    tokens.accentForegroundDark,
-  );
-  root.style.setProperty("--theme-sidebar-accent-dark", tokens.accentDark);
-  root.style.setProperty(
-    "--theme-sidebar-accent-foreground-dark",
-    tokens.accentForegroundDark,
-  );
-  root.style.setProperty("--theme-sidebar-border-dark", tokens.borderDark);
-  root.style.setProperty("--theme-sidebar-ring-dark", tokens.accentDark);
-}
-
-function loadSaved(): SavedTheme | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
-
-function save(data: SavedTheme) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch {
-    // noop
-  }
-}
-
-function clear() {
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // noop
-  }
-}
-
 function applyVars(
   preset: ColorPreset,
   surfaceName: string,
@@ -1050,14 +902,90 @@ function applyVars(
   const root = document.documentElement;
   const dark = root.classList.contains("dark");
   const statusTokens = getStatusTokensForSurface(surfaceName);
-  applySurfaceVars(surfaces, statusTokens);
 
-  // Keep both design-time theme channels and active runtime channels in sync.
+  root.style.setProperty(
+    "--background",
+    dark ? surfaces.backgroundDark : surfaces.backgroundLight,
+  );
+  root.style.setProperty(
+    "--foreground",
+    dark ? surfaces.foregroundDark : surfaces.foregroundLight,
+  );
+  root.style.setProperty(
+    "--card",
+    dark ? surfaces.cardDark : surfaces.cardLight,
+  );
+  root.style.setProperty(
+    "--card-foreground",
+    dark ? surfaces.cardForegroundDark : surfaces.cardForegroundLight,
+  );
+  root.style.setProperty(
+    "--muted",
+    dark ? surfaces.mutedDark : surfaces.mutedLight,
+  );
+  root.style.setProperty(
+    "--muted-foreground",
+    dark ? surfaces.mutedForegroundDark : surfaces.mutedForegroundLight,
+  );
+  root.style.setProperty(
+    "--accent",
+    dark ? surfaces.accentDark : surfaces.accentLight,
+  );
+  root.style.setProperty(
+    "--accent-foreground",
+    dark ? surfaces.accentForegroundDark : surfaces.accentForegroundLight,
+  );
+  root.style.setProperty(
+    "--border",
+    dark ? surfaces.borderDark : surfaces.borderLight,
+  );
+  root.style.setProperty(
+    "--input",
+    dark ? surfaces.inputDark : surfaces.inputLight,
+  );
+  root.style.setProperty(
+    "--secondary",
+    dark ? surfaces.accentDark : surfaces.accentLight,
+  );
+  root.style.setProperty(
+    "--secondary-foreground",
+    dark ? surfaces.accentForegroundDark : surfaces.accentForegroundLight,
+  );
+
+  root.style.setProperty(
+    "--success",
+    dark ? statusTokens.successDark : statusTokens.successLight,
+  );
+  root.style.setProperty(
+    "--success-foreground",
+    dark
+      ? statusTokens.successForegroundDark
+      : statusTokens.successForegroundLight,
+  );
+  root.style.setProperty(
+    "--warning",
+    dark ? statusTokens.warningDark : statusTokens.warningLight,
+  );
+  root.style.setProperty(
+    "--warning-foreground",
+    dark
+      ? statusTokens.warningForegroundDark
+      : statusTokens.warningForegroundLight,
+  );
+  root.style.setProperty(
+    "--destructive",
+    dark ? statusTokens.destructiveDark : statusTokens.destructiveLight,
+  );
+  root.style.setProperty(
+    "--destructive-foreground",
+    dark
+      ? statusTokens.destructiveForegroundDark
+      : statusTokens.destructiveForegroundLight,
+  );
+
   root.style.setProperty("--primary", dark ? preset.dark : preset.light);
   root.style.setProperty("--ring", dark ? preset.dark : preset.light);
 
-  root.style.setProperty("--theme-primary-light", preset.light);
-  root.style.setProperty("--theme-primary-dark", preset.dark);
   root.style.setProperty("--radius", radius);
   root.style.setProperty(
     "--theme-motion-overlay-duration-ms",
@@ -1076,64 +1004,63 @@ function applyVars(
 
 function resetVars() {
   const root = document.documentElement;
-  root.style.removeProperty("--theme-background-light");
-  root.style.removeProperty("--theme-foreground-light");
-  root.style.removeProperty("--theme-card-light");
-  root.style.removeProperty("--theme-card-foreground-light");
-  root.style.removeProperty("--theme-muted-light");
-  root.style.removeProperty("--theme-muted-foreground-light");
-  root.style.removeProperty("--theme-accent-light");
-  root.style.removeProperty("--theme-accent-foreground-light");
-  root.style.removeProperty("--theme-secondary-light");
-  root.style.removeProperty("--theme-secondary-foreground-light");
-  root.style.removeProperty("--theme-success-light");
-  root.style.removeProperty("--theme-success-foreground-light");
-  root.style.removeProperty("--theme-warning-light");
-  root.style.removeProperty("--theme-warning-foreground-light");
-  root.style.removeProperty("--theme-destructive-light");
-  root.style.removeProperty("--theme-destructive-foreground-light");
-  root.style.removeProperty("--theme-border-light");
-  root.style.removeProperty("--theme-input-light");
-  root.style.removeProperty("--theme-background-dark");
-  root.style.removeProperty("--theme-foreground-dark");
-  root.style.removeProperty("--theme-card-dark");
-  root.style.removeProperty("--theme-card-foreground-dark");
-  root.style.removeProperty("--theme-muted-dark");
-  root.style.removeProperty("--theme-muted-foreground-dark");
-  root.style.removeProperty("--theme-accent-dark");
-  root.style.removeProperty("--theme-accent-foreground-dark");
-  root.style.removeProperty("--theme-secondary-dark");
-  root.style.removeProperty("--theme-secondary-foreground-dark");
-  root.style.removeProperty("--theme-success-dark");
-  root.style.removeProperty("--theme-success-foreground-dark");
-  root.style.removeProperty("--theme-warning-dark");
-  root.style.removeProperty("--theme-warning-foreground-dark");
-  root.style.removeProperty("--theme-destructive-dark");
-  root.style.removeProperty("--theme-destructive-foreground-dark");
-  root.style.removeProperty("--theme-border-dark");
-  root.style.removeProperty("--theme-input-dark");
-  root.style.removeProperty("--theme-primary-light");
-  root.style.removeProperty("--theme-primary-dark");
-  root.style.removeProperty("--primary");
-  root.style.removeProperty("--ring");
-  root.style.removeProperty("--radius");
-  root.style.removeProperty("--theme-motion-overlay-duration-ms");
-  root.style.removeProperty("--theme-motion-overlay-duration");
-  root.style.removeProperty("--theme-motion-interactive-duration");
-  root.style.removeProperty("--theme-motion-ease-standard");
+  const props = [
+    "--background",
+    "--foreground",
+    "--card",
+    "--card-foreground",
+    "--muted",
+    "--muted-foreground",
+    "--accent",
+    "--accent-foreground",
+    "--border",
+    "--input",
+    "--secondary",
+    "--secondary-foreground",
+    "--success",
+    "--success-foreground",
+    "--warning",
+    "--warning-foreground",
+    "--destructive",
+    "--destructive-foreground",
+    "--primary",
+    "--ring",
+    "--radius",
+    "--theme-motion-overlay-duration-ms",
+    "--theme-motion-overlay-duration",
+    "--theme-motion-interactive-duration",
+    "--theme-motion-ease-standard",
+  ];
+  for (const prop of props) {
+    root.style.removeProperty(prop);
+  }
 }
 
 export function ThemeCustomizer() {
+  const initialSaved = typeof window !== "undefined" ? loadSaved() : null;
+
   const [open, setOpen] = useState(false);
-  const [activePreset, setActivePreset] = useState(DEFAULT_PRESET);
-  const [activeRadius, setActiveRadius] = useState(DEFAULT_RADIUS);
-  const [activeSurface, setActiveSurface] = useState(DEFAULT_SURFACE);
-  const [surfaceTokens, setSurfaceTokens] = useState<SurfaceTokens>(
-    getDefaultSurfaceTokens(),
+  const [activePreset, setActivePreset] = useState(
+    initialSaved?.preset ?? DEFAULT_PRESET,
   );
-  const [overlayMs, setOverlayMs] = useState(DEFAULT_OVERLAY_MS);
-  const [interactiveMs, setInteractiveMs] = useState(DEFAULT_INTERACTIVE_MS);
-  const [activeEase, setActiveEase] = useState(DEFAULT_EASE);
+  const [activeRadius, setActiveRadius] = useState(
+    initialSaved?.radius ?? DEFAULT_RADIUS,
+  );
+  const [activeSurface, setActiveSurface] = useState(
+    initialSaved?.surfaceName ?? DEFAULT_SURFACE,
+  );
+  const [surfaceTokens, setSurfaceTokens] = useState<SurfaceTokens>(
+    initialSaved?.surfaceTokens ?? getDefaultSurfaceTokens(),
+  );
+  const [overlayMs, setOverlayMs] = useState(
+    initialSaved?.overlayMs ?? DEFAULT_OVERLAY_MS,
+  );
+  const [interactiveMs, setInteractiveMs] = useState(
+    initialSaved?.interactiveMs ?? DEFAULT_INTERACTIVE_MS,
+  );
+  const [activeEase, setActiveEase] = useState(
+    initialSaved?.ease ?? DEFAULT_EASE,
+  );
   const [copied, setCopied] = useState(false);
   const [jsonCopied, setJsonCopied] = useState(false);
   const [showJsonEditor, setShowJsonEditor] = useState(false);
@@ -1191,19 +1118,6 @@ export function ThemeCustomizer() {
     },
     [],
   );
-
-  useEffect(() => {
-    const saved = loadSaved();
-    if (saved) {
-      setActivePreset(saved.preset);
-      setActiveRadius(saved.radius);
-      setActiveSurface(saved.surfaceName ?? DEFAULT_SURFACE);
-      setSurfaceTokens(saved.surfaceTokens ?? getDefaultSurfaceTokens());
-      setOverlayMs(saved.overlayMs ?? DEFAULT_OVERLAY_MS);
-      setInteractiveMs(saved.interactiveMs ?? DEFAULT_INTERACTIVE_MS);
-      setActiveEase(saved.ease ?? DEFAULT_EASE);
-    }
-  }, []);
 
   useEffect(() => {
     const handler = () => setOpen((o) => !o);

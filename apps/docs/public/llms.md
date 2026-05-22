@@ -1,6 +1,6 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-05-03T04:09:48.206Z
+Generated: 2026-05-22T03:20:49.973Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
@@ -17,18 +17,18 @@ Total modules: 36
 - card: 2 value export(s), 0 type export(s)
 - carousel: 1 value export(s), 0 type export(s)
 - chart: 29 value export(s), 0 type export(s)
-- checkbox: 1 value export(s), 0 type export(s)
+- checkbox: 2 value export(s), 0 type export(s)
 - collapsible: 1 value export(s), 0 type export(s)
 - command: 1 value export(s), 0 type export(s)
 - currency-input: 3 value export(s), 4 type export(s)
 - dialog: 1 value export(s), 0 type export(s)
 - drawer: 1 value export(s), 0 type export(s)
 - dropdown-menu: 1 value export(s), 0 type export(s)
-- input: 2 value export(s), 3 type export(s)
+- input: 3 value export(s), 3 type export(s)
 - label: 1 value export(s), 0 type export(s)
 - modal: 2 value export(s), 2 type export(s)
 - popover: 1 value export(s), 0 type export(s)
-- progress: 1 value export(s), 0 type export(s)
+- progress: 2 value export(s), 0 type export(s)
 - radio: 1 value export(s), 0 type export(s)
 - scroll-area: 2 value export(s), 0 type export(s)
 - select: 1 value export(s), 2 type export(s)
@@ -41,7 +41,7 @@ Total modules: 36
 - table: 1 value export(s), 1 type export(s)
 - tabs: 3 value export(s), 0 type export(s)
 - tag-input: 1 value export(s), 1 type export(s)
-- textarea: 1 value export(s), 1 type export(s)
+- textarea: 2 value export(s), 1 type export(s)
 - toast: 1 value export(s), 2 type export(s)
 - toaster: 1 value export(s), 0 type export(s)
 - tooltip: 1 value export(s), 0 type export(s)
@@ -388,7 +388,7 @@ import { Checkbox } from "@almach/ui";
 
 ### Exported Symbols
 
-- Values: `Checkbox`
+- Values: `Checkbox`, `checkboxVariants`
 - Types: (none)
 
 ## Collapsible
@@ -684,7 +684,7 @@ export function EmailField() {
 
 ### Exported Symbols
 
-- Values: `DateInput`, `Input`
+- Values: `DateInput`, `Input`, `inputVariants`
 - Types: `DateInputProps`, `InputDateProps`, `InputProps`
 
 ## Label
@@ -845,7 +845,7 @@ export function Example() {
 
 ### Exported Symbols
 
-- Values: `Progress`
+- Values: `Progress`, `progressVariants`
 - Types: (none)
 
 ## Radio
@@ -1444,7 +1444,7 @@ export function Example() {
 
 ### Exported Symbols
 
-- Values: `Textarea`
+- Values: `Textarea`, `textareaVariants`
 - Types: `TextareaProps`
 
 ## Toast

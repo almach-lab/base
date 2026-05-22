@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@almach/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
 import { Calendar } from "./calendar.js";
@@ -8,34 +9,106 @@ import { InputCurrency } from "./currency-input.js";
 import { Popover } from "./popover.js";
 
 /* ── Base Input ───────────────────────────────────────────────────────────── */
+const inputVariants = cva(
+  [
+    "flex w-full rounded-lg border border-input bg-background",
+    "transition-all duration-150 ring-offset-background",
+    "placeholder:text-muted-foreground",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    "disabled:cursor-not-allowed disabled:opacity-50",
+    "file:border-0 file:bg-transparent file:font-medium",
+  ],
+  {
+    variants: {
+      size: {
+        sm: "h-8 text-xs file:text-xs",
+        default: "h-9 text-sm file:text-sm",
+        lg: "h-11 text-base file:text-base",
+      },
+    },
+    defaultVariants: {
+      size: "default",
+    },
+  },
+);
+
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+    VariantProps<typeof inputVariants> {
   leftElement?: React.ReactNode;
   rightElement?: React.ReactNode;
   error?: boolean;
 }
 
+const inputSideOffset: Record<"sm" | "default" | "lg", string> = {
+  sm: "left-2.5",
+  default: "left-3",
+  lg: "left-4",
+};
+
+const inputPadding: Record<
+  "sm" | "default" | "lg",
+  {
+    withLeft: string;
+    withoutLeft: string;
+    withRight: string;
+    withoutRight: string;
+  }
+> = {
+  sm: {
+    withLeft: "pl-8",
+    withoutLeft: "pl-2.5",
+    withRight: "pr-8",
+    withoutRight: "pr-2.5",
+  },
+  default: {
+    withLeft: "pl-9",
+    withoutLeft: "pl-3",
+    withRight: "pr-9",
+    withoutRight: "pr-3",
+  },
+  lg: {
+    withLeft: "pl-11",
+    withoutLeft: "pl-4",
+    withRight: "pr-11",
+    withoutRight: "pr-4",
+  },
+};
+
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, leftElement, rightElement, error, ...props }, ref) => {
+  (
+    {
+      className,
+      type,
+      size = "default",
+      leftElement,
+      rightElement,
+      error,
+      ...props
+    },
+    ref,
+  ) => {
+    const activeSize = (size ?? "default") as "sm" | "default" | "lg";
+    const pad = inputPadding[activeSize];
+    const sideOffset = inputSideOffset[activeSize];
     return (
       <div className="relative flex items-center w-full">
         {leftElement && (
-          <div className="pointer-events-none absolute left-3 flex items-center text-muted-foreground [&_svg]:size-4">
+          <div
+            className={cn(
+              "pointer-events-none absolute flex items-center text-muted-foreground [&_svg]:size-4",
+              sideOffset,
+            )}
+          >
             {leftElement}
           </div>
         )}
         <input
           type={type}
           className={cn(
-            "flex h-9 w-full rounded-lg border border-input bg-background text-sm",
-            "transition-all duration-150",
-            "placeholder:text-muted-foreground",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-            "disabled:cursor-not-allowed disabled:opacity-50",
-            "file:border-0 file:bg-transparent file:text-sm file:font-medium",
-            leftElement ? "pl-9" : "pl-3",
-            rightElement ? "pr-9" : "pr-3",
-
+            inputVariants({ size }),
+            leftElement ? pad.withLeft : pad.withoutLeft,
+            rightElement ? pad.withRight : pad.withoutRight,
             error && "border-destructive focus-visible:ring-destructive",
             className,
           )}
@@ -44,7 +117,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {rightElement && (
-          <div className="absolute right-3 flex items-center text-muted-foreground [&_svg]:size-4">
+          <div
+            className={cn(
+              "absolute flex items-center text-muted-foreground [&_svg]:size-4",
+              sideOffset.replace("left", "right"),
+            )}
+          >
             {rightElement}
           </div>
         )}
@@ -364,7 +442,7 @@ const InputCompound = Object.assign(Input, {
   Currency: InputCurrency,
 });
 
-export { InputCompound as Input };
+export { InputCompound as Input, inputVariants };
 
 // Backward-compat alias
 export const DateInput = InputDate;
