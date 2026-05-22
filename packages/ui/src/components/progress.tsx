@@ -26,7 +26,7 @@ const progressVariants = cva("relative w-full overflow-hidden rounded-full", {
 
 export interface ProgressProps
   extends Omit<React.ComponentPropsWithoutRef<typeof ProgressBar>, "value">,
-    VariantProps<typeof progressVariants> {
+  VariantProps<typeof progressVariants> {
   value?: number;
 }
 
