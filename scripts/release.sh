@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "Building packages..."
-bun run build:packages
 
 cleanup() {
   [[ -f bun.lock.bak ]] && mv bun.lock.bak bun.lock
@@ -65,4 +63,4 @@ node -e "
   console.log('Resolved workspace:* references:', versions);
 "
 
-npx changeset publish
+bunx changeset publish

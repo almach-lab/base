@@ -26,7 +26,8 @@
     "release:reset-remote": "bun scripts/reset-remote-releases.ts",
     "llms:snapshot:update": "bun scripts/generate-llm-ui-snapshot.ts",
     "llms:snapshot:check": "bun scripts/generate-llm-ui-snapshot.ts --check",
-    "postinstall": "bun scripts/fix-esm.ts"
+    "postinstall": "bun scripts/fix-esm.ts",
+    "release:ci": "bun run build:packages && bun run release"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
