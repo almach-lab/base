@@ -324,12 +324,7 @@ function DropdownMenuLabel({
 ).getCollectionNode;
 
 function DropdownMenuSeparator({ className, ...props }: SeparatorProps) {
-  return (
-    <Separator
-      {...props}
-      className={cn(MENU_SEPARATOR, className)}
-    />
-  );
+  return <Separator {...props} className={cn(MENU_SEPARATOR, className)} />;
 }
 
 (

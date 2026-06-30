@@ -1,8 +1,8 @@
 import { Alert, Badge } from "@almach/ui";
 import { ArrowRight, Info } from "lucide-react";
 import React from "react";
-import { getPackageVersion } from "../../lib/package-versions";
 import { docsLayout } from "../../lib/docs-layout";
+import { getPackageVersion } from "../../lib/package-versions";
 import { CodeBlock } from "../code-block";
 import { DocCopyButton, DocPageHeader } from "../docs/doc-page-header";
 import { PkgTabs } from "../pkg-tabs";
@@ -163,9 +163,7 @@ export function GettingStartedPage() {
         eyebrow="Guide"
         title="Getting Started"
         description="Install Almach, configure styles, and start building with accessible React components."
-        action={
-          <DocCopyButton label="Copy guide" onClick={copyMarkdown} />
-        }
+        action={<DocCopyButton label="Copy guide" onClick={copyMarkdown} />}
       >
         <div className="flex flex-wrap gap-2">
           {["React 18+", "TypeScript", "Tailwind CSS v4", "Vite / Next.js"].map(

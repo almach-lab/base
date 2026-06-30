@@ -8,10 +8,7 @@ import {
   Tabs as TabsPrimitive,
 } from "react-aria-components";
 import { MOTION_INTERACTIVE } from "./_motion.js";
-import {
-  DISABLED_DATA,
-  FOCUS_RING,
-} from "./_styles.js";
+import { DISABLED_DATA, FOCUS_RING } from "./_styles.js";
 import { ScrollArea } from "./scroll-area.js";
 
 const tabsListVariants = cva("inline-flex items-center", {

@@ -1,13 +1,12 @@
 ---
 import { Menu } from "lucide-react";
-
-import HeaderBrand from "../HeaderBrand.astro";
+import { docsLayout } from "../../lib/docs-layout";
+import { getDocsPackageForPath } from "../../lib/docs-package";
 import { PackageBreadcrumb } from "../docs/package-breadcrumb";
+import HeaderBrand from "../HeaderBrand.astro";
 import { MobileMoreMenu } from "../MobileMoreMenu";
 import { SearchCommand } from "../SearchCommand";
 import { ThemeModeToggle } from "../ThemeModeToggle";
-import { docsLayout } from "../../lib/docs-layout";
-import { getDocsPackageForPath } from "../../lib/docs-package";
 
 interface Props {
   currentPath: string;

@@ -1,11 +1,11 @@
 import { cn } from "@almach/utils";
+import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 import {
   composeRenderProps,
   RadioGroup as RadioGroupPrimitive,
   Radio as RadioPrimitive,
 } from "react-aria-components";
-import type { VariantProps } from "class-variance-authority";
 import {
   CONTROL_DESCRIPTION,
   CONTROL_LABEL,

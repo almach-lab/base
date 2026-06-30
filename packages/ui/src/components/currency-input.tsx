@@ -5,9 +5,9 @@ import { Check, ChevronDown, Search, X } from "lucide-react";
 import * as React from "react";
 import { MOTION_INTERACTIVE } from "./_motion.js";
 import {
-  fieldErrorClass,
   FIELD_GROUP,
   FOCUS_RING,
+  fieldErrorClass,
   MENU_ITEM,
   OVERLAY_SURFACE,
 } from "./_styles.js";

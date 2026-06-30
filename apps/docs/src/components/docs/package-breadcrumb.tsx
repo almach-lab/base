@@ -1,5 +1,8 @@
 import { cn } from "@almach/utils";
-import { parsePackageEyebrow, parseScopedPackage } from "../../lib/docs-package";
+import {
+  parsePackageEyebrow,
+  parseScopedPackage,
+} from "../../lib/docs-package";
 
 interface PackageBreadcrumbProps {
   pkg: string;

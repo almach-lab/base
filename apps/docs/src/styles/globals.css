@@ -7,8 +7,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --font-sans:
-    "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono:
     "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
 
@@ -28,8 +27,7 @@
 :root {
   color-scheme: light;
   --theme-motion-standard: cubic-bezier(0.22, 1, 0.36, 1);
-  --font-sans:
-    "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono:
     "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
 
@@ -248,7 +246,11 @@ samp {
     linear-gradient(to right, hsl(var(--border) / 0.35) 1px, transparent 1px),
     linear-gradient(to bottom, hsl(var(--border) / 0.35) 1px, transparent 1px);
   background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 20%, transparent 75%);
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 0%,
+    black 20%,
+    transparent 75%
+  );
 }
 
 .landing-hero-glow {

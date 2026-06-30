@@ -381,8 +381,16 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
   const mobileScrollRef = React.useRef<HTMLDivElement>(null);
 
   usePersistedScroll(desktopScrollRef, isDesktop);
-  useScrollActiveLinkIntoView(desktopScrollRef, normalizedCurrentPath, isDesktop);
-  useScrollActiveLinkIntoView(mobileScrollRef, normalizedCurrentPath, !isDesktop);
+  useScrollActiveLinkIntoView(
+    desktopScrollRef,
+    normalizedCurrentPath,
+    isDesktop,
+  );
+  useScrollActiveLinkIntoView(
+    mobileScrollRef,
+    normalizedCurrentPath,
+    !isDesktop,
+  );
 
   React.useEffect(() => {
     const toggle = () => setOpenMobile((value) => !value);

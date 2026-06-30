@@ -7,8 +7,8 @@ import {
   forwardRef,
   type HTMLAttributes,
   type KeyboardEvent,
-  type PointerEvent as ReactPointerEvent,
   type ReactNode,
+  type PointerEvent as ReactPointerEvent,
   type RefObject,
   useCallback,
   useContext,
@@ -16,9 +16,8 @@ import {
   useRef,
   useState,
 } from "react";
-
-import { FOCUS_RING, swipeTrackVariants } from "./_styles.js";
 import { MOTION_EASE_STANDARD } from "./_motion.js";
+import { FOCUS_RING, swipeTrackVariants } from "./_styles.js";
 
 const EASE = MOTION_EASE_STANDARD;
 const SPRING_SNAP = `width 420ms ${EASE}`;
@@ -295,12 +294,7 @@ function SwipeButtonRoot({
   }, [getDimensions, getStart, calcFillWidth, calcProgress, cancelHold]);
 
   const syncIdleGeometry = useCallback(() => {
-    if (
-      isDragging.current ||
-      isHolding ||
-      succeeded ||
-      hasSucceeded.current
-    ) {
+    if (isDragging.current || isHolding || succeeded || hasSucceeded.current) {
       return;
     }
 
@@ -612,13 +606,7 @@ function SwipeButtonRoot({
         reverseSwipe: reverseRef.current,
       });
     },
-    [
-      disabled,
-      measureDimensions,
-      getDimensions,
-      syncIdleGeometry,
-      debugLog,
-    ],
+    [disabled, measureDimensions, getDimensions, syncIdleGeometry, debugLog],
   );
 
   const handlePointerMove = useCallback(

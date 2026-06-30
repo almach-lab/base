@@ -1,8 +1,8 @@
-import * as React from "react";
+import { cn } from "@almach/utils";
+import type * as React from "react";
+import { docsLayout } from "../lib/docs-layout";
 import { DocExample } from "./docs/doc-example";
 import { DocPageHeader, DocSectionHeading } from "./docs/doc-page-header";
-import { docsLayout } from "../lib/docs-layout";
-import { cn } from "@almach/utils";
 
 export interface ExampleProps {
   title: string;

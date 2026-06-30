@@ -1061,7 +1061,11 @@ function resetVars() {
   }
 }
 
-export function ThemeCustomizer({ mode = "drawer" }: { mode?: "drawer" | "page" }) {
+export function ThemeCustomizer({
+  mode = "drawer",
+}: {
+  mode?: "drawer" | "page";
+}) {
   const initialSaved = typeof window !== "undefined" ? loadSaved() : null;
   const isPage = mode === "page";
 
@@ -1559,7 +1563,8 @@ export function ThemeCustomizer({ mode = "drawer" }: { mode?: "drawer" | "page" 
           isPage
             ? undefined
             : {
-                transitionDuration: "var(--theme-motion-overlay-duration, 180ms)",
+                transitionDuration:
+                  "var(--theme-motion-overlay-duration, 180ms)",
                 transitionTimingFunction:
                   "var(--theme-motion-ease-standard, cubic-bezier(0.22,1,0.36,1))",
               }

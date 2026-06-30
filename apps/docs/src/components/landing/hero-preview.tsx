@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Badge,
-  Button,
-  Card,
-  Input,
-  Switch,
-} from "@almach/ui";
+import { Avatar, Badge, Button, Card, Input, Switch } from "@almach/ui";
 import { Bell, Search, Settings } from "lucide-react";
 
 const SIDEBAR_ITEMS = [
@@ -91,7 +84,9 @@ export function HeroPreview() {
                   </Badge>
                 }
               >
-                <Card.Title className="text-sm">Notification preferences</Card.Title>
+                <Card.Title className="text-sm">
+                  Notification preferences
+                </Card.Title>
                 <Card.Description className="text-xs">
                   Compose accessible UI with typed forms and query utilities.
                 </Card.Description>

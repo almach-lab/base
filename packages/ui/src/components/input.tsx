@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@almach/utils";
-import { type VariantProps } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
 import { fieldErrorClass, inputVariants } from "./_styles.js";

@@ -3,8 +3,8 @@ import { X } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import {
-  MOTION_VAR_OVERLAY_DURATION,
   MOTION_OVERLAY,
+  MOTION_VAR_OVERLAY_DURATION,
   resolveMotionDurationMs,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";

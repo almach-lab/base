@@ -1,6 +1,5 @@
 import { cn } from "@almach/utils";
 import type * as React from "react";
-import { cardVariants } from "./_styles.js";
 import {
   Area,
   AreaChart,
@@ -26,6 +25,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { cardVariants } from "./_styles.js";
 
 // ── Chart color tokens ──────────────────────────────────────────────────────
 // Defined in globals.css as --chart-1 … --chart-5

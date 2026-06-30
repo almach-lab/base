@@ -1,18 +1,18 @@
 import { cn } from "@almach/utils";
+import type { VariantProps } from "class-variance-authority";
 import { Check } from "lucide-react";
 import * as React from "react";
 import {
   Checkbox as CheckboxPrimitive,
   composeRenderProps,
 } from "react-aria-components";
-import { type VariantProps } from "class-variance-authority";
 import {
   CONTROL_LABEL,
   CONTROL_ROOT,
+  checkboxVariants,
   DISABLED_DATA,
   FOCUS_RING,
   FOCUS_RING_INVALID,
-  checkboxVariants,
   fieldErrorClass,
 } from "./_styles.js";
 

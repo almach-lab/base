@@ -67,9 +67,7 @@ function useDocHeadings() {
 
     const refresh = () => {
       const next = collectHeadings();
-      setHeadings((current) =>
-        headingsEqual(current, next) ? current : next,
-      );
+      setHeadings((current) => (headingsEqual(current, next) ? current : next));
     };
 
     refresh();

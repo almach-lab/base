@@ -138,9 +138,7 @@ function PopoverRoot({
   const offset = sideOffset ?? (showArrow ? 12 : 8);
 
   const triggerNode = triggerProps.asChild ? (
-    <Pressable>
-      {React.Children.only(triggerProps.children) as never}
-    </Pressable>
+    <Pressable>{React.Children.only(triggerProps.children) as never}</Pressable>
   ) : (
     <Pressable>
       <button type="button">{triggerProps.children}</button>

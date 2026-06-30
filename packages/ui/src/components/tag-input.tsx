@@ -3,13 +3,9 @@
 import { cn } from "@almach/utils";
 import { X } from "lucide-react";
 import * as React from "react";
-import { badgeVariants } from "./badge.js";
 import { MOTION_INTERACTIVE } from "./_motion.js";
-import {
-  DISABLED,
-  fieldErrorClass,
-  FOCUS_RING_WITHIN,
-} from "./_styles.js";
+import { DISABLED, FOCUS_RING_WITHIN, fieldErrorClass } from "./_styles.js";
+import { badgeVariants } from "./badge.js";
 
 export interface TagInputProps {
   id?: string;
@@ -107,7 +103,10 @@ export function TagInput({
           {tags.map((tag, i) => (
             <span
               key={`${tag}-${i}`}
-              className={cn(badgeVariants({ variant: "secondary", size: "sm" }), "gap-1")}
+              className={cn(
+                badgeVariants({ variant: "secondary", size: "sm" }),
+                "gap-1",
+              )}
             >
               {tag}
               {!disabled && (

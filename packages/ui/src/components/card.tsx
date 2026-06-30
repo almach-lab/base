@@ -290,12 +290,12 @@ const Card = Object.assign(CardRoot, {
   Section: CardSection,
   Row: CardRow,
   Footer: CardFooter,
-  /** Layered card root ù stacked sections divided by borders */
+  /** Layered card root ? stacked sections divided by borders */
   Layers: CardLayers,
   LayerHeader: CardLayerHeader,
   LayerBody: CardLayerBody,
   LayerRow: CardLayerRow,
-  /** Grouped rows with optional label/hint ù for settings, nav, and forms */
+  /** Grouped rows with optional label/hint ? for settings, nav, and forms */
   Group: CardGroup,
   GroupRow: CardGroupRow,
 });

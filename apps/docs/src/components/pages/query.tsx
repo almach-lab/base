@@ -15,8 +15,8 @@ import {
 } from "@almach/ui";
 import { Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { getPackageVersion } from "../../lib/package-versions";
 import { docsLayout } from "../../lib/docs-layout";
+import { getPackageVersion } from "../../lib/package-versions";
 import { CodeBlock } from "../code-block";
 import { DocPageHeader } from "../docs/doc-page-header";
 

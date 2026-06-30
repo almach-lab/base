@@ -71,19 +71,66 @@ const VALID_SEMANTIC_COLORS = new Set([
 ]);
 
 const TAILWIND_PRIMITIVE_FAMILIES = new Set([
-  "red", "orange", "amber", "yellow", "lime", "green", "emerald", "teal",
-  "cyan", "sky", "blue", "indigo", "violet", "purple", "fuchsia", "pink",
-  "slate", "gray", "zinc", "neutral", "stone",
+  "red",
+  "orange",
+  "amber",
+  "yellow",
+  "lime",
+  "green",
+  "emerald",
+  "teal",
+  "cyan",
+  "sky",
+  "blue",
+  "indigo",
+  "violet",
+  "purple",
+  "fuchsia",
+  "pink",
+  "slate",
+  "gray",
+  "zinc",
+  "neutral",
+  "stone",
 ]);
 
 const COLOR_TOKEN_RE =
   /(?:^|[^a-zA-Z0-9-])(((?:[a-z-]+:)*)?(?:bg|border|text|ring(?:-offset)?|fill|stroke|placeholder|caret|accent|decoration|divide|outline|from|via|to)-([a-z][a-z0-9-]*)(?:-\d{2,3})?(?:\/[0-9]{1,3})?)/gim;
 
 const NON_COLOR_NAMES = new Set([
-  "xs", "sm", "base", "lg", "xl", "2xl", "3xl", "4xl",
-  "left", "center", "right", "justify", "wrap", "nowrap",
-  "0", "1", "2", "4", "8", "t", "r", "b", "l", "x", "y",
-  "solid", "dashed", "dotted", "hidden", "collapse", "inner", "inset", "auto",
+  "xs",
+  "sm",
+  "base",
+  "lg",
+  "xl",
+  "2xl",
+  "3xl",
+  "4xl",
+  "left",
+  "center",
+  "right",
+  "justify",
+  "wrap",
+  "nowrap",
+  "0",
+  "1",
+  "2",
+  "4",
+  "8",
+  "t",
+  "r",
+  "b",
+  "l",
+  "x",
+  "y",
+  "solid",
+  "dashed",
+  "dotted",
+  "hidden",
+  "collapse",
+  "inner",
+  "inset",
+  "auto",
 ]);
 
 const PACKAGE_DIRS = new Set(["utils", "ui", "forms", "query", "docs"]);
@@ -122,10 +169,13 @@ function checkPrimitiveColors(file: string, content: string): LintIssue[] {
   }
 
   COLOR_TOKEN_RE.lastIndex = 0;
-  let match: RegExpExecArray | null;
-  while ((match = COLOR_TOKEN_RE.exec(content)) !== null) {
-    const fullToken = match[1] ?? "";
-    const colorFamily = match[3];
+  let match = COLOR_TOKEN_RE.exec(content);
+  while (match !== null) {
+    const current = match;
+    match = COLOR_TOKEN_RE.exec(content);
+
+    const fullToken = current[1] ?? "";
+    const colorFamily = current[3];
     if (!colorFamily) continue;
 
     if (NON_COLOR_NAMES.has(colorFamily)) continue;
@@ -138,7 +188,7 @@ function checkPrimitiveColors(file: string, content: string): LintIssue[] {
     if (TAILWIND_PRIMITIVE_FAMILIES.has(baseFamily)) {
       issues.push({
         file: rel,
-        line: lineOf(content, match.index),
+        line: lineOf(content, current.index),
         rule: "no-primitive-colors",
         message: `Avoid Tailwind primitive \`${fullToken.trim()}\`. Use semantic tokens (e.g. bg-primary, text-muted-foreground).`,
       });
@@ -154,10 +204,15 @@ function checkCrossPackageImports(file: string, content: string): LintIssue[] {
   const issues: LintIssue[] = [];
   const rel = relative(ROOT, file).replace(/\\/g, "/");
 
-  const importRe = /(?:import|export)\s+.*?from\s+["']([^"']+)["']|import\s*\(\s*["']([^"']+)["']\s*\)/g;
-  let match: RegExpExecArray | null;
-  while ((match = importRe.exec(content)) !== null) {
-    const importPath = match[1] ?? match[2];
+  const importRe =
+    /(?:import|export)\s+.*?from\s+["']([^"']+)["']|import\s*\(\s*["']([^"']+)["']\s*\)/g;
+  importRe.lastIndex = 0;
+  let match = importRe.exec(content);
+  while (match !== null) {
+    const current = match;
+    match = importRe.exec(content);
+
+    const importPath = current[1] ?? current[2];
     if (!importPath?.startsWith("..")) continue;
 
     const crossMatch = importPath.match(CROSS_PKG_RE);
@@ -170,7 +225,7 @@ function checkCrossPackageImports(file: string, content: string): LintIssue[] {
 
     issues.push({
       file: rel,
-      line: lineOf(content, match.index),
+      line: lineOf(content, current.index),
       rule: "no-cross-package-imports",
       message: `Cross-package relative import \`${importPath}\`. Use \`@almach/${packageDir}\` instead.`,
     });
@@ -207,17 +262,22 @@ function checkComponentStandard(file: string, content: string): LintIssue[] {
       file: rel,
       line: 1,
       rule: "enforce-component-standard",
-      message: "Component has static className strings but no cn() import — merge with cn(base, className).",
+      message:
+        "Component has static className strings but no cn() import — merge with cn(base, className).",
     });
   }
 
-  if (!content.includes("from \"@almach/utils\"") && !content.includes("from '@almach/utils'")) {
+  if (
+    !content.includes('from "@almach/utils"') &&
+    !content.includes("from '@almach/utils'")
+  ) {
     if (content.includes("className")) {
       issues.push({
         file: rel,
         line: 1,
         rule: "enforce-component-standard",
-        message: "Component should import cn from @almach/utils for className merging.",
+        message:
+          "Component should import cn from @almach/utils for className merging.",
       });
     }
   }
@@ -229,7 +289,11 @@ function checkComponentStandard(file: string, content: string): LintIssue[] {
 
 async function checkNoTailwindConfig(): Promise<LintIssue[]> {
   const issues: LintIssue[] = [];
-  const forbidden = ["tailwind.config.js", "tailwind.config.ts", "postcss.config.js"];
+  const forbidden = [
+    "tailwind.config.js",
+    "tailwind.config.ts",
+    "postcss.config.js",
+  ];
   for (const name of forbidden) {
     try {
       await readFile(join(ROOT, name));
@@ -287,7 +351,9 @@ if (import.meta.main) {
   }
 
   for (const issue of issues) {
-    console.error(`${issue.file}:${issue.line} [${issue.rule}] ${issue.message}`);
+    console.error(
+      `${issue.file}:${issue.line} [${issue.rule}] ${issue.message}`,
+    );
   }
   console.error(`\nlint:ui — ${issues.length} issue(s) found`);
   process.exit(1);

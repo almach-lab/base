@@ -6,9 +6,9 @@ import { createPortal } from "react-dom";
 import { MOTION_INTERACTIVE, MOTION_OVERLAY } from "./_motion.js";
 import {
   DISABLED_DATA,
-  fieldErrorClass,
   FOCUS_RING,
   FOCUS_RING_INVALID,
+  fieldErrorClass,
   inputVariants,
   MENU_LABEL,
   MENU_SEPARATOR,
@@ -301,8 +301,16 @@ const SelectContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, ...props }, ref) => {
-  const { open, setOpen, triggerRef, contentId, onValueChange, highlightedValue, setHighlightedValue, isDisabled } =
-    useSelectCtx();
+  const {
+    open,
+    setOpen,
+    triggerRef,
+    contentId,
+    onValueChange,
+    highlightedValue,
+    setHighlightedValue,
+    isDisabled,
+  } = useSelectCtx();
   const contentRef = React.useRef<HTMLDivElement | null>(null);
   const listRef = React.useRef<HTMLDivElement | null>(null);
   const [position, setPosition] = React.useState<{
@@ -498,7 +506,11 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(MENU_LABEL, "px-2 pb-1 pt-1.5 text-[11px] uppercase tracking-wider", className)}
+    className={cn(
+      MENU_LABEL,
+      "px-2 pb-1 pt-1.5 text-[11px] uppercase tracking-wider",
+      className,
+    )}
     {...props}
   />
 ));
@@ -520,9 +532,7 @@ function SelectSeparator({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div className={cn(MENU_SEPARATOR, className)} {...props} />
-  );
+  return <div className={cn(MENU_SEPARATOR, className)} {...props} />;
 }
 
 const SelectGroup = ({ children }: { children?: React.ReactNode }) => (
@@ -669,32 +679,32 @@ function SelectSearchable({
               {options.map((opt) => {
                 const isSelected = value === opt.value;
                 return (
-                <CommandPrimitive.Item
-                  key={opt.value}
-                  value={opt.value}
-                  {...(opt.disabled !== undefined && {
-                    disabled: opt.disabled,
-                  })}
-                  onSelect={handleSelect}
-                  role="option"
-                  aria-selected={isSelected}
-                  className={cn(
-                    selectItemClasses,
-                    "data-[selected=true]:bg-muted/50 data-[selected=true]:text-foreground",
-                    isSelected &&
-                      "data-[selected=true]:bg-transparent data-[selected=true]:hover:bg-transparent",
-                  )}
-                >
-                  <span className="min-w-0 flex-1 truncate">{opt.label}</span>
-                  <Check
+                  <CommandPrimitive.Item
+                    key={opt.value}
+                    value={opt.value}
+                    {...(opt.disabled !== undefined && {
+                      disabled: opt.disabled,
+                    })}
+                    onSelect={handleSelect}
+                    role="option"
+                    aria-selected={isSelected}
                     className={cn(
-                      "size-4 shrink-0 text-foreground",
-                      isSelected ? "opacity-100" : "opacity-0",
+                      selectItemClasses,
+                      "data-[selected=true]:bg-muted/50 data-[selected=true]:text-foreground",
+                      isSelected &&
+                        "data-[selected=true]:bg-transparent data-[selected=true]:hover:bg-transparent",
                     )}
-                    aria-hidden="true"
-                  />
-                </CommandPrimitive.Item>
-              );
+                  >
+                    <span className="min-w-0 flex-1 truncate">{opt.label}</span>
+                    <Check
+                      className={cn(
+                        "size-4 shrink-0 text-foreground",
+                        isSelected ? "opacity-100" : "opacity-0",
+                      )}
+                      aria-hidden="true"
+                    />
+                  </CommandPrimitive.Item>
+                );
               })}
             </CommandPrimitive.List>
           </CommandPrimitive>

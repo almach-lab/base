@@ -174,7 +174,11 @@ import { ChevronRight } from "lucide-react";
 function VariantsDemo() {
   return (
     <div className="flex w-full flex-col gap-4">
-      <SwipeDemo label="Swipe to confirm" variant="default" onSuccess={() => {}} />
+      <SwipeDemo
+        label="Swipe to confirm"
+        variant="default"
+        onSuccess={() => {}}
+      />
       <SwipeDemo
         label="Swipe to delete"
         successLabel="Deleted"

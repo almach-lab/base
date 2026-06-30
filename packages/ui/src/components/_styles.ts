@@ -24,8 +24,7 @@ export const CONTROL_ROOT =
 export const CONTROL_ROOT_START =
   "group flex cursor-pointer select-none items-start gap-3";
 
-export const CONTROL_LABEL =
-  "text-sm font-medium leading-none text-foreground";
+export const CONTROL_LABEL = "text-sm font-medium leading-none text-foreground";
 
 export const CONTROL_DESCRIPTION =
   "text-xs leading-relaxed text-muted-foreground";
@@ -150,20 +149,23 @@ export const cardVariants = cva(
   "rounded-lg border border-border bg-card text-card-foreground shadow-sm",
 );
 
-export const alertVariants = cva("relative flex w-full gap-3 rounded-lg border p-4", {
-  variants: {
-    variant: {
-      default: "bg-background text-foreground",
-      destructive:
-        "border-destructive/30 bg-destructive/5 text-destructive [&_svg]:text-destructive",
-      success:
-        "border-success/30 bg-success/5 text-success [&_svg]:text-success",
-      warning:
-        "border-warning/30 bg-warning/5 text-warning [&_svg]:text-warning",
+export const alertVariants = cva(
+  "relative flex w-full gap-3 rounded-lg border p-4",
+  {
+    variants: {
+      variant: {
+        default: "bg-background text-foreground",
+        destructive:
+          "border-destructive/30 bg-destructive/5 text-destructive [&_svg]:text-destructive",
+        success:
+          "border-success/30 bg-success/5 text-success [&_svg]:text-success",
+        warning:
+          "border-warning/30 bg-warning/5 text-warning [&_svg]:text-warning",
+      },
     },
+    defaultVariants: { variant: "default" },
   },
-  defaultVariants: { variant: "default" },
-});
+);
 
 export const OVERLAY_SURFACE = cn(
   "z-50 rounded-md border border-border bg-popover text-popover-foreground shadow-md outline-none",

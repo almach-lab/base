@@ -1,6 +1,6 @@
-import { ThemeCustomizer } from "../ThemeCustomizer";
-import { DocPageHeader } from "../docs/doc-page-header";
 import { docsLayout } from "../../lib/docs-layout";
+import { DocPageHeader } from "../docs/doc-page-header";
+import { ThemeCustomizer } from "../ThemeCustomizer";
 
 export function ThemePage() {
   return (

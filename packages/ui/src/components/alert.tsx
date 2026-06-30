@@ -1,5 +1,5 @@
 import { cn } from "@almach/utils";
-import { type VariantProps } from "class-variance-authority";
+import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { alertVariants } from "./_styles.js";
 

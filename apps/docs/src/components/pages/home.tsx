@@ -9,9 +9,9 @@ import {
   Zap,
 } from "lucide-react";
 import { getPackageVersion } from "../../lib/package-versions";
+import { CodeBlock } from "../code-block";
 import { HeroPreview } from "../landing/hero-preview";
 import { LandingSection, SectionHeader } from "../landing/landing-section";
-import { CodeBlock } from "../code-block";
 import { PkgTabs } from "../pkg-tabs";
 
 const PACKAGES = [
@@ -19,7 +19,8 @@ const PACKAGES = [
     pkg: "@almach/ui",
     version: getPackageVersion("@almach/ui"),
     title: "UI",
-    description: "Accessible primitives with polished defaults for product surfaces.",
+    description:
+      "Accessible primitives with polished defaults for product surfaces.",
     href: "/components",
     icon: Layers,
   },
@@ -27,7 +28,8 @@ const PACKAGES = [
     pkg: "@almach/forms",
     version: getPackageVersion("@almach/forms"),
     title: "Forms",
-    description: "Zod schemas and TanStack Form fields with consistent validation.",
+    description:
+      "Zod schemas and TanStack Form fields with consistent validation.",
     href: "/forms",
     icon: Braces,
   },
@@ -112,7 +114,10 @@ export function HomePage() {
         <div className="landing-hero-glow pointer-events-none absolute inset-0" />
 
         <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-8 pt-16 text-center sm:px-6 sm:pb-12 sm:pt-24 lg:px-8">
-          <Badge variant="outline" className="mb-6 font-mono text-[11px] tracking-wide">
+          <Badge
+            variant="outline"
+            className="mb-6 font-mono text-[11px] tracking-wide"
+          >
             React · Tailwind v4 · Open source
           </Badge>
 
@@ -122,8 +127,8 @@ export function HomePage() {
           </h1>
 
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Accessible components, typed forms, and query utilities — one cohesive
-            toolkit with live docs and copy-paste examples.
+            Accessible components, typed forms, and query utilities — one
+            cohesive toolkit with live docs and copy-paste examples.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -162,10 +167,7 @@ export function HomePage() {
               key={item.title}
               className="rounded-xl border border-border/60 bg-card/50 p-5 transition-colors hover:border-border hover:bg-card"
             >
-              <item.icon
-                className="h-4 w-4 text-primary"
-                aria-hidden="true"
-              />
+              <item.icon className="h-4 w-4 text-primary" aria-hidden="true" />
               <h3 className="mt-3 text-sm font-semibold">{item.title}</h3>
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 {item.description}
@@ -280,8 +282,8 @@ export function HomePage() {
               Ready to build?
             </h2>
             <p className="mx-auto mt-3 max-w-md text-[15px] text-muted-foreground">
-              Follow the getting started guide to wire up tokens, install packages,
-              and render your first component in minutes.
+              Follow the getting started guide to wire up tokens, install
+              packages, and render your first component in minutes.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button href="/getting-started" size="lg">

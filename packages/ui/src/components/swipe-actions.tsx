@@ -2,8 +2,8 @@
 
 import { cn } from "@almach/utils";
 import * as React from "react";
-import { FOCUS_RING } from "./_styles.js";
 import { MOTION_INTERACTIVE } from "./_motion.js";
+import { FOCUS_RING } from "./_styles.js";
 
 /* ── Constants ─────────────────────────────────────────────────────────────── */
 /** Snap open — slight overshoot gives a physical spring feel */

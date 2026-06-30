@@ -10,6 +10,7 @@ import {
   Pie,
   ReferenceLine,
 } from "@almach/ui";
+import { cn } from "@almach/utils";
 import {
   Activity,
   ArrowDownRight,
@@ -21,7 +22,6 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { cn } from "@almach/utils";
 import type * as React from "react";
 import { docsLayout } from "../../lib/docs-layout";
 import { DocExample } from "../docs/doc-example";
