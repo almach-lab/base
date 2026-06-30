@@ -1,5 +1,11 @@
 # @almach/forms
 
+## 1.0.1
+
+### Patch Changes
+
+- 0204918: Republish @almach/forms at 1.0.1 — npm permanently reserves unpublished 1.0.0.
+
 ## 1.0.0
 
 ### Patch Changes
