@@ -1,6 +1,6 @@
 {
   "name": "@almach/utils",
-  "version": "0.0.4",
+  "version": "2.0.0",
   "description": "Shared utilities for Based UI",
   "type": "module",
   "main": "./dist/index.js",
