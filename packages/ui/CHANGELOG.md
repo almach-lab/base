@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 2.0.0
+
+### Major Changes
+
+- auto release from 3b8fdc2..192d5ef
+
 ## 1.0.0
 
 ### Major Changes
