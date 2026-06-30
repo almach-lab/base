@@ -1,5 +1,16 @@
 # @almach/ui
 
+## 2.0.0
+
+### Major Changes
+
+- Release v2 — UI standardization, docs overhaul, and aligned package versions.
+
+### Patch Changes
+
+- Updated dependencies
+  - @almach/utils@2.0.0
+
 ## 1.0.0
 
 ### Major Changes
