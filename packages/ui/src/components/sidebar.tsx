@@ -9,7 +9,9 @@ import {
   Modal as AriaModal,
   ModalOverlay,
 } from "react-aria-components";
-import { useIsMobile } from "../hooks/use-media-query";
+import { useIsMobile } from "../hooks/use-media-query.js";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import { FOCUS_RING, OVERLAY_BACKDROP } from "./_styles.js";
 
 const SIDEBAR_WIDTH = "16rem";
 const SIDEBAR_WIDTH_ICON = "3.5rem";
@@ -154,13 +156,15 @@ export const SidebarRoot = React.forwardRef<
       <ModalOverlay
         isOpen={openMobile}
         onOpenChange={setOpenMobile}
-        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm
-                   data-[entering]:animate-in data-[exiting]:animate-out
-                   data-[entering]:fade-in data-[exiting]:fade-out"
+        className={cn(
+          OVERLAY_BACKDROP,
+          "data-[entering]:animate-in data-[exiting]:animate-out",
+          "data-[entering]:fade-in data-[exiting]:fade-out",
+        )}
       >
         <AriaModal
           className={cn(
-            "fixed inset-y-0 left-0 w-72 max-w-[85vw] bg-sidebar border-r border-sidebar-border shadow-2xl",
+            "fixed inset-y-0 left-0 w-72 max-w-[85vw] border-r border-sidebar-border bg-sidebar shadow-lg",
             "data-[entering]:animate-in data-[exiting]:animate-out",
             "data-[entering]:slide-in-from-left data-[exiting]:slide-out-to-left duration-300",
             className,
@@ -193,19 +197,21 @@ export const SidebarRoot = React.forwardRef<
         className={cn(
           isContained
             ? cn(
-                "relative flex h-full flex-col border-r border-sidebar-border/50 bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-sidebar",
+                "relative flex h-full flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-200",
+                MOTION_INTERACTIVE,
                 desktopWidthClass,
               )
             : cn(
-                "fixed inset-y-0 left-0 z-10 flex flex-col border-r border-sidebar-border/50 bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-sidebar",
+                "fixed inset-y-0 left-0 z-10 flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-200",
+                MOTION_INTERACTIVE,
                 desktopWidthClass,
               ),
           variant === "floating" &&
             (isContained
-              ? "m-3 h-[calc(100%-1.5rem)] rounded-2xl shadow-xl"
-              : "m-3 h-[calc(100vh-1.5rem)] rounded-2xl shadow-xl"),
+              ? "m-3 h-[calc(100%-1.5rem)] rounded-lg shadow-md"
+              : "m-3 h-[calc(100vh-1.5rem)] rounded-lg shadow-md"),
           variant === "inset" &&
-            "rounded-2xl border border-sidebar-border/60 shadow-sm",
+            "rounded-lg border border-sidebar-border shadow-sm",
           className,
         )}
         {...props}
@@ -215,6 +221,7 @@ export const SidebarRoot = React.forwardRef<
     </div>
   );
 });
+SidebarRoot.displayName = "Sidebar";
 
 export function SidebarTrigger({ className }: { className?: string }) {
   const { toggleSidebar, isMobile, open, openMobile, contentId } = useSidebar();
@@ -225,7 +232,10 @@ export function SidebarTrigger({ className }: { className?: string }) {
       type="button"
       onClick={toggleSidebar}
       className={cn(
-        "flex h-9 w-9 items-center justify-center rounded-lg text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex h-8 w-8 items-center justify-center rounded-md text-sidebar-foreground/70",
+        MOTION_INTERACTIVE,
+        FOCUS_RING,
+        "hover:bg-sidebar-accent hover:text-sidebar-foreground",
         className,
       )}
       aria-label="Toggle sidebar"
@@ -238,12 +248,16 @@ export function SidebarTrigger({ className }: { className?: string }) {
 }
 
 const menuButtonVariants = cva(
-  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-ring outline-none",
+  cn(
+    "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium outline-none",
+    MOTION_INTERACTIVE,
+    FOCUS_RING,
+  ),
   {
     variants: {
       isActive: {
-        true: "bg-sidebar-accent text-sidebar-primary",
-        false: "text-sidebar-foreground/70",
+        true: "bg-sidebar-accent text-sidebar-foreground",
+        false: "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground",
       },
     },
     defaultVariants: { isActive: false },
@@ -376,7 +390,7 @@ export function SidebarMenuSub({
       )}
     >
       <div className="min-h-0 overflow-hidden">
-        <div className="ml-4 flex flex-col gap-0.5 border-l border-sidebar-border/60 py-1 pl-6 pr-2">
+        <div className="ml-3 flex flex-col gap-0.5 border-l border-sidebar-border py-1 pl-4 pr-2">
           {children}
         </div>
       </div>
@@ -444,7 +458,7 @@ export function SidebarFooter({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("shrink-0 border-t border-sidebar-border/50", className)}
+      className={cn("shrink-0 border-t border-sidebar-border", className)}
       {...props}
     />
   );

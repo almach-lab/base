@@ -8,8 +8,6 @@ import {
   Chart,
   Line,
   Pie,
-  Progress,
-  Radar,
   ReferenceLine,
 } from "@almach/ui";
 import {
@@ -19,12 +17,15 @@ import {
   BarChart3,
   Bell,
   CircleDollarSign,
-  CreditCard,
   ShoppingCart,
   TrendingUp,
   Users,
 } from "lucide-react";
-import * as React from "react";
+import { cn } from "@almach/utils";
+import type * as React from "react";
+import { docsLayout } from "../../lib/docs-layout";
+import { DocExample } from "../docs/doc-example";
+import { DocPageHeader, DocSectionHeading } from "../docs/doc-page-header";
 
 // ── Shared data ─────────────────────────────────────────────────────────────
 
@@ -52,23 +53,6 @@ const categoryData = [
   { name: "Engineering", value: 45 },
   { name: "Marketing", value: 15 },
   { name: "Operations", value: 8 },
-];
-
-const salesData = [
-  { month: "Jan", b2b: 2400, b2c: 1800 },
-  { month: "Feb", b2b: 3200, b2c: 1900 },
-  { month: "Mar", b2b: 2800, b2c: 1900 },
-  { month: "Apr", b2b: 3800, b2c: 2500 },
-  { month: "May", b2b: 4200, b2c: 3000 },
-  { month: "Jun", b2b: 3900, b2c: 2900 },
-];
-
-const radarData = [
-  { subject: "Speed", current: 90, previous: 70 },
-  { subject: "Quality", current: 75, previous: 85 },
-  { subject: "Cost", current: 60, previous: 55 },
-  { subject: "Support", current: 85, previous: 65 },
-  { subject: "Scale", current: 70, previous: 60 },
 ];
 
 const transactions = [
@@ -109,15 +93,6 @@ const transactions = [
   },
 ];
 
-const teamMetrics = [
-  { name: "Velocity", value: 84, color: CHART_COLORS[0] },
-  { name: "Code quality", value: 91, color: CHART_COLORS[1] },
-  { name: "Test coverage", value: 67, color: CHART_COLORS[2] },
-  { name: "Review speed", value: 72, color: CHART_COLORS[3] },
-];
-
-// ── Stat card component ─────────────────────────────────────────────────────
-
 function StatCard({
   label,
   value,
@@ -143,15 +118,15 @@ function StatCard({
       <Card.Content>
         <p className="flex items-center gap-1 text-xs text-muted-foreground">
           {positive ? (
-            <ArrowUpRight className="h-3 w-3 text-green-500" />
+            <ArrowUpRight className="h-3 w-3 text-success" />
           ) : (
-            <ArrowDownRight className="h-3 w-3 text-red-500" />
+            <ArrowDownRight className="h-3 w-3 text-destructive" />
           )}
           <span
             className={
               positive
-                ? "text-green-600 dark:text-green-400"
-                : "text-red-600 dark:text-red-400"
+                ? "text-success font-medium"
+                : "text-destructive font-medium"
             }
           >
             {change}
@@ -314,60 +289,6 @@ function AnalyticsPanelBlock() {
   );
 }
 
-function RevenueTrackerBlock() {
-  const total = revenueData.reduce((s, d) => s + d.revenue, 0);
-  const prev = 28400;
-  const pct = (((total - prev) / prev) * 100).toFixed(1);
-
-  return (
-    <Card>
-      <Card.Header
-        action={
-          <Badge
-            variant="outline"
-            className="text-xs text-green-600 border-green-300 dark:text-green-400"
-          >
-            +{pct}%
-          </Badge>
-        }
-      >
-        <Card.Title className="text-sm">Revenue tracker</Card.Title>
-        <Card.Description className="text-xs">
-          H1 total:{" "}
-          <span className="font-semibold text-foreground">
-            ${total.toLocaleString()}
-          </span>
-        </Card.Description>
-      </Card.Header>
-      <Card.Content>
-        <Chart.Container height={220} className="w-full">
-          <Chart.Bar data={salesData}>
-            <Chart.Grid />
-            <Chart.XAxis dataKey="month" />
-            <Chart.YAxis />
-            <Chart.Tooltip />
-            <Chart.Legend />
-            <Bar dataKey="b2b" stackId="a" fill={CHART_COLORS[0]} />
-            <Bar
-              dataKey="b2c"
-              stackId="a"
-              fill={CHART_COLORS[1]}
-              radius={[4, 4, 0, 0]}
-            />
-            <Line
-              dataKey="b2b"
-              stroke={CHART_COLORS[3]}
-              strokeWidth={2}
-              dot={false}
-              type="monotone"
-            />
-          </Chart.Bar>
-        </Chart.Container>
-      </Card.Content>
-    </Card>
-  );
-}
-
 function ActivityFeedBlock() {
   return (
     <div className="grid gap-4 sm:grid-cols-5">
@@ -440,8 +361,8 @@ function ActivityFeedBlock() {
                   <span
                     className={
                       tx.amount.startsWith("+")
-                        ? "text-green-600 dark:text-green-400 font-medium"
-                        : "text-red-500 font-medium"
+                        ? "text-success font-medium"
+                        : "text-destructive font-medium"
                     }
                   >
                     {tx.amount}
@@ -452,68 +373,6 @@ function ActivityFeedBlock() {
           </Card.Content>
         </Card>
       </div>
-    </div>
-  );
-}
-
-function TeamPerformanceBlock() {
-  return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      <Card>
-        <Card.Header>
-          <Card.Title className="text-sm">Team radar</Card.Title>
-          <Card.Description className="text-xs">
-            Current vs previous quarter
-          </Card.Description>
-        </Card.Header>
-        <Card.Content>
-          <Chart.Container height={220} className="w-full">
-            <Chart.Radar data={radarData}>
-              <Chart.PolarGrid />
-              <Chart.PolarAxis dataKey="subject" />
-              <Radar
-                dataKey="current"
-                stroke={CHART_COLORS[0]}
-                fill={CHART_COLORS[0]}
-                fillOpacity={0.3}
-              />
-              <Radar
-                dataKey="previous"
-                stroke={CHART_COLORS[3]}
-                fill={CHART_COLORS[3]}
-                fillOpacity={0.2}
-              />
-              <Chart.Legend />
-            </Chart.Radar>
-          </Chart.Container>
-        </Card.Content>
-      </Card>
-
-      <Card>
-        <Card.Header
-          action={<CreditCard className="h-4 w-4 text-muted-foreground" />}
-        >
-          <Card.Title className="text-sm">Engineering metrics</Card.Title>
-          <Card.Description className="text-xs">
-            Current sprint health
-          </Card.Description>
-        </Card.Header>
-        <Card.Content className="space-y-4">
-          {teamMetrics.map(({ name, value, color }) => (
-            <div key={name} className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">{name}</span>
-                <span className="font-medium tabular-nums">{value}%</span>
-              </div>
-              <Progress
-                value={value}
-                className="h-1.5"
-                style={{ "--progress-color": color } as React.CSSProperties}
-              />
-            </div>
-          ))}
-        </Card.Content>
-      </Card>
     </div>
   );
 }
@@ -631,35 +490,6 @@ import { CircleDollarSign, Users, ShoppingCart, TrendingUp } from "lucide-react"
 </div>`,
   },
   {
-    id: "revenue-tracker",
-    title: "Revenue Tracker",
-    description:
-      "Stacked bar chart combined with a trend line, showing B2B vs B2C revenue split per month.",
-    tags: ["Card", "Chart", "Bar", "Line", "Badge"],
-    component: RevenueTrackerBlock,
-    code: `import { Card, Chart, CHART_COLORS, Bar, Line, Badge } from "@almach/ui";
-
-<Card>
-  <Card.Header action={<Badge variant="outline">+15.3%</Badge>}>
-    <Card.Title className="text-sm">Revenue tracker</Card.Title>
-  </Card.Header>
-  <Card.Content>
-    <Chart.Container height={220} className="w-full">
-      <Chart.Bar data={data}>
-        <Chart.Grid />
-        <Chart.XAxis dataKey="month" />
-        <Chart.YAxis />
-        <Chart.Tooltip />
-        <Chart.Legend />
-        <Bar dataKey="b2b" stackId="a" fill={CHART_COLORS[0]} />
-        <Bar dataKey="b2c" stackId="a" fill={CHART_COLORS[1]} radius={[4, 4, 0, 0]} />
-        <Line dataKey="b2b" stroke={CHART_COLORS[3]} strokeWidth={2} dot={false} />
-      </Chart.Bar>
-    </Chart.Container>
-  </Card.Content>
-</Card>`,
-  },
-  {
     id: "activity-feed",
     title: "Activity Feed",
     description:
@@ -715,150 +545,46 @@ import { Activity, Bell } from "lucide-react";
   </div>
 </div>`,
   },
-  {
-    id: "team-performance",
-    title: "Team Performance",
-    description:
-      "Radar chart for multi-dimensional team comparison, paired with progress bars for sprint metrics.",
-    tags: ["Card", "Chart", "Radar", "Progress"],
-    component: TeamPerformanceBlock,
-    code: `import { Card, Chart, CHART_COLORS, Radar, Progress } from "@almach/ui";
-
-<div className="grid gap-4 sm:grid-cols-2">
-  {/* Radar */}
-  <Card>
-    <Card.Header>
-      <Card.Title className="text-sm">Team radar</Card.Title>
-    </Card.Header>
-    <Card.Content>
-      <Chart.Container height={220} className="w-full">
-        <Chart.Radar data={radarData}>
-          <Chart.PolarGrid />
-          <Chart.PolarAxis dataKey="subject" />
-          <Radar dataKey="current" stroke={CHART_COLORS[0]} fill={CHART_COLORS[0]} fillOpacity={0.3} />
-          <Radar dataKey="previous" stroke={CHART_COLORS[3]} fill={CHART_COLORS[3]} fillOpacity={0.2} />
-          <Chart.Legend />
-        </Chart.Radar>
-      </Chart.Container>
-    </Card.Content>
-  </Card>
-
-  {/* Progress metrics */}
-  <Card>
-    <Card.Header>
-      <Card.Title className="text-sm">Engineering metrics</Card.Title>
-    </Card.Header>
-    <Card.Content className="space-y-4">
-      {metrics.map(({ name, value }) => (
-        <div key={name} className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-muted-foreground">{name}</span>
-            <span className="font-medium">{value}%</span>
-          </div>
-          <Progress value={value} className="h-1.5" />
-        </div>
-      ))}
-    </Card.Content>
-  </Card>
-</div>`,
-  },
 ];
 
 // ── Page ────────────────────────────────────────────────────────────────────
 
-function BlockCard({ block }: { block: Block }) {
-  const [tab, setTab] = React.useState<"preview" | "code">("preview");
-  const uid = React.useId();
-
+function BlockSection({ block }: { block: Block }) {
   return (
-    <section id={block.id} className="scroll-mt-20 space-y-3">
-      <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
-          <h2 className="text-base font-semibold">{block.title}</h2>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            {block.description}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-1.5">
-          {block.tags.map((tag) => (
-            <Badge key={tag} variant="outline" className="text-[11px]">
-              {tag}
-            </Badge>
-          ))}
-        </div>
+    <section id={block.id} className={cn(docsLayout.scrollAnchor, "space-y-3")}>
+      <DocSectionHeading title={block.title} description={block.description} />
+      <div className="flex flex-wrap gap-1.5">
+        {block.tags.map((tag) => (
+          <Badge key={tag} variant="outline" className="text-[10px]">
+            {tag}
+          </Badge>
+        ))}
       </div>
 
-      <div className="rounded-xl border border-border/70 bg-card/40">
-        <div
-          role="tablist"
-          aria-label={`${block.title} view`}
-          className="flex items-center gap-1 border-b border-border/70 bg-muted/20 px-3 py-2"
-        >
-          {(["preview", "code"] as const).map((t) => (
-            <button
-              key={t}
-              role="tab"
-              aria-selected={tab === t}
-              aria-controls={`${uid}-${t}`}
-              id={`${uid}-tab-${t}`}
-              onClick={() => setTab(t)}
-              className={`cursor-pointer rounded-md px-2.5 py-1 text-xs font-medium capitalize transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 ${
-                tab === t
-                  ? "bg-background text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-
-        {tab === "preview" ? (
-          <div
-            id={`${uid}-preview`}
-            role="tabpanel"
-            aria-labelledby={`${uid}-tab-preview`}
-            className="overflow-auto p-4 md:p-6"
-          >
-            <block.component />
-          </div>
-        ) : (
-          <div
-            id={`${uid}-code`}
-            role="tabpanel"
-            aria-labelledby={`${uid}-tab-code`}
-            className="overflow-auto"
-          >
-            <pre className="p-4 text-xs leading-relaxed text-muted-foreground md:p-6">
-              <code>{block.code}</code>
-            </pre>
-          </div>
-        )}
-      </div>
+      <DocExample
+        preview={<block.component />}
+        code={block.code}
+        lang="tsx"
+        filename={`${block.id}.tsx`}
+        centered={false}
+        previewClassName="overflow-auto p-4 sm:p-5"
+      />
     </section>
   );
 }
 
 export function BlocksPage() {
   return (
-    <div className="mx-auto max-w-4xl space-y-12 px-4 py-8 md:px-5 md:py-9">
-      <div className="space-y-2 border-b border-border/70 pb-6">
-        <Badge variant="outline" className="w-fit font-mono text-[11px]">
-          @almach/ui
-        </Badge>
-        <h1 className="text-3xl font-semibold tracking-tight md:text-[2.1rem]">
-          Blocks
-        </h1>
-        <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-          Pre-built dashboard and layout blocks composing Card, Chart, Badge,
-          Progress, and other components together. Copy and adapt them to your
-          app.
-        </p>
-      </div>
+    <article className={docsLayout.article}>
+      <DocPageHeader
+        eyebrow="Examples"
+        title="Blocks"
+        description="Pre-built dashboard layouts composing Card, Chart, and Badge. Copy and adapt them to your app."
+      />
 
       {BLOCKS.map((block) => (
-        <BlockCard key={block.id} block={block} />
+        <BlockSection key={block.id} block={block} />
       ))}
-    </div>
+    </article>
   );
 }

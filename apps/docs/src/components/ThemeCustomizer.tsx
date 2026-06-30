@@ -836,6 +836,31 @@ interface ThemeJSONPayload {
   ease?: string;
 }
 
+function loadSaved(): SavedTheme | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as SavedTheme) : null;
+  } catch {
+    return null;
+  }
+}
+
+function save(data: SavedTheme) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch {
+    // noop
+  }
+}
+
+function clear() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // noop
+  }
+}
+
 function hashSeed(input: string) {
   let hash = 2166136261;
   for (let i = 0; i < input.length; i++) {
@@ -1036,10 +1061,11 @@ function resetVars() {
   }
 }
 
-export function ThemeCustomizer() {
+export function ThemeCustomizer({ mode = "drawer" }: { mode?: "drawer" | "page" }) {
   const initialSaved = typeof window !== "undefined" ? loadSaved() : null;
+  const isPage = mode === "page";
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(isPage);
   const [activePreset, setActivePreset] = useState(
     initialSaved?.preset ?? DEFAULT_PRESET,
   );
@@ -1120,6 +1146,8 @@ export function ThemeCustomizer() {
   );
 
   useEffect(() => {
+    if (isPage) return;
+
     const handler = () => setOpen((o) => !o);
     const closeOnSwap = () => setOpen(false);
 
@@ -1129,10 +1157,10 @@ export function ThemeCustomizer() {
       window.removeEventListener("almach-customizer-toggle", handler);
       document.removeEventListener("astro:before-swap", closeOnSwap);
     };
-  }, []);
+  }, [isPage]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || isPage) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -1148,7 +1176,7 @@ export function ThemeCustomizer() {
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, isPage]);
 
   useEffect(() => {
     const handler = () => {
@@ -1508,7 +1536,7 @@ export function ThemeCustomizer() {
 
   return (
     <>
-      {open && (
+      {!isPage && open && (
         <div
           className="fixed inset-0 z-40"
           onClick={() => setOpen(false)}
@@ -1517,17 +1545,25 @@ export function ThemeCustomizer() {
       )}
 
       <div
-        role="dialog"
+        role={isPage ? undefined : "dialog"}
         aria-label="Theme customizer"
-        aria-modal="true"
-        className={`fixed inset-y-0 right-0 z-50 flex w-80 flex-col border-l border-border/70 bg-background shadow-xl transition-transform ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
-        style={{
-          transitionDuration: "var(--theme-motion-overlay-duration, 180ms)",
-          transitionTimingFunction:
-            "var(--theme-motion-ease-standard, cubic-bezier(0.22,1,0.36,1))",
-        }}
+        aria-modal={isPage ? undefined : "true"}
+        className={
+          isPage
+            ? "flex w-full flex-col rounded-lg border border-border bg-background"
+            : `fixed inset-y-0 right-0 z-50 flex w-80 flex-col border-l border-border/70 bg-background shadow-xl transition-transform ${
+                open ? "translate-x-0" : "translate-x-full"
+              }`
+        }
+        style={
+          isPage
+            ? undefined
+            : {
+                transitionDuration: "var(--theme-motion-overlay-duration, 180ms)",
+                transitionTimingFunction:
+                  "var(--theme-motion-ease-standard, cubic-bezier(0.22,1,0.36,1))",
+              }
+        }
       >
         <div className="flex items-center justify-between border-b border-border/70 px-5 py-4">
           <div>
@@ -1536,13 +1572,15 @@ export function ThemeCustomizer() {
               Customize color, surfaces, radius, and clean motion.
             </p>
           </div>
-          <button
-            onClick={() => setOpen(false)}
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
-            aria-label="Close customizer"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          {!isPage && (
+            <button
+              onClick={() => setOpen(false)}
+              className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+              aria-label="Close customizer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         <div className="flex-1 space-y-7 overflow-y-auto px-5 py-5">

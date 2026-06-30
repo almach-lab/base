@@ -98,7 +98,6 @@ export function TablePage() {
     <ComponentDoc
       name="Table"
       description="HTML table primitives plus a DataTable component powered by TanStack Table. Supports sorting, filtering, pagination, and row selection."
-      pkg="@almach/ui"
       examples={[
         {
           title: "DataTable",

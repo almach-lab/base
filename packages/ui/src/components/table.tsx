@@ -14,6 +14,8 @@ import {
 } from "@tanstack/react-table";
 import { ChevronDown, ChevronsUpDown, ChevronUp } from "lucide-react";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import { FOCUS_RING, inputVariants } from "./_styles.js";
 import { Button } from "./button.js";
 
 export type { ColumnDef };
@@ -23,7 +25,7 @@ function TableRoot({
   ...props
 }: React.HTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="w-full overflow-auto rounded-xl border">
+    <div className="w-full overflow-auto rounded-lg border border-border">
       <table
         className={cn("w-full caption-bottom text-sm", className)}
         {...props}
@@ -60,7 +62,9 @@ function TableRow({
   return (
     <tr
       className={cn(
-        "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+        "border-b border-border",
+        MOTION_INTERACTIVE,
+        "hover:bg-muted/50 data-[state=selected]:bg-muted",
         className,
       )}
       {...props}
@@ -180,7 +184,11 @@ function DataTable<TData, TValue>({
           onChange={(e) => setGlobalFilter(e.target.value)}
           placeholder="Search…"
           aria-label="Search table"
-          className="flex h-9 w-full max-w-xs rounded-lg border bg-background px-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className={cn(
+            inputVariants({ size: "default" }),
+            "max-w-xs",
+            FOCUS_RING,
+          )}
         />
       )}
 
@@ -195,7 +203,10 @@ function DataTable<TData, TValue>({
                   <TableHead key={header.id} colSpan={header.colSpan}>
                     {header.isPlaceholder ? null : canSort ? (
                       <button
-                        className="inline-flex items-center gap-1.5 font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        className={cn(
+                          "inline-flex items-center gap-1.5 font-medium text-muted-foreground hover:text-foreground",
+                          MOTION_INTERACTIVE,
+                        )}
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         {flexRender(

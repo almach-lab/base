@@ -13,12 +13,29 @@ const FRAMEWORKS = [
   { value: "remix", label: "Remix" },
 ];
 
+const TIMEZONES = [
+  { value: "utc", label: "UTC" },
+  { value: "est", label: "Eastern (EST)" },
+  { value: "cst", label: "Central (CST)" },
+  { value: "mst", label: "Mountain (MST)" },
+  { value: "pst", label: "Pacific (PST)" },
+  { value: "gmt", label: "GMT" },
+  { value: "cet", label: "Central European (CET)" },
+  { value: "eet", label: "Eastern European (EET)" },
+  { value: "ist", label: "India (IST)" },
+  { value: "jst", label: "Japan (JST)" },
+  { value: "kst", label: "Korea (KST)" },
+  { value: "aest", label: "Australia Eastern (AEST)" },
+  { value: "nzst", label: "New Zealand (NZST)" },
+  { value: "hst", label: "Hawaii (HST)" },
+  { value: "akst", label: "Alaska (AKST)" },
+];
+
 export function SelectPage() {
   return (
     <ComponentDoc
       name="Select"
       description="A dropdown selector with groups, labels, error state, and a built-in searchable variant (Select.Searchable) — no separate Combobox needed."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Default",
@@ -43,6 +60,25 @@ export function SelectPage() {
       <Select.Item value="next">Next.js</Select.Item>
       <Select.Item value="remix">Remix</Select.Item>
     </Select.Group>
+  </Select.Content>
+</Select>`,
+          centered: false,
+        },
+        {
+          title: "Scrollable list",
+          description:
+            "Long option lists scroll with edge fade hints (scroll-fade).",
+          preview: <ScrollableSelect />,
+          code: `<Select value={value} onValueChange={setValue}>
+  <Select.Trigger className="w-full">
+    <Select.Value placeholder="Select timezone…" />
+  </Select.Trigger>
+  <Select.Content>
+    {timezones.map((tz) => (
+      <Select.Item key={tz.value} value={tz.value}>
+        {tz.label}
+      </Select.Item>
+    ))}
   </Select.Content>
 </Select>`,
           centered: false,
@@ -228,7 +264,36 @@ function ControlledSelect() {
         </Select.Content>
       </Select>
       {value && (
-        <p className="text-xs text-muted-foreground">Selected: {value}</p>
+        <p className="text-xs text-muted-foreground">
+          Selected: {FRAMEWORKS.find((f) => f.value === value)?.label ?? value}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function ScrollableSelect() {
+  const [value, setValue] = React.useState("");
+  const selected = TIMEZONES.find((tz) => tz.value === value);
+  return (
+    <div className="w-full max-w-xs space-y-1.5">
+      <Label>Timezone</Label>
+      <Select value={value} onValueChange={setValue}>
+        <Select.Trigger className="w-full">
+          <Select.Value placeholder="Select timezone…" />
+        </Select.Trigger>
+        <Select.Content>
+          {TIMEZONES.map((tz) => (
+            <Select.Item key={tz.value} value={tz.value}>
+              {tz.label}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select>
+      {selected && (
+        <p className="text-xs text-muted-foreground">
+          Selected: {selected.label}
+        </p>
       )}
     </div>
   );
@@ -248,7 +313,9 @@ function SearchableSelect() {
         className="w-full"
       />
       {value && (
-        <p className="text-xs text-muted-foreground">Selected: {value}</p>
+        <p className="text-xs text-muted-foreground">
+          Selected: {FRAMEWORKS.find((f) => f.value === value)?.label ?? value}
+        </p>
       )}
     </div>
   );

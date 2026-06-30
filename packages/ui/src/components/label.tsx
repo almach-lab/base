@@ -2,6 +2,7 @@
 
 import { cn } from "@almach/utils";
 import * as React from "react";
+import { CONTROL_LABEL } from "./_styles.js";
 
 const Label = React.forwardRef<
   HTMLLabelElement,
@@ -12,8 +13,8 @@ const Label = React.forwardRef<
   <label
     ref={ref}
     className={cn(
-      "cursor-pointer text-sm font-medium leading-none tracking-tight",
-      "peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+      CONTROL_LABEL,
+      "cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
       className,
     )}
     {...props}

@@ -25,6 +25,12 @@ import {
   MOTION_OVERLAY_ENTER,
   MOTION_OVERLAY_EXIT,
 } from "./_motion.js";
+import {
+  MENU_ITEM,
+  MENU_LABEL,
+  MENU_SEPARATOR,
+  OVERLAY_SURFACE,
+} from "./_styles.js";
 
 type DropdownPlacement =
   | "top"
@@ -134,7 +140,8 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
         offset={offset}
         placement={placement}
         className={cn(
-          "min-w-[12rem] overflow-hidden rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-xl outline-none",
+          "min-w-[12rem] overflow-hidden p-1",
+          OVERLAY_SURFACE,
           MOTION_OVERLAY,
           MOTION_OVERLAY_ENTER.replaceAll(
             "data-[state=open]:",
@@ -198,13 +205,10 @@ const DropdownMenuItem = React.forwardRef<
           : {})}
         className={composeRenderProps(className, (nextClassName, renderProps) =>
           cn(
-            "group relative flex cursor-default select-none items-center gap-2 rounded-lg px-2 py-1.5 text-sm outline-none",
-            "transition-colors duration-150 ease-out",
+            MENU_ITEM,
             renderProps.isFocused && "bg-accent text-accent-foreground",
-            renderProps.isDisabled && "pointer-events-none opacity-50",
             inset && "pl-8",
             destructive && "text-destructive",
-            "[&_svg]:size-4 [&_svg]:shrink-0",
             nextClassName,
           ),
         )}
@@ -298,7 +302,8 @@ function DropdownMenuLabel({
       isDisabled
       {...(textValue !== undefined ? { textValue } : {})}
       className={cn(
-        "cursor-default px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground",
+        MENU_LABEL,
+        "cursor-default uppercase tracking-wider",
         inset && "pl-8",
         className,
       )}
@@ -322,7 +327,7 @@ function DropdownMenuSeparator({ className, ...props }: SeparatorProps) {
   return (
     <Separator
       {...props}
-      className={cn("-mx-1.5 my-1 h-px bg-border", className)}
+      className={cn(MENU_SEPARATOR, className)}
     />
   );
 }
@@ -355,7 +360,7 @@ function DropdownMenuGroup<T extends object>({
       className="after:block after:h-1 after:content-['']"
     >
       {title ? (
-        <Header className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <Header className={cn(MENU_LABEL, "uppercase tracking-wider")}>
           {title}
         </Header>
       ) : null}
@@ -409,7 +414,8 @@ function DropdownMenuSubTrigger(props: SubmenuTriggerProps) {
         crossOffset={-4}
         placement={placement}
         className={cn(
-          "min-w-[12rem] overflow-hidden rounded-xl border border-border bg-popover p-1.5 text-popover-foreground shadow-xl outline-none",
+          "min-w-[12rem] overflow-hidden p-1",
+          OVERLAY_SURFACE,
           MOTION_OVERLAY,
           MOTION_OVERLAY_ENTER.replaceAll(
             "data-[state=open]:",

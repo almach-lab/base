@@ -7,7 +7,6 @@ export function TagInputPage() {
     <ComponentDoc
       name="TagInput"
       description="Multi-value text input that converts entries into pill tags. Press Enter or comma to add, Backspace to remove the last tag."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Uncontrolled",

@@ -1,9 +1,17 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "./scroll-fade.css";
 @import "tailwindcss";
 @import "@almach/ui/styles";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
+  --font-sans:
+    "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+
   --radius-sm: calc(var(--radius) - 0.125rem);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 0.125rem);
@@ -21,10 +29,9 @@
   color-scheme: light;
   --theme-motion-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --font-sans:
-    "Geist Sans", "Inter", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+    "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono:
-    "JetBrains Mono", "Geist Mono", "SFMono-Regular", "SF Mono", "Fira Code",
-    ui-monospace, monospace;
+    "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
 
   --background: 0 0% 100%;
   --foreground: 240 10% 3.9%;
@@ -70,6 +77,28 @@ body {
 
 html {
   scrollbar-gutter: stable;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  font-feature-settings:
+    "cv02" 1,
+    "cv03" 1,
+    "cv04" 1,
+    "cv11" 1;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+  font-feature-settings: normal;
 }
 
 .dark {
@@ -211,4 +240,49 @@ html {
     opacity: 0;
     transform: translateY(-4px);
   }
+}
+
+/* ── Landing page ─────────────────────────────────────────────────────────── */
+.landing-hero-grid {
+  background-image:
+    linear-gradient(to right, hsl(var(--border) / 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--border) / 0.35) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 20%, transparent 75%);
+}
+
+.landing-hero-glow {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% -20%,
+    hsl(var(--primary) / 0.12),
+    transparent 70%
+  );
+}
+
+.landing-gradient-text {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--foreground)) 0%,
+    hsl(var(--primary)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.landing-preview-shell {
+  position: relative;
+}
+
+.landing-preview-glow {
+  background: radial-gradient(
+    ellipse 60% 40% at 50% 100%,
+    hsl(var(--primary) / 0.08),
+    transparent 70%
+  );
+  transform: translateY(12px);
+}
+
+.landing-cta {
+  background: hsl(var(--card) / 0.5);
 }

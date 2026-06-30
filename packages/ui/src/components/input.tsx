@@ -1,36 +1,13 @@
 "use client";
 
 import { cn } from "@almach/utils";
-import { cva, type VariantProps } from "class-variance-authority";
+import { type VariantProps } from "class-variance-authority";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
+import { fieldErrorClass, inputVariants } from "./_styles.js";
 import { Calendar } from "./calendar.js";
 import { InputCurrency } from "./currency-input.js";
 import { Popover } from "./popover.js";
-
-/* ── Base Input ───────────────────────────────────────────────────────────── */
-const inputVariants = cva(
-  [
-    "flex w-full rounded-lg border border-input bg-background",
-    "transition-all duration-150 ring-offset-background",
-    "placeholder:text-muted-foreground",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    "disabled:cursor-not-allowed disabled:opacity-50",
-    "file:border-0 file:bg-transparent file:font-medium",
-  ],
-  {
-    variants: {
-      size: {
-        sm: "h-8 text-xs file:text-xs",
-        default: "h-9 text-sm file:text-sm",
-        lg: "h-11 text-base file:text-base",
-      },
-    },
-    defaultVariants: {
-      size: "default",
-    },
-  },
-);
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
@@ -109,11 +86,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             inputVariants({ size }),
             leftElement ? pad.withLeft : pad.withoutLeft,
             rightElement ? pad.withRight : pad.withoutRight,
-            error && "border-destructive focus-visible:ring-destructive",
+            error && fieldErrorClass(true),
             className,
           )}
           ref={ref}
-          aria-invalid={error}
+          aria-invalid={error || undefined}
           {...props}
         />
         {rightElement && (

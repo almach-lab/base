@@ -1,4 +1,3 @@
-import { Button } from "@almach/ui";
 import { cn } from "@almach/utils";
 import { Check, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,9 +8,9 @@ interface CodeBlockProps {
   filename?: string;
   lang?: string;
   className?: string;
+  variant?: "default" | "embedded";
 }
 
-// Shared singleton to avoid re-initializing on every render
 const cache = new Map<string, string>();
 
 async function highlight(code: string, lang: string): Promise<string> {
@@ -32,9 +31,11 @@ export function CodeBlock({
   filename,
   lang = "bash",
   className,
+  variant = "default",
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const [html, setHtml] = useState<string | null>(null);
+  const isEmbedded = variant === "embedded";
 
   useEffect(() => {
     let cancelled = false;
@@ -52,47 +53,59 @@ export function CodeBlock({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const CopyButton = ({ inHeader }: { inHeader?: boolean }) => (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={copy}
-      aria-label={copied ? "Copied" : "Copy code"}
-      className={cn(
-        "h-7 gap-1.5 px-2 text-xs text-muted-foreground",
-        !inHeader &&
-          "absolute right-2 top-2 z-10 border border-border/70 bg-background/90",
-      )}
-    >
-      {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-      {copied ? "Copied" : "Copy"}
-    </Button>
-  );
-
   return (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-lg border border-border/70 bg-card/40 text-sm",
+        "group relative text-sm",
+        isEmbedded
+          ? "bg-muted/20"
+          : "overflow-hidden rounded-lg border border-border/50 bg-card/30",
         className,
       )}
     >
-      {filename && (
-        <div className="flex items-center justify-between border-b border-border/70 bg-muted/25 px-3 py-1.5">
-          <span className="font-mono text-xs text-muted-foreground">
-            {filename}
+      {!isEmbedded && (
+        <div className="flex items-center justify-between border-b border-border/40 px-3 py-2">
+          <span className="font-mono text-[11px] text-muted-foreground">
+            {filename ?? lang}
           </span>
-          <CopyButton inHeader />
+          <button
+            type="button"
+            onClick={() => void copy()}
+            aria-label={copied ? "Copied" : "Copy code"}
+            className="inline-flex h-7 items-center gap-1.5 rounded-md px-2 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
+          >
+            {copied ? (
+              <Check className="h-3 w-3" aria-hidden="true" />
+            ) : (
+              <Copy className="h-3 w-3" aria-hidden="true" />
+            )}
+            {copied ? "Copied" : "Copy"}
+          </button>
         </div>
       )}
-      {!filename && <CopyButton />}
+
+      {isEmbedded && (
+        <button
+          type="button"
+          onClick={() => void copy()}
+          aria-label={copied ? "Copied" : "Copy code"}
+          className="absolute right-2.5 top-2.5 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-[opacity,color,background-color] hover:bg-accent/50 hover:text-foreground group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {copied ? (
+            <Check className="h-3.5 w-3.5" aria-hidden="true" />
+          ) : (
+            <Copy className="h-3.5 w-3.5" aria-hidden="true" />
+          )}
+        </button>
+      )}
 
       {html ? (
         <div
-          className="overflow-x-auto font-mono [&>pre]:p-3 [&>pre]:font-mono [&>pre]:text-[12.5px] [&>pre]:leading-6 [&>pre]:tracking-[0.01em] [&>pre]:[font-variant-ligatures:none] [&>pre]:!bg-transparent [&_code]:!bg-transparent shiki-dual-theme"
+          className="overflow-x-auto font-mono [&>pre]:p-4 [&>pre]:font-mono [&>pre]:text-[13px] [&>pre]:leading-6 [&>pre]:[font-variant-ligatures:none] [&>pre]:!bg-transparent [&_code]:!bg-transparent shiki-dual-theme"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       ) : (
-        <pre className="overflow-x-auto p-3 font-mono text-[12.5px] leading-6 tracking-[0.01em] [font-variant-ligatures:none]">
+        <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-6 [font-variant-ligatures:none]">
           <code>{code.trim()}</code>
         </pre>
       )}

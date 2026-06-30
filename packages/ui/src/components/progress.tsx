@@ -2,6 +2,7 @@ import { cn } from "@almach/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { ProgressBar } from "react-aria-components";
+import { MOTION_INTERACTIVE } from "./_motion.js";
 
 const progressVariants = cva("relative w-full overflow-hidden rounded-full", {
   variants: {
@@ -42,7 +43,10 @@ const Progress = React.forwardRef<HTMLDivElement, ProgressProps>(
         <>
           <div className="h-full w-full rounded-full bg-secondary" />
           <div
-            className="progress-fill absolute inset-y-0 left-0 rounded-full transition-[width] duration-500 ease-out"
+            className={cn(
+              "progress-fill absolute inset-y-0 left-0 rounded-full",
+              MOTION_INTERACTIVE,
+            )}
             style={{ width: `${percentage}%` }}
           />
         </>

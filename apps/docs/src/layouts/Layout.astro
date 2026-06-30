@@ -7,7 +7,7 @@ import Logo from "../components/Logo.astro";
 import DocsHeader from "../components/navigation/DocsHeader.astro";
 import LandingHeader from "../components/navigation/LandingHeader.astro";
 import { OnThisPage } from "../components/OnThisPage";
-import { ThemeCustomizer } from "../components/ThemeCustomizer";
+import { docsLayout } from "../lib/docs-layout";
 
 const {
   title = "Almach",
@@ -22,13 +22,9 @@ const pageTitle =
   title === "Almach" ? "Almach — UI Components for React" : `${title} · Almach`;
 
 const isHome = currentPath === "/";
-const headerClass = isHome
-  ? "fixed top-4 z-50 inset-x-0 bg-transparent"
-  : "sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur-xl";
-const landingMainClass = "flex-1 pt-16 sm:pt-18";
-const footerContainerClass = isHome
-  ? "mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-muted-foreground sm:flex-row sm:px-6 lg:px-8"
-  : "mx-auto flex w-full max-w-400 flex-col items-center justify-between gap-4 px-6 py-6 text-xs text-muted-foreground sm:flex-row";
+const landingMainClass = "flex-1";
+const footerContainerClass =
+  "mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-5 py-5 text-xs text-muted-foreground sm:flex-row lg:px-8";
 ---
 
 <!doctype html>
@@ -145,57 +141,81 @@ const footerContainerClass = isHome
     </script>
   </head>
 
-  <body class="bg-background text-foreground antialiased">
-    <div class="flex min-h-screen flex-col">
-      <header class={headerClass}>
-        {
-          isHome ? (
+  <body class="bg-background font-sans text-foreground antialiased">
+    {
+      isHome ? (
+        <div class="flex min-h-screen flex-col">
+          <header class="sticky top-0 z-40 border-b border-border/40 bg-background/90 backdrop-blur-md">
             <LandingHeader currentPath={currentPath} />
-          ) : (
-            <DocsHeader currentPath={currentPath} />
-          )
-        }
-      </header>
+          </header>
 
-      {
-        isHome ? (
           <main class={landingMainClass} id="main-content" transition:name="page-content">
             <slot />
           </main>
-        ) : (
-          <div class="mx-auto flex w-full max-w-400 flex-1">
-            <DocSidebar currentPath={currentPath} client:load />
+
+          <footer class="mt-auto border-t border-border/40">
+            <div class={footerContainerClass}>
+              <div class="flex items-center gap-2">
+                <Logo class="h-4 w-4" />
+                Almach · MIT License
+              </div>
+              <div class="text-center sm:text-right">
+                Built with React · Astro · Tailwind CSS v4
+              </div>
+            </div>
+          </footer>
+        </div>
+      ) : (
+        <div class={docsLayout.pageRoot}>
+          <header class={docsLayout.pageHeader}>
+            <DocsHeader currentPath={currentPath} />
+          </header>
+
+          <div class={docsLayout.shell}>
+            <DocSidebar
+              currentPath={currentPath}
+              client:load
+              transition:persist="doc-sidebar"
+            />
 
             <main
-              class="min-w-0 flex-1 px-4 py-8 md:px-8 md:py-10 lg:px-10"
+              class={docsLayout.main}
               id="main-content"
               transition:name="page-content"
             >
-              <div class="mx-auto w-full max-w-3xl xl:max-w-4xl">
+              <div class={docsLayout.content}>
                 <slot />
               </div>
+
+              <footer class={docsLayout.mainFooter}>
+                <div class="flex items-center gap-2">
+                  <Logo class="h-4 w-4" />
+                  Almach · MIT License
+                </div>
+                <div class="text-center sm:text-right">
+                  Built with React · Astro · Tailwind CSS v4
+                </div>
+              </footer>
             </main>
 
-            <aside class="hidden w-64 shrink-0 border-l border-sidebar-border/60 bg-sidebar/55 px-4 py-8 xl:block">
+            <aside class={docsLayout.toc}>
               <OnThisPage client:load />
             </aside>
           </div>
-        )
-      }
 
-      <footer class="mt-auto border-t border-border/60">
-        <div class={footerContainerClass}>
-          <div class="flex items-center gap-2">
-            <Logo class="h-4 w-4" />
-            Almach · MIT License
-          </div>
-          <div class="text-center sm:text-right">
-            Built with React · Astro · Tailwind CSS v4
-          </div>
+          <footer class={docsLayout.globalFooter}>
+            <div class={footerContainerClass}>
+              <div class="flex items-center gap-2">
+                <Logo class="h-4 w-4" />
+                Almach · MIT License
+              </div>
+              <div class="text-center sm:text-right">
+                Built with React · Astro · Tailwind CSS v4
+              </div>
+            </div>
+          </footer>
         </div>
-      </footer>
-    </div>
-
-    <ThemeCustomizer client:load />
+      )
+    }
   </body>
 </html>

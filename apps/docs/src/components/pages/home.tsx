@@ -1,381 +1,300 @@
+import { Badge, Button } from "@almach/ui";
 import {
-  Avatar,
-  Badge,
-  Button,
-  Card,
-  Checkbox,
-  Input,
-  Progress,
-  Radio,
-  Separator,
-  Switch,
-  Tabs,
-  Textarea,
-} from "@almach/ui";
-import { ArrowRight, Sparkles, Zap } from "lucide-react";
-import { useState } from "react";
+  ArrowRight,
+  Blocks,
+  Braces,
+  Layers,
+  Palette,
+  Sparkles,
+  Zap,
+} from "lucide-react";
 import { getPackageVersion } from "../../lib/package-versions";
+import { HeroPreview } from "../landing/hero-preview";
+import { LandingSection, SectionHeader } from "../landing/landing-section";
+import { CodeBlock } from "../code-block";
+import { PkgTabs } from "../pkg-tabs";
 
-const PKG_MANAGERS = ["bun", "npm", "pnpm", "yarn"] as const;
-type PM = (typeof PKG_MANAGERS)[number];
+const PACKAGES = [
+  {
+    pkg: "@almach/ui",
+    version: getPackageVersion("@almach/ui"),
+    title: "UI",
+    description: "Accessible primitives with polished defaults for product surfaces.",
+    href: "/components",
+    icon: Layers,
+  },
+  {
+    pkg: "@almach/forms",
+    version: getPackageVersion("@almach/forms"),
+    title: "Forms",
+    description: "Zod schemas and TanStack Form fields with consistent validation.",
+    href: "/forms",
+    icon: Braces,
+  },
+  {
+    pkg: "@almach/query",
+    version: getPackageVersion("@almach/query"),
+    title: "Query",
+    description: "Typed query and mutation factories with cache invalidation.",
+    href: "/query",
+    icon: Zap,
+  },
+] as const;
 
-const INSTALL: Record<PM, string> = {
-  bun: "bun add @almach/ui @almach/forms @almach/query",
-  npm: "npm install @almach/ui @almach/forms @almach/query",
-  pnpm: "pnpm add @almach/ui @almach/forms @almach/query",
-  yarn: "yarn add @almach/ui @almach/forms @almach/query",
-};
+const CAPABILITIES = [
+  {
+    icon: Sparkles,
+    title: "Accessible by default",
+    description:
+      "React Aria primitives with keyboard navigation, focus management, and screen reader support baked in.",
+  },
+  {
+    icon: Palette,
+    title: "Themeable tokens",
+    description:
+      "Semantic CSS variables and a live theme customizer — swap palettes without touching component code.",
+  },
+  {
+    icon: Blocks,
+    title: "Production blocks",
+    description:
+      "Dashboard layouts, charts, and form patterns you can copy into real products, not placeholder boxes.",
+  },
+] as const;
 
-function InstallBar() {
-  const [pm, setPm] = useState<PM>("bun");
+const SHOWCASE_COMPONENTS = [
+  { name: "Button", href: "/components/button", tag: "Input" },
+  { name: "Dialog", href: "/components/dialog", tag: "Overlay" },
+  { name: "Select", href: "/components/select", tag: "Input" },
+  { name: "Chart", href: "/components/chart", tag: "Data" },
+  { name: "Sidebar", href: "/components/sidebar", tag: "Layout" },
+  { name: "Table", href: "/components/table", tag: "Data" },
+] as const;
+
+const USAGE_EXAMPLE = `import { Button, Card, Input } from "@almach/ui";
+import { Form, TextField, useBasedForm, z } from "@almach/forms";
+
+const schema = z.object({ email: z.string().email() });
+
+export function InviteForm() {
+  const form = useBasedForm({
+    schema,
+    defaultValues: { email: "" },
+    onSubmit: async (values) => {
+      await inviteUser(values.email);
+    },
+  });
 
   return (
-    <div className="w-full rounded-2xl border border-border/70 bg-card/50 p-3 shadow-sm">
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-          Install all packages
-        </p>
-        <Badge variant="outline" className="text-[10px]">
-          Copy-ready
-        </Badge>
-      </div>
-      <div className="mb-2 flex flex-wrap gap-1.5">
-        {PKG_MANAGERS.map((manager) => (
-          <button
-            key={manager}
-            onClick={() => setPm(manager)}
-            className={
-              pm === manager
-                ? "rounded-md bg-primary px-2.5 py-1 text-xs font-semibold text-primary-foreground"
-                : "rounded-md border border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-accent"
-            }
-          >
-            {manager}
-          </button>
-        ))}
-      </div>
-
-      <pre className="overflow-x-auto rounded-xl border border-border/70 bg-background px-3 py-2 text-xs text-muted-foreground sm:text-sm">
-        <code>
-          <span className="text-muted-foreground">$ </span>
-          {INSTALL[pm]}
-        </code>
-      </pre>
-    </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit} className="space-y-4">
+        <Card>
+          <Card.Header>
+            <Card.Title>Invite teammate</Card.Title>
+          </Card.Header>
+          <Card.Content className="space-y-4">
+            <TextField name="email" label="Email" required />
+            <Button type="submit" loading={form.formState.isSubmitting}>
+              Send invite
+            </Button>
+          </Card.Content>
+        </Card>
+      </form>
+    </Form>
   );
-}
+}`;
 
 export function HomePage() {
-  const [notifications, setNotifications] = useState(true);
-  const [plan, setPlan] = useState("starter");
-
   return (
-    <div className="-mt-24 pt-24 bg-[radial-gradient(860px_420px_at_50%_-120px,color-mix(in_srgb,var(--color-primary)_18%,transparent),transparent),linear-gradient(to_bottom,var(--color-background),var(--color-background))]">
-      <section className="border-b border-border/70">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-16 md:grid-cols-12 md:px-6 md:py-20 lg:py-24">
-          <div className="space-y-5 md:col-span-7">
-            <Badge variant="outline" className="w-fit text-[11px]">
-              <Sparkles className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
-              New generation React toolkit
-            </Badge>
-            <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-              Build polished products faster with one cohesive system.
-            </h1>
-            <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-              Almach combines UI components, typed forms, and query utilities
-              into one workflow so teams ship clean interfaces with fewer bugs.
+    <div className="flex flex-col">
+      <section className="landing-hero relative overflow-hidden border-b border-border/60">
+        <div className="landing-hero-grid pointer-events-none absolute inset-0" />
+        <div className="landing-hero-glow pointer-events-none absolute inset-0" />
+
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center px-4 pb-8 pt-16 text-center sm:px-6 sm:pb-12 sm:pt-24 lg:px-8">
+          <Badge variant="outline" className="mb-6 font-mono text-[11px] tracking-wide">
+            React · Tailwind v4 · Open source
+          </Badge>
+
+          <h1 className="max-w-3xl text-4xl font-semibold tracking-[-0.03em] sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08]">
+            Build polished interfaces{" "}
+            <span className="landing-gradient-text">without the glue code</span>
+          </h1>
+
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Accessible components, typed forms, and query utilities — one cohesive
+            toolkit with live docs and copy-paste examples.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Button href="/getting-started" size="lg">
+              Get started
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
+            <Button variant="outline" href="/components" size="lg">
+              Browse components
+            </Button>
+          </div>
+
+          <div className="mt-10 w-full max-w-md text-left">
+            <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+              Install
             </p>
-            <div className="flex flex-wrap items-center gap-2.5">
-              <Button href="/getting-started">
-                Start building
+            <PkgTabs packages="@almach/ui" />
+          </div>
+        </div>
+
+        <div className="relative mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6 sm:pb-24 lg:px-8">
+          <HeroPreview />
+        </div>
+      </section>
+
+      <LandingSection>
+        <SectionHeader
+          eyebrow="Why Almach"
+          title="Everything you need to ship UI"
+          description="Primitives, patterns, and documentation designed to work together — not a loose collection of copy-pasted snippets."
+        />
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          {CAPABILITIES.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-xl border border-border/60 bg-card/50 p-5 transition-colors hover:border-border hover:bg-card"
+            >
+              <item.icon
+                className="h-4 w-4 text-primary"
+                aria-hidden="true"
+              />
+              <h3 className="mt-3 text-sm font-semibold">{item.title}</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {item.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      </LandingSection>
+
+      <LandingSection id="example">
+        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
+          <SectionHeader
+            eyebrow="Example"
+            title="Real patterns, not toy demos"
+            description="Forms compose with UI primitives out of the box. Copy the example into your app and adapt the schema."
+            className="mb-0 lg:sticky lg:top-24"
+          />
+
+          <div className="min-w-0">
+            <CodeBlock
+              code={USAGE_EXAMPLE}
+              lang="tsx"
+              filename="invite-form.tsx"
+            />
+          </div>
+        </div>
+      </LandingSection>
+
+      <LandingSection>
+        <SectionHeader
+          eyebrow="Explore"
+          title="Start with a component"
+          description="Jump into the docs for the pieces you need — each page includes live previews and API reference."
+        />
+
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {SHOWCASE_COMPONENTS.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className="group flex items-center justify-between rounded-lg border border-border/60 px-4 py-3 transition-colors hover:border-border hover:bg-accent/40"
+            >
+              <div>
+                <p className="text-sm font-medium">{item.name}</p>
+                <p className="font-mono text-[11px] text-muted-foreground">
+                  {item.tag}
+                </p>
+              </div>
+              <ArrowRight
+                className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground"
+                aria-hidden="true"
+              />
+            </a>
+          ))}
+        </div>
+
+        <div className="mt-6 text-center">
+          <Button variant="ghost" href="/components">
+            View all components
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Button>
+        </div>
+      </LandingSection>
+
+      <LandingSection>
+        <SectionHeader
+          eyebrow="Packages"
+          title="Install only what you need"
+          description="All packages share the same design tokens and work independently or together."
+        />
+
+        <div className="grid gap-4 lg:grid-cols-3">
+          {PACKAGES.map((item) => (
+            <a
+              key={item.pkg}
+              href={item.href}
+              className="group flex flex-col rounded-xl border border-border/60 p-5 transition-colors hover:border-border hover:bg-card"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <item.icon
+                  className="h-4 w-4 text-primary"
+                  aria-hidden="true"
+                />
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  v{item.version}
+                </span>
+              </div>
+              <p className="mt-4 font-mono text-xs text-muted-foreground">
+                {item.pkg}
+              </p>
+              <h3 className="mt-1 text-base font-semibold">{item.title}</h3>
+              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-muted-foreground">
+                {item.description}
+              </p>
+              <span className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary">
+                View docs
+                <ArrowRight
+                  className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </span>
+            </a>
+          ))}
+        </div>
+      </LandingSection>
+
+      <LandingSection border={false} containerClassName="py-20 sm:py-24">
+        <div className="landing-cta relative overflow-hidden rounded-2xl border border-border/60 px-6 py-12 text-center sm:px-10 sm:py-14">
+          <div className="landing-hero-glow pointer-events-none absolute inset-0 opacity-60" />
+          <div className="relative">
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Ready to build?
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-[15px] text-muted-foreground">
+              Follow the getting started guide to wire up tokens, install packages,
+              and render your first component in minutes.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Button href="/getting-started" size="lg">
+                Get started
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
-              <Button variant="outline" href="/components">
-                Explore components
+              <Button variant="outline" href="/blocks" size="lg">
+                View blocks
               </Button>
             </div>
-            <div className="grid gap-2 sm:grid-cols-3">
-              {[
-                { label: "UI primitives", value: "35+" },
-                { label: "Form fields", value: "Typed" },
-                { label: "Query helpers", value: "Factory-first" },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-xl border border-border/70 bg-background/65 px-3 py-3"
-                >
-                  <p className="text-[11px] text-muted-foreground">
-                    {item.label}
-                  </p>
-                  <p className="text-sm font-semibold">{item.value}</p>
-                </div>
-              ))}
-            </div>
-            <InstallBar />
-          </div>
-
-          <Card className="border-border/70 bg-card/60 shadow-sm md:col-span-5">
-            <Card.Header>
-              <Card.Title className="text-base">Team activity</Card.Title>
-              <p className="text-sm text-muted-foreground">
-                A compact preview of common interface states.
-              </p>
-            </Card.Header>
-            <Card.Content className="space-y-3">
-              <div className="flex items-center gap-2.5 rounded-lg border border-border/70 bg-background/80 p-3">
-                <Avatar size="sm">
-                  <Avatar.Fallback>AR</Avatar.Fallback>
-                </Avatar>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">Weekly release</p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    QA checklist completed
-                  </p>
-                </div>
-                <Badge variant="outline">Ready</Badge>
-              </div>
-
-              <div className="space-y-1.5 rounded-lg border border-border/70 bg-background/80 p-3">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Migration progress</span>
-                  <span>74%</span>
-                </div>
-                <Progress value={74} />
-              </div>
-
-              <div className="rounded-lg border border-border/70 bg-background/80 p-3">
-                <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Release checklist</span>
-                  <span>2/3 complete</span>
-                </div>
-                <div className="space-y-1.5 text-sm">
-                  <label className="flex items-center gap-2">
-                    <Checkbox className="h-4 w-4" />
-                    <span>Visual QA</span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <Checkbox className="h-4 w-4" />
-                    <span>Docs snapshot</span>
-                  </label>
-                  <label className="flex items-center gap-2">
-                    <Checkbox className="h-4 w-4" />
-                    <span>Publish release notes</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="grid gap-2 sm:grid-cols-2">
-                <Button size="sm" variant="outline" className="w-full">
-                  Open roadmap
-                </Button>
-                <Button size="sm" className="w-full">
-                  Deploy preview
-                </Button>
-              </div>
-            </Card.Content>
-          </Card>
-        </div>
-      </section>
-
-      <section className="border-b border-border/70">
-        <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                Interactive studio
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Clean, production-like patterns built with shared primitives.
-              </p>
-            </div>
-            <Badge className="hidden sm:inline-flex" variant="outline">
-              <Zap className="mr-1 h-3.5 w-3.5" aria-hidden="true" />
-              Composable by default
-            </Badge>
-          </div>
-
-          <Tabs defaultValue="ui" className="space-y-3">
-            <Tabs.List>
-              <Tabs.Trigger value="ui">UI Flow</Tabs.Trigger>
-              <Tabs.Trigger value="forms">Forms Flow</Tabs.Trigger>
-              <Tabs.Trigger value="query">Data Flow</Tabs.Trigger>
-            </Tabs.List>
-
-            <Tabs.Content value="ui">
-              <Card className="border-border/70 bg-card/45">
-                <Card.Content className="grid gap-3 p-4 md:grid-cols-12">
-                  <div className="space-y-2 md:col-span-7">
-                    <Input placeholder="Search project settings..." />
-                    <Textarea placeholder="Write release note summary..." />
-                    <div className="flex gap-2">
-                      <Button size="sm">Save draft</Button>
-                      <Button size="sm" variant="outline">
-                        Preview
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="space-y-2 rounded-xl border border-border/70 bg-background/80 p-3 md:col-span-5">
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Enable notifications</span>
-                      <Switch
-                        size="sm"
-                        isSelected={notifications}
-                        onChange={setNotifications}
-                      />
-                    </div>
-                    <Separator />
-                    <div className="space-y-2 text-sm">
-                      <label className="flex items-center gap-2">
-                        <Checkbox className="h-4 w-4" />
-                        <span>Ship with analytics enabled</span>
-                      </label>
-                      <label className="flex items-center gap-2">
-                        <Checkbox className="h-4 w-4" />
-                        <span>Require review approvals</span>
-                      </label>
-                    </div>
-                  </div>
-                </Card.Content>
-              </Card>
-            </Tabs.Content>
-
-            <Tabs.Content value="forms">
-              <Card className="border-border/70 bg-card/45">
-                <Card.Content className="grid gap-3 p-4 md:grid-cols-12">
-                  <div className="space-y-2 md:col-span-7">
-                    <Input placeholder="Email address" type="email" />
-                    <Input placeholder="Workspace name" />
-                    <Textarea placeholder="Tell us about your project" />
-                  </div>
-                  <div className="rounded-xl border border-border/70 bg-background/80 p-3 md:col-span-5">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                      Plan
-                    </p>
-                    <Radio value={plan} onChange={setPlan}>
-                      <Radio.Item
-                        value="starter"
-                        label="Starter"
-                        description="Best for new teams"
-                      />
-                      <Radio.Item
-                        value="scale"
-                        label="Scale"
-                        description="Advanced workflows"
-                      />
-                    </Radio>
-                    <Button size="sm" className="mt-3 w-full">
-                      Continue
-                    </Button>
-                  </div>
-                </Card.Content>
-              </Card>
-            </Tabs.Content>
-
-            <Tabs.Content value="query">
-              <div className="grid gap-3 md:grid-cols-3">
-                {[
-                  { label: "Users query", value: "fresh", pct: 92 },
-                  { label: "Projects query", value: "warm", pct: 67 },
-                  { label: "Audit logs", value: "stale", pct: 31 },
-                ].map((item) => (
-                  <Card
-                    key={item.label}
-                    className="border-border/70 bg-card/45"
-                  >
-                    <Card.Content className="space-y-2 p-4">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium">{item.label}</p>
-                        <Badge variant="outline">{item.value}</Badge>
-                      </div>
-                      <Progress value={item.pct} />
-                      <p className="text-xs text-muted-foreground">
-                        Cache health {item.pct}%
-                      </p>
-                    </Card.Content>
-                  </Card>
-                ))}
-              </div>
-            </Tabs.Content>
-          </Tabs>
-        </div>
-      </section>
-
-      <section>
-        <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-              One ecosystem, three focused packages
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Start simple, scale intentionally, and keep implementation clean.
-            </p>
-          </div>
-
-          <div className="grid gap-3 lg:grid-cols-3">
-            {[
-              {
-                pkg: "@almach/ui",
-                version: getPackageVersion("@almach/ui"),
-                title: "UI components",
-                desc: "Accessible primitives and polished defaults for product interfaces.",
-                href: "/components",
-                sample: '<Button variant="default">Save</Button>',
-              },
-              {
-                pkg: "@almach/forms",
-                version: getPackageVersion("@almach/forms"),
-                title: "Typed forms",
-                desc: "Zod + TanStack Form patterns for predictable validation flows.",
-                href: "/forms",
-                sample: '<TextField label="Email" required />',
-              },
-              {
-                pkg: "@almach/query",
-                version: getPackageVersion("@almach/query"),
-                title: "Data layer",
-                desc: "Typed query and mutation factories with consistent invalidation.",
-                href: "/query",
-                sample: "const q = createQuery({ queryKey, queryFn })",
-              },
-            ].map((item) => (
-              <Card
-                key={item.pkg}
-                className="border-border/70 bg-card/50 shadow-sm"
-              >
-                <Card.Content className="space-y-3 p-5">
-                  <Badge
-                    variant="outline"
-                    className="w-fit font-mono text-[11px]"
-                  >
-                    {item.pkg}
-                  </Badge>
-                  <p className="text-[11px] font-mono text-muted-foreground">
-                    v{item.version}
-                  </p>
-                  <div>
-                    <h3 className="text-base font-semibold">{item.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {item.desc}
-                    </p>
-                  </div>
-                  <pre className="overflow-x-auto rounded-xl border border-border/70 bg-background px-3 py-2 text-[11px] text-muted-foreground">
-                    <code>{item.sample}</code>
-                  </pre>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full"
-                    href={item.href}
-                  >
-                    Open docs
-                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                </Card.Content>
-              </Card>
-            ))}
           </div>
         </div>
-      </section>
+      </LandingSection>
     </div>
   );
 }

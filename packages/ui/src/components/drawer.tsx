@@ -12,6 +12,7 @@ import {
   resolveMotionDurationMs,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
+import { DIALOG_SURFACE, OVERLAY_BACKDROP } from "./_styles.js";
 
 const DRAG_THRESHOLD_PX = 8;
 const DRAG_DISMISS_FRACTION = 0.3;
@@ -381,10 +382,10 @@ function DrawerBackdrop({
       data-slot="drawer-backdrop"
       data-state={drawerState}
       className={cn(
-        "fixed inset-0 z-50 min-h-dvh",
-        variant === "opaque" && "bg-black/45",
-        variant === "blur" && "bg-black/40 backdrop-blur-sm",
-        variant === "transparent" && "bg-transparent",
+        OVERLAY_BACKDROP,
+        "min-h-dvh",
+        variant === "opaque" && "bg-black/45 backdrop-blur-none",
+        variant === "transparent" && "bg-transparent backdrop-blur-none",
         MOTION_OVERLAY,
         "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
         "supports-[-webkit-touch-callout:none]:absolute",
@@ -450,12 +451,13 @@ const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
         data-placement={side}
         data-state={popupState}
         className={cn(
-          "pointer-events-auto relative flex min-h-0 flex-col bg-background text-foreground shadow-xl outline outline-1 outline-border/50",
+          DIALOG_SURFACE,
+          "pointer-events-auto relative flex min-h-0 w-full flex-col px-4",
           "overflow-hidden overscroll-contain touch-none",
           "transform-gpu will-change-transform [backface-visibility:hidden]",
           DRAWER_PANEL_MOTION,
           "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
-          "data-[state=open]:shadow-2xl data-[state=closed]:shadow-none",
+          "data-[state=closed]:shadow-none",
           side === "bottom" && [
             "w-full max-h-[85svh] rounded-t-lg origin-bottom",
             "data-[state=open]:translate-y-0 data-[state=open]:scale-100",
@@ -670,7 +672,7 @@ function DrawerHeader({
   return (
     <div
       data-slot="drawer-header"
-      className={cn("flex flex-col gap-1.5 px-4 pt-4 pb-2", className)}
+      className={cn("flex flex-col gap-1.5 pt-4 pb-2", className)}
       {...props}
     />
   );
@@ -684,7 +686,7 @@ function DrawerFooter({
   return (
     <div
       data-slot="drawer-footer"
-      className={cn("mt-auto flex flex-col gap-2 px-4 pt-2 pb-4", className)}
+      className={cn("mt-auto flex flex-col gap-2 pt-2 pb-4", className)}
       {...props}
     />
   );
@@ -699,7 +701,7 @@ function DrawerBody({
     <div
       data-slot="drawer-body"
       className={cn(
-        "min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-2 text-sm leading-[1.43] text-muted-foreground",
+        "min-h-0 flex-1 overflow-y-auto overscroll-contain py-2 text-sm leading-[1.43] text-muted-foreground",
         "[touch-action:pan-y] [-webkit-overflow-scrolling:touch]",
         className,
       )}

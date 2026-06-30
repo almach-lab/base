@@ -2,6 +2,8 @@ import { cn } from "@almach/utils";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
 import * as React from "react";
+import { MOTION_OVERLAY } from "./_motion.js";
+import { MENU_ITEM, MENU_SEPARATOR } from "./_styles.js";
 import { Dialog } from "./dialog.js";
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
@@ -12,8 +14,8 @@ const CommandRoot = React.forwardRef<
   <CommandPrimitive
     ref={ref}
     className={cn(
-      "flex w-full min-h-0 flex-col overflow-hidden rounded-xl bg-popover text-popover-foreground",
-      "transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+      "flex w-full min-h-0 flex-col overflow-hidden rounded-lg bg-popover text-popover-foreground",
+      MOTION_OVERLAY,
       className,
     )}
     {...props}
@@ -82,8 +84,7 @@ const CommandList = React.forwardRef<
   <CommandPrimitive.List
     ref={ref}
     className={cn(
-      // Fit content first, then scroll when list exceeds viewport cap.
-      "max-h-[min(70svh,_32rem)] overflow-y-auto overflow-x-hidden overscroll-contain",
+      "max-h-[min(70svh,_32rem)] overflow-y-auto overflow-x-hidden overscroll-contain scroll-fade no-scrollbar",
       className,
     )}
     {...props}
@@ -129,7 +130,7 @@ const CommandSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.Separator
     ref={ref}
-    className={cn("-mx-1 h-px bg-border", className)}
+    className={cn(MENU_SEPARATOR, "-mx-1", className)}
     {...props}
   />
 ));
@@ -143,12 +144,10 @@ const CommandItem = React.forwardRef<
   <CommandPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex cursor-pointer select-none items-center gap-2 rounded-lg px-2 py-1.5 text-sm outline-none",
-      "transition-[background-color,color,transform] duration-150 ease-out",
+      MENU_ITEM,
+      "cursor-pointer rounded-sm",
+      "aria-selected:bg-accent aria-selected:text-accent-foreground",
       "data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground",
-      "data-[selected=true]:translate-x-0.5",
-      "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
-      "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
       className,
     )}
     {...props}

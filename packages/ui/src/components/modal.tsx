@@ -184,12 +184,8 @@ function ModalBody({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { isMobile } = useModalCtx();
-  return (
-    <div
-      className={cn(isMobile ? "px-4 py-2" : "py-2", className)}
-      {...props}
-    />
-  );
+  if (isMobile) return <Drawer.Body className={className} {...props} />;
+  return <div className={cn("py-2", className)} {...props} />;
 }
 
 const ModalTitle = React.forwardRef<

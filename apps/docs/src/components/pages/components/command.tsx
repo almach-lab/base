@@ -18,7 +18,6 @@ export function CommandPage() {
     <ComponentDoc
       name="Command"
       description="Accessible command palette with keyboard navigation, grouped results, shortcuts, and a Dialog wrapper for ⌘K style menus."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Inline",

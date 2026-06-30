@@ -6,6 +6,12 @@
       "sourceType": "well-known",
       "computedHash": "88f92384476cee8ab0a588b8e6fb7e759bbf952ccdcd5080522a27a12312ed9c"
     },
+    "tailwind-ui-refactor": {
+      "source": "pproenca/dot-skills",
+      "sourceType": "github",
+      "skillPath": "skills/.experimental/tailwind-ui-refactor/SKILL.md",
+      "computedHash": "dbd03b1cd3ef596d0691ff4ba8d85e3cc79761203fdefb10a5eb5fb57bee0ae4"
+    },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",

@@ -62,16 +62,14 @@ export function MobileMoreMenu() {
 
       {isOpen && (
         <div className="absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border border-border bg-background p-2 shadow-xl">
-          <button
-            onClick={() => {
-              window.dispatchEvent(new CustomEvent("almach-customizer-toggle"));
-              setIsOpen(false);
-            }}
+          <a
+            href="/theme"
+            onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             <Palette className="h-4 w-4" aria-hidden="true" />
             Theme Editor
-          </button>
+          </a>
 
           <ThemeModeToggle compact={false} onToggled={() => setIsOpen(false)} />
 

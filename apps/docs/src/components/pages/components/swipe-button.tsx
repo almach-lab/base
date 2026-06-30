@@ -1,110 +1,110 @@
 import { SwipeButton } from "@almach/ui";
+import { ChevronRight } from "lucide-react";
+import type * as React from "react";
 import { ComponentDoc } from "../../component-doc";
+
+const DEMO_WRAP = "w-full max-w-xs";
+
+function SwipeDemo({
+  label,
+  successLabel = "Confirmed",
+  variant,
+  ...props
+}: React.ComponentProps<typeof SwipeButton> & {
+  label: string;
+  successLabel?: string;
+  variant?: React.ComponentProps<typeof SwipeButton.Thumb>["variant"];
+}) {
+  return (
+    <SwipeButton className={DEMO_WRAP} {...props}>
+      <SwipeButton.Fill />
+      <SwipeButton.Track>{label}</SwipeButton.Track>
+      <SwipeButton.Overlay>{successLabel}</SwipeButton.Overlay>
+      <SwipeButton.Thumb {...(variant ? { variant } : {})}>
+        <ChevronRight className="size-5" aria-hidden="true" />
+      </SwipeButton.Thumb>
+    </SwipeButton>
+  );
+}
 
 export function SwipeButtonPage() {
   return (
     <ComponentDoc
       name="Swipe Button"
-      description="A confirm-by-swiping interaction with spring physics. The user drags the thumb across the track to trigger an action, preventing accidental taps. Built with pointer, touch, and keyboard (Space/Enter) support."
+      description="Confirm-by-swiping control with spring motion. Drag the thumb across the track to trigger an action — pointer, touch, and keyboard (arrows, Space, Enter) supported."
       examples={[
         {
           title: "Default",
           description:
             "Swipe the thumb to the right to trigger the success callback.",
-          preview: <DefaultDemo />,
+          preview: <SwipeDemo label="Swipe to confirm" onSuccess={() => {}} />,
           code: `import { SwipeButton } from "@almach/ui";
+import { ChevronRight } from "lucide-react";
 
 <SwipeButton onSuccess={() => console.log("confirmed!")} className="w-72">
-  <SwipeButton.Track>
-    <SwipeButton.Fill />
-    <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
-    <SwipeButton.Thumb />
-  </SwipeButton.Track>
+  <SwipeButton.Fill />
+  <SwipeButton.Track>Swipe to confirm</SwipeButton.Track>
+  <SwipeButton.Overlay>Confirmed</SwipeButton.Overlay>
+  <SwipeButton.Thumb>
+    <ChevronRight className="size-5" />
+  </SwipeButton.Thumb>
 </SwipeButton>`,
         },
         {
           title: "Variants",
           description:
-            "Four semantic color variants: default, success, destructive, warning.",
+            "Four semantic thumb colors: default, success, destructive, warning.",
           preview: <VariantsDemo />,
-          code: `import { SwipeButton } from "@almach/ui";
-
-<SwipeButton onSuccess={() => {}} className="w-72">
-  <SwipeButton.Track>
-    <SwipeButton.Fill />
-    <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
-    <SwipeButton.Thumb variant="default" />
-  </SwipeButton.Track>
-</SwipeButton>
-
-<SwipeButton onSuccess={() => {}} className="w-72">
-  <SwipeButton.Track>
-    <SwipeButton.Fill />
-    <SwipeButton.Overlay>Swipe to delete</SwipeButton.Overlay>
-    <SwipeButton.Thumb variant="destructive" />
-  </SwipeButton.Track>
-</SwipeButton>
-
-<SwipeButton onSuccess={() => {}} className="w-72">
-  <SwipeButton.Track>
-    <SwipeButton.Fill />
-    <SwipeButton.Overlay>Swipe to approve</SwipeButton.Overlay>
-    <SwipeButton.Thumb variant="success" />
-  </SwipeButton.Track>
+          centered: false,
+          code: `<SwipeButton onSuccess={onDelete} className="w-72">
+  <SwipeButton.Fill />
+  <SwipeButton.Track>Swipe to delete</SwipeButton.Track>
+  <SwipeButton.Overlay>Deleted</SwipeButton.Overlay>
+  <SwipeButton.Thumb variant="destructive">
+    <ChevronRight className="size-5" />
+  </SwipeButton.Thumb>
 </SwipeButton>`,
         },
         {
           title: "Hold to confirm",
           description:
-            "Set hold={1000} to require the thumb to be held at the threshold for 1 second before success fires.",
-          preview: <HoldDemo />,
-          code: `import { SwipeButton } from "@almach/ui";
-
-<SwipeButton
-  onSuccess={() => console.log("held and confirmed!")}
-  hold={1000}
-  className="w-72"
->
-  <SwipeButton.Track>
-    <SwipeButton.Fill />
-    <SwipeButton.Overlay>Swipe + hold to confirm</SwipeButton.Overlay>
-    <SwipeButton.Thumb variant="destructive" />
-  </SwipeButton.Track>
+            "Set hold={1000} to require the thumb to stay at the threshold for 1 second.",
+          preview: (
+            <SwipeDemo
+              label="Swipe + hold to confirm"
+              successLabel="Deleted"
+              variant="destructive"
+              hold={1000}
+              onSuccess={() => {}}
+            />
+          ),
+          code: `<SwipeButton hold={1000} onSuccess={handleDelete}>
+  ...
 </SwipeButton>`,
         },
         {
-          title: "Reset on success",
+          title: "Persist on success",
           description:
-            "The thumb snaps back after success — useful for repeated confirmations.",
-          preview: <ResetDemo />,
-          code: `import { SwipeButton } from "@almach/ui";
-
-<SwipeButton
-  onSuccess={() => console.log("done")}
-  resetOnSuccess
-  resetDelay={800}
-  className="w-72"
->
-  <SwipeButton.Track>
-    <SwipeButton.Fill />
-    <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
-    <SwipeButton.Thumb variant="success" />
-  </SwipeButton.Track>
+            "Set resetOnSuccess={false} to keep the thumb at the end after confirmation.",
+          preview: (
+            <SwipeDemo
+              label="Swipe to confirm"
+              variant="success"
+              resetOnSuccess={false}
+              onSuccess={() => {}}
+            />
+          ),
+          code: `<SwipeButton resetOnSuccess={false} onSuccess={onConfirm}>
+  ...
 </SwipeButton>`,
         },
         {
           title: "Disabled",
           description: "Prevents interaction while preserving the layout.",
-          preview: <DisabledDemo />,
-          code: `import { SwipeButton } from "@almach/ui";
-
-<SwipeButton disabled className="w-72">
-  <SwipeButton.Track>
-    <SwipeButton.Fill />
-    <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
-    <SwipeButton.Thumb />
-  </SwipeButton.Track>
-</SwipeButton>`,
+          preview: (
+            <SwipeDemo label="Swipe to confirm" disabled onSuccess={() => {}} />
+          ),
+          code: `<SwipeButton disabled>...</SwipeButton>`,
         },
       ]}
       props={[
@@ -137,16 +137,16 @@ export function SwipeButtonPage() {
         {
           name: "resetOnSuccess",
           type: "boolean",
-          default: "false",
+          default: "true",
           description:
-            "If true, the thumb springs back to the start after success.",
+            "If true, the thumb springs back to the start after success (default). Set false to keep the completed state.",
         },
         {
           name: "resetDelay",
           type: "number",
-          default: "1200",
+          default: "800",
           description:
-            "Milliseconds before the thumb resets when resetOnSuccess is true.",
+            "Milliseconds to show the success state before resetting when resetOnSuccess is true.",
         },
         {
           name: "reverseSwipe",
@@ -171,83 +171,28 @@ export function SwipeButtonPage() {
   );
 }
 
-function DefaultDemo() {
-  return (
-    <SwipeButton onSuccess={() => {}} className="w-72">
-      <SwipeButton.Track>
-        <SwipeButton.Fill />
-        <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
-        <SwipeButton.Thumb />
-      </SwipeButton.Track>
-    </SwipeButton>
-  );
-}
-
 function VariantsDemo() {
   return (
-    <div className="flex flex-col gap-4">
-      <SwipeButton onSuccess={() => {}} resetOnSuccess className="w-72">
-        <SwipeButton.Track>
-          <SwipeButton.Fill />
-          <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
-          <SwipeButton.Thumb variant="default" />
-        </SwipeButton.Track>
-      </SwipeButton>
-      <SwipeButton onSuccess={() => {}} resetOnSuccess className="w-72">
-        <SwipeButton.Track>
-          <SwipeButton.Fill />
-          <SwipeButton.Overlay>Swipe to delete</SwipeButton.Overlay>
-          <SwipeButton.Thumb variant="destructive" />
-        </SwipeButton.Track>
-      </SwipeButton>
-      <SwipeButton onSuccess={() => {}} resetOnSuccess className="w-72">
-        <SwipeButton.Track>
-          <SwipeButton.Fill />
-          <SwipeButton.Overlay>Swipe to approve</SwipeButton.Overlay>
-          <SwipeButton.Thumb variant="success" />
-        </SwipeButton.Track>
-      </SwipeButton>
+    <div className="flex w-full flex-col gap-4">
+      <SwipeDemo label="Swipe to confirm" variant="default" onSuccess={() => {}} />
+      <SwipeDemo
+        label="Swipe to delete"
+        successLabel="Deleted"
+        variant="destructive"
+        onSuccess={() => {}}
+      />
+      <SwipeDemo
+        label="Swipe to approve"
+        successLabel="Approved"
+        variant="success"
+        onSuccess={() => {}}
+      />
+      <SwipeDemo
+        label="Swipe with caution"
+        successLabel="Done"
+        variant="warning"
+        onSuccess={() => {}}
+      />
     </div>
-  );
-}
-
-function HoldDemo() {
-  return (
-    <SwipeButton onSuccess={() => {}} hold={1000} className="w-72">
-      <SwipeButton.Track>
-        <SwipeButton.Fill />
-        <SwipeButton.Overlay>Swipe + hold to confirm</SwipeButton.Overlay>
-        <SwipeButton.Thumb variant="destructive" />
-      </SwipeButton.Track>
-    </SwipeButton>
-  );
-}
-
-function ResetDemo() {
-  return (
-    <SwipeButton
-      onSuccess={() => {}}
-      resetOnSuccess
-      resetDelay={800}
-      className="w-72"
-    >
-      <SwipeButton.Track>
-        <SwipeButton.Fill />
-        <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
-        <SwipeButton.Thumb variant="success" />
-      </SwipeButton.Track>
-    </SwipeButton>
-  );
-}
-
-function DisabledDemo() {
-  return (
-    <SwipeButton disabled className="w-72">
-      <SwipeButton.Track>
-        <SwipeButton.Fill />
-        <SwipeButton.Overlay>Swipe to confirm</SwipeButton.Overlay>
-        <SwipeButton.Thumb />
-      </SwipeButton.Track>
-    </SwipeButton>
   );
 }

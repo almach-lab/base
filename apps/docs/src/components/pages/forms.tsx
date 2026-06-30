@@ -7,9 +7,11 @@ import {
   useBasedForm,
   z,
 } from "@almach/forms";
-import { Badge, Button, Card, Separator, Tabs, toast } from "@almach/ui";
+import { Button, Card, Separator, Tabs, toast } from "@almach/ui";
 import { getPackageVersion } from "../../lib/package-versions";
+import { docsLayout } from "../../lib/docs-layout";
 import { CodeBlock } from "../code-block";
+import { DocPageHeader } from "../docs/doc-page-header";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -265,24 +267,12 @@ const fieldsCode = `import { TextField, TextareaField, SelectField, CheckboxFiel
 
 export function FormsPage() {
   return (
-    <div className="px-4 py-8 md:px-5 md:py-9">
-      <div className="mb-8 border-b pb-6">
-        <div className="mb-2 flex flex-wrap items-center gap-2">
-          <Badge variant="outline" className="font-mono">
-            @almach/forms
-          </Badge>
-          <Badge variant="ghost" className="font-mono text-[11px]">
-            v{getPackageVersion("@almach/forms")}
-          </Badge>
-        </div>
-        <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">
-          Form Handling
-        </h1>
-        <p className="text-sm text-muted-foreground leading-relaxed md:text-base">
-          Type-safe forms using TanStack Form and Zod, with accessible field
-          components and clear validation flows.
-        </p>
-      </div>
+    <article className={docsLayout.article}>
+      <DocPageHeader
+        eyebrow={`@almach/forms · v${getPackageVersion("@almach/forms")}`}
+        title="Form Handling"
+        description="Type-safe forms using TanStack Form and Zod, with accessible field components and clear validation flows."
+      />
 
       {/* Interactive demos */}
       <div
@@ -441,6 +431,6 @@ export function FormsPage() {
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

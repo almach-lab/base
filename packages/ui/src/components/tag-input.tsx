@@ -3,6 +3,13 @@
 import { cn } from "@almach/utils";
 import { X } from "lucide-react";
 import * as React from "react";
+import { badgeVariants } from "./badge.js";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import {
+  DISABLED,
+  fieldErrorClass,
+  FOCUS_RING_WITHIN,
+} from "./_styles.js";
 
 export interface TagInputProps {
   id?: string;
@@ -84,10 +91,12 @@ export function TagInput({
       aria-disabled={disabled || undefined}
       aria-describedby={tags.length > 0 ? listId : undefined}
       className={cn(
-        "flex min-h-9 w-full flex-wrap items-center gap-1.5 rounded-lg border bg-background px-2.5 py-1.5",
-        "ring-offset-background transition-colors",
-        "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-        error && "border-destructive focus-within:ring-destructive",
+        "flex min-h-9 w-full flex-wrap items-center gap-1.5 rounded-md border border-input bg-background px-2.5 py-1.5 shadow-xs",
+        MOTION_INTERACTIVE,
+        FOCUS_RING_WITHIN,
+        fieldErrorClass(error),
+        error && "focus-within:ring-destructive",
+        DISABLED,
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
@@ -98,7 +107,7 @@ export function TagInput({
           {tags.map((tag, i) => (
             <span
               key={`${tag}-${i}`}
-              className="inline-flex items-center gap-1 rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground"
+              className={cn(badgeVariants({ variant: "secondary", size: "sm" }), "gap-1")}
             >
               {tag}
               {!disabled && (
@@ -108,7 +117,11 @@ export function TagInput({
                     e.stopPropagation();
                     removeTag(i);
                   }}
-                  className="flex h-3.5 w-3.5 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className={cn(
+                    "flex h-3.5 w-3.5 items-center justify-center rounded-sm text-muted-foreground",
+                    MOTION_INTERACTIVE,
+                    "hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                  )}
                   aria-label={`Remove ${tag}`}
                 >
                   <X className="h-2.5 w-2.5" />

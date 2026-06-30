@@ -126,6 +126,31 @@ export { toast } from "./components/toast.js";
 export { Toaster } from "./components/toaster.js";
 
 export { Tooltip } from "./components/tooltip.js";
+export {
+  cardVariants,
+  CONTROL_DESCRIPTION,
+  CONTROL_LABEL,
+  DIALOG_CONTENT,
+  DIALOG_SURFACE,
+  DISABLED,
+  DISABLED_DATA,
+  FIELD_GROUP,
+  fieldErrorClass,
+  FOCUS_RING,
+  FOCUS_RING_INVALID,
+  FOCUS_RING_WITHIN,
+  ICON_BUTTON,
+  MENU_ITEM,
+  MENU_LABEL,
+  MENU_SEPARATOR,
+  OVERLAY_BACKDROP,
+  OVERLAY_SURFACE,
+  radioIndicatorVariants,
+  switchThumbVariants,
+  switchTrackVariants,
+  swipeTrackVariants,
+  TOOLTIP_SURFACE,
+} from "./components/_styles.js";
 export { useCopyToClipboard } from "./hooks/use-copy-to-clipboard.js";
 export { useIsMobile, useMediaQuery } from "./hooks/use-media-query.js";
 /* ─── Hooks ───────────────────────────────────────────────────────────────── */

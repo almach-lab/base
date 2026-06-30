@@ -6,7 +6,14 @@ import {
   type PopoverProps as AriaPopoverProps,
   composeRenderProps,
   OverlayArrow,
+  Pressable,
 } from "react-aria-components";
+import {
+  MOTION_OVERLAY,
+  MOTION_OVERLAY_ENTER,
+  MOTION_OVERLAY_EXIT,
+} from "./_motion.js";
+import { OVERLAY_SURFACE } from "./_styles.js";
 
 interface PopoverRootProps {
   open?: boolean;
@@ -59,6 +66,8 @@ interface PopoverContentProps
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
   sideOffset?: number;
+  /** Non-modal popovers behave like dropdowns. Modal popovers trap focus with an underlay. */
+  isNonModal?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
@@ -119,6 +128,7 @@ function PopoverRoot({
     side,
     align,
     sideOffset,
+    isNonModal = true,
     className,
     children: contentChildren,
     ...popoverProps
@@ -128,9 +138,13 @@ function PopoverRoot({
   const offset = sideOffset ?? (showArrow ? 12 : 8);
 
   const triggerNode = triggerProps.asChild ? (
-    (React.Children.only(triggerProps.children) as React.ReactElement)
+    <Pressable>
+      {React.Children.only(triggerProps.children) as never}
+    </Pressable>
   ) : (
-    <button type="button">{triggerProps.children}</button>
+    <Pressable>
+      <button type="button">{triggerProps.children}</button>
+    </Pressable>
   );
 
   return (
@@ -142,12 +156,22 @@ function PopoverRoot({
       {triggerNode}
       <AriaPopover
         {...popoverProps}
+        isNonModal={isNonModal}
         placement={placement}
         offset={offset}
         className={composeRenderProps(className, (nextClassName, renderProps) =>
           cn(
-            "z-50 rounded-xl border border-border bg-popover p-4 text-popover-foreground shadow-2xl outline-none",
-            "backdrop-blur-xl",
+            OVERLAY_SURFACE,
+            "p-4",
+            MOTION_OVERLAY,
+            MOTION_OVERLAY_ENTER.replaceAll(
+              "data-[state=open]:",
+              "data-[entering]:",
+            ),
+            MOTION_OVERLAY_EXIT.replaceAll(
+              "data-[state=closed]:",
+              "data-[exiting]:",
+            ),
             "data-[entering]:fade-in-0 data-[entering]:zoom-in-95",
             "data-[exiting]:fade-out-0 data-[exiting]:zoom-out-95",
             "data-[entering]:placement-bottom:slide-in-from-top-1",
@@ -158,7 +182,6 @@ function PopoverRoot({
             "data-[exiting]:placement-top:slide-out-to-bottom-1",
             "data-[exiting]:placement-left:slide-out-to-right-1",
             "data-[exiting]:placement-right:slide-out-to-left-1",
-            "duration-200 ease-out data-[exiting]:duration-150 data-[exiting]:ease-in",
             renderProps.isEntering && "animate-in",
             renderProps.isExiting && "animate-out",
             nextClassName,
