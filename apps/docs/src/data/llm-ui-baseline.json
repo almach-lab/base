@@ -1,4 +1,32 @@
 {
+  "_styles": {
+    "exports": [
+      "cardVariants",
+      "CONTROL_DESCRIPTION",
+      "CONTROL_LABEL",
+      "DIALOG_CONTENT",
+      "DIALOG_SURFACE",
+      "DISABLED",
+      "DISABLED_DATA",
+      "FIELD_GROUP",
+      "fieldErrorClass",
+      "FOCUS_RING",
+      "FOCUS_RING_INVALID",
+      "FOCUS_RING_WITHIN",
+      "ICON_BUTTON",
+      "MENU_ITEM",
+      "MENU_LABEL",
+      "MENU_SEPARATOR",
+      "OVERLAY_BACKDROP",
+      "OVERLAY_SURFACE",
+      "radioIndicatorVariants",
+      "swipeTrackVariants",
+      "switchThumbVariants",
+      "switchTrackVariants",
+      "TOOLTIP_SURFACE"
+    ],
+    "typeExports": []
+  },
   "alert": {
     "exports": ["Alert", "alertVariants"],
     "typeExports": ["AlertRootProps"]

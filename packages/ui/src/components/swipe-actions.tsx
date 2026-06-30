@@ -2,6 +2,8 @@
 
 import { cn } from "@almach/utils";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import { FOCUS_RING } from "./_styles.js";
 
 /* ── Constants ─────────────────────────────────────────────────────────────── */
 /** Snap open — slight overshoot gives a physical spring feel */
@@ -609,7 +611,9 @@ function SwipeAction({
       type="button"
       onClick={handleClick}
       className={cn(
-        "select-none transition-[transform,filter,opacity] duration-200 ease-out active:opacity-70",
+        "rounded-md select-none",
+        MOTION_INTERACTIVE,
+        FOCUS_RING,
         "[[data-dragging]_&]:transition-none",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0",
         variantStyles[variant],

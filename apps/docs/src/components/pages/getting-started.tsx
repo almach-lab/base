@@ -1,8 +1,10 @@
 import { Alert, Badge } from "@almach/ui";
-import { ArrowRight, Copy, Info } from "lucide-react";
+import { ArrowRight, Info } from "lucide-react";
 import React from "react";
+import { docsLayout } from "../../lib/docs-layout";
 import { getPackageVersion } from "../../lib/package-versions";
 import { CodeBlock } from "../code-block";
+import { DocCopyButton, DocPageHeader } from "../docs/doc-page-header";
 import { PkgTabs } from "../pkg-tabs";
 
 type PackageName = "@almach/ui" | "@almach/forms" | "@almach/query";
@@ -26,7 +28,7 @@ function Note({ children }: { children: React.ReactNode }) {
 
 function TokenGrid({ tokens }: { tokens: string[] }) {
   return (
-    <div className="rounded-lg border bg-muted/20 p-4">
+    <div className="rounded-lg border border-border/50 bg-muted/10 p-4">
       <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
         Available tokens
       </p>
@@ -96,13 +98,13 @@ function Step({
       )}
 
       {/* Step number */}
-      <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
+      <div className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border/60 bg-muted/30 text-sm font-medium text-foreground">
         {n}
       </div>
 
       {/* Content */}
-      <div className="min-w-0 flex-1 pb-12 pt-1.5">
-        <h2 className="text-lg font-bold tracking-tight">{title}</h2>
+      <div className="min-w-0 flex-1 pb-12 pt-0.5">
+        <h2 className="text-lg font-semibold tracking-[-0.01em]">{title}</h2>
         {description && (
           <p className="mb-4 mt-1 text-sm leading-relaxed text-muted-foreground">
             {description}
@@ -142,8 +144,6 @@ const CSS_TOKENS = [
 ];
 
 export function GettingStartedPage() {
-  const [copied, setCopied] = React.useState(false);
-
   const copyMarkdown = React.useCallback(async () => {
     const text = `# Getting Started
 
@@ -154,48 +154,28 @@ export function GettingStartedPage() {
 5. Use components
 6. Handle forms`;
 
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch {
-      // no-op
-    }
+    await navigator.clipboard.writeText(text);
   }, []);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 md:px-5 md:py-9">
-      {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <div className="mb-9 border-b pb-7">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <Badge>Quick start</Badge>
-          <button
-            onClick={copyMarkdown}
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            <Copy className="h-3.5 w-3.5" aria-hidden="true" />
-            {copied ? "Copied" : "Copy Markdown"}
-          </button>
-        </div>
-        <h1 className="mb-2.5 text-3xl font-semibold tracking-tight md:text-[2.2rem]">
-          Getting Started
-        </h1>
-        <p className="mb-4 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
-          Set up Almach in minutes. Each package is independently installable,
-          so you can keep your bundle focused.
-        </p>
+    <article className={docsLayout.article}>
+      <DocPageHeader
+        eyebrow="Guide"
+        title="Getting Started"
+        description="Install Almach, configure styles, and start building with accessible React components."
+        action={<DocCopyButton label="Copy guide" onClick={copyMarkdown} />}
+      >
         <div className="flex flex-wrap gap-2">
           {["React 18+", "TypeScript", "Tailwind CSS v4", "Vite / Next.js"].map(
             (req) => (
-              <Badge key={req} variant="ghost">
+              <Badge key={req} variant="outline">
                 {req}
               </Badge>
             ),
           )}
         </div>
-      </div>
+      </DocPageHeader>
 
-      {/* ── Steps ──────────────────────────────────────────────────────────── */}
       <div>
         {/* Step 1 */}
         <Step
@@ -430,6 +410,6 @@ export function LoginForm() {
           ))}
         </div>
       </div>
-    </div>
+    </article>
   );
 }

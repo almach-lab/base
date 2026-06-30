@@ -74,7 +74,6 @@ export function ChartPage() {
     <ComponentDoc
       name="Chart"
       description="Composable chart primitives including Line, Bar, Area, Pie, Radar, and Scatter charts with full theme integration via CSS variables."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Line Chart",

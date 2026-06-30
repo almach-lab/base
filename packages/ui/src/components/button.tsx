@@ -4,14 +4,15 @@ import { Loader2 } from "lucide-react";
 import * as React from "react";
 import { Button as AriaButton, Link as AriaLink } from "react-aria-components";
 import { MOTION_INTERACTIVE } from "./_motion.js";
+import { DISABLED_DATA, FOCUS_RING } from "./_styles.js";
 
 const buttonVariants = cva(
   [
     "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium",
-    "cursor-pointer select-none rounded-lg text-sm",
+    "cursor-pointer select-none rounded-md text-sm shadow-xs",
     MOTION_INTERACTIVE,
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background",
-    "data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40",
+    FOCUS_RING,
+    DISABLED_DATA,
     "data-[pressed]:scale-[0.985]",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0",
   ],
@@ -19,19 +20,19 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-sm data-[hovered]:bg-primary/90",
+          "bg-primary text-primary-foreground data-[hovered]:bg-primary/90",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm data-[hovered]:bg-destructive/90",
+          "bg-destructive text-destructive-foreground data-[hovered]:bg-destructive/90",
         outline:
-          "border border-input bg-background shadow-sm data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
+          "border border-input bg-background data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground data-[hovered]:bg-secondary/80",
         ghost: "data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
-        link: "text-primary underline-offset-4 data-[hovered]:underline",
+        link: "text-primary underline-offset-4 data-[hovered]:underline shadow-none",
         success:
-          "bg-success text-success-foreground shadow-sm data-[hovered]:bg-success/90",
+          "bg-success text-success-foreground data-[hovered]:bg-success/90",
         warning:
-          "bg-warning text-warning-foreground shadow-sm data-[hovered]:bg-warning/90",
+          "bg-warning text-warning-foreground data-[hovered]:bg-warning/90",
       },
       size: {
         sm: "h-8 px-3 text-xs [&_svg]:size-3.5",

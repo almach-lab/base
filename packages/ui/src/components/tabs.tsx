@@ -8,12 +8,13 @@ import {
   Tabs as TabsPrimitive,
 } from "react-aria-components";
 import { MOTION_INTERACTIVE } from "./_motion.js";
+import { DISABLED_DATA, FOCUS_RING } from "./_styles.js";
 import { ScrollArea } from "./scroll-area.js";
 
 const tabsListVariants = cva("inline-flex items-center", {
   variants: {
     variant: {
-      pill: "gap-1 rounded-xl bg-muted p-1",
+      pill: "gap-1 rounded-lg bg-muted p-1",
       underline: "gap-0 border-b border-border",
       minimal: "gap-4",
     },
@@ -25,30 +26,26 @@ const tabsTriggerVariants = cva(
   cn(
     "inline-flex cursor-pointer items-center justify-center whitespace-nowrap text-sm font-medium outline-none",
     MOTION_INTERACTIVE,
+    FOCUS_RING,
+    DISABLED_DATA,
   ),
   {
     variants: {
       variant: {
         pill: [
-          "rounded-lg px-3 py-1.5 text-muted-foreground",
+          "rounded-md px-3 py-1.5 text-muted-foreground",
           "data-[hovered]:text-foreground",
-          "data-[selected]:bg-background data-[selected]:text-foreground data-[selected]:shadow-sm",
-          "focus-visible:ring-2 focus-visible:ring-ring",
-          "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+          "data-[selected]:bg-background data-[selected]:text-foreground data-[selected]:shadow-xs",
         ],
         underline: [
-          "relative px-4 py-2 text-muted-foreground border-b-2 border-transparent -mb-px",
+          "relative -mb-px border-b-2 border-transparent px-4 py-2 text-muted-foreground",
           "data-[hovered]:text-foreground",
           "data-[selected]:border-foreground data-[selected]:text-foreground",
-          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         ],
         minimal: [
           "px-0 py-1.5 text-muted-foreground",
           "data-[hovered]:text-foreground",
-          "data-[selected]:text-foreground data-[selected]:font-semibold",
-          "focus-visible:ring-2 focus-visible:ring-ring",
-          "data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+          "data-[selected]:font-semibold data-[selected]:text-foreground",
         ],
       },
     },
@@ -92,7 +89,7 @@ interface TabsListProps
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
   ({ className, variant = "pill", children, ...props }, ref) => (
     <TabsVariantCtx.Provider value={variant ?? "pill"}>
-      <ScrollArea.Root className={cn(variant === "pill" && "rounded-xl")}>
+      <ScrollArea.Root className={cn(variant === "pill" && "rounded-lg")}>
         <ScrollArea.Viewport className="border-0 bg-transparent rounded-none">
           <TabList
             ref={ref}
@@ -137,11 +134,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
   ({ className, value, ...props }, ref) => (
     <TabPanel
       ref={ref}
-      className={cn(
-        "mt-3 outline-none",
-        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg",
-        className,
-      )}
+      className={cn("mt-3 rounded-md outline-none", FOCUS_RING, className)}
       {...(value !== undefined ? { id: value } : {})}
       {...props}
     />

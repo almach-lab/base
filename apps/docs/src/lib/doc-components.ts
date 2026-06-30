@@ -40,6 +40,11 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         description: "Dropdown + searchable select.",
       },
       {
+        name: "Currency Input",
+        slug: "currency-input",
+        description: "Formatted currency field with locale support.",
+      },
+      {
         name: "Switch",
         slug: "switch",
         description: "Toggle control with three sizes.",

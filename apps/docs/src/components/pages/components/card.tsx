@@ -18,7 +18,6 @@ export function CardPage() {
     <ComponentDoc
       name="Card"
       description="Surface containers for grouping content. Card covers standard layouts; Card.Layers stacks bordered rows for settings panels; Group provides labelled form and navigation rows."
-      pkg="@almach/ui"
       examples={[
         /* ── Card ───────────────────────────────────────────────── */
         {

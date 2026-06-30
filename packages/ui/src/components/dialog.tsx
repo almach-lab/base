@@ -3,10 +3,12 @@ import { X } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import {
+  MOTION_OVERLAY,
   MOTION_VAR_OVERLAY_DURATION,
   resolveMotionDurationMs,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
+import { DIALOG_SURFACE, OVERLAY_BACKDROP } from "./_styles.js";
 
 interface DialogCtxValue {
   open: boolean;
@@ -60,7 +62,8 @@ function DialogOverlay({ className, ...props }: DialogOverlayProps) {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 min-h-dvh bg-black/40 backdrop-blur-sm supports-[-webkit-touch-callout:none]:absolute",
+        OVERLAY_BACKDROP,
+        "min-h-dvh supports-[-webkit-touch-callout:none]:absolute",
         className,
       )}
       {...props}
@@ -314,9 +317,10 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
             transitionTimingFunction: `var(--theme-motion-ease-standard, ${DIALOG_EASE})`,
           }}
           className={cn(
+            DIALOG_SURFACE,
+            MOTION_OVERLAY,
             "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
-            "w-[calc(100%-2rem)] max-w-lg max-h-[calc(100svh-4rem)] overflow-y-auto",
-            "rounded-lg bg-background p-6 shadow-xl outline-none",
+            "w-[calc(100%-2rem)] max-w-lg max-h-[calc(100svh-4rem)] overflow-y-auto p-6",
             "transition-[opacity,transform] motion-reduce:transition-none motion-reduce:transform-none will-change-transform",
             "data-[state=open]:opacity-100 data-[state=open]:scale-100",
             "data-[state=closed]:opacity-0 data-[state=closed]:scale-[0.96]",

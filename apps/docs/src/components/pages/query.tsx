@@ -15,8 +15,10 @@ import {
 } from "@almach/ui";
 import { Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { docsLayout } from "../../lib/docs-layout";
 import { getPackageVersion } from "../../lib/package-versions";
 import { CodeBlock } from "../code-block";
+import { DocPageHeader } from "../docs/doc-page-header";
 
 interface Post {
   id: number;
@@ -115,9 +117,8 @@ function PostList() {
             onClick={() =>
               createPost.mutate(`New post #${nextId}`, {
                 onSuccess: (post) =>
-                  showToast({
-                    title: `Created "${post.title}"`,
-                    variant: "success",
+                  showToast(`Created "${post.title}"`, {
+                    description: "New post created successfully.",
                   }),
               })
             }
@@ -148,7 +149,9 @@ function PostList() {
               onClick={() =>
                 deletePost.mutate(post.id, {
                   onSuccess: () =>
-                    showToast({ title: `Deleted "${post.title}"` }),
+                    showToast(`Deleted "${post.title}"`, {
+                      description: "Post deleted successfully.",
+                    }),
                 })
               }
             >
@@ -265,24 +268,12 @@ const useCreateUser = createServerAction({
 
 export function QueryPage() {
   return (
-    <div className="px-4 py-8 md:px-5 md:py-9">
-      <div className="mb-8 border-b pb-6">
-        <div className="mb-2 flex flex-wrap items-center gap-2">
-          <Badge variant="outline" className="font-mono">
-            @almach/query
-          </Badge>
-          <Badge variant="ghost" className="font-mono text-[11px]">
-            v{getPackageVersion("@almach/query")}
-          </Badge>
-        </div>
-        <h1 className="mb-2 text-3xl font-semibold tracking-tight md:text-[2.1rem]">
-          Data Fetching
-        </h1>
-        <p className="text-sm text-muted-foreground leading-relaxed md:text-base">
-          Typed query factories and mutation builders on top of TanStack Query,
-          with consistent cache invalidation.
-        </p>
-      </div>
+    <article className={docsLayout.article}>
+      <DocPageHeader
+        eyebrow={`@almach/query · v${getPackageVersion("@almach/query")}`}
+        title="Data Fetching"
+        description="Typed query factories and mutation builders on top of TanStack Query, with consistent cache invalidation."
+      />
 
       {/* Interactive demos */}
       <div
@@ -448,6 +439,6 @@ export function QueryPage() {
           <CodeBlock code={serverActionCode} />
         </div>
       </div>
-    </div>
+    </article>
   );
 }

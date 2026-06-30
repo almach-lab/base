@@ -1,14 +1,15 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-05-22T03:20:49.973Z
+Generated: 2026-06-30T12:14:59.244Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
 
-Total modules: 36
+Total modules: 37
 
 ## Index
 
+- _styles: 23 value export(s), 0 type export(s)
 - alert: 2 value export(s), 1 type export(s)
 - avatar: 2 value export(s), 1 type export(s)
 - badge: 2 value export(s), 1 type export(s)
@@ -45,6 +46,43 @@ Total modules: 36
 - toast: 1 value export(s), 2 type export(s)
 - toaster: 1 value export(s), 0 type export(s)
 - tooltip: 1 value export(s), 0 type export(s)
+
+## CONTROL_DESCRIPTION
+
+Module: `_styles`
+
+### Import
+
+```tsx
+import { CONTROL_DESCRIPTION } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { CONTROL_DESCRIPTION } from "@almach/ui";
+
+export function Example() {
+  return <CONTROL_DESCRIPTION />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `CONTROL_DESCRIPTION`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `cardVariants`, `CONTROL_DESCRIPTION`, `CONTROL_LABEL`, `DIALOG_CONTENT`, `DIALOG_SURFACE`, `DISABLED`, `DISABLED_DATA`, `FIELD_GROUP`, `fieldErrorClass`, `FOCUS_RING`, `FOCUS_RING_INVALID`, `FOCUS_RING_WITHIN`, `ICON_BUTTON`, `MENU_ITEM`, `MENU_LABEL`, `MENU_SEPARATOR`, `OVERLAY_BACKDROP`, `OVERLAY_SURFACE`, `radioIndicatorVariants`, `swipeTrackVariants`, `switchThumbVariants`, `switchTrackVariants`, `TOOLTIP_SURFACE`
+- Types: (none)
 
 ## Alert
 

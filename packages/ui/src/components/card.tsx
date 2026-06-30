@@ -1,18 +1,13 @@
 import { cn } from "@almach/utils";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import { cardVariants } from "./_styles.js";
 
 const CardRoot = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-xl border bg-card text-card-foreground shadow-sm",
-      className,
-    )}
-    {...props}
-  />
+  <div ref={ref} className={cn(cardVariants(), className)} {...props} />
 ));
 CardRoot.displayName = "Card";
 
@@ -92,7 +87,7 @@ const CardRow = React.forwardRef<HTMLDivElement, CardRowProps>(
       ref={ref}
       className={cn(
         "flex items-center justify-between gap-2 border-t px-5 py-3 text-sm",
-        "transition-colors",
+        MOTION_INTERACTIVE,
         onClick && "cursor-pointer hover:bg-accent/50",
         className,
       )}
@@ -127,8 +122,8 @@ const CardLayers = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl border bg-card divide-y divide-border",
-      "[&>*:first-child]:rounded-t-xl [&>*:last-child]:rounded-b-xl",
+      "rounded-lg border border-border bg-card divide-y divide-border",
+      "[&>*:first-child]:rounded-t-lg [&>*:last-child]:rounded-b-lg",
       className,
     )}
     {...props}
@@ -176,7 +171,7 @@ const CardLayerRow = React.forwardRef<HTMLDivElement, CardLayerRowProps>(
       ref={ref}
       className={cn(
         "flex items-center justify-between gap-2 px-4 py-3 text-sm bg-card",
-        "transition-colors",
+        MOTION_INTERACTIVE,
         onClick && "cursor-pointer hover:bg-accent/50",
         className,
       )}
@@ -207,7 +202,7 @@ const CardGroup = React.forwardRef<HTMLDivElement, CardGroupProps>(
           {label}
         </p>
       )}
-      <div className="rounded-xl border bg-card divide-y [&>*:first-child]:rounded-t-xl [&>*:last-child]:rounded-b-xl">
+      <div className="rounded-lg border border-border bg-card divide-y [&>*:first-child]:rounded-t-lg [&>*:last-child]:rounded-b-lg">
         {children}
       </div>
       {hint && <p className="px-1 text-xs text-muted-foreground">{hint}</p>}
@@ -247,7 +242,8 @@ const CardGroupRow = React.forwardRef<HTMLDivElement, CardGroupRowProps>(
     <div
       ref={ref}
       className={cn(
-        "flex items-center gap-3 px-4 py-3 bg-card transition-colors",
+        "flex items-center gap-3 px-4 py-3 bg-card",
+        MOTION_INTERACTIVE,
         onClick && "cursor-pointer hover:bg-accent/50",
         className,
       )}
@@ -294,12 +290,12 @@ const Card = Object.assign(CardRoot, {
   Section: CardSection,
   Row: CardRow,
   Footer: CardFooter,
-  /** Layered card root — stacked sections divided by borders */
+  /** Layered card root ? stacked sections divided by borders */
   Layers: CardLayers,
   LayerHeader: CardLayerHeader,
   LayerBody: CardLayerBody,
   LayerRow: CardLayerRow,
-  /** Grouped rows with optional label/hint — for settings, nav, and forms */
+  /** Grouped rows with optional label/hint ? for settings, nav, and forms */
   Group: CardGroup,
   GroupRow: CardGroupRow,
 });

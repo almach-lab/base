@@ -99,6 +99,20 @@ Component standardization rules:
 - Keep component APIs consistent: controlled props use `open`/`value` plus `on...Change`, boolean dismiss props use `is...`, and DOM props should pass through cleanly.
 - Prefer shared motion tokens and semantic classes over per-component ad hoc timings, colors, or easing values.
 - Demo pages in `apps/docs` should show realistic product layouts, not placeholder boxes or generic filler copy.
+- Run `bun run lint:ui` after styling changes — enforces semantic colors, component conventions, cross-package imports.
+
+## Agent Skills (`.agents/skills/`)
+
+| Skill | Use when |
+|-------|----------|
+| `ui-standardize` | Refactoring components to shared `_styles.ts` tokens |
+| `component-conventions` | Creating or reviewing `packages/ui` components |
+| `tailwind-semantic` | Styling, token additions, className review |
+| `docs-ux` | Docs pages, demos, navigation, layout |
+| `index-knowledge` | Regenerating hierarchical AGENTS.md files |
+| `tailwind-ui-refactor` | Tailwind cleanup and responsive UI refactors |
+
+Child knowledge bases: `packages/ui/AGENTS.md`, `apps/docs/AGENTS.md`.
 
 ---
 

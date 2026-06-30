@@ -1,35 +1,24 @@
 import { cn } from "@almach/utils";
+import type { VariantProps } from "class-variance-authority";
 import { Check } from "lucide-react";
 import * as React from "react";
 import {
   Checkbox as CheckboxPrimitive,
   composeRenderProps,
 } from "react-aria-components";
+import {
+  CONTROL_LABEL,
+  CONTROL_ROOT,
+  checkboxVariants,
+  DISABLED_DATA,
+  FOCUS_RING,
+  FOCUS_RING_INVALID,
+  fieldErrorClass,
+} from "./_styles.js";
 
 type CheckboxPrimitiveProps = React.ComponentPropsWithoutRef<
   typeof CheckboxPrimitive
 >;
-
-import { cva, type VariantProps } from "class-variance-authority";
-
-const checkboxVariants = cva(
-  [
-    "flex shrink-0 items-center justify-center rounded-sm border border-input bg-background",
-    "transition-all duration-150 ease-out",
-  ],
-  {
-    variants: {
-      size: {
-        sm: "size-3.5 [&_svg]:size-2.5",
-        default: "size-4 [&_svg]:size-3",
-        lg: "size-5 rounded [&_svg]:size-3.5",
-      },
-    },
-    defaultVariants: {
-      size: "default",
-    },
-  },
-);
 
 export interface CheckboxProps
   extends Omit<CheckboxPrimitiveProps, "children">,
@@ -44,7 +33,8 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
       ref={ref}
       className={composeRenderProps(className, (nextClassName, renderProps) =>
         cn(
-          "group flex items-center gap-2.5 cursor-pointer select-none",
+          CONTROL_ROOT,
+          DISABLED_DATA,
           renderProps.isDisabled && "cursor-not-allowed opacity-50",
           nextClassName,
         ),
@@ -57,13 +47,11 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
           <div
             className={cn(
               checkboxVariants({ size }),
-              isFocusVisible &&
-                "ring-2 ring-ring ring-offset-2 ring-offset-background",
+              isFocusVisible && (error ? FOCUS_RING_INVALID : FOCUS_RING),
               isSelected && "border-primary bg-primary text-primary-foreground",
               isHovered && !isSelected && "border-muted-foreground",
               isPressed && "scale-[0.92]",
-              error && !isSelected && "border-destructive",
-              error && isFocusVisible && "ring-destructive",
+              fieldErrorClass(error && !isSelected),
             )}
           >
             <Check
@@ -75,11 +63,7 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
               aria-hidden="true"
             />
           </div>
-          {children && (
-            <span className="text-sm font-medium leading-none text-foreground">
-              {children}
-            </span>
-          )}
+          {children && <span className={CONTROL_LABEL}>{children}</span>}
         </>
       )}
     </CheckboxPrimitive>

@@ -120,7 +120,6 @@ export function SwipeActionsPage() {
     <ComponentDoc
       name="SwipeActions"
       description="Reveal contextual actions by swiping in any direction — left, right, up, or down. Works on both touch and mouse. No external dependencies."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Email list — swipe left",

@@ -24,7 +24,7 @@ export function DrawerPage() {
                     Choose an action to perform on this item.
                   </Drawer.Description>
                 </Drawer.Header>
-                <div className="space-y-1 px-4 py-2">
+                <div className="space-y-1 py-2">
                   {[
                     { icon: Star, label: "Add to favourites" },
                     { icon: Share2, label: "Share" },
@@ -62,7 +62,7 @@ export function DrawerPage() {
       <Drawer.Title>Actions</Drawer.Title>
       <Drawer.Description>Choose an action to perform.</Drawer.Description>
     </Drawer.Header>
-    <div className="space-y-1 px-4 py-2">
+    <div className="space-y-1 py-2">
       <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm hover:bg-accent">
         <Star className="h-4 w-4 text-muted-foreground" />
         Add to favourites
@@ -96,7 +96,7 @@ export function DrawerPage() {
                     Fill in the details and save.
                   </Drawer.Description>
                 </Drawer.Header>
-                <div className="space-y-3 px-4 py-2">
+                <div className="space-y-3 py-2">
                   <div className="space-y-1.5">
                     <Label htmlFor="drw-name">Name</Label>
                     <Input id="drw-name" placeholder="Item name" />
@@ -130,7 +130,7 @@ export function DrawerPage() {
       <Drawer.Title>Add item</Drawer.Title>
       <Drawer.Description>Fill in the details and save.</Drawer.Description>
     </Drawer.Header>
-    <div className="space-y-3 px-4 py-2">
+    <div className="space-y-3 py-2">
       <div className="space-y-1.5">
         <Label htmlFor="name">Name</Label>
         <Input id="name" placeholder="Item name" />

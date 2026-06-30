@@ -25,6 +25,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { cardVariants } from "./_styles.js";
 
 // ── Chart color tokens ──────────────────────────────────────────────────────
 // Defined in globals.css as --chart-1 … --chart-5
@@ -78,7 +79,12 @@ const ChartTooltipContent = ({
 }: ChartTooltipContentProps) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg border bg-popover px-3 py-2 shadow-md text-sm text-popover-foreground">
+    <div
+      className={cn(
+        cardVariants(),
+        "bg-popover px-3 py-2 text-sm text-popover-foreground shadow-md",
+      )}
+    >
       {!hideLabel && label != null && (
         <p className="mb-1.5 font-medium">{String(label)}</p>
       )}

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @plugin "tailwindcss-animate";
 @import "sonner/dist/styles.css";
+@import "./scroll-fade.css";
 
 /* 1. Scan compiled component output */
 @source "../../dist/**/*.js";

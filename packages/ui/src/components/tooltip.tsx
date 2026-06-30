@@ -9,6 +9,7 @@ import {
   MOTION_OVERLAY_ENTER,
   MOTION_OVERLAY_EXIT,
 } from "./_motion.js";
+import { TOOLTIP_SURFACE } from "./_styles.js";
 
 type TooltipProviderProps = {
   delay?: number;
@@ -80,10 +81,7 @@ function TooltipRoot({ children }: { children: React.ReactNode }) {
         offset={contentProps.sideOffset ?? 6}
         placement={contentProps.side ?? "top"}
         className={cn(
-          "z-50 max-w-xs rounded-lg bg-foreground px-3 py-1.5",
-          "text-xs font-medium text-background leading-snug",
-          "shadow-md select-none",
-          MOTION_OVERLAY,
+          TOOLTIP_SURFACE,
           MOTION_OVERLAY_ENTER.replaceAll(
             "data-[state=open]:",
             "data-[entering]:",

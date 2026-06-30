@@ -7,22 +7,23 @@ import {
   forwardRef,
   type HTMLAttributes,
   type KeyboardEvent,
-  type MouseEvent,
   type ReactNode,
+  type PointerEvent as ReactPointerEvent,
   type RefObject,
-  type TouchEvent,
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
+import { MOTION_EASE_STANDARD } from "./_motion.js";
+import { FOCUS_RING, swipeTrackVariants } from "./_styles.js";
 
-/* ── Spring curves ──────────────────────────────────────────────────────────── */
-const SPRING_SNAP = "width 400ms cubic-bezier(0.34,1.26,0.64,1)";
-const SPRING_THUMB = "transform 380ms cubic-bezier(0.34,1.26,0.64,1)";
-const SPRING_BACK = "transform 320ms cubic-bezier(0.25,1.0,0.5,1)";
-const SPRING_FILL = "width 320ms cubic-bezier(0.25,1.0,0.5,1)";
+const EASE = MOTION_EASE_STANDARD;
+const SPRING_SNAP = `width 420ms ${EASE}`;
+const SPRING_THUMB = "transform 400ms cubic-bezier(0.34, 1.15, 0.64, 1)";
+const SPRING_BACK = `transform 300ms ${EASE}`;
+const SPRING_FILL = `width 300ms ${EASE}`;
 
 interface SwipeButtonDimensions {
   cw: number;
@@ -62,9 +63,9 @@ export interface SwipeButtonRootProps
    * 0 = instant (no hold required). @default 0
    */
   hold?: number;
-  /** Reset thumb to start after success. @default false */
+  /** Reset thumb to start after success. @default true */
   resetOnSuccess?: boolean;
-  /** Ms before resetting when resetOnSuccess is true. @default 1200 */
+  /** Ms before resetting when resetOnSuccess is true. @default 800 */
   resetDelay?: number;
   /** Enables console debug logs and data attributes for swipe geometry. @default false */
   debug?: boolean;
@@ -94,9 +95,9 @@ interface SwipeButtonCtxValue {
   reverseSwipe: boolean;
   containerRef: RefObject<HTMLDivElement | null>;
   sliderRef: RefObject<HTMLDivElement | null>;
-  handleDragStart: (
-    e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>,
-  ) => void;
+  handlePointerDown: (e: ReactPointerEvent<HTMLDivElement>) => void;
+  handlePointerMove: (e: ReactPointerEvent<HTMLDivElement>) => void;
+  handlePointerUp: (e: ReactPointerEvent<HTMLDivElement>) => void;
   handleKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void;
 }
 
@@ -120,8 +121,8 @@ function SwipeButtonRoot({
   reverseSwipe = false,
   threshold = 0.85,
   hold = 0,
-  resetOnSuccess = false,
-  resetDelay = 1200,
+  resetOnSuccess = true,
+  resetDelay = 800,
   debug = false,
   ...props
 }: SwipeButtonRootProps) {
@@ -139,12 +140,12 @@ function SwipeButtonRoot({
   const [containerWidth, setContainerWidth] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isAutoSnapping, setIsAutoSnapping] = useState(false);
-  const [_layoutVersion, setLayoutVersion] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const isDragging = useRef(false);
+  const activePointerId = useRef<number | null>(null);
   const startX = useRef(0);
   const positionRef = useRef(0);
   const hasSucceeded = useRef(false);
@@ -279,16 +280,42 @@ function SwipeButtonRoot({
   const resetToStart = useCallback(() => {
     const { cw, sw, inset, max } = getDimensions();
     const start = getStart(max);
+    setIsAutoSnapping(true);
+    setSucceeded(false);
+    hasSucceeded.current = false;
+    cancelHold();
+    isDragging.current = false;
     setSliderPosition(start);
     positionRef.current = start;
     setFillWidth(calcFillWidth(start, cw, sw, inset, reverseRef.current));
     setProgress(calcProgress(start, max, reverseRef.current));
     setIsSwiping(false);
-    setIsAutoSnapping(false);
-    setSucceeded(false);
-    cancelHold();
-    hasSucceeded.current = false;
+    window.setTimeout(() => setIsAutoSnapping(false), 420);
   }, [getDimensions, getStart, calcFillWidth, calcProgress, cancelHold]);
+
+  const syncIdleGeometry = useCallback(() => {
+    if (isDragging.current || isHolding || succeeded || hasSucceeded.current) {
+      return;
+    }
+
+    const { cw, sw, inset, max } = measureDimensions();
+    if (cw <= 0 || sw <= 0 || max <= 0) return;
+
+    const start = getStart(max);
+    setSliderPosition(start);
+    positionRef.current = start;
+    setFillWidth(calcFillWidth(start, cw, sw, inset, reverseRef.current));
+    setContainerWidth(cw);
+    setProgress(calcProgress(start, max, reverseRef.current));
+    setIsAutoSnapping(false);
+  }, [
+    isHolding,
+    succeeded,
+    measureDimensions,
+    getStart,
+    calcFillWidth,
+    calcProgress,
+  ]);
 
   /* ── init on mount / direction change ───────────────────────────────── */
   useEffect(() => {
@@ -323,56 +350,27 @@ function SwipeButtonRoot({
     const container = containerRef.current;
     const slider = sliderRef.current;
     if (!container || !slider) {
-      measureDimensions();
+      syncIdleGeometry();
       return;
     }
 
     if (typeof ResizeObserver === "undefined") {
-      measureDimensions();
+      syncIdleGeometry();
       return;
     }
 
     const ro = new ResizeObserver(() => {
-      measureDimensions();
-      setLayoutVersion((v) => v + 1);
+      syncIdleGeometry();
     });
     ro.observe(container);
     ro.observe(slider);
 
     return () => ro.disconnect();
-  }, [measureDimensions]);
+  }, [syncIdleGeometry]);
 
   useEffect(() => {
-    // Keep preview/demo environments stable: if size is resolved after mount,
-    // re-sync the idle geometry so thumb/fill are not stuck at a collapsed width.
-    if (
-      isDragging.current ||
-      isSwiping ||
-      isHolding ||
-      succeeded ||
-      hasSucceeded.current
-    ) {
-      return;
-    }
-
-    const { cw, sw, inset, max } = getDimensions();
-    if (cw <= 0 || sw <= 0) return;
-
-    const start = getStart(max);
-    setSliderPosition(start);
-    positionRef.current = start;
-    setFillWidth(calcFillWidth(start, cw, sw, inset, reverseRef.current));
-    setContainerWidth(cw);
-    setProgress(calcProgress(start, max, reverseRef.current));
-  }, [
-    isSwiping,
-    isHolding,
-    succeeded,
-    getDimensions,
-    getStart,
-    calcFillWidth,
-    calcProgress,
-  ]);
+    syncIdleGeometry();
+  }, [syncIdleGeometry, reverseSwipe]);
 
   /* ── fire success ────────────────────────────────────────────────────── */
   const fireSuccess = useCallback(
@@ -459,23 +457,21 @@ function SwipeButtonRoot({
     return reverseRef.current ? pos <= max - thresh : pos >= thresh;
   }, []);
 
-  /* ── drag move ───────────────────────────────────────────────────────── */
-  const handleDragging = useCallback(
-    (e: globalThis.MouseEvent | globalThis.TouchEvent) => {
+  /* ── pointer drag ────────────────────────────────────────────────────── */
+  const applyPointerX = useCallback(
+    (clientX: number) => {
       if (!isDragging.current) return;
-      const cx = "touches" in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
 
-      // Once hold has started, keep thumb/fill pinned at the end to avoid
-      // micro-jitter while the user is still touching/moving.
       if (holdTimer.current) {
-        startX.current = cx;
+        startX.current = clientX;
         return;
       }
 
       const { cw, sw, inset, max } = getDimensions();
+      if (max <= 0) return;
 
-      const raw = positionRef.current + (cx - startX.current);
-      startX.current = cx;
+      const raw = positionRef.current + (clientX - startX.current);
+      startX.current = clientX;
       const next = clamp(raw, max);
       setSliderPosition(next);
       positionRef.current = next;
@@ -490,7 +486,7 @@ function SwipeButtonRoot({
         if (now - lastMoveDebugAt.current > 80) {
           lastMoveDebugAt.current = now;
           debugLog("move", {
-            cx,
+            clientX,
             next,
             max,
             cw,
@@ -510,7 +506,6 @@ function SwipeButtonRoot({
           fireSuccess(max);
         }
       } else {
-        // dropped below threshold — cancel any in-progress hold
         cancelHold();
       }
     },
@@ -527,20 +522,12 @@ function SwipeButtonRoot({
     ],
   );
 
-  /* ── drag end ────────────────────────────────────────────────────────── */
-  const handleDragEnd = useCallback(() => {
-    // always clean up listeners first
-    window.removeEventListener("mousemove", handleDragging);
-    window.removeEventListener("touchmove", handleDragging);
-    window.removeEventListener("mouseup", handleDragEnd);
-    window.removeEventListener("touchend", handleDragEnd);
-    window.removeEventListener("touchcancel", handleDragEnd);
-
-    if (!isDragging.current) return; // success already fired mid-drag
+  const finishDrag = useCallback(() => {
+    if (!isDragging.current) return;
     isDragging.current = false;
+    activePointerId.current = null;
 
-    // if hold was in progress, user released too early — cancel and fail
-    if (isHolding || holdTimer.current) {
+    if (holdTimer.current) {
       cancelHold();
       setIsAutoSnapping(false);
       onFailRef.current?.();
@@ -558,7 +545,6 @@ function SwipeButtonRoot({
       succeeded: hasSucceeded.current,
     });
 
-    // instant-mode (no hold): check threshold at release
     if (!hasSucceeded.current) {
       if (checkThreshold(positionRef.current, max) && holdRef.current === 0) {
         fireSuccess(max);
@@ -582,8 +568,6 @@ function SwipeButtonRoot({
       }
     }
   }, [
-    handleDragging,
-    isHolding,
     cancelHold,
     resetToStart,
     getDimensions,
@@ -595,42 +579,70 @@ function SwipeButtonRoot({
     debugLog,
   ]);
 
-  /* ── drag start ──────────────────────────────────────────────────────── */
-  const handleDragStart = useCallback(
-    (e: MouseEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>) => {
-      if (disabled || hasSucceeded.current) return;
+  const handlePointerDown = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (disabled || hasSucceeded.current || !e.isPrimary) return;
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+
+      e.preventDefault();
+      measureDimensions();
+      const { max } = getDimensions();
+      if (max <= 0) {
+        syncIdleGeometry();
+        if (dimsRef.current.max <= 0) return;
+      }
+
+      activePointerId.current = e.pointerId;
+      e.currentTarget.setPointerCapture(e.pointerId);
       isDragging.current = true;
       setIsSwiping(true);
-      startX.current =
-        "touches" in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
+      startX.current = e.clientX;
 
-      const { cw, sw, inset, max } = measureDimensions();
       debugLog("start", {
         startX: startX.current,
-        cw,
-        sw,
-        inset,
-        max,
+        ...dimsRef.current,
         position: positionRef.current,
         threshold: thresholdRef.current,
         reverseSwipe: reverseRef.current,
       });
-
-      window.addEventListener("mousemove", handleDragging);
-      window.addEventListener("touchmove", handleDragging, { passive: true });
-      window.addEventListener("mouseup", handleDragEnd);
-      window.addEventListener("touchend", handleDragEnd);
-      window.addEventListener("touchcancel", handleDragEnd);
     },
-    [disabled, measureDimensions, debugLog, handleDragging, handleDragEnd],
+    [disabled, measureDimensions, getDimensions, syncIdleGeometry, debugLog],
+  );
+
+  const handlePointerMove = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (activePointerId.current !== e.pointerId) return;
+      applyPointerX(e.clientX);
+    },
+    [applyPointerX],
+  );
+
+  const handlePointerUp = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      if (activePointerId.current !== e.pointerId) return;
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+      finishDrag();
+    },
+    [finishDrag],
   );
 
   /* ── keyboard ────────────────────────────────────────────────────────── */
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (disabled || hasSucceeded.current) return;
-      const STEP = 12;
       const { cw, sw, inset, max } = getDimensions();
+      if (max <= 0) return;
+
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        if (holdRef.current > 0) startHold(max);
+        else fireSuccess(max);
+        return;
+      }
+
+      const STEP = 12;
       let next = positionRef.current;
       if (e.key === "ArrowRight" || e.key === "ArrowUp") next += STEP;
       else if (e.key === "ArrowLeft" || e.key === "ArrowDown") next -= STEP;
@@ -650,7 +662,14 @@ function SwipeButtonRoot({
         else fireSuccess(max);
       } else {
         cancelHold();
-        setTimeout(handleDragEnd, 0);
+        onFailRef.current?.();
+        const start = getStart(max);
+        setSliderPosition(start);
+        positionRef.current = start;
+        setFillWidth(calcFillWidth(start, cw, sw, inset, reverseRef.current));
+        setProgress(calcProgress(start, max, reverseRef.current));
+        setIsSwiping(false);
+        setIsAutoSnapping(false);
       }
     },
     [
@@ -663,20 +682,8 @@ function SwipeButtonRoot({
       startHold,
       fireSuccess,
       cancelHold,
-      handleDragEnd,
+      getStart,
     ],
-  );
-
-  /* ── global listener cleanup ─────────────────────────────────────────── */
-  useEffect(
-    () => () => {
-      window.removeEventListener("mousemove", handleDragging);
-      window.removeEventListener("touchmove", handleDragging);
-      window.removeEventListener("mouseup", handleDragEnd);
-      window.removeEventListener("touchend", handleDragEnd);
-      window.removeEventListener("touchcancel", handleDragEnd);
-    },
-    [handleDragging, handleDragEnd],
   );
 
   const debugDimensions = debug ? getDimensions() : null;
@@ -697,7 +704,9 @@ function SwipeButtonRoot({
         reverseSwipe,
         containerRef,
         sliderRef,
-        handleDragStart,
+        handlePointerDown,
+        handlePointerMove,
+        handlePointerUp,
         handleKeyDown,
       }}
     >
@@ -718,11 +727,8 @@ function SwipeButtonRoot({
         data-reverse={reverseSwipe || undefined}
         data-progress={Math.round(progress)}
         className={cn(
-          "relative isolate flex items-center w-full h-[52px]",
-          "rounded-full overflow-hidden select-none touch-none",
-          "bg-secondary border border-border/40",
-          "font-sans text-[13px] text-muted-foreground",
-          disabled ? "opacity-50 cursor-not-allowed" : "cursor-default",
+          swipeTrackVariants(),
+          disabled && "cursor-not-allowed opacity-50",
           className,
         )}
         style={style}
@@ -751,7 +757,7 @@ const Fill = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
         ref={ref}
         aria-hidden
         className={cn(
-          "absolute inset-y-0 bg-primary/15 -z-10 rounded-full overflow-hidden",
+          "absolute inset-y-0 bg-primary/12 -z-10 rounded-full overflow-hidden",
           className,
         )}
         style={{
@@ -802,9 +808,9 @@ const Track = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
         ref={ref}
         aria-hidden
         className={cn(
-          "absolute inset-0 flex items-center pointer-events-none z-40 rounded-full overflow-hidden",
-          "text-foreground font-medium [text-shadow:0_1px_1px_rgba(0,0,0,0.35)]",
-          "transition-opacity duration-150",
+          "absolute inset-0 z-10 flex items-center justify-center pointer-events-none rounded-full overflow-hidden",
+          "px-12 text-center text-[13px] font-medium text-muted-foreground",
+          "transition-opacity duration-200",
           succeeded ? "opacity-0" : "opacity-100",
           className,
         )}
@@ -815,7 +821,7 @@ const Track = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
           transition:
             isSwiping && !isAutoSnapping
               ? "none"
-              : "transform 260ms cubic-bezier(0.25,1.0,0.5,1), opacity 150ms",
+              : `transform 240ms ${EASE}, opacity 200ms`,
           ...style,
         }}
         {...props}
@@ -913,7 +919,9 @@ const Thumb = forwardRef<HTMLDivElement, SwipeButtonThumbProps>(
       succeeded,
       isHolding,
       holdProgress,
-      handleDragStart,
+      handlePointerDown,
+      handlePointerMove,
+      handlePointerUp,
       handleKeyDown,
       sliderRef,
       progress,
@@ -928,16 +936,18 @@ const Thumb = forwardRef<HTMLDivElement, SwipeButtonThumbProps>(
         aria-valuemax={100}
         aria-valuenow={Math.round(progress)}
         aria-label="Swipe to confirm"
-        onMouseDown={handleDragStart}
-        onTouchStart={handleDragStart}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
         onKeyDown={handleKeyDown}
         className={cn(
-          "absolute inset-y-0 my-auto rounded-full z-30",
+          "absolute z-30 touch-none rounded-full",
           "flex items-center justify-center",
-          "cursor-grab active:cursor-grabbing",
-          "shadow-[0_1px_3px_rgba(0,0,0,0.12),0_0_0_0.5px_rgba(0,0,0,0.06)]",
-          "will-change-transform outline-none",
-          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+          "cursor-grab shadow-sm active:cursor-grabbing",
+          "transition-[background-color,box-shadow] duration-150",
+          FOCUS_RING,
+          "will-change-transform",
           "[&>svg:not(.hold-ring)]:size-5 [&>svg:not(.hold-ring)]:pointer-events-none [&>svg:not(.hold-ring)]:shrink-0",
           variantClasses[variant],
           className,
@@ -945,10 +955,9 @@ const Thumb = forwardRef<HTMLDivElement, SwipeButtonThumbProps>(
         style={{
           width: thumbSize,
           height: thumbSize,
-          top: thumbPad,
-          bottom: thumbPad,
+          top: "50%",
           left: thumbPad,
-          transform: `translate3d(${sliderPosition}px,0,0)`,
+          transform: `translate3d(${sliderPosition}px,-50%,0)`,
           willChange: "transform",
           transition:
             succeeded || isAutoSnapping

@@ -21,6 +21,8 @@ import {
   Text,
   useLocale,
 } from "react-aria-components";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import { FOCUS_RING, ICON_BUTTON } from "./_styles.js";
 
 type CalendarMode = "single" | "multiple" | "range";
 
@@ -97,15 +99,7 @@ function CalendarHeader() {
 
   return (
     <header className="flex items-center gap-1 pb-3 px-1">
-      <Button
-        slot="previous"
-        className={cn(
-          "inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background text-foreground",
-          "transition-colors duration-150 data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-          "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40",
-        )}
-      >
+      <Button slot="previous" className={ICON_BUTTON}>
         {direction === "rtl" ? (
           <ChevronRight aria-hidden className="h-4 w-4" />
         ) : (
@@ -115,15 +109,7 @@ function CalendarHeader() {
 
       <Heading className="mx-2 flex-1 text-center text-sm font-semibold text-foreground" />
 
-      <Button
-        slot="next"
-        className={cn(
-          "inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background text-foreground",
-          "transition-colors duration-150 data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
-          "data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40",
-        )}
-      >
+      <Button slot="next" className={ICON_BUTTON}>
         {direction === "rtl" ? (
           <ChevronLeft aria-hidden className="h-4 w-4" />
         ) : (
@@ -189,9 +175,9 @@ function createCellClassName(
           : !!state.isSelected;
 
     return cn(
-      "relative mx-auto flex h-9 w-9 items-center justify-center rounded-lg text-sm font-medium outline-none",
-      "transition-colors duration-150 will-change-transform",
-      "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
+      "relative mx-auto flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium outline-none",
+      MOTION_INTERACTIVE,
+      FOCUS_RING,
       state.isOutsideMonth && "text-muted-foreground opacity-50",
       (state.isDisabled || state.isUnavailable) &&
         "text-muted-foreground opacity-50",

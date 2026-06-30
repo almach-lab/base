@@ -6,22 +6,22 @@ const SLIDES = [
   {
     title: "Mountain Sunrise",
     tag: "Nature",
-    color: "from-orange-400 to-rose-500",
+    color: "from-chart-1 to-chart-2",
   },
   {
     title: "Ocean Depths",
     tag: "Photography",
-    color: "from-blue-400 to-cyan-600",
+    color: "from-chart-2 to-chart-3",
   },
   {
     title: "Forest Path",
     tag: "Travel",
-    color: "from-green-400 to-emerald-600",
+    color: "from-chart-3 to-chart-4",
   },
   {
     title: "City Lights",
     tag: "Urban",
-    color: "from-violet-500 to-purple-700",
+    color: "from-chart-4 to-chart-5",
   },
 ];
 
@@ -30,7 +30,6 @@ export function CarouselPage() {
     <ComponentDoc
       name="Carousel"
       description="Touch-friendly horizontal slide carousel built with CSS scroll-snap. No external dependencies. Supports arrows, dots, multiple slides per view, and loop mode."
-      pkg="@almach/ui"
       examples={[
         {
           title: "With arrows",

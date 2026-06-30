@@ -49,7 +49,6 @@ export function SidebarPage() {
     <ComponentDoc
       name="Sidebar"
       description="A clean navigation sidebar for product apps, docs shells, and account settings layouts. The component supports compact collapse, mobile overlays, nested navigation, and contained app-shell layouts without awkward motion."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Product navigation",

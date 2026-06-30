@@ -7,7 +7,6 @@ export function CollapsiblePage() {
     <ComponentDoc
       name="Collapsible"
       description="Expandable / collapsible section with a rotating chevron trigger. Supports controlled and uncontrolled usage."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Basic",

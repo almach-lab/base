@@ -52,10 +52,6 @@
       "import": "./dist/components/collapsible.js",
       "types": "./dist/components/collapsible.d.ts"
     },
-    "./combobox": {
-      "import": "./dist/components/combobox.js",
-      "types": "./dist/components/combobox.d.ts"
-    },
     "./command": {
       "import": "./dist/components/command.js",
       "types": "./dist/components/command.d.ts"
@@ -83,10 +79,6 @@
     "./label": {
       "import": "./dist/components/label.js",
       "types": "./dist/components/label.d.ts"
-    },
-    "./layered-card": {
-      "import": "./dist/components/layered-card.js",
-      "types": "./dist/components/layered-card.d.ts"
     },
     "./modal": {
       "import": "./dist/components/modal.js",

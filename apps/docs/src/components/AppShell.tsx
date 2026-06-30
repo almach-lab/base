@@ -23,6 +23,9 @@ const FormsPage = lazy(() =>
 const QueryPage = lazy(() =>
   import("./pages/query").then((m) => ({ default: m.QueryPage })),
 );
+const ThemePage = lazy(() =>
+  import("./pages/theme").then((m) => ({ default: m.ThemePage })),
+);
 const ComponentsIndexPage = lazy(() =>
   import("./pages/components-index").then((m) => ({
     default: m.ComponentsIndexPage,
@@ -198,6 +201,7 @@ interface AppShellProps {
     | "getting-started"
     | "forms"
     | "query"
+    | "theme"
     | "components"
     | "component"
     | "blocks";
@@ -211,6 +215,7 @@ const staticPages: Record<StaticPage, PageComponent> = {
   "getting-started": GettingStartedPage,
   forms: FormsPage,
   query: QueryPage,
+  theme: ThemePage,
   components: ComponentsIndexPage,
   blocks: BlocksPage,
 };

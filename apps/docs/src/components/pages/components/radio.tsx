@@ -7,7 +7,6 @@ export function RadioPage() {
     <ComponentDoc
       name="Radio"
       description="Single-selection control with label, description, disabled state, and controlled value support."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Basic",

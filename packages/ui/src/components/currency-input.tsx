@@ -3,6 +3,14 @@
 import { cn } from "@almach/utils";
 import { Check, ChevronDown, Search, X } from "lucide-react";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import {
+  FIELD_GROUP,
+  FOCUS_RING,
+  fieldErrorClass,
+  MENU_ITEM,
+  OVERLAY_SURFACE,
+} from "./_styles.js";
 import { Popover } from "./popover.js";
 
 /* ── Types ────────────────────────────────────────────────────────────────── */
@@ -238,10 +246,9 @@ function CurrencyOption({
       aria-selected={selected}
       onClick={() => onSelect(currency.code)}
       className={cn(
-        "flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm transition-colors",
-        "hover:bg-accent hover:text-accent-foreground",
-        "focus-visible:outline-none focus-visible:bg-accent focus-visible:text-accent-foreground",
-        selected && "bg-primary/10 text-primary",
+        MENU_ITEM,
+        "w-full justify-start px-3 py-1.5",
+        selected && "bg-accent text-accent-foreground",
       )}
     >
       {currency.countryCode && (
@@ -293,10 +300,10 @@ export function InputCurrency({
 
   /* Sync controlled currency */
   React.useEffect(() => {
-    if (value?.currency !== undefined && value.currency !== currency) {
+    if (value?.currency !== undefined) {
       setCurrency(value.currency);
     }
-  }, [value?.currency, currency]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [value?.currency]);
 
   /* Sync controlled amount */
   React.useEffect(() => {
@@ -356,10 +363,10 @@ export function InputCurrency({
   return (
     <div
       className={cn(
-        "flex h-9 w-full min-w-0 items-center overflow-hidden rounded-lg border border-input bg-background text-sm",
-        "ring-offset-background transition-all duration-150",
-        "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-        error && "border-destructive focus-within:ring-destructive",
+        FIELD_GROUP,
+        "h-9",
+        fieldErrorClass(error),
+        error && "focus-within:ring-destructive",
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
@@ -393,10 +400,10 @@ export function InputCurrency({
               aria-haspopup="listbox"
               aria-expanded={selectorOpen}
               className={cn(
-                "flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3",
-                "font-medium transition-colors duration-150",
+                "flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3 font-medium",
+                MOTION_INTERACTIVE,
+                FOCUS_RING,
                 "hover:bg-accent hover:text-accent-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                 "disabled:pointer-events-none",
               )}
             >
@@ -415,14 +422,7 @@ export function InputCurrency({
           <Popover.Content
             align="start"
             sideOffset={6}
-            className={cn(
-              "z-50 w-64 overflow-hidden rounded-xl border bg-popover shadow-xl",
-              "data-[starting-style]:animate-in data-[ending-style]:animate-out",
-              "data-[ending-style]:fade-out-0 data-[starting-style]:fade-in-0",
-              "data-[ending-style]:zoom-out-95 data-[starting-style]:zoom-in-95",
-              "data-[starting-style]:duration-150 data-[ending-style]:duration-100",
-              "data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2",
-            )}
+            className={cn(OVERLAY_SURFACE, "w-64 overflow-hidden p-0")}
           >
             {/* Search bar */}
             <div className="flex items-center gap-2 border-b px-3 py-2">

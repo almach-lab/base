@@ -9,7 +9,6 @@ export function CalendarPage() {
     <ComponentDoc
       name="Calendar"
       description="Date picker that supports single date, multiple dates, and date range selection out of the box."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Single date",

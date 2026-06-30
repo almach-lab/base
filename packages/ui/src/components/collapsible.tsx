@@ -2,6 +2,8 @@ import { cn } from "@almach/utils";
 import { ChevronDown } from "lucide-react";
 import * as React from "react";
 import { Button, Disclosure, DisclosurePanel } from "react-aria-components";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import { CONTROL_LABEL, FOCUS_RING } from "./_styles.js";
 
 interface CollapsibleRootProps
   extends React.ComponentPropsWithoutRef<typeof Disclosure> {}
@@ -28,9 +30,11 @@ const CollapsibleTrigger = React.forwardRef<
     ref={ref}
     slot="trigger"
     className={cn(
-      "group flex w-full cursor-pointer items-center justify-between rounded-sm py-3 text-sm font-medium",
-      "transition-[color,background-color,text-decoration-color] duration-150 ease-out",
-      "data-[hovered]:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "group flex w-full cursor-pointer items-center justify-between rounded-md py-3",
+      CONTROL_LABEL,
+      MOTION_INTERACTIVE,
+      FOCUS_RING,
+      "data-[hovered]:underline",
       className,
     )}
     {...props}
@@ -48,7 +52,7 @@ const CollapsibleContent = React.forwardRef<
   <DisclosurePanel
     ref={ref}
     className={cn(
-      "grid grid-rows-[0fr] text-sm opacity-0",
+      "grid grid-rows-[0fr] text-sm text-muted-foreground opacity-0",
       "transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
       "group-data-[expanded]:grid-rows-[1fr] group-data-[expanded]:opacity-100",
       className,

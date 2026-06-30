@@ -1,26 +1,48 @@
 import { cn } from "@almach/utils";
 import { Command as CommandPrimitive } from "cmdk";
-import { Check, ChevronDown, ChevronsUpDown, Search } from "lucide-react";
+import { Check, ChevronDown, Search } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { MOTION_INTERACTIVE, MOTION_OVERLAY } from "./_motion.js";
+import {
+  DISABLED_DATA,
+  FOCUS_RING,
+  FOCUS_RING_INVALID,
+  fieldErrorClass,
+  inputVariants,
+  MENU_LABEL,
+  MENU_SEPARATOR,
+  OVERLAY_SURFACE,
+} from "./_styles.js";
 
-const selectTriggerClasses =
-  "group flex h-11 w-full min-w-40 cursor-pointer select-none items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card pl-4 pr-3.5 text-base text-foreground outline-none";
-
-const selectTriggerMotionClasses = cn(
-  MOTION_INTERACTIVE,
-  "hover:bg-muted/45 active:scale-[0.995]",
+const selectTriggerClasses = cn(
+  inputVariants({ size: "default" }),
+  "flex min-w-40 w-full cursor-pointer items-center justify-between gap-2 pl-3 pr-2.5 text-left",
+  FOCUS_RING,
+  DISABLED_DATA,
+  "hover:bg-muted/40",
+  "data-[popup-open]:bg-muted/40",
 );
 
-const selectTriggerStateClasses =
-  "focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-50";
+const selectPopupClasses = cn(
+  OVERLAY_SURFACE,
+  "origin-[var(--transform-origin)] shadow-md",
+  MOTION_OVERLAY,
+  "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+  "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+);
 
-const selectPopupClasses =
-  "group z-50 origin-[var(--transform-origin)] overflow-hidden border border-border/60 bg-card text-foreground shadow-2xl outline-1 outline-border/70";
+const selectScrollClasses = cn(
+  "overflow-y-auto overflow-x-hidden overscroll-contain scroll-fade scroll-fade-6 py-1",
+);
 
-const selectItemClasses =
-  "grid w-full cursor-pointer select-none grid-cols-[0.75rem_1fr] items-center gap-2 rounded-xl px-2.5 py-2 text-sm leading-4 outline-none transition-colors duration-100 ease-out hover:bg-accent/45 disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-45 disabled:text-muted-foreground disabled:hover:bg-transparent";
+const selectItemClasses = cn(
+  "relative flex w-full appearance-none cursor-pointer select-none items-center justify-between gap-2 rounded-sm border-0 bg-transparent px-2 py-1.5 text-sm text-foreground outline-none",
+  MOTION_INTERACTIVE,
+  DISABLED_DATA,
+  "hover:bg-muted/50 focus:bg-transparent focus:outline-none focus-visible:outline-none",
+  "disabled:hover:bg-transparent",
+);
 
 interface SelectContextValue {
   open: boolean;
@@ -30,9 +52,24 @@ interface SelectContextValue {
   onValueChange: ((value: string) => void) | undefined;
   items: Map<string, string>;
   registerItem: (value: string, label: string) => void;
-  unregisterItem: (value: string) => void;
+  highlightedValue: string | undefined;
+  setHighlightedValue: (value: string | undefined) => void;
   triggerRef: React.RefObject<HTMLButtonElement | null>;
   contentId: string;
+}
+
+function extractItemLabel(children: React.ReactNode): string {
+  if (children == null || typeof children === "boolean") return "";
+  if (typeof children === "string" || typeof children === "number") {
+    return String(children).trim();
+  }
+  if (Array.isArray(children)) {
+    return children.map(extractItemLabel).join("").trim();
+  }
+  if (React.isValidElement<{ children?: React.ReactNode }>(children)) {
+    return extractItemLabel(children.props.children);
+  }
+  return "";
 }
 
 const SelectCtx = React.createContext<SelectContextValue | null>(null);
@@ -60,17 +97,28 @@ function SelectRoot({
 }: SelectRootProps) {
   const [internalValue, setInternalValue] = React.useState(defaultValue);
   const [open, setOpen] = React.useState(false);
-  const itemsRef = React.useRef(new Map<string, string>());
+  const [items, setItems] = React.useState(() => new Map<string, string>());
+  const [highlightedValue, setHighlightedValue] = React.useState<
+    string | undefined
+  >();
   const triggerRef = React.useRef<HTMLButtonElement | null>(null);
   const contentId = React.useId();
   const currentValue = value ?? internalValue;
 
   const registerItem = React.useCallback((itemValue: string, label: string) => {
-    itemsRef.current.set(itemValue, label);
+    setItems((prev) => {
+      if (prev.get(itemValue) === label) return prev;
+      const next = new Map(prev);
+      next.set(itemValue, label);
+      return next;
+    });
   }, []);
-  const unregisterItem = React.useCallback((itemValue: string) => {
-    itemsRef.current.delete(itemValue);
-  }, []);
+
+  React.useEffect(() => {
+    if (open) {
+      setHighlightedValue(currentValue);
+    }
+  }, [open, currentValue]);
 
   const handleChange = React.useCallback(
     (next: string) => {
@@ -88,9 +136,10 @@ function SelectRoot({
         isDisabled,
         value: currentValue,
         onValueChange: handleChange,
-        items: itemsRef.current,
+        items,
         registerItem,
-        unregisterItem,
+        highlightedValue,
+        setHighlightedValue,
         triggerRef,
         contentId,
       }}
@@ -112,7 +161,11 @@ const SelectValue = ({
   const isPlaceholder = !value;
   return (
     <span
-      className={cn("line-clamp-1", isPlaceholder && "opacity-60", className)}
+      className={cn(
+        "min-w-0 flex-1 truncate text-left",
+        isPlaceholder && "text-muted-foreground",
+        className,
+      )}
     >
       {label}
     </span>
@@ -121,14 +174,26 @@ const SelectValue = ({
 
 const SelectIndicator = ({
   className,
+  open,
   children,
 }: {
   className?: string;
+  open?: boolean;
   children?: React.ReactNode;
 }) => (
-  <span className={cn("flex items-center justify-center", className)}>
+  <span
+    className={cn(
+      "pointer-events-none flex shrink-0 items-center justify-center",
+      className,
+    )}
+  >
     {children ?? (
-      <ChevronDown className="h-4 w-4 shrink-0 opacity-50 transition-transform duration-150 ease-out" />
+      <ChevronDown
+        className={cn(
+          "h-4 w-4 opacity-50 transition-transform duration-150 ease-out",
+          open && "rotate-180",
+        )}
+      />
     )}
   </span>
 );
@@ -153,10 +218,7 @@ const SelectTrigger = React.forwardRef<
       type="button"
       className={cn(
         selectTriggerClasses,
-        selectTriggerMotionClasses,
-        selectTriggerStateClasses,
-        "data-[popup-open]:bg-muted/55 [&>span]:line-clamp-1",
-        error && "border-destructive focus-visible:outline-destructive",
+        error && cn(fieldErrorClass(true), FOCUS_RING_INVALID),
         className,
       )}
       data-popup-open={open ? "true" : undefined}
@@ -172,7 +234,7 @@ const SelectTrigger = React.forwardRef<
       {...props}
     >
       {children}
-      <SelectIndicator className={cn(open && "rotate-180")} />
+      <SelectIndicator open={open} />
     </button>
   );
 });
@@ -187,19 +249,17 @@ const SelectItem = React.forwardRef<
     onValueChange,
     setOpen,
     registerItem,
-    unregisterItem,
     isDisabled,
+    highlightedValue,
+    setHighlightedValue,
   } = useSelectCtx();
-  const text = React.Children.toArray(children)
-    .filter((child) => typeof child === "string")
-    .join(" ")
-    .trim();
-  React.useEffect(() => {
+  const text = extractItemLabel(children);
+  React.useLayoutEffect(() => {
     registerItem(value, text || value);
-    return () => unregisterItem(value);
-  }, [registerItem, text, unregisterItem, value]);
+  }, [registerItem, text, value]);
 
   const selected = selectedValue === value;
+  const highlighted = highlightedValue === value && !selected;
   return (
     <button
       ref={ref}
@@ -208,10 +268,12 @@ const SelectItem = React.forwardRef<
       aria-selected={selected}
       className={cn(
         selectItemClasses,
-        "relative",
-        selected && "bg-accent/70 text-accent-foreground",
+        highlighted && "bg-muted/50 hover:bg-muted/50",
+        selected && "bg-transparent hover:bg-transparent focus:bg-transparent",
         className,
       )}
+      onMouseEnter={() => setHighlightedValue(value)}
+      onFocus={() => setHighlightedValue(value)}
       onClick={() => {
         if (isDisabled) return;
         if (disabled) return;
@@ -219,12 +281,17 @@ const SelectItem = React.forwardRef<
         setOpen(false);
       }}
       disabled={isDisabled || disabled}
+      data-value={value}
       {...props}
     >
-      <span className="col-start-1 flex h-3.5 w-3.5 items-center justify-center">
-        {selected ? <Check className="h-3 w-3" /> : null}
-      </span>
-      <span className="col-start-2 text-left">{children}</span>
+      <span className="min-w-0 flex-1 truncate text-left">{children}</span>
+      <Check
+        className={cn(
+          "size-4 shrink-0 text-foreground",
+          selected ? "opacity-100" : "opacity-0",
+        )}
+        aria-hidden="true"
+      />
     </button>
   );
 });
@@ -234,13 +301,24 @@ const SelectContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, children, ...props }, ref) => {
-  const { open, setOpen, triggerRef, contentId } = useSelectCtx();
+  const {
+    open,
+    setOpen,
+    triggerRef,
+    contentId,
+    onValueChange,
+    highlightedValue,
+    setHighlightedValue,
+    isDisabled,
+  } = useSelectCtx();
   const contentRef = React.useRef<HTMLDivElement | null>(null);
+  const listRef = React.useRef<HTMLDivElement | null>(null);
   const [position, setPosition] = React.useState<{
     top: number;
     left: number;
     width: number;
     maxHeight: number;
+    openBelow: boolean;
   } | null>(null);
 
   const updatePosition = React.useCallback(() => {
@@ -249,17 +327,27 @@ const SelectContent = React.forwardRef<
 
     const rect = trigger.getBoundingClientRect();
     const viewportPadding = 12;
-    const offset = 8;
+    const offset = 6;
     const maxWidth = window.innerWidth - viewportPadding * 2;
-    const width = Math.min(rect.width, maxWidth);
+    const width = Math.min(Math.max(rect.width, 180), maxWidth);
     const left = Math.min(
       Math.max(viewportPadding, rect.left),
       window.innerWidth - viewportPadding - width,
     );
-    const top = rect.bottom + offset;
-    const maxHeight = Math.max(160, window.innerHeight - top - viewportPadding);
 
-    setPosition({ top, left, width, maxHeight });
+    const spaceBelow = window.innerHeight - rect.bottom - viewportPadding;
+    const spaceAbove = rect.top - viewportPadding;
+    const preferredMax = 280;
+    const openBelow = spaceBelow >= 160 || spaceBelow >= spaceAbove;
+    const maxHeight = Math.min(
+      preferredMax,
+      Math.max(120, openBelow ? spaceBelow - offset : spaceAbove - offset),
+    );
+    const top = openBelow
+      ? rect.bottom + offset
+      : rect.top - offset - maxHeight;
+
+    setPosition({ top, left, width, maxHeight, openBelow });
   }, [triggerRef]);
 
   React.useEffect(() => {
@@ -289,6 +377,78 @@ const SelectContent = React.forwardRef<
     };
   }, [open, setOpen, triggerRef, updatePosition]);
 
+  const handleListKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!listRef.current || isDisabled) return;
+
+      const options = Array.from(
+        listRef.current.querySelectorAll<HTMLButtonElement>(
+          'button[role="option"]:not(:disabled)',
+        ),
+      );
+      if (options.length === 0) return;
+
+      const values = options
+        .map((option) => option.dataset.value)
+        .filter((v): v is string => Boolean(v));
+
+      let index = highlightedValue ? values.indexOf(highlightedValue) : -1;
+      if (index < 0) index = 0;
+
+      const moveTo = (nextIndex: number) => {
+        const clamped = Math.max(0, Math.min(nextIndex, values.length - 1));
+        const nextValue = values[clamped];
+        if (!nextValue) return;
+        setHighlightedValue(nextValue);
+        options[clamped]?.scrollIntoView({ block: "nearest" });
+      };
+
+      switch (event.key) {
+        case "ArrowDown":
+          event.preventDefault();
+          moveTo(index + 1);
+          break;
+        case "ArrowUp":
+          event.preventDefault();
+          moveTo(index - 1);
+          break;
+        case "Home":
+          event.preventDefault();
+          moveTo(0);
+          break;
+        case "End":
+          event.preventDefault();
+          moveTo(values.length - 1);
+          break;
+        case "Enter":
+        case " ":
+          event.preventDefault();
+          if (highlightedValue) {
+            onValueChange?.(highlightedValue);
+            setOpen(false);
+            triggerRef.current?.focus();
+          }
+          break;
+        default:
+          break;
+      }
+    },
+    [
+      highlightedValue,
+      isDisabled,
+      onValueChange,
+      setHighlightedValue,
+      setOpen,
+      triggerRef,
+    ],
+  );
+
+  React.useEffect(() => {
+    if (open) {
+      listRef.current?.focus({ preventScroll: true });
+    }
+  }, [open]);
+
   if (!open) return null;
   return createPortal(
     <div
@@ -305,11 +465,9 @@ const SelectContent = React.forwardRef<
       }}
       role="listbox"
       className={cn(
-        "fixed z-50",
+        "fixed z-50 p-1",
         selectPopupClasses,
-        "rounded-[1.25rem] p-1",
-        MOTION_OVERLAY,
-        "data-[state=open]:opacity-100 data-[state=open]:translate-y-0 opacity-0 translate-y-1",
+        !position?.openBelow && "origin-bottom",
         className,
       )}
       data-state="open"
@@ -327,8 +485,12 @@ const SelectContent = React.forwardRef<
       {...props}
     >
       <div
-        className="relative overflow-y-auto overflow-x-hidden py-1 scroll-py-6"
+        ref={listRef}
+        data-select-list=""
+        tabIndex={-1}
+        className={selectScrollClasses}
         style={position ? { maxHeight: position.maxHeight } : undefined}
+        onKeyDown={handleListKeyDown}
       >
         {children}
       </div>
@@ -345,7 +507,8 @@ const SelectLabel = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground",
+      MENU_LABEL,
+      "px-2 pb-1 pt-1.5 text-[11px] uppercase tracking-wider",
       className,
     )}
     {...props}
@@ -369,9 +532,7 @@ function SelectSeparator({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div className={cn("-mx-1.5 my-1 h-px bg-border", className)} {...props} />
-  );
+  return <div className={cn(MENU_SEPARATOR, className)} {...props} />;
 }
 
 const SelectGroup = ({ children }: { children?: React.ReactNode }) => (
@@ -460,18 +621,22 @@ function SelectSearchable({
         disabled={disabled}
         className={cn(
           selectTriggerClasses,
-          selectTriggerMotionClasses,
-          selectTriggerStateClasses,
-          error && "border-destructive focus-visible:outline-destructive",
-          !selected && "text-muted-foreground",
+          error && cn(fieldErrorClass(true), FOCUS_RING_INVALID),
           className,
         )}
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="truncate">{selected?.label ?? placeholder}</span>
-        <ChevronsUpDown
+        <span
           className={cn(
-            "ml-2 h-4 w-4 shrink-0 opacity-50 transition-transform duration-150 ease-out",
+            "min-w-0 flex-1 truncate text-left",
+            !selected && "text-muted-foreground",
+          )}
+        >
+          {selected?.label ?? placeholder}
+        </span>
+        <ChevronDown
+          className={cn(
+            "size-4 shrink-0 opacity-50 transition-transform duration-150 ease-out",
             open && "rotate-180",
           )}
         />
@@ -481,7 +646,7 @@ function SelectSearchable({
         <div
           className={cn(
             selectPopupClasses,
-            "absolute z-50 mt-2 min-w-full rounded-[1.25rem] p-0",
+            "absolute z-50 mt-2 min-w-full rounded-md p-0",
           )}
         >
           <CommandPrimitive className="flex flex-col" aria-label={placeholder}>
@@ -503,7 +668,7 @@ function SelectSearchable({
 
             <CommandPrimitive.List
               id={listboxId}
-              className="max-h-56 overflow-y-auto overflow-x-hidden p-1"
+              className={cn(selectScrollClasses, "max-h-56 p-1")}
               role="listbox"
               aria-label="Options"
             >
@@ -511,33 +676,36 @@ function SelectSearchable({
                 {empty}
               </CommandPrimitive.Empty>
 
-              {options.map((opt) => (
-                <CommandPrimitive.Item
-                  key={opt.value}
-                  value={opt.value}
-                  {...(opt.disabled !== undefined && {
-                    disabled: opt.disabled,
-                  })}
-                  onSelect={handleSelect}
-                  role="option"
-                  aria-selected={value === opt.value}
-                  className={cn(
-                    selectItemClasses,
-                    "relative flex",
-                    "data-[selected=true]:bg-accent/70 data-[selected=true]:text-accent-foreground",
-                    "data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50",
-                  )}
-                >
-                  <Check
+              {options.map((opt) => {
+                const isSelected = value === opt.value;
+                return (
+                  <CommandPrimitive.Item
+                    key={opt.value}
+                    value={opt.value}
+                    {...(opt.disabled !== undefined && {
+                      disabled: opt.disabled,
+                    })}
+                    onSelect={handleSelect}
+                    role="option"
+                    aria-selected={isSelected}
                     className={cn(
-                      "h-4 w-4 shrink-0",
-                      value === opt.value ? "opacity-100" : "opacity-0",
+                      selectItemClasses,
+                      "data-[selected=true]:bg-muted/50 data-[selected=true]:text-foreground",
+                      isSelected &&
+                        "data-[selected=true]:bg-transparent data-[selected=true]:hover:bg-transparent",
                     )}
-                    aria-hidden="true"
-                  />
-                  {opt.label}
-                </CommandPrimitive.Item>
-              ))}
+                  >
+                    <span className="min-w-0 flex-1 truncate">{opt.label}</span>
+                    <Check
+                      className={cn(
+                        "size-4 shrink-0 text-foreground",
+                        isSelected ? "opacity-100" : "opacity-0",
+                      )}
+                      aria-hidden="true"
+                    />
+                  </CommandPrimitive.Item>
+                );
+              })}
             </CommandPrimitive.List>
           </CommandPrimitive>
         </div>

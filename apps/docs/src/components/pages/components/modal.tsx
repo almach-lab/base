@@ -7,7 +7,6 @@ export function ModalPage() {
     <ComponentDoc
       name="Modal"
       description="Responsive overlay that renders as a centered Dialog on desktop and a bottom Drawer on mobile — same API, zero media query boilerplate."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Basic modal",
@@ -70,7 +69,7 @@ export function ModalPage() {
                     Make changes to your profile. Click save when done.
                   </Modal.Description>
                 </Modal.Header>
-                <div className="space-y-4 py-2">
+                <Modal.Body className="space-y-4">
                   <div className="space-y-1.5">
                     <Label htmlFor="modal-name">Display name</Label>
                     <Input id="modal-name" defaultValue="Alice Johnson" />
@@ -91,7 +90,7 @@ export function ModalPage() {
                       defaultValue="Product designer at Acme."
                     />
                   </div>
-                </div>
+                </Modal.Body>
                 <Modal.Footer>
                   <Modal.Close asChild>
                     <Button variant="outline">Cancel</Button>
@@ -112,7 +111,7 @@ export function ModalPage() {
         Make changes to your profile. Click save when done.
       </Modal.Description>
     </Modal.Header>
-    <div className="space-y-4 py-2">
+    <Modal.Body className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="name">Display name</Label>
         <Input id="name" defaultValue="Alice Johnson" />
@@ -121,7 +120,7 @@ export function ModalPage() {
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" defaultValue="alice@example.com" />
       </div>
-    </div>
+    </Modal.Body>
     <Modal.Footer>
       <Modal.Close asChild>
         <Button variant="outline">Cancel</Button>

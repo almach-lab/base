@@ -1,10 +1,19 @@
 import { cn } from "@almach/utils";
+import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 import {
   composeRenderProps,
   RadioGroup as RadioGroupPrimitive,
   Radio as RadioPrimitive,
 } from "react-aria-components";
+import {
+  CONTROL_DESCRIPTION,
+  CONTROL_LABEL,
+  CONTROL_ROOT_START,
+  DISABLED_DATA,
+  FOCUS_RING,
+  radioIndicatorVariants,
+} from "./_styles.js";
 
 const RadioGroupRoot = React.forwardRef<
   HTMLDivElement,
@@ -20,21 +29,26 @@ RadioGroupRoot.displayName = "Radio.Group";
 
 interface RadioItemProps
   extends Omit<
-    React.ComponentPropsWithoutRef<typeof RadioPrimitive>,
-    "children"
-  > {
+      React.ComponentPropsWithoutRef<typeof RadioPrimitive>,
+      "children"
+    >,
+    VariantProps<typeof radioIndicatorVariants> {
   label?: string;
   description?: string;
   children?: React.ReactNode;
 }
 
 const RadioItem = React.forwardRef<HTMLLabelElement, RadioItemProps>(
-  ({ className, label, description, children, ...props }, ref) => (
+  (
+    { className, size = "default", label, description, children, ...props },
+    ref,
+  ) => (
     <RadioPrimitive
       ref={ref}
       className={composeRenderProps(className, (nextClassName, renderProps) =>
         cn(
-          "group flex items-start gap-3 cursor-pointer select-none",
+          CONTROL_ROOT_START,
+          DISABLED_DATA,
           renderProps.isDisabled && "cursor-not-allowed opacity-50",
           nextClassName,
         ),
@@ -45,10 +59,8 @@ const RadioItem = React.forwardRef<HTMLLabelElement, RadioItemProps>(
         <>
           <div
             className={cn(
-              "mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full border border-input bg-background",
-              "transition-all duration-150 ease-out",
-              isFocusVisible &&
-                "ring-2 ring-ring ring-offset-2 ring-offset-background",
+              radioIndicatorVariants({ size }),
+              isFocusVisible && FOCUS_RING,
               isSelected && "border-primary bg-primary text-primary-foreground",
               isHovered && !isSelected && "border-muted-foreground",
               isPressed && "scale-[0.92]",
@@ -64,14 +76,10 @@ const RadioItem = React.forwardRef<HTMLLabelElement, RadioItemProps>(
           {(label || description || children) && (
             <div className="flex flex-col gap-1">
               {(label || children) && (
-                <span className="text-sm font-medium leading-none text-foreground">
-                  {label ?? children}
-                </span>
+                <span className={CONTROL_LABEL}>{label ?? children}</span>
               )}
               {description && (
-                <span className="text-xs leading-relaxed text-muted-foreground">
-                  {description}
-                </span>
+                <span className={CONTROL_DESCRIPTION}>{description}</span>
               )}
             </div>
           )}

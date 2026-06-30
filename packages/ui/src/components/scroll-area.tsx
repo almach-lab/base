@@ -2,6 +2,8 @@
 
 import { cn } from "@almach/utils";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import { FOCUS_RING } from "./_styles.js";
 
 const ScrollAreaRoot = React.forwardRef<
   HTMLDivElement,
@@ -9,7 +11,7 @@ const ScrollAreaRoot = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("relative overflow-hidden", className)}
+    className={cn("group relative overflow-hidden", className)}
     {...props}
   />
 ));
@@ -22,8 +24,8 @@ const ScrollAreaViewport = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "h-full w-full overflow-auto rounded-md border border-input bg-background text-foreground",
-      "focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2",
+      "h-full w-full overflow-auto rounded-md border border-border bg-background text-foreground",
+      FOCUS_RING,
       className,
     )}
     {...props}
@@ -48,12 +50,13 @@ const ScrollAreaScrollBar = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "m-2 flex touch-none select-none justify-center rounded-sm bg-border opacity-0",
-      "pointer-events-none transition-opacity",
+      "m-1 flex touch-none select-none justify-center rounded-full bg-transparent",
+      "pointer-events-none opacity-0",
+      MOTION_INTERACTIVE,
       "group-hover:opacity-100",
       orientation === "vertical"
-        ? "h-[calc(100%-1rem)] w-1"
-        : "h-1 w-[calc(100%-1rem)] items-center",
+        ? "h-[calc(100%-0.5rem)] w-1.5"
+        : "h-1.5 w-[calc(100%-0.5rem)] items-center",
       className,
     )}
     {...props}
@@ -67,7 +70,7 @@ const ScrollAreaThumb = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("w-full rounded-sm bg-foreground/50", className)}
+    className={cn("w-full rounded-full bg-border", className)}
     {...props}
   />
 ));

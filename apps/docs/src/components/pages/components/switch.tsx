@@ -7,7 +7,6 @@ export function SwitchPage() {
     <ComponentDoc
       name="Switch"
       description="Toggle control with three sizes, smooth animation, and accessible disabled state."
-      pkg="@almach/ui"
       examples={[
         {
           title: "Sizes",
