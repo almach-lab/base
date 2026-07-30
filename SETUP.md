@@ -30,10 +30,10 @@ To allow the automated release process to open Pull Requests and trigger CI chec
 
 **Settings → Secrets and variables → Actions → New repository secret**
 
-| Secret name | Value |
-|-------------|-------|
-| `NPM_TOKEN` | The npm token you just created |
-| `GH_PAT` | (Optional) A GitHub Personal Access Token (repo, workflow scope). Provide this if you want the Release PRs to automatically trigger CI checks. If missing, defaults to the built-in token. |
+| Secret name | Value                                                                                                                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `NPM_TOKEN` | The npm token you just created                                                                                                                                                             |
+| `GH_PAT`    | (Optional) A GitHub Personal Access Token (repo, workflow scope). Provide this if you want the Release PRs to automatically trigger CI checks. If missing, defaults to the built-in token. |
 
 ### How releases work
 
@@ -66,17 +66,17 @@ On any Cloudflare dashboard page, look at the URL:
 
 ### Add to GitHub Secrets
 
-| Secret name | Value |
-|-------------|-------|
-| `CLOUDFLARE_API_TOKEN` | API token from the step above |
-| `CLOUDFLARE_ACCOUNT_ID` | Your account ID |
+| Secret name             | Value                         |
+| ----------------------- | ----------------------------- |
+| `CLOUDFLARE_API_TOKEN`  | API token from the step above |
+| `CLOUDFLARE_ACCOUNT_ID` | Your account ID               |
 
 ### How deploys work
 
-| Event | Result |
-|-------|--------|
-| Push to `main` | Production deploy → `based-ui-docs.pages.dev` |
-| Open a PR | Preview deploy → unique URL posted as a PR comment |
+| Event          | Result                                             |
+| -------------- | -------------------------------------------------- |
+| Push to `main` | Production deploy → `based-ui-docs.pages.dev`      |
+| Open a PR      | Preview deploy → unique URL posted as a PR comment |
 
 ---
 
@@ -124,9 +124,9 @@ bun run release
 
 ## 5. Secrets Summary
 
-| Secret | Where used | How to get it |
-|--------|-----------|---------------|
-| `NPM_TOKEN` | `release.yml` | npmjs.com → Granular Access Token (read/write) |
-| `GH_PAT` | `release.yml` | GitHub → Settings → Developer settings → PAT (repo, workflow scope) |
-| `CLOUDFLARE_API_TOKEN` | docs deployment workflow (if enabled) | Cloudflare → Profile → API Tokens → Pages Edit template |
-| `CLOUDFLARE_ACCOUNT_ID` | docs deployment workflow (if enabled) | Cloudflare dashboard URL |
+| Secret                  | Where used                            | How to get it                                                       |
+| ----------------------- | ------------------------------------- | ------------------------------------------------------------------- |
+| `NPM_TOKEN`             | `release.yml`                         | npmjs.com → Granular Access Token (read/write)                      |
+| `GH_PAT`                | `release.yml`                         | GitHub → Settings → Developer settings → PAT (repo, workflow scope) |
+| `CLOUDFLARE_API_TOKEN`  | docs deployment workflow (if enabled) | Cloudflare → Profile → API Tokens → Pages Edit template             |
+| `CLOUDFLARE_ACCOUNT_ID` | docs deployment workflow (if enabled) | Cloudflare dashboard URL                                            |

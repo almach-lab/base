@@ -6,12 +6,12 @@ Biome handles JS/TS formatting and general linting. These rules enforce design-s
 
 ## Rules
 
-| Rule | Scope | What it checks |
-|------|-------|----------------|
-| `no-primitive-colors` | `packages/ui`, `apps/docs` | No `bg-blue-500`, `text-gray-900` — semantic tokens only |
-| `no-cross-package-imports` | All packages | No `../../ui/src/...` — use `@almach/ui` |
-| `enforce-component-standard` | `packages/ui/src/components/*.tsx` | `displayName`, `cn()` from `@almach/utils` |
-| `no-tailwind-config` | Root | No `tailwind.config.js` / `postcss.config.js` (Tailwind v4) |
+| Rule                         | Scope                              | What it checks                                              |
+| ---------------------------- | ---------------------------------- | ----------------------------------------------------------- |
+| `no-primitive-colors`        | `packages/ui`, `apps/docs`         | No `bg-blue-500`, `text-gray-900` — semantic tokens only    |
+| `no-cross-package-imports`   | All packages                       | No `../../ui/src/...` — use `@almach/ui`                    |
+| `enforce-component-standard` | `packages/ui/src/components/*.tsx` | `displayName`, `cn()` from `@almach/utils`                  |
+| `no-tailwind-config`         | Root                               | No `tailwind.config.js` / `postcss.config.js` (Tailwind v4) |
 
 ## Run
 

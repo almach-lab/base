@@ -19,13 +19,13 @@ packages/ui/src/
 
 ## WHERE TO LOOK
 
-| Task | Location |
-|------|----------|
+| Task                | Location                |
+| ------------------- | ----------------------- |
 | Shared style tokens | `components/_styles.ts` |
-| Motion tokens | `components/_motion.ts` |
-| Component source | `components/<name>.tsx` |
-| Design tokens | `styles/globals.css` |
-| Package exports | `index.ts` |
+| Motion tokens       | `components/_motion.ts` |
+| Component source    | `components/<name>.tsx` |
+| Design tokens       | `styles/globals.css`    |
+| Package exports     | `index.ts`              |
 
 ## CONVENTIONS
 
@@ -61,10 +61,10 @@ bun run lint:ui
 
 ## ANTI-PATTERNS
 
-| Pattern | Instead |
-|---------|---------|
-| `bg-blue-500` | Semantic token |
-| `rounded-2xl` on inputs | `inputVariants` (`rounded-md`) |
-| `clsx` / `twMerge` | `cn()` from `@almach/utils` |
-| Component CSS files | Tailwind utilities |
-| Cross-package relative imports | `@almach/utils` package name |
+| Pattern                        | Instead                        |
+| ------------------------------ | ------------------------------ |
+| `bg-blue-500`                  | Semantic token                 |
+| `rounded-2xl` on inputs        | `inputVariants` (`rounded-md`) |
+| `clsx` / `twMerge`             | `cn()` from `@almach/utils`    |
+| Component CSS files            | Tailwind utilities             |
+| Cross-package relative imports | `@almach/utils` package name   |

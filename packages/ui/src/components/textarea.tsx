@@ -4,7 +4,8 @@ import * as React from "react";
 import { fieldErrorClass, textareaVariants } from "./_styles.js";
 
 export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement>,
+  extends
+    React.TextareaHTMLAttributes<HTMLTextAreaElement>,
     VariantProps<typeof textareaVariants> {
   error?: boolean;
 }

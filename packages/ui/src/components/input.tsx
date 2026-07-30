@@ -31,7 +31,8 @@ import {
 import { Popover } from "./popover.js";
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, "size">,
     VariantProps<typeof inputVariants> {
   leftElement?: React.ReactNode;
   rightElement?: React.ReactNode;

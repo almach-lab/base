@@ -20,12 +20,10 @@ const RUN: Record<PkgManager, (script: string) => string> = {
   yarn: (s) => `yarn ${s}`,
 };
 
-// Shared active manager across page (module-level state + listeners)
-// Safe module-level default — localStorage is only accessed in the browser
-let activePM: PkgManager = "bun";
+// Shared active manager across page (listeners only — localStorage is the
+// source of truth, only accessed in the browser)
 const listeners = new Set<(pm: PkgManager) => void>();
 function setGlobalPM(pm: PkgManager) {
-  activePM = pm;
   if (typeof localStorage !== "undefined")
     localStorage.setItem("pkg-manager", pm);
   listeners.forEach((fn) => fn(pm));

@@ -9,12 +9,12 @@ Built on React Aria · Tailwind CSS v4 · TanStack Query · Zod · Astro.
 
 ## Packages
 
-| Package | Description |
-|---------|-------------|
-| `@almach/ui` | 30+ accessible components built on React Aria and Tailwind CSS v4 |
-| `@almach/forms` | Type-safe forms with TanStack Form and Zod validation |
-| `@almach/query` | Typed query factories and mutation builders on TanStack Query |
-| `@almach/utils` | Tree-shakable utilities: `cn()`, date formatting, type helpers |
+| Package         | Description                                                       |
+| --------------- | ----------------------------------------------------------------- |
+| `@almach/ui`    | 30+ accessible components built on React Aria and Tailwind CSS v4 |
+| `@almach/forms` | Type-safe forms with TanStack Form and Zod validation             |
+| `@almach/query` | Typed query factories and mutation builders on TanStack Query     |
+| `@almach/utils` | Tree-shakable utilities: `cn()`, date formatting, type helpers    |
 
 ---
 
@@ -52,7 +52,9 @@ function LoginForm() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit} className="space-y-4">
         <TextField name="email" label="Email" required />
-        <Button type="submit" loading={form.formState.isSubmitting}>Sign in</Button>
+        <Button type="submit" loading={form.formState.isSubmitting}>
+          Sign in
+        </Button>
       </form>
     </Form>
   );
@@ -96,9 +98,9 @@ All design tokens are plain CSS variables — override in your stylesheet, no co
 
 ```css
 :root {
-  --primary:   43 90% 44%;   /* golden, like Sandy (γ And) */
-  --ring:      43 90% 44%;
-  --radius:    0.625rem;
+  --primary: 43 90% 44%; /* golden, like Sandy (γ And) */
+  --ring: 43 90% 44%;
+  --radius: 0.625rem;
 }
 ```
 
@@ -176,6 +178,7 @@ You cannot reliably restart to `0.x` on the same published package names and cal
 For a clean v0 restart, use a new package line (for example a new scope/name such as `@almach-v0/*`) and publish that line separately.
 
 Recommended clean strategy:
+
 - Keep current `@almach/*` packages on their existing semver line.
 - Start a new `@almach-v0/*` line at `0.1.0`.
 - Mark old line status in README/changelog and guide consumers to the intended line.
@@ -189,6 +192,7 @@ bun run release:reset-remote
 ```
 
 Behavior:
+
 - Default is `dry-run` (prints what would be removed/deprecated).
 - Use `--apply` to execute real deletion/deprecation.
 - Loads `.env` automatically if present.
@@ -227,6 +231,7 @@ bun run release:publish-env -- --tag=reset-v0
 ```
 
 Important:
+
 - npm unpublish is heavily restricted and often unavailable for old versions.
 - This script uses deprecation for npm versions (safe and reversible with a new deprecate message).
 
@@ -235,4 +240,3 @@ Important:
 ## License
 
 MIT
-

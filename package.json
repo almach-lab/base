@@ -1,22 +1,22 @@
 {
   "name": "based",
-  "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "private": true,
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
+  "type": "module",
   "scripts": {
     "build": "bun run build:packages && bun run build:docs",
     "build:packages": "bun run --filter @almach/utils build && bun run --filter @almach/ui build && bun run --filter @almach/forms build && bun run --filter @almach/query build",
     "build:docs": "bun run --filter docs build",
     "dev": "bun run --workspaces --if-present --parallel dev",
-    "lint": "biome check . && bun lint/run.ts",
+    "lint": "oxlint . && bun lint/run.ts",
     "lint:ui": "bun lint/run.ts",
-    "lint:fix": "biome check . --write",
-    "format": "biome format . --write",
-    "format:check": "biome format .",
+    "lint:fix": "oxlint . --fix",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
     "typecheck": "bun run llms:snapshot:check && bun run build:packages && bun run --workspaces --if-present typecheck",
     "clean": "bun run --workspaces --if-present clean && rm -rf node_modules",
     "docs": "bun run --cwd apps/docs dev",
@@ -28,17 +28,33 @@
     "llms:snapshot:update": "bun scripts/generate-llm-ui-snapshot.ts",
     "llms:snapshot:check": "bun scripts/generate-llm-ui-snapshot.ts --check",
     "postinstall": "bun scripts/fix-esm.ts",
+    "prepare": "simple-git-hooks",
     "release:ci": "bun run build:packages && bun run release"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.6",
     "@changesets/cli": "^2.31.1",
     "@types/bun": "^1.3.14",
     "@types/node": "^26.1.2",
+    "lint-staged": "^17.2.0",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0",
+    "simple-git-hooks": "^2.13.1",
     "typescript": "^7.0.2"
   },
-  "packageManager": "bun@1.3.9",
+  "simple-git-hooks": {
+    "pre-commit": "bunx lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}": [
+      "oxlint",
+      "oxfmt --check"
+    ],
+    "*.{json,jsonc,md,mdx,yml,yaml,css,astro}": [
+      "oxfmt --check"
+    ]
+  },
   "engines": {
     "bun": ">=1.2.0"
-  }
+  },
+  "packageManager": "bun@1.3.9"
 }

@@ -4,7 +4,8 @@ import * as React from "react";
 import { alertVariants } from "./_styles.js";
 
 export interface AlertRootProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof alertVariants> {}
 
 const AlertRoot = React.forwardRef<HTMLDivElement, AlertRootProps>(

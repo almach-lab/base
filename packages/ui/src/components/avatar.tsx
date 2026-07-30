@@ -20,7 +20,8 @@ const avatarVariants = cva(
 );
 
 interface AvatarProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
+  extends
+    React.HTMLAttributes<HTMLSpanElement>,
     VariantProps<typeof avatarVariants> {}
 
 const AvatarRoot = React.forwardRef<HTMLSpanElement, AvatarProps>(

@@ -8,15 +8,19 @@ tags: space, spacing-scale, consistency, design-system, tailwind-config
 A linear spacing scale (2, 4, 6, 8...) creates too many similar options and leads to inconsistent decisions. Use a constrained scale where each step is noticeably different from the last: 4, 8, 12, 16, 24, 32, 48, 64, 96. Tailwind's default scale works well.
 
 **Incorrect (arbitrary spacing values):**
+
 ```html
 <div class="space-y-[7px]">
   <h3 class="mb-[5px] text-lg font-bold">Title</h3>
   <p class="mb-[13px] text-sm text-gray-600">Description text here</p>
-  <button class="mt-[11px] rounded bg-blue-600 px-[15px] py-[9px] text-white">Action</button>
+  <button class="mt-[11px] rounded bg-blue-600 px-[15px] py-[9px] text-white">
+    Action
+  </button>
 </div>
 ```
 
 **Correct (Tailwind's systematic scale):**
+
 ```html
 <div class="space-y-3">
   <h3 class="text-lg font-bold">Title</h3>

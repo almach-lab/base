@@ -4,11 +4,7 @@ import {
   Tooltip as TooltipPrimitive,
   TooltipTrigger as TooltipTriggerPrimitive,
 } from "react-aria-components";
-import {
-  MOTION_OVERLAY,
-  MOTION_OVERLAY_ENTER,
-  MOTION_OVERLAY_EXIT,
-} from "./_motion.js";
+import { MOTION_OVERLAY_ENTER, MOTION_OVERLAY_EXIT } from "./_motion.js";
 import { TOOLTIP_SURFACE } from "./_styles.js";
 
 type TooltipProviderProps = {
@@ -36,8 +32,9 @@ function TooltipTriggerMarker(_props: TooltipTriggerMarkerProps) {
 }
 TooltipTriggerMarker.displayName = "Tooltip.Trigger";
 
-interface TooltipContentMarkerProps
-  extends React.ComponentPropsWithoutRef<typeof TooltipPrimitive> {
+interface TooltipContentMarkerProps extends React.ComponentPropsWithoutRef<
+  typeof TooltipPrimitive
+> {
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
   sideOffset?: number;

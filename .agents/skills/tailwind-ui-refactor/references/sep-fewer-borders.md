@@ -8,6 +8,7 @@ tags: sep, borders, spacing, shadows, background, clutter
 Borders are the default way to separate elements, but too many make the design feel busy and cluttered. Replace borders with box shadows, increased spacing, or different background colors for cleaner separation.
 
 **Incorrect (borders everywhere):**
+
 ```html
 <div class="divide-y border">
   <div class="border-b p-4">
@@ -22,6 +23,7 @@ Borders are the default way to separate elements, but too many make the design f
 ```
 
 **Correct (clean separation without borders):**
+
 ```html
 <div class="rounded-lg bg-white p-6 shadow-sm">
   <h3 class="font-semibold">Section Title</h3>

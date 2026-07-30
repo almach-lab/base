@@ -9,20 +9,23 @@ Not all UIs deserve the same level of design polish. An admin dashboard, a consu
 
 **Context decision tree — before applying any styling rules, determine the UI context:**
 
-| Context | Goal | Skip Categories | Spacing | Polish Level |
-|---------|------|-----------------|---------|--------------|
-| **Admin/Internal** | Information density, fast scanning | Polish & Details, most of Depth & Shadows | Dense — prefer compact spacing | Minimal — function over form |
-| **Product/App** | Clarity, usability, brand consistency | None, but apply Polish sparingly | Balanced — systematic scale | Moderate — polish where users linger |
-| **Consumer/Marketing** | Engagement, conversion, brand impression | None — apply all categories | Generous — start with more space | Maximum — every detail matters |
+| Context                | Goal                                     | Skip Categories                           | Spacing                          | Polish Level                         |
+| ---------------------- | ---------------------------------------- | ----------------------------------------- | -------------------------------- | ------------------------------------ |
+| **Admin/Internal**     | Information density, fast scanning       | Polish & Details, most of Depth & Shadows | Dense — prefer compact spacing   | Minimal — function over form         |
+| **Product/App**        | Clarity, usability, brand consistency    | None, but apply Polish sparingly          | Balanced — systematic scale      | Moderate — polish where users linger |
+| **Consumer/Marketing** | Engagement, conversion, brand impression | None — apply all categories               | Generous — start with more space | Maximum — every detail matters       |
 
 **Incorrect (applying full polish to an admin data table):**
+
 ```html
 <table class="w-full">
   <tbody class="divide-y divide-gray-100">
     <tr>
       <td class="py-4 px-6">
         <div class="flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100"
+          >
             <svg class="h-5 w-5 text-blue-600"><!-- icon --></svg>
           </div>
           <div>
@@ -32,7 +35,10 @@ Not all UIs deserve the same level of design polish. An admin dashboard, a consu
         </div>
       </td>
       <td class="py-4 px-6">
-        <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">Completed</span>
+        <span
+          class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700"
+          >Completed</span
+        >
       </td>
     </tr>
   </tbody>
@@ -40,6 +46,7 @@ Not all UIs deserve the same level of design polish. An admin dashboard, a consu
 ```
 
 **Correct (dense, functional admin table — no unnecessary decoration):**
+
 ```html
 <table class="w-full text-sm">
   <tbody class="divide-y divide-gray-200">

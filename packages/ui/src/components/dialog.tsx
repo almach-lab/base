@@ -71,8 +71,7 @@ function DialogOverlay({ className, ...props }: DialogOverlayProps) {
   );
 }
 
-interface DialogTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DialogTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   children?: React.ReactNode;
 }
@@ -117,8 +116,7 @@ const DialogTrigger = React.forwardRef<HTMLButtonElement, DialogTriggerProps>(
 );
 DialogTrigger.displayName = "Dialog.Trigger";
 
-interface DialogCloseProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DialogCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   children?: React.ReactNode;
 }

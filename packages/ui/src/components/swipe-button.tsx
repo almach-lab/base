@@ -47,8 +47,10 @@ export type SwipeButtonVariant =
   | "success"
   | "warning";
 
-export interface SwipeButtonRootProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "onSuccess"> {
+export interface SwipeButtonRootProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  "onSuccess"
+> {
   /** Fired when swipe (+ optional hold) completes. */
   onSuccess?: () => void;
   /** Fired when the thumb is released without completing. */
@@ -834,8 +836,7 @@ const Track = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 Track.displayName = "SwipeButton.Track";
 
 /* ── Overlay ────────────────────────────────────────────────────────────── */
-export interface SwipeButtonOverlayProps
-  extends HTMLAttributes<HTMLDivElement> {}
+export interface SwipeButtonOverlayProps extends HTMLAttributes<HTMLDivElement> {}
 
 const Overlay = forwardRef<HTMLDivElement, SwipeButtonOverlayProps>(
   ({ className = "", style, children, ...props }, ref) => {

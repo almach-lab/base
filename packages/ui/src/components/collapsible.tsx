@@ -5,8 +5,9 @@ import { Button, Disclosure, DisclosurePanel } from "react-aria-components";
 import { MOTION_INTERACTIVE } from "./_motion.js";
 import { CONTROL_LABEL, FOCUS_RING } from "./_styles.js";
 
-interface CollapsibleRootProps
-  extends React.ComponentPropsWithoutRef<typeof Disclosure> {}
+interface CollapsibleRootProps extends React.ComponentPropsWithoutRef<
+  typeof Disclosure
+> {}
 
 const CollapsibleRoot = React.forwardRef<HTMLDivElement, CollapsibleRootProps>(
   ({ className, ...props }, ref) => (

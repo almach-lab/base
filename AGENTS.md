@@ -86,6 +86,7 @@ verify the sibling is listed in `dependencies` as `"workspace:*"` and that
 8. Create `apps/docs/src/pages/components/<name>.astro` (copies the pattern of any existing one)
 
 Component checklist:
+
 - [ ] `React.forwardRef` for DOM-wrapping components
 - [ ] `className` prop merged with `cn()`
 - [ ] `error?: boolean` for inputs (sets `aria-invalid`, destructive ring)
@@ -94,6 +95,7 @@ Component checklist:
 - [ ] Exported from `packages/ui/src/index.ts`
 
 Component standardization rules:
+
 - Keep component files plain and utilitarian. Do not add decorative section banners, AI-style prose comments, or narrative inline commentary.
 - Prefer small internal helpers over long explanatory comments. If a comment is unavoidable, it must explain a non-obvious constraint in one short sentence.
 - Keep component APIs consistent: controlled props use `open`/`value` plus `on...Change`, boolean dismiss props use `is...`, and DOM props should pass through cleanly.
@@ -103,14 +105,14 @@ Component standardization rules:
 
 ## Agent Skills (`.agents/skills/`)
 
-| Skill | Use when |
-|-------|----------|
-| `ui-standardize` | Refactoring components to shared `_styles.ts` tokens |
-| `component-conventions` | Creating or reviewing `packages/ui` components |
-| `tailwind-semantic` | Styling, token additions, className review |
-| `docs-ux` | Docs pages, demos, navigation, layout |
-| `index-knowledge` | Regenerating hierarchical AGENTS.md files |
-| `tailwind-ui-refactor` | Tailwind cleanup and responsive UI refactors |
+| Skill                   | Use when                                             |
+| ----------------------- | ---------------------------------------------------- |
+| `ui-standardize`        | Refactoring components to shared `_styles.ts` tokens |
+| `component-conventions` | Creating or reviewing `packages/ui` components       |
+| `tailwind-semantic`     | Styling, token additions, className review           |
+| `docs-ux`               | Docs pages, demos, navigation, layout                |
+| `index-knowledge`       | Regenerating hierarchical AGENTS.md files            |
+| `tailwind-ui-refactor`  | Tailwind cleanup and responsive UI refactors         |
 
 Child knowledge bases: `packages/ui/AGENTS.md`, `apps/docs/AGENTS.md`.
 
@@ -134,10 +136,18 @@ Child knowledge bases: `packages/ui/AGENTS.md`, `apps/docs/AGENTS.md`.
 - Export from `packages/query/src/index.ts`
 
 `ActionResult<T>` shape (always use this for server actions):
+
 ```ts
 type ActionResult<T> =
   | { success: true; data: T }
-  | { success: false; error: { code?: string; message: string; fields?: Record<string, string[]> } }
+  | {
+      success: false;
+      error: {
+        code?: string;
+        message: string;
+        fields?: Record<string, string[]>;
+      };
+    };
 ```
 
 ---
@@ -159,14 +169,14 @@ This repo uses **Tailwind CSS v4**. The rules differ from v3 — read carefully.
 
 ### What changed from v3
 
-| v3 | v4 |
-|----|----|
-| `tailwind.config.js` | Deleted — config lives in CSS |
-| `postcss.config.js` | Deleted — Vite/Astro plugin handles it |
-| `@tailwind base/components/utilities` | `@import "tailwindcss"` |
-| `darkMode: 'class'` in config | `@custom-variant dark (&:where(.dark, .dark *))` in CSS |
-| `theme.extend.colors` in config | `@theme inline { --color-*: ... }` in CSS |
-| `content: [...]` array | Auto-detected by `@tailwindcss/vite` plugin |
+| v3                                    | v4                                                      |
+| ------------------------------------- | ------------------------------------------------------- |
+| `tailwind.config.js`                  | Deleted — config lives in CSS                           |
+| `postcss.config.js`                   | Deleted — Vite/Astro plugin handles it                  |
+| `@tailwind base/components/utilities` | `@import "tailwindcss"`                                 |
+| `darkMode: 'class'` in config         | `@custom-variant dark (&:where(.dark, .dark *))` in CSS |
+| `theme.extend.colors` in config       | `@theme inline { --color-*: ... }` in CSS               |
+| `content: [...]` array                | Auto-detected by `@tailwindcss/vite` plugin             |
 
 ### Rules
 
@@ -231,10 +241,10 @@ Never manually edit `package.json` version fields — changesets handles that.
 
 ## CI / Deployment
 
-| Workflow | Trigger | What happens |
-|----------|---------|--------------|
-| `ci.yml` | Push/PR on `main` with relevant code changes | typecheck + build |
-| `release.yml` | Push to `main` with package/release changes | auto changeset generation → versioning → npm publish |
+| Workflow      | Trigger                                      | What happens                                         |
+| ------------- | -------------------------------------------- | ---------------------------------------------------- |
+| `ci.yml`      | Push/PR on `main` with relevant code changes | typecheck + build                                    |
+| `release.yml` | Push to `main` with package/release changes  | auto changeset generation → versioning → npm publish |
 
 Required GitHub secrets: `NPM_TOKEN`
 See `SETUP.md` for how to create and configure them.
@@ -262,6 +272,7 @@ See `SETUP.md` for how to create and configure them.
 ## Common Patterns (Quick Reference)
 
 ### New component with variants
+
 ```tsx
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@almach/utils";
@@ -272,13 +283,18 @@ const thingVariants = cva("base-classes", {
 });
 
 interface ThingProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof thingVariants> {}
 
 const Thing = React.forwardRef<HTMLDivElement, ThingProps>(
   ({ className, variant, ...props }, ref) => (
-    <div ref={ref} className={cn(thingVariants({ variant }), className)} {...props} />
-  )
+    <div
+      ref={ref}
+      className={cn(thingVariants({ variant }), className)}
+      {...props}
+    />
+  ),
 );
 Thing.displayName = "Thing";
 
@@ -286,6 +302,7 @@ export { Thing, thingVariants };
 ```
 
 ### Typed query factory
+
 ```ts
 import { createQuery } from "@almach/query";
 
@@ -299,6 +316,7 @@ export const userQuery = createQuery({
 ```
 
 ### Mutation with invalidation
+
 ```ts
 import { createMutation } from "@almach/query";
 
@@ -309,6 +327,7 @@ export const useUpdateUser = createMutation({
 ```
 
 ### Form with Zod schema
+
 ```tsx
 import { Form, TextField, useBasedForm, z } from "@almach/forms";
 import { Button } from "@almach/ui";
@@ -319,14 +338,18 @@ function MyForm() {
   const form = useBasedForm({
     schema,
     defaultValues: { email: "" },
-    onSubmit: async (values) => { /* fully typed */ },
+    onSubmit: async (values) => {
+      /* fully typed */
+    },
   });
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit} className="space-y-4">
         <TextField name="email" label="Email" required />
-        <Button type="submit" loading={form.formState.isSubmitting}>Submit</Button>
+        <Button type="submit" loading={form.formState.isSubmitting}>
+          Submit
+        </Button>
       </form>
     </Form>
   );
@@ -334,11 +357,14 @@ function MyForm() {
 ```
 
 ### Server action (Next.js compatible)
+
 ```ts
 // server action
 import type { ActionResult } from "@almach/query";
 
-export async function createPostAction(input: CreatePostInput): Promise<ActionResult<Post>> {
+export async function createPostAction(
+  input: CreatePostInput,
+): Promise<ActionResult<Post>> {
   try {
     const post = await db.post.create({ data: input });
     return { success: true, data: post };

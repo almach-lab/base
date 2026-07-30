@@ -2,6 +2,20 @@
   "name": "@almach/forms",
   "version": "2.1.0",
   "description": "Form handling with TanStack Form and Zod validation for Based UI",
+  "contributors": [
+    {
+      "name": "rafaalrazzak",
+      "url": "https://github.com/rafaalrazzak"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/almach-lab/base",
+    "directory": "packages/forms"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -12,20 +26,15 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public",
+    "tag": "release-2.0"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && bun ../../scripts/fix-esm.ts dist",
     "dev": "tsc -p tsconfig.build.json --watch",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
-  },
-  "peerDependencies": {
-    "@almach/ui": "*",
-    "@almach/utils": "*",
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
     "@tanstack/react-form": "^1.0.0",
@@ -38,19 +47,10 @@
     "@types/react-dom": "^19.0.3",
     "typescript": "^5.7.3"
   },
-  "publishConfig": {
-    "access": "public",
-    "tag": "release-2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/almach-lab/base",
-    "directory": "packages/forms"
-  },
-  "contributors": [
-    {
-      "name": "rafaalrazzak",
-      "url": "https://github.com/rafaalrazzak"
-    }
-  ]
+  "peerDependencies": {
+    "@almach/ui": "*",
+    "@almach/utils": "*",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
 }

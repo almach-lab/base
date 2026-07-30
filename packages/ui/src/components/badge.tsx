@@ -1,7 +1,6 @@
 import { cn } from "@almach/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { MOTION_INTERACTIVE } from "./_motion.js";
 
 const badgeVariants = cva(
   "inline-flex items-center rounded-md border border-transparent font-medium tracking-tight",
@@ -31,7 +30,8 @@ const badgeVariants = cva(
 );
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof badgeVariants> {}
 
 const Badge = React.forwardRef<HTMLDivElement, BadgeProps>(

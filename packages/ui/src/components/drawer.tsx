@@ -256,8 +256,7 @@ function DrawerRoot({
 }
 DrawerRoot.displayName = "Drawer";
 
-interface DrawerTriggerProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DrawerTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   children?: React.ReactNode;
 }
@@ -299,8 +298,7 @@ const DrawerTrigger = React.forwardRef<HTMLButtonElement, DrawerTriggerProps>(
 );
 DrawerTrigger.displayName = "Drawer.Trigger";
 
-interface DrawerCloseProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface DrawerCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   children?: React.ReactNode;
 }

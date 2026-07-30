@@ -2,6 +2,21 @@
   "name": "@almach/ui",
   "version": "2.1.5",
   "description": "Modern, accessible UI components built on React Aria and Tailwind CSS",
+  "contributors": [
+    {
+      "name": "rafaalrazzak",
+      "url": "https://github.com/rafaalrazzak"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/almach-lab/base",
+    "directory": "packages/ui"
+  },
+  "files": [
+    "dist",
+    "src/styles"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -149,20 +164,14 @@
       "types": "./dist/components/tooltip.d.ts"
     }
   },
-  "files": [
-    "dist",
-    "src/styles"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && bun ../../scripts/fix-esm.ts dist",
     "dev": "tsc -p tsconfig.build.json --watch",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
-  },
-  "peerDependencies": {
-    "@almach/utils": "*",
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
     "@internationalized/date": "^3.10.0",
@@ -188,18 +197,9 @@
     "@types/react-dom": "^19.0.3",
     "typescript": "^5.7.3"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/almach-lab/base",
-    "directory": "packages/ui"
-  },
-  "contributors": [
-    {
-      "name": "rafaalrazzak",
-      "url": "https://github.com/rafaalrazzak"
-    }
-  ]
+  "peerDependencies": {
+    "@almach/utils": "*",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
 }

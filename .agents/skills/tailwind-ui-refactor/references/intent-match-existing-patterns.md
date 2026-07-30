@@ -8,6 +8,7 @@ tags: intent, consistency, patterns, audit, system
 Before restyling a component, check how sibling components in the same UI are already styled. Matching existing spacing, border radius, color usage, and typography hierarchy matters more than optimizing any single component. Consistency across components creates a cohesive interface; individually "improved" components that don't match their siblings create visual chaos.
 
 **Incorrect (each card styled independently — inconsistent patterns):**
+
 ```html
 <div class="space-y-4">
   <!-- Card 1: rounded-lg, shadow, p-6 -->
@@ -22,13 +23,16 @@ Before restyling a component, check how sibling components in the same UI are al
   </div>
   <!-- Card 3: rounded, border, p-5 -->
   <div class="rounded border border-gray-300 bg-white p-5">
-    <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-500">Conversion</h3>
+    <h3 class="text-sm font-semibold uppercase tracking-wide text-gray-500">
+      Conversion
+    </h3>
     <p class="mt-3 text-xl text-green-600">4.2%</p>
   </div>
 </div>
 ```
 
 **Correct (consistent patterns across all sibling components):**
+
 ```html
 <div class="grid grid-cols-3 gap-4">
   <div class="rounded-lg bg-white p-6 shadow-sm">

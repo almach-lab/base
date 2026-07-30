@@ -35,15 +35,15 @@ from-purple-500 via-pink-500 to-orange-400
 
 Use semantic equivalents:
 
-| Instead of | Use |
-|------------|-----|
-| `bg-gray-100` | `bg-muted` |
-| `text-gray-500` | `text-muted-foreground` |
-| `border-gray-200` | `border-border` |
-| `bg-red-500` | `bg-destructive` |
-| `bg-green-500` | `bg-success` |
-| `bg-yellow-500` | `bg-warning` |
-| `bg-pink-500` | `bg-primary` |
+| Instead of        | Use                     |
+| ----------------- | ----------------------- |
+| `bg-gray-100`     | `bg-muted`              |
+| `text-gray-500`   | `text-muted-foreground` |
+| `border-gray-200` | `border-border`         |
+| `bg-red-500`      | `bg-destructive`        |
+| `bg-green-500`    | `bg-success`            |
+| `bg-yellow-500`   | `bg-warning`            |
+| `bg-pink-500`     | `bg-primary`            |
 
 ---
 
@@ -84,12 +84,12 @@ className="bg-background text-foreground"
 
 ## Radius & shadow conventions
 
-| Element | Radius | Shadow |
-|---------|--------|--------|
-| Inputs, buttons, menu items | `rounded-md` | `shadow-xs` |
-| Cards, dialogs | `rounded-lg` | `shadow-lg` |
-| Badges, chips | `rounded-sm` / `rounded-full` | none |
-| Popovers | `rounded-md` | `shadow-md` |
+| Element                     | Radius                        | Shadow      |
+| --------------------------- | ----------------------------- | ----------- |
+| Inputs, buttons, menu items | `rounded-md`                  | `shadow-xs` |
+| Cards, dialogs              | `rounded-lg`                  | `shadow-lg` |
+| Badges, chips               | `rounded-sm` / `rounded-full` | none        |
+| Popovers                    | `rounded-md`                  | `shadow-md` |
 
 ---
 
@@ -104,10 +104,10 @@ bun run lint      # Biome formatting + JS rules
 
 ## Anti-patterns
 
-| Pattern | Why |
-|---------|-----|
-| `@tailwind base/components/utilities` | v3 artifact — use `@import "tailwindcss"` |
-| `tailwind.config.js` | v4 is CSS-first |
-| Arbitrary hex `bg-[#ff0000]` | Use semantic token |
-| Dynamic class construction `` `bg-${color}-500` `` | JIT can't detect — use static strings |
-| Inline `style` for static values | Tailwind utilities |
+| Pattern                                            | Why                                       |
+| -------------------------------------------------- | ----------------------------------------- |
+| `@tailwind base/components/utilities`              | v3 artifact — use `@import "tailwindcss"` |
+| `tailwind.config.js`                               | v4 is CSS-first                           |
+| Arbitrary hex `bg-[#ff0000]`                       | Use semantic token                        |
+| Dynamic class construction `` `bg-${color}-500` `` | JIT can't detect — use static strings     |
+| Inline `style` for static values                   | Tailwind utilities                        |

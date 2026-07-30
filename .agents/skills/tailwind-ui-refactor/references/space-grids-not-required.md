@@ -8,6 +8,7 @@ tags: space, grid, layout, fixed-width, flexible
 Not everything needs to live in a flexible grid. Sidebars, form fields, and fixed-content areas work better with fixed widths. Stretching a 200px sidebar to fill 25% of a 2560px screen looks wrong.
 
 **Incorrect (sidebar stretches with grid):**
+
 ```html
 <div class="grid grid-cols-4 gap-6">
   <aside class="col-span-1 rounded-lg bg-gray-50 p-4">
@@ -24,6 +25,7 @@ Not everything needs to live in a flexible grid. Sidebars, form fields, and fixe
 ```
 
 **Correct (fixed sidebar, flexible content):**
+
 ```html
 <div class="flex gap-8">
   <aside class="w-56 shrink-0 rounded-lg bg-gray-50 p-4">

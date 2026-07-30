@@ -8,6 +8,7 @@ tags: hier, icons, sizing, balance, alignment
 Icons next to text should feel balanced with the text, not compete with it. An icon that's too large pulls attention from the content. When icons are decorative, keep them smaller. When icons ARE the primary content (e.g., feature grid), they can be larger.
 
 **Incorrect (icon dominates the text):**
+
 ```html
 <div class="flex items-center gap-2">
   <svg class="h-8 w-8 text-blue-600"><!-- icon --></svg>
@@ -16,6 +17,7 @@ Icons next to text should feel balanced with the text, not compete with it. An i
 ```
 
 **Correct (icon balances with text):**
+
 ```html
 <div class="flex items-center gap-1.5">
   <svg class="h-4 w-4 text-gray-400"><!-- icon --></svg>

@@ -8,6 +8,7 @@ tags: color, palette, design-system, tailwind-config, consistency
 Picking colors one at a time leads to 47 slightly different blues across the app. Define your full palette in advance: 8-10 shades per color (grays, primary, 2-3 accents). Use Tailwind's theme configuration.
 
 **Incorrect (ad-hoc hex values everywhere):**
+
 ```html
 <div>
   <h3 class="text-[#2d3748]">Account Settings</h3>
@@ -18,6 +19,7 @@ Picking colors one at a time leads to 47 slightly different blues across the app
 ```
 
 **Correct (systematic palette from Tailwind config):**
+
 ```html
 <div>
   <h3 class="text-gray-900">Account Settings</h3>

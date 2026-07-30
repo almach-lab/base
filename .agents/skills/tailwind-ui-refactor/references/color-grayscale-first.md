@@ -8,6 +8,7 @@ tags: color, grayscale, hierarchy, process, design-flow
 Designing in grayscale forces you to establish hierarchy through spacing, size, weight, and contrast. Color added on top of good hierarchy enhances it. Color used to compensate for bad hierarchy masks the problem.
 
 **Incorrect (relying on color for hierarchy):**
+
 ```html
 <div class="space-y-2 p-4">
   <h3 class="text-base text-blue-800">Project Alpha</h3>
@@ -18,11 +19,15 @@ Designing in grayscale forces you to establish hierarchy through spacing, size, 
 ```
 
 **Correct (hierarchy works in grayscale, color only enhances):**
+
 ```html
 <!-- Step 1: establish hierarchy in grayscale -->
 <div class="space-y-2 p-4">
   <h3 class="text-base font-semibold text-gray-900">Project Alpha</h3>
-  <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">Active</span>
+  <span
+    class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600"
+    >Active</span
+  >
   <p class="text-sm text-gray-600">Design Phase — 3 tasks remaining</p>
   <p class="text-xs text-gray-500">Due: March 15</p>
 </div>
@@ -30,7 +35,10 @@ Designing in grayscale forces you to establish hierarchy through spacing, size, 
 <!-- Step 2: add color to enhance (only badge changes) -->
 <div class="space-y-2 p-4">
   <h3 class="text-base font-semibold text-gray-900">Project Alpha</h3>
-  <span class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">Active</span>
+  <span
+    class="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700"
+    >Active</span
+  >
   <p class="text-sm text-gray-600">Design Phase — 3 tasks remaining</p>
   <p class="text-xs text-gray-500">Due: March 15</p>
 </div>

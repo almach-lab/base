@@ -22,14 +22,14 @@ apps/docs/src/
 
 ## WHERE TO LOOK
 
-| Task | Location |
-|------|----------|
-| Sidebar nav | `layouts/Layout.astro` → `sidebarGroups` |
-| Component registry | `lib/doc-components.ts` |
-| Page routing | `components/AppShell.tsx` |
-| Component demo | `components/pages/components/<name>.tsx` |
-| Theme customizer | `pages/theme.astro` + `components/pages/theme.tsx` |
-| Search | `components/SearchCommand.tsx` |
+| Task               | Location                                           |
+| ------------------ | -------------------------------------------------- |
+| Sidebar nav        | `layouts/Layout.astro` → `sidebarGroups`           |
+| Component registry | `lib/doc-components.ts`                            |
+| Page routing       | `components/AppShell.tsx`                          |
+| Component demo     | `components/pages/components/<name>.tsx`           |
+| Theme customizer   | `pages/theme.astro` + `components/pages/theme.tsx` |
+| Search             | `components/SearchCommand.tsx`                     |
 
 ## CONVENTIONS
 
@@ -48,9 +48,9 @@ bun run build:docs    # Static build
 
 ## ANTI-PATTERNS
 
-| Pattern | Instead |
-|---------|---------|
-| ThemeCustomizer in header | `/theme` page |
+| Pattern                            | Instead                      |
+| ---------------------------------- | ---------------------------- |
+| ThemeCustomizer in header          | `/theme` page                |
 | Drift between AppShell and sidebar | `doc-components.ts` registry |
-| `.tsx` files in `src/pages/` | `.astro` pages only |
-| 800+ line showcase pages | 3–4 representative examples |
+| `.tsx` files in `src/pages/`       | `.astro` pages only          |
+| 800+ line showcase pages           | 3–4 representative examples  |

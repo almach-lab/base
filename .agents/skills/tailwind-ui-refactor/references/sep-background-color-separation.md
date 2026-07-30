@@ -8,6 +8,7 @@ tags: sep, background, sections, containers, alternating
 Instead of using a border between adjacent sections, give them different background colors. The contrast between backgrounds creates a natural boundary that feels lighter than a border.
 
 **Incorrect (border-separated sections):**
+
 ```html
 <div class="border-b bg-white p-6">
   <h2 class="text-xl font-bold">Profile</h2>
@@ -20,6 +21,7 @@ Instead of using a border between adjacent sections, give them different backgro
 ```
 
 **Correct (alternating backgrounds separate sections):**
+
 ```html
 <div class="bg-white p-6">
   <h2 class="text-xl font-bold text-gray-900">Profile</h2>

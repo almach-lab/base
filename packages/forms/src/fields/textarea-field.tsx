@@ -10,8 +10,10 @@ import {
 } from "../form.js";
 import { useFieldContext } from "../form-context.js";
 
-export interface TextareaFieldProps
-  extends Omit<TextareaProps, "name" | "value" | "onChange" | "onBlur"> {
+export interface TextareaFieldProps extends Omit<
+  TextareaProps,
+  "name" | "value" | "onChange" | "onBlur"
+> {
   label?: string;
   description?: string;
   required?: boolean;

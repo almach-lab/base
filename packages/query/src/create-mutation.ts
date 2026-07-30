@@ -5,8 +5,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-export interface CreateMutationOptions<TData, TError, TVariables, TContext>
-  extends UseMutationOptions<TData, TError, TVariables, TContext> {
+export interface CreateMutationOptions<
+  TData,
+  TError,
+  TVariables,
+  TContext,
+> extends UseMutationOptions<TData, TError, TVariables, TContext> {
   /** Keys to invalidate on success */
   invalidates?: QueryKey[];
 }

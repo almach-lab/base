@@ -12,6 +12,7 @@ Comprehensive UI refactoring guide based on Refactoring UI by Adam Wathan & Stev
 ## When to Apply
 
 Reference these guidelines when:
+
 - Refactoring existing Tailwind CSS components
 - Writing new UI with Tailwind utility classes
 - Reviewing code for visual hierarchy and spacing issues
@@ -20,17 +21,17 @@ Reference these guidelines when:
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Design Intent | CRITICAL | `intent-` |
-| 2 | Visual Hierarchy | CRITICAL | `hier-` |
-| 3 | Layout & Spacing | CRITICAL | `space-` |
-| 4 | Typography | HIGH | `type-` |
-| 5 | Color Systems | HIGH | `color-` |
-| 6 | Depth & Shadows | MEDIUM | `depth-` |
-| 7 | Borders & Separation | MEDIUM | `sep-` |
-| 8 | Images & Content | LOW-MEDIUM | `img-` |
-| 9 | Polish & Details | LOW | `polish-` |
+| Priority | Category             | Impact     | Prefix    |
+| -------- | -------------------- | ---------- | --------- |
+| 1        | Design Intent        | CRITICAL   | `intent-` |
+| 2        | Visual Hierarchy     | CRITICAL   | `hier-`   |
+| 3        | Layout & Spacing     | CRITICAL   | `space-`  |
+| 4        | Typography           | HIGH       | `type-`   |
+| 5        | Color Systems        | HIGH       | `color-`  |
+| 6        | Depth & Shadows      | MEDIUM     | `depth-`  |
+| 7        | Borders & Separation | MEDIUM     | `sep-`    |
+| 8        | Images & Content     | LOW-MEDIUM | `img-`    |
+| 9        | Polish & Details     | LOW        | `polish-` |
 
 ## Quick Reference
 
@@ -133,8 +134,8 @@ Read individual reference files for detailed explanations and code examples:
 
 ## Reference Files
 
-| File | Description |
-|------|-------------|
-| [references/_sections.md](references/_sections.md) | Category definitions and ordering |
-| [assets/templates/_template.md](assets/templates/_template.md) | Template for new rules |
-| [metadata.json](metadata.json) | Version and reference information |
+| File                                                           | Description                       |
+| -------------------------------------------------------------- | --------------------------------- |
+| [references/_sections.md](references/_sections.md)             | Category definitions and ordering |
+| [assets/templates/_template.md](assets/templates/_template.md) | Template for new rules            |
+| [metadata.json](metadata.json)                                 | Version and reference information |

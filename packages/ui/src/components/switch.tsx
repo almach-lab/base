@@ -19,7 +19,8 @@ type SwitchPrimitiveProps = React.ComponentPropsWithoutRef<
 >;
 
 export interface SwitchProps
-  extends Omit<SwitchPrimitiveProps, "children">,
+  extends
+    Omit<SwitchPrimitiveProps, "children">,
     VariantProps<typeof switchTrackVariants> {
   children?: React.ReactNode;
 }

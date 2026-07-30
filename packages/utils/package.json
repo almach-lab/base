@@ -2,6 +2,20 @@
   "name": "@almach/utils",
   "version": "2.0.0",
   "description": "Shared utilities for Based UI",
+  "contributors": [
+    {
+      "name": "rafaalrazzak",
+      "url": "https://github.com/rafaalrazzak"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/almach-lab/base",
+    "directory": "packages/utils"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -12,34 +26,20 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && bun ../../scripts/fix-esm.ts dist",
     "dev": "tsc -p tsconfig.build.json --watch",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
-  "devDependencies": {
-    "typescript": "^5.7.3"
-  },
   "dependencies": {
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.0.1"
   },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/almach-lab/base",
-    "directory": "packages/utils"
-  },
-  "contributors": [
-    {
-      "name": "rafaalrazzak",
-      "url": "https://github.com/rafaalrazzak"
-    }
-  ]
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
 }

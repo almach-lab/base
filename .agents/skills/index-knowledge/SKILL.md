@@ -69,12 +69,12 @@ find . -type f -name "AGENTS.md" -not -path '*/node_modules/*' 2>/dev/null
 
 ### Almach-specific locations (always consider)
 
-| Path | Why |
-|------|-----|
-| `packages/ui/` | Component library, `_styles.ts` tokens |
-| `packages/forms/` | Form field patterns |
-| `packages/query/` | Query/mutation factories |
-| `apps/docs/` | Astro docs shell, demo pages |
+| Path              | Why                                    |
+| ----------------- | -------------------------------------- |
+| `packages/ui/`    | Component library, `_styles.ts` tokens |
+| `packages/forms/` | Form field patterns                    |
+| `packages/query/` | Query/mutation factories               |
+| `apps/docs/`      | Astro docs shell, demo pages           |
 
 **Merge findings. Mark "discovery" completed.**
 
@@ -82,19 +82,19 @@ find . -type f -name "AGENTS.md" -not -path '*/node_modules/*' 2>/dev/null
 
 ## Phase 2: Scoring & Location Decision
 
-| Factor | Weight | High Threshold |
-|--------|--------|----------------|
-| File count | 3x | >20 |
-| Subdir count | 2x | >5 |
-| Module boundary | 2x | Has index.ts |
-| Unique patterns | 1x | Own config/AGENTS.md |
+| Factor          | Weight | High Threshold       |
+| --------------- | ------ | -------------------- |
+| File count      | 3x     | >20                  |
+| Subdir count    | 2x     | >5                   |
+| Module boundary | 2x     | Has index.ts         |
+| Unique patterns | 1x     | Own config/AGENTS.md |
 
-| Score | Action |
-|-------|--------|
-| **Root (.)** | ALWAYS create/update |
-| **>15** | Create AGENTS.md |
-| **8-15** | Create if distinct domain |
-| **<8** | Skip (parent covers) |
+| Score        | Action                    |
+| ------------ | ------------------------- |
+| **Root (.)** | ALWAYS create/update      |
+| **>15**      | Create AGENTS.md          |
+| **8-15**     | Create if distinct domain |
+| **<8**       | Skip (parent covers)      |
 
 ---
 
@@ -109,20 +109,25 @@ find . -type f -name "AGENTS.md" -not -path '*/node_modules/*' 2>/dev/null
 **Commit:** {SHORT_SHA}
 
 ## OVERVIEW
+
 {1-2 sentences: what + core stack}
 
 ## STRUCTURE
+
 {tree with non-obvious dirs annotated}
 
 ## WHERE TO LOOK
+
 | Task | Location | Notes |
 
 ## CONVENTIONS
+
 {ONLY deviations from standard — Bun, Tailwind v4, React Aria}
 
 ## ANTI-PATTERNS (THIS PROJECT)
 
 ## COMMANDS
+
 \`\`\`bash
 bun install && bun run build && bun run lint
 \`\`\`

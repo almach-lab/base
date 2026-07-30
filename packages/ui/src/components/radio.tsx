@@ -29,10 +29,8 @@ const RadioGroupRoot = React.forwardRef<
 RadioGroupRoot.displayName = "Radio.Group";
 
 interface RadioItemProps
-  extends Omit<
-      React.ComponentPropsWithoutRef<typeof RadioPrimitive>,
-      "children"
-    >,
+  extends
+    Omit<React.ComponentPropsWithoutRef<typeof RadioPrimitive>, "children">,
     VariantProps<typeof radioIndicatorVariants> {
   label?: string;
   description?: string;

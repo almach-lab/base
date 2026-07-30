@@ -59,11 +59,10 @@ const TabsVariantCtx = React.createContext<"pill" | "underline" | "minimal">(
 
 type TabsKey = string | number;
 
-interface TabsProps
-  extends Omit<
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive>,
-    "selectedKey" | "defaultSelectedKey"
-  > {
+interface TabsProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive>,
+  "selectedKey" | "defaultSelectedKey"
+> {
   value?: TabsKey | undefined;
   defaultValue?: TabsKey | undefined;
 }
@@ -83,7 +82,8 @@ const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
 TabsRoot.displayName = "Tabs";
 
 interface TabsListProps
-  extends React.ComponentPropsWithoutRef<typeof TabList>,
+  extends
+    React.ComponentPropsWithoutRef<typeof TabList>,
     VariantProps<typeof tabsListVariants> {}
 
 const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
@@ -105,8 +105,10 @@ const TabsList = React.forwardRef<HTMLDivElement, TabsListProps>(
 );
 TabsList.displayName = "Tabs.List";
 
-interface TabsTriggerProps
-  extends Omit<React.ComponentPropsWithoutRef<typeof Tab>, "id"> {
+interface TabsTriggerProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof Tab>,
+  "id"
+> {
   value?: TabsKey | undefined;
 }
 
@@ -125,8 +127,10 @@ const TabsTrigger = React.forwardRef<HTMLDivElement, TabsTriggerProps>(
 );
 TabsTrigger.displayName = "Tabs.Trigger";
 
-interface TabsContentProps
-  extends Omit<React.ComponentPropsWithoutRef<typeof TabPanel>, "id"> {
+interface TabsContentProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof TabPanel>,
+  "id"
+> {
   value?: TabsKey | undefined;
 }
 

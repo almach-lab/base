@@ -8,11 +8,15 @@ tags: intent, audit, purpose, user-goal, information-hierarchy
 Before adding or changing any Tailwind classes, read the component and answer: What is the user trying to accomplish on this screen? What is the most important piece of data? Does every element contribute to that goal? Styling purposeless elements wastes effort and adds noise.
 
 **Incorrect (styling everything without questioning purpose):**
+
 ```html
 <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
   <div class="flex items-center justify-between">
     <h3 class="text-lg font-semibold text-gray-900">Order #4521</h3>
-    <span class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">Completed</span>
+    <span
+      class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700"
+      >Completed</span
+    >
   </div>
   <p class="mt-2 text-sm text-gray-500">Placed on March 12, 2025</p>
   <p class="mt-1 text-sm text-gray-500">Customer since 2019</p>
@@ -24,12 +28,16 @@ Before adding or changing any Tailwind classes, read the component and answer: W
 ```
 
 **Correct (audit first — keep only what serves the user's task):**
+
 ```html
 <!-- User task: quickly review order status and amount -->
 <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
   <div class="flex items-center justify-between">
     <h3 class="text-lg font-semibold text-gray-900">Order #4521</h3>
-    <span class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">Completed</span>
+    <span
+      class="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700"
+      >Completed</span
+    >
   </div>
   <p class="mt-2 text-sm text-gray-500">March 12, 2025</p>
   <p class="mt-3 text-base font-semibold text-gray-900">$127.50</p>

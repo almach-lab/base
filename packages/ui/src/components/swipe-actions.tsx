@@ -70,8 +70,7 @@ export function useSwipeActions() {
 }
 
 /* ── Root ─────────────────────────────────────────────────────────────────── */
-export interface SwipeActionsProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface SwipeActionsProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Disable all swipe interactions. @default false */
   disabled?: boolean;
   /** Called when the revealed side changes (null = closed). */
@@ -575,8 +574,7 @@ function SwipeActionsBottom({
 }
 
 /* ── Action button ────────────────────────────────────────────────────────── */
-export interface SwipeActionProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface SwipeActionProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: SwipeActionVariant;
   /** Auto-close the panel after clicking. @default true */
   closeOnAction?: boolean;

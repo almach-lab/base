@@ -9,6 +9,7 @@
 **Tech Stack:** Bun workspaces, TypeScript strict, Tailwind CSS v4, React Aria Components, class-variance-authority, Astro 6 docs app.
 
 **Already completed (do not redo):**
+
 - `apps/docs` — Fumadocs-style shell, stacked `ComponentDoc`, cleaner landing/home
 - `packages/ui/src/components/_styles.ts` — shared field/control tokens
 - Core primitives: `button`, `input`, `textarea`, `checkbox`, `switch`, `radio`, `label`, `badge`, `alert`, `card`, `progress`
@@ -17,25 +18,25 @@
 
 ## File map
 
-| File | Responsibility |
-|------|----------------|
-| `packages/ui/src/components/_styles.ts` | Single source for focus, disabled, field, overlay, menu, surface variants |
-| `packages/ui/src/components/_motion.ts` | Motion duration CSS vars (already exists) |
-| `packages/ui/src/components/popover.tsx` | Popover surface + placement helper |
-| `packages/ui/src/components/dropdown-menu.tsx` | Menu items, sections, submenus |
-| `packages/ui/src/components/dialog.tsx` | Modal dialog (custom portal impl) |
-| `packages/ui/src/components/tooltip.tsx` | Tooltip surface |
-| `packages/ui/src/components/command.tsx` | Command palette (uses Dialog) |
-| `packages/ui/src/components/select.tsx` | Custom select (568 lines — high priority) |
-| `packages/ui/src/components/calendar.tsx` | Date picker grid |
-| `packages/ui/src/components/table.tsx` | Data table |
-| `packages/ui/src/components/sidebar.tsx` | App sidebar |
-| `packages/ui/src/components/modal.tsx` | Responsive dialog/drawer bridge |
-| `packages/ui/src/components/drawer.tsx` | Bottom/side drawer |
-| `packages/ui/src/components/combobox.tsx` | Deprecated re-export stub — remove |
-| `packages/ui/src/components/layered-card.tsx` | Deprecated re-export stub — remove |
-| `apps/docs/src/components/ThemeCustomizer.tsx` | Demote from header (1950 lines) |
-| `apps/docs/src/lib/doc-components.ts` | Nav registry (single source of truth) |
+| File                                           | Responsibility                                                            |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| `packages/ui/src/components/_styles.ts`        | Single source for focus, disabled, field, overlay, menu, surface variants |
+| `packages/ui/src/components/_motion.ts`        | Motion duration CSS vars (already exists)                                 |
+| `packages/ui/src/components/popover.tsx`       | Popover surface + placement helper                                        |
+| `packages/ui/src/components/dropdown-menu.tsx` | Menu items, sections, submenus                                            |
+| `packages/ui/src/components/dialog.tsx`        | Modal dialog (custom portal impl)                                         |
+| `packages/ui/src/components/tooltip.tsx`       | Tooltip surface                                                           |
+| `packages/ui/src/components/command.tsx`       | Command palette (uses Dialog)                                             |
+| `packages/ui/src/components/select.tsx`        | Custom select (568 lines — high priority)                                 |
+| `packages/ui/src/components/calendar.tsx`      | Date picker grid                                                          |
+| `packages/ui/src/components/table.tsx`         | Data table                                                                |
+| `packages/ui/src/components/sidebar.tsx`       | App sidebar                                                               |
+| `packages/ui/src/components/modal.tsx`         | Responsive dialog/drawer bridge                                           |
+| `packages/ui/src/components/drawer.tsx`        | Bottom/side drawer                                                        |
+| `packages/ui/src/components/combobox.tsx`      | Deprecated re-export stub — remove                                        |
+| `packages/ui/src/components/layered-card.tsx`  | Deprecated re-export stub — remove                                        |
+| `apps/docs/src/components/ThemeCustomizer.tsx` | Demote from header (1950 lines)                                           |
+| `apps/docs/src/lib/doc-components.ts`          | Nav registry (single source of truth)                                     |
 
 ---
 
@@ -44,6 +45,7 @@
 ### Task 1: Add overlay and menu variants to `_styles.ts`
 
 **Files:**
+
 - Modify: `packages/ui/src/components/_styles.ts`
 - Modify: `packages/ui/src/index.ts` (export new tokens)
 
@@ -119,6 +121,7 @@ git commit -m "refactor(ui): add shared overlay and menu style tokens"
 ### Task 2: Standardize Popover
 
 **Files:**
+
 - Modify: `packages/ui/src/components/popover.tsx`
 
 - [ ] **Step 1: Replace inline surface classes**
@@ -157,6 +160,7 @@ git commit -m "refactor(ui): standardize Popover surface tokens"
 ### Task 3: Standardize DropdownMenu
 
 **Files:**
+
 - Modify: `packages/ui/src/components/dropdown-menu.tsx`
 
 - [ ] **Step 1: Replace menu item classes**
@@ -188,6 +192,7 @@ git commit -m "refactor(ui): standardize DropdownMenu tokens"
 ### Task 4: Standardize Tooltip
 
 **Files:**
+
 - Modify: `packages/ui/src/components/tooltip.tsx`
 
 - [ ] **Step 1: Apply TOOLTIP_SURFACE**
@@ -217,6 +222,7 @@ git commit -m "refactor(ui): standardize Tooltip surface"
 ### Task 5: Standardize Dialog
 
 **Files:**
+
 - Modify: `packages/ui/src/components/dialog.tsx`
 
 - [ ] **Step 1: Overlay uses OVERLAY_BACKDROP**
@@ -246,6 +252,7 @@ git commit -m "refactor(ui): standardize Dialog overlay tokens"
 ### Task 6: Standardize Command
 
 **Files:**
+
 - Modify: `packages/ui/src/components/command.tsx`
 
 - [ ] **Step 1: Root uses OVERLAY_SURFACE pattern**
@@ -279,6 +286,7 @@ git commit -m "refactor(ui): standardize Command palette styles"
 ### Task 7: Simplify Select (largest win)
 
 **Files:**
+
 - Modify: `packages/ui/src/components/select.tsx`
 
 **Problem:** Custom classes (`rounded-2xl`, `border-border/60`, `h-11`) diverge from `inputVariants`.
@@ -307,10 +315,7 @@ const selectPopupClasses = cn(OVERLAY_SURFACE, "p-1");
 - [ ] **Step 3: Items use MENU_ITEM**
 
 ```tsx
-const selectItemClasses = cn(
-  MENU_ITEM,
-  "grid grid-cols-[1rem_1fr] gap-2",
-);
+const selectItemClasses = cn(MENU_ITEM, "grid grid-cols-[1rem_1fr] gap-2");
 ```
 
 - [ ] **Step 4: Verify** — `/components/select` all examples, combobox search mode if present.
@@ -326,6 +331,7 @@ git commit -m "refactor(ui): align Select with shared field and menu tokens"
 ### Task 8: Calendar + Currency Input + Tag Input
 
 **Files:**
+
 - Modify: `packages/ui/src/components/calendar.tsx`
 - Modify: `packages/ui/src/components/currency-input.tsx`
 - Modify: `packages/ui/src/components/tag-input.tsx`
@@ -351,6 +357,7 @@ git commit -m "refactor(ui): standardize calendar, currency, tag-input"
 ### Task 9: Table, ScrollArea, Collapsible, Separator
 
 **Files:**
+
 - Modify: `packages/ui/src/components/table.tsx`
 - Modify: `packages/ui/src/components/scroll-area.tsx`
 - Modify: `packages/ui/src/components/collapsible.tsx`
@@ -375,6 +382,7 @@ git commit -m "refactor(ui): standardize table, scroll-area, collapsible"
 ### Task 10: Tabs polish
 
 **Files:**
+
 - Modify: `packages/ui/src/components/tabs.tsx`
 
 - [ ] **Step 1: Import FOCUS_RING from `_styles.ts`** — replace inline `focus-visible:ring-2` in `tabsTriggerVariants`
@@ -394,6 +402,7 @@ git commit -m "refactor(ui): align Tabs focus and radius tokens"
 ### Task 11: Sidebar
 
 **Files:**
+
 - Modify: `packages/ui/src/components/sidebar.tsx`
 
 - [ ] **Step 1: Nav items** — match docs `DocSidebar` pattern: `text-sm`, `rounded-md`, `bg-accent` active, `text-muted-foreground` default
@@ -415,6 +424,7 @@ git commit -m "refactor(ui): clean Sidebar nav item styles"
 ### Task 12: Modal + Drawer bridge
 
 **Files:**
+
 - Modify: `packages/ui/src/components/modal.tsx`
 - Modify: `packages/ui/src/components/drawer.tsx`
 
@@ -435,6 +445,7 @@ git commit -m "refactor(ui): unify Modal and Drawer overlay tokens"
 ### Task 13: SwipeButton + SwipeActions (defer internals, style only)
 
 **Files:**
+
 - Modify: `packages/ui/src/components/swipe-button.tsx`
 - Modify: `packages/ui/src/components/swipe-actions.tsx`
 
@@ -455,6 +466,7 @@ git commit -m "refactor(ui): align swipe component surfaces"
 ### Task 14: Chart (style tokens only)
 
 **Files:**
+
 - Modify: `packages/ui/src/components/chart.tsx`
 
 - [ ] **Step 1: Ensure chart colors use `--chart-1`…`--chart-5`** — no hard-coded hex in component file
@@ -476,6 +488,7 @@ git commit -m "refactor(ui): chart semantic color tokens"
 ### Task 15: Remove deprecated stubs and fix docs registry
 
 **Files:**
+
 - Delete or trim: `packages/ui/src/components/combobox.tsx`
 - Delete or trim: `packages/ui/src/components/layered-card.tsx`
 - Delete: `apps/docs/src/components/pages/components/combobox.tsx`
@@ -508,6 +521,7 @@ git commit -m "chore: remove deprecated combobox/layered-card and fix docs regis
 ### Task 16: Demote ThemeCustomizer
 
 **Files:**
+
 - Modify: `apps/docs/src/components/navigation/DocsHeader.astro`
 - Modify: `apps/docs/src/layouts/Layout.astro`
 - Create: `apps/docs/src/pages/theme.astro`
@@ -532,6 +546,7 @@ git commit -m "refactor(docs): move ThemeCustomizer to dedicated /theme page"
 ### Task 17: Simplify Blocks page
 
 **Files:**
+
 - Modify: `apps/docs/src/components/pages/blocks.tsx`
 
 - [ ] **Step 1: Reduce from 865 lines** — keep 3–4 representative blocks (dashboard header, settings list, delete confirm)
@@ -569,16 +584,16 @@ Expected: exit 0, 41 static pages
 
 - [ ] **Step 4: Manual smoke checklist**
 
-| Route | Check |
-|-------|-------|
-| `/` | Hero, install tabs, package cards |
-| `/getting-started` | Steps, code blocks, TOC |
-| `/components` | Search, category list |
-| `/components/button` | Stacked examples, API table |
-| `/components/select` | Open, keyboard, error state |
-| `/components/dialog` | Open, escape, focus |
-| `/forms` | Live form submit + validation |
-| `/theme` | Customizer saves tokens |
+| Route                | Check                             |
+| -------------------- | --------------------------------- |
+| `/`                  | Hero, install tabs, package cards |
+| `/getting-started`   | Steps, code blocks, TOC           |
+| `/components`        | Search, category list             |
+| `/components/button` | Stacked examples, API table       |
+| `/components/select` | Open, keyboard, error state       |
+| `/components/dialog` | Open, escape, focus               |
+| `/forms`             | Live form submit + validation     |
+| `/theme`             | Customizer saves tokens           |
 
 - [ ] **Step 5: Dark mode** — toggle on 3 pages, no contrast failures on inputs/buttons
 
@@ -586,17 +601,17 @@ Expected: exit 0, 41 static pages
 
 ## API conventions (enforce on every touched component)
 
-| Concern | Standard |
-|---------|----------|
-| Controlled state | `open` + `onOpenChange`, `value` + `onValueChange` |
-| Boolean dismiss | `isDisabled`, `isRequired` (React Aria) |
-| Error state | `error?: boolean` → `aria-invalid` + `fieldErrorClass()` |
-| className | Always merged last via `cn()` |
-| Variants | `cva` in `_styles.ts` or co-located, exported as `*Variants` |
-| Motion | `MOTION_INTERACTIVE` (controls), `MOTION_OVERLAY` (popovers/dialogs) |
-| Radius | `rounded-md` inputs/buttons/menus, `rounded-lg` cards/dialogs |
-| Colors | Semantic tokens only — never `bg-blue-500` |
-| displayName | Required on all `forwardRef` exports |
+| Concern          | Standard                                                             |
+| ---------------- | -------------------------------------------------------------------- |
+| Controlled state | `open` + `onOpenChange`, `value` + `onValueChange`                   |
+| Boolean dismiss  | `isDisabled`, `isRequired` (React Aria)                              |
+| Error state      | `error?: boolean` → `aria-invalid` + `fieldErrorClass()`             |
+| className        | Always merged last via `cn()`                                        |
+| Variants         | `cva` in `_styles.ts` or co-located, exported as `*Variants`         |
+| Motion           | `MOTION_INTERACTIVE` (controls), `MOTION_OVERLAY` (popovers/dialogs) |
+| Radius           | `rounded-md` inputs/buttons/menus, `rounded-lg` cards/dialogs        |
+| Colors           | Semantic tokens only — never `bg-blue-500`                           |
+| displayName      | Required on all `forwardRef` exports                                 |
 
 ---
 
@@ -613,13 +628,13 @@ Phase 1 → Phase 2 (Tasks 2–6) → Phase 3 Task 7 (Select) → Phase 3 Task 8
 
 ## Self-review
 
-| Spec requirement | Task |
-|------------------|------|
-| Shared shadcn-style tokens | Task 1 (extend), Tasks 2–14 (consume) |
-| All components cleaned | Phases 2–5 cover all 38 components |
+| Spec requirement                   | Task                                                |
+| ---------------------------------- | --------------------------------------------------- |
+| Shared shadcn-style tokens         | Task 1 (extend), Tasks 2–14 (consume)               |
+| All components cleaned             | Phases 2–5 cover all 38 components                  |
 | Customizable via exported variants | Task 1 exports + each component exports `*Variants` |
-| Docs aligned | Tasks 15–17 |
-| No regressions | Task 18 |
-| Reusable code | `_styles.ts` centralization throughout |
+| Docs aligned                       | Tasks 15–17                                         |
+| No regressions                     | Task 18                                             |
+| Reusable code                      | `_styles.ts` centralization throughout              |
 
 No placeholders. All file paths are absolute repo paths under `packages/ui` and `apps/docs`.

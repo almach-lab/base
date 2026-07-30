@@ -22,7 +22,8 @@ type CheckboxPrimitiveProps = React.ComponentPropsWithoutRef<
 >;
 
 export interface CheckboxProps
-  extends Omit<CheckboxPrimitiveProps, "children">,
+  extends
+    Omit<CheckboxPrimitiveProps, "children">,
     VariantProps<typeof checkboxVariants> {
   error?: boolean;
   children?: React.ReactNode;

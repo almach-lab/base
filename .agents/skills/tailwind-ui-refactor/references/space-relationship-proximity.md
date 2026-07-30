@@ -8,6 +8,7 @@ tags: space, proximity, grouping, gestalt, relationships
 Elements that are related should be closer together than elements that aren't. When spacing is uniform everywhere, users can't tell which elements belong together. Increase spacing between groups and decrease spacing within groups.
 
 **Incorrect (uniform spacing hides relationships):**
+
 ```html
 <div class="space-y-4">
   <label class="text-sm font-medium text-gray-700">Full Name</label>
@@ -20,6 +21,7 @@ Elements that are related should be closer together than elements that aren't. W
 ```
 
 **Correct (tight within groups, loose between):**
+
 ```html
 <div class="space-y-6">
   <div>

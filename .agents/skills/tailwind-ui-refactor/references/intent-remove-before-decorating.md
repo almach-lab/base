@@ -8,6 +8,7 @@ tags: intent, simplify, remove, reduce, declutter
 The instinct is to make every element look better. The better instinct is to ask whether each element needs to exist. Removing a wrapper div eliminates 5+ utility classes. Removing a decorative icon eliminates an SVG. Subtraction is the most effective design tool.
 
 **Incorrect (decorating everything instead of simplifying):**
+
 ```html
 <div class="space-y-3 rounded-lg border p-6">
   <div class="flex items-center gap-2">
@@ -29,6 +30,7 @@ The instinct is to make every element look better. The better instinct is to ask
 ```
 
 **Correct (remove redundant labels and icons, let data speak):**
+
 ```html
 <div class="space-y-3 rounded-lg border p-6">
   <h3 class="text-lg font-semibold text-gray-900">Jane Cooper</h3>

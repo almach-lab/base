@@ -36,13 +36,17 @@ import { MOTION_INTERACTIVE } from "./_motion.js";
 const thingVariants = cva(
   ["base-classes", MOTION_INTERACTIVE, FOCUS_RING, DISABLED_DATA],
   {
-    variants: { variant: { default: "...", outline: "..." }, size: { sm: "...", default: "..." } },
+    variants: {
+      variant: { default: "...", outline: "..." },
+      size: { sm: "...", default: "..." },
+    },
     defaultVariants: { variant: "default", size: "default" },
   },
 );
 
 export interface ThingProps
-  extends React.ComponentPropsWithoutRef<"div">,
+  extends
+    React.ComponentPropsWithoutRef<"div">,
     VariantProps<typeof thingVariants> {
   error?: boolean;
 }
@@ -93,27 +97,27 @@ DialogTrigger.displayName = "Dialog.Trigger";
 
 ## API conventions
 
-| Concern | Standard |
-|---------|----------|
-| Controlled open | `open` + `onOpenChange` |
-| Controlled value | `value` + `onValueChange` |
-| Disabled | `isDisabled` (React Aria) or `disabled` (native) |
-| Error | `error?: boolean` |
-| className | Always merged last |
+| Concern          | Standard                                         |
+| ---------------- | ------------------------------------------------ |
+| Controlled open  | `open` + `onOpenChange`                          |
+| Controlled value | `value` + `onValueChange`                        |
+| Disabled         | `isDisabled` (React Aria) or `disabled` (native) |
+| Error            | `error?: boolean`                                |
+| className        | Always merged last                               |
 
 ---
 
 ## Anti-patterns
 
-| Pattern | Instead |
-|---------|---------|
-| Missing `displayName` | Set after every `forwardRef` |
-| Raw Tailwind colors | Semantic tokens |
-| `as any` | Model types correctly |
-| Per-component CSS files | Tailwind utilities only |
-| `rounded-2xl` on inputs | `rounded-md` via `inputVariants` |
-| Long narrative comments | Self-explanatory code |
-| `{cond && A}{!cond && B}` | `{cond ? A : B}` |
+| Pattern                   | Instead                          |
+| ------------------------- | -------------------------------- |
+| Missing `displayName`     | Set after every `forwardRef`     |
+| Raw Tailwind colors       | Semantic tokens                  |
+| `as any`                  | Model types correctly            |
+| Per-component CSS files   | Tailwind utilities only          |
+| `rounded-2xl` on inputs   | `rounded-md` via `inputVariants` |
+| Long narrative comments   | Self-explanatory code            |
+| `{cond && A}{!cond && B}` | `{cond ? A : B}`                 |
 
 ---
 

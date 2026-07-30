@@ -8,6 +8,7 @@ tags: hier, dark-mode, colored-backgrounds, opacity, contrast
 On colored or dark backgrounds, you can't use gray text for de-emphasis — it looks disabled. Instead, reduce opacity or use a color that matches the background hue but with reduced saturation and increased lightness.
 
 **Incorrect (gray text on colored background looks broken):**
+
 ```html
 <div class="rounded-lg bg-blue-600 p-6">
   <h3 class="text-xl font-bold text-white">Premium Plan</h3>
@@ -17,6 +18,7 @@ On colored or dark backgrounds, you can't use gray text for de-emphasis — it l
 ```
 
 **Correct (opacity-based hierarchy on colored background):**
+
 ```html
 <div class="rounded-lg bg-blue-600 p-6">
   <h3 class="text-xl font-bold text-white">Premium Plan</h3>
@@ -26,6 +28,7 @@ On colored or dark backgrounds, you can't use gray text for de-emphasis — it l
 ```
 
 **Alternative (using opacity):**
+
 ```html
 <div class="rounded-lg bg-blue-600 p-6">
   <h3 class="text-xl font-bold text-white">Premium Plan</h3>

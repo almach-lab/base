@@ -8,6 +8,7 @@ tags: img, user-content, aspect-ratio, object-fit, layout
 User-uploaded images come in every size and aspect ratio. Without constraints, they break layouts. Always define a fixed container with object-fit: cover to crop images consistently.
 
 **Incorrect (uncontrolled image dimensions):**
+
 ```html
 <div class="flex gap-4">
   <img src="/avatar1.jpg" class="rounded-full" />
@@ -17,6 +18,7 @@ User-uploaded images come in every size and aspect ratio. Without constraints, t
 ```
 
 **Correct (fixed dimensions with object-fit):**
+
 ```html
 <div class="flex gap-4">
   <img src="/avatar1.jpg" class="h-10 w-10 rounded-full object-cover" />

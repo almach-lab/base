@@ -11,15 +11,15 @@ Astro 6 + React islands. Goal: Fumadocs-quality docs — fast navigation, clean 
 
 ## Architecture
 
-| Piece | File | Role |
-|-------|------|------|
-| Shell | `src/layouts/Layout.astro` | Header, sidebar, footer, mobile nav |
-| Content | `src/components/AppShell.tsx` | Lazy page map |
-| Component demos | `src/components/pages/components/*.tsx` | One per UI component |
-| Nav registry | `src/lib/doc-components.ts` | Single source of truth |
-| Doc sections | `src/components/component-doc.tsx` | Stacked examples + API table |
-| TOC | `src/components/OnThisPage.tsx` | Heading anchors |
-| Theme | `src/pages/theme.astro` + `ThemeCustomizer.tsx` | Full theme editor (not in header) |
+| Piece           | File                                            | Role                                |
+| --------------- | ----------------------------------------------- | ----------------------------------- |
+| Shell           | `src/layouts/Layout.astro`                      | Header, sidebar, footer, mobile nav |
+| Content         | `src/components/AppShell.tsx`                   | Lazy page map                       |
+| Component demos | `src/components/pages/components/*.tsx`         | One per UI component                |
+| Nav registry    | `src/lib/doc-components.ts`                     | Single source of truth              |
+| Doc sections    | `src/components/component-doc.tsx`              | Stacked examples + API table        |
+| TOC             | `src/components/OnThisPage.tsx`                 | Heading anchors                     |
+| Theme           | `src/pages/theme.astro` + `ThemeCustomizer.tsx` | Full theme editor (not in header)   |
 
 ---
 
@@ -73,10 +73,10 @@ Astro 6 + React islands. Goal: Fumadocs-quality docs — fast navigation, clean 
 
 ## Anti-patterns
 
-| Pattern | Fix |
-|---------|-----|
-| ThemeCustomizer in header | Dedicated `/theme` page |
-| 800+ line showcase pages | 3–4 representative examples |
-| Drift between AppShell and sidebar | Single registry |
-| `DocLayout.astro` duplicate shell | Use `Layout.astro` only |
-| Hard-coded colors in demos | Semantic tokens |
+| Pattern                            | Fix                         |
+| ---------------------------------- | --------------------------- |
+| ThemeCustomizer in header          | Dedicated `/theme` page     |
+| 800+ line showcase pages           | 3–4 representative examples |
+| Drift between AppShell and sidebar | Single registry             |
+| `DocLayout.astro` duplicate shell  | Use `Layout.astro` only     |
+| Hard-coded colors in demos         | Semantic tokens             |

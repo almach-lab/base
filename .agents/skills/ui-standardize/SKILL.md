@@ -22,13 +22,13 @@ Align `@almach/ui` and `apps/docs` to shadcn-quality: shared tokens, consistent 
 
 ## Token hierarchy
 
-| Layer | Source | Use for |
-|-------|--------|---------|
-| Field controls | `inputVariants`, `textareaVariants`, `FOCUS_RING`, `DISABLED_DATA` | inputs, selects, triggers |
-| Overlays | `OVERLAY_SURFACE`, `OVERLAY_BACKDROP`, `DIALOG_CONTENT`, `TOOLTIP_SURFACE` | popover, dialog, tooltip, command |
-| Menus | `MENU_ITEM`, `MENU_SEPARATOR`, `MENU_LABEL` | dropdown, select items, command items |
-| Motion | `MOTION_INTERACTIVE`, `MOTION_OVERLAY` | controls vs popovers |
-| Variants | `cva` + `*Variants` export | button, badge, card |
+| Layer          | Source                                                                     | Use for                               |
+| -------------- | -------------------------------------------------------------------------- | ------------------------------------- |
+| Field controls | `inputVariants`, `textareaVariants`, `FOCUS_RING`, `DISABLED_DATA`         | inputs, selects, triggers             |
+| Overlays       | `OVERLAY_SURFACE`, `OVERLAY_BACKDROP`, `DIALOG_CONTENT`, `TOOLTIP_SURFACE` | popover, dialog, tooltip, command     |
+| Menus          | `MENU_ITEM`, `MENU_SEPARATOR`, `MENU_LABEL`                                | dropdown, select items, command items |
+| Motion         | `MOTION_INTERACTIVE`, `MOTION_OVERLAY`                                     | controls vs popovers                  |
+| Variants       | `cva` + `*Variants` export                                                 | button, badge, card                   |
 
 **Never** hard-code `rounded-xl`, `border-border/60`, `shadow-2xl`, `duration-200 ease-[...]` on components — use shared tokens.
 
@@ -83,10 +83,10 @@ Manual: open `/components/<name>` — light + dark mode, keyboard nav, error sta
 
 ## Anti-patterns
 
-| Pattern | Fix |
-|---------|-----|
-| `bg-blue-500`, `text-gray-900` | Semantic token from `globals.css` |
-| Inline `style={{}}` for static values | Tailwind utilities |
-| `clsx` / `twMerge` directly | `cn()` from `@almach/utils` |
-| `tailwind.config.js` | CSS-first Tailwind v4 in `globals.css` |
-| Duplicate nav in AppShell + Layout | Single registry |
+| Pattern                               | Fix                                    |
+| ------------------------------------- | -------------------------------------- |
+| `bg-blue-500`, `text-gray-900`        | Semantic token from `globals.css`      |
+| Inline `style={{}}` for static values | Tailwind utilities                     |
+| `clsx` / `twMerge` directly           | `cn()` from `@almach/utils`            |
+| `tailwind.config.js`                  | CSS-first Tailwind v4 in `globals.css` |
+| Duplicate nav in AppShell + Layout    | Single registry                        |

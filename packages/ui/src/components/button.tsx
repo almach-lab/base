@@ -54,7 +54,8 @@ type AriaButtonProps = React.ComponentPropsWithoutRef<typeof AriaButton>;
 type AriaLinkProps = React.ComponentPropsWithoutRef<typeof AriaLink>;
 
 export interface ButtonProps
-  extends Omit<AriaButtonProps, "className" | "children" | "isDisabled">,
+  extends
+    Omit<AriaButtonProps, "className" | "children" | "isDisabled">,
     VariantProps<typeof buttonVariants> {
   href?: string;
   target?: string;

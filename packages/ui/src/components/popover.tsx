@@ -60,8 +60,10 @@ function toPlacement(
   return `${side} ${cross}` as PopoverPlacement;
 }
 
-interface PopoverContentProps
-  extends Omit<AriaPopoverProps, "children" | "className" | "offset"> {
+interface PopoverContentProps extends Omit<
+  AriaPopoverProps,
+  "children" | "className" | "offset"
+> {
   showArrow?: boolean;
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";

@@ -8,6 +8,7 @@ tags: color, grays, saturation, warmth, coolness, personality
 Pure grays feel cold and sterile. Adding a tiny bit of blue makes grays feel cool and professional. Adding yellow or orange warmth makes them feel friendly and inviting. Match gray temperature to your brand personality.
 
 **Incorrect (pure unsaturated grays):**
+
 ```html
 <div class="bg-[#f5f5f5] p-6">
   <h3 class="text-[#333333]">Team Settings</h3>
@@ -19,6 +20,7 @@ Pure grays feel cold and sterile. Adding a tiny bit of blue makes grays feel coo
 ```
 
 **Correct (cool-tinted grays using Tailwind's slate):**
+
 ```html
 <div class="bg-slate-50 p-6">
   <h3 class="text-slate-900">Team Settings</h3>

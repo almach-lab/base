@@ -4,14 +4,19 @@ import type {
   UseQueryOptions,
 } from "@tanstack/react-query";
 
-export interface QueryConfig<TData, TError = Error>
-  extends Omit<UseQueryOptions<TData, TError>, "queryKey" | "queryFn"> {
+export interface QueryConfig<TData, TError = Error> extends Omit<
+  UseQueryOptions<TData, TError>,
+  "queryKey" | "queryFn"
+> {
   queryKey: QueryKey;
   queryFn: () => Promise<TData>;
 }
 
-export interface MutationConfig<TData, TError = Error, TVariables = void>
-  extends UseMutationOptions<TData, TError, TVariables> {}
+export interface MutationConfig<
+  TData,
+  TError = Error,
+  TVariables = void,
+> extends UseMutationOptions<TData, TError, TVariables> {}
 
 export interface ServerActionConfig<TData, TVariables = void> {
   action: (input: TVariables) => Promise<ActionResult<TData>>;

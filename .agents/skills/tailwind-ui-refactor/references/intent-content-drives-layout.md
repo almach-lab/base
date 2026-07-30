@@ -8,6 +8,7 @@ tags: intent, content-first, layout, data, real-content
 Designing a layout and then pouring content into it leads to components that fight their data. A two-column grid looks great with equal-length items but breaks with one 3-word item and one paragraph. Start from the actual content shape, then find the right container for it.
 
 **Incorrect (forcing content into a pre-decided grid):**
+
 ```html
 <div class="grid grid-cols-3 gap-6">
   <div class="rounded-lg border p-4">
@@ -15,8 +16,12 @@ Designing a layout and then pouring content into it leads to components that fig
     <p class="mt-2 text-3xl font-bold text-gray-900">$48,290</p>
   </div>
   <div class="rounded-lg border p-4">
-    <h3 class="font-semibold text-gray-900">Detailed Customer Acquisition Cost Breakdown</h3>
-    <p class="mt-2 text-3xl font-bold text-gray-900">$12.40 avg (paid: $18.20, organic: $3.10, referral: $8.50)</p>
+    <h3 class="font-semibold text-gray-900">
+      Detailed Customer Acquisition Cost Breakdown
+    </h3>
+    <p class="mt-2 text-3xl font-bold text-gray-900">
+      $12.40 avg (paid: $18.20, organic: $3.10, referral: $8.50)
+    </p>
   </div>
   <div class="rounded-lg border p-4">
     <h3 class="font-semibold text-gray-900">NPS</h3>
@@ -26,6 +31,7 @@ Designing a layout and then pouring content into it leads to components that fig
 ```
 
 **Correct (layout adapts to content shape):**
+
 ```html
 <div class="flex flex-wrap gap-6">
   <div class="rounded-lg border p-4">
@@ -35,7 +41,9 @@ Designing a layout and then pouring content into it leads to components that fig
   <div class="min-w-[280px] rounded-lg border p-4">
     <h3 class="text-sm font-medium text-gray-500">Customer Acquisition Cost</h3>
     <p class="mt-1 text-2xl font-bold text-gray-900">$12.40 avg</p>
-    <p class="mt-1 text-sm text-gray-500">Paid $18.20 · Organic $3.10 · Referral $8.50</p>
+    <p class="mt-1 text-sm text-gray-500">
+      Paid $18.20 · Organic $3.10 · Referral $8.50
+    </p>
   </div>
   <div class="rounded-lg border p-4">
     <h3 class="text-sm font-medium text-gray-500">NPS</h3>

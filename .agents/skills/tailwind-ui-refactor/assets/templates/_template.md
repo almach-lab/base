@@ -8,6 +8,7 @@ tags: category-prefix, technique, related-concept
 Brief explanation of WHY this matters. Focus on visual impact and user perception.
 
 **Incorrect (description of what's wrong):**
+
 ```html
 <div class="bad-classes-here">
   <p class="more-bad-classes">Content</p>
@@ -15,6 +16,7 @@ Brief explanation of WHY this matters. Focus on visual impact and user perceptio
 ```
 
 **Correct (description of what's right):**
+
 ```html
 <div class="good-classes-here">
   <p class="more-good-classes">Content</p>

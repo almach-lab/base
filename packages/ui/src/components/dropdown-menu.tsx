@@ -177,8 +177,10 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
   );
 }
 
-interface DropdownMenuItemProps
-  extends Omit<AriaMenuItemProps, "className" | "isDisabled"> {
+interface DropdownMenuItemProps extends Omit<
+  AriaMenuItemProps,
+  "className" | "isDisabled"
+> {
   inset?: boolean;
   destructive?: boolean;
   disabled?: boolean;
@@ -346,8 +348,9 @@ function DropdownMenuSeparator({ className, ...props }: SeparatorProps) {
   }
 ).getCollectionNode;
 
-interface DropdownMenuSectionProps<T extends object>
-  extends AriaMenuSectionProps<T> {
+interface DropdownMenuSectionProps<
+  T extends object,
+> extends AriaMenuSectionProps<T> {
   title?: string;
   items?: Iterable<T>;
 }
