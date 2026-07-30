@@ -172,191 +172,199 @@ const InputDate = React.forwardRef<HTMLDivElement, InputDateProps>(
     },
     ref,
   ) {
-  const { order, sep } = React.useMemo(() => parseFormat(format), [format]);
-  const flatIds = React.useMemo(
-    () => order.map((key) => makeFlatId("", key)),
-    [order],
-  );
-
-  const [seg, setSeg] = React.useState(() =>
-    value && !Number.isNaN(value.getTime())
-      ? dateToSegments(value)
-      : { month: "", day: "", year: "" },
-  );
-  const [active, setActive] = React.useState<string | null>(null);
-  const [calOpen, setCalOpen] = React.useState(false);
-  const prevFormatRef = React.useRef(format);
-  // See input-date-range.tsx's matching flags: emit()'s own onChange echoes
-  // back through `value` (even a plain useState consumer stores it verbatim),
-  // and without this the sync effect below would re-derive segments from
-  // that echo and could stomp on a keystroke that landed between the emit
-  // and the resulting re-render.
-  const skipSyncRef = React.useRef(false);
-
-  const refs = {
-    month: React.useRef<HTMLInputElement>(null),
-    day: React.useRef<HTMLInputElement>(null),
-    year: React.useRef<HTMLInputElement>(null),
-  };
-  const { focus, focusNext, focusPrev } = createFocusController(flatIds, refs);
-
-  React.useEffect(() => {
-    if (skipSyncRef.current) {
-      skipSyncRef.current = false;
-      return;
-    }
-    if (!value) {
-      setSeg({ month: "", day: "", year: "" });
-      return;
-    }
-    if (Number.isNaN(value.getTime())) return;
-    const next = dateToSegments(value);
-    setSeg((prev) =>
-      prev.month === next.month &&
-      prev.day === next.day &&
-      prev.year === next.year
-        ? prev
-        : next,
+    const { order, sep } = React.useMemo(() => parseFormat(format), [format]);
+    const flatIds = React.useMemo(
+      () => order.map((key) => makeFlatId("", key)),
+      [order],
     );
-  }, [value]);
 
-  const emit = (next: Record<"month" | "day" | "year", string>) => {
-    skipSyncRef.current = true;
-    onChange?.(segmentsToDate(next));
-  };
+    const [seg, setSeg] = React.useState(() =>
+      value && !Number.isNaN(value.getTime())
+        ? dateToSegments(value)
+        : { month: "", day: "", year: "" },
+    );
+    const [active, setActive] = React.useState<string | null>(null);
+    const [calOpen, setCalOpen] = React.useState(false);
+    const prevFormatRef = React.useRef(format);
+    // See input-date-range.tsx's matching flags: emit()'s own onChange echoes
+    // back through `value` (even a plain useState consumer stores it verbatim),
+    // and without this the sync effect below would re-derive segments from
+    // that echo and could stomp on a keystroke that landed between the emit
+    // and the resulting re-render.
+    const skipSyncRef = React.useRef(false);
 
-  // Only move focus on an actual format change while this field is active.
-  // This avoids offscreen docs thumbnails stealing focus and causing scroll jumps.
-  React.useEffect(() => {
-    if (prevFormatRef.current === format) return;
-    prevFormatRef.current = format;
-    if (!active || disabled) return;
-    const target = flatIds.includes(active) ? active : flatIds[0];
-    if (target) focus(target);
-  }, [active, disabled, format, flatIds, focus]);
+    const refs = {
+      month: React.useRef<HTMLInputElement>(null),
+      day: React.useRef<HTMLInputElement>(null),
+      year: React.useRef<HTMLInputElement>(null),
+    };
+    const { focus, focusNext, focusPrev } = createFocusController(
+      flatIds,
+      refs,
+    );
 
-  const handleKeyDown = (
-    flatId: string,
-    key: "month" | "day" | "year",
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-      e.preventDefault();
-      const nextSeg = stepSegmentValue(seg, key, e.key === "ArrowUp" ? 1 : -1);
+    React.useEffect(() => {
+      if (skipSyncRef.current) {
+        skipSyncRef.current = false;
+        return;
+      }
+      if (!value) {
+        setSeg({ month: "", day: "", year: "" });
+        return;
+      }
+      if (Number.isNaN(value.getTime())) return;
+      const next = dateToSegments(value);
+      setSeg((prev) =>
+        prev.month === next.month &&
+        prev.day === next.day &&
+        prev.year === next.year
+          ? prev
+          : next,
+      );
+    }, [value]);
+
+    const emit = (next: Record<"month" | "day" | "year", string>) => {
+      skipSyncRef.current = true;
+      onChange?.(segmentsToDate(next));
+    };
+
+    // Only move focus on an actual format change while this field is active.
+    // This avoids offscreen docs thumbnails stealing focus and causing scroll jumps.
+    React.useEffect(() => {
+      if (prevFormatRef.current === format) return;
+      prevFormatRef.current = format;
+      if (!active || disabled) return;
+      const target = flatIds.includes(active) ? active : flatIds[0];
+      if (target) focus(target);
+    }, [active, disabled, format, flatIds, focus]);
+
+    const handleKeyDown = (
+      flatId: string,
+      key: "month" | "day" | "year",
+      e: React.KeyboardEvent<HTMLInputElement>,
+    ) => {
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+        const nextSeg = stepSegmentValue(
+          seg,
+          key,
+          e.key === "ArrowUp" ? 1 : -1,
+        );
+        setSeg(nextSeg);
+        emit(nextSeg);
+        return;
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        focusPrev(flatId);
+      }
+      if (e.key === "ArrowRight" || e.key === sep) {
+        e.preventDefault();
+        focusNext(flatId);
+      }
+      if (e.key === "Backspace" && !seg[key]) focusPrev(flatId);
+    };
+
+    const handleChange = (
+      flatId: string,
+      key: "month" | "day" | "year",
+      raw: string,
+    ) => {
+      const { seg: nextSeg, advance } = applySegmentDigits(seg, key, raw);
       setSeg(nextSeg);
       emit(nextSeg);
-      return;
-    }
-    if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      focusPrev(flatId);
-    }
-    if (e.key === "ArrowRight" || e.key === sep) {
-      e.preventDefault();
-      focusNext(flatId);
-    }
-    if (e.key === "Backspace" && !seg[key]) focusPrev(flatId);
-  };
+      if (advance) focusNext(flatId);
+    };
 
-  const handleChange = (
-    flatId: string,
-    key: "month" | "day" | "year",
-    raw: string,
-  ) => {
-    const { seg: nextSeg, advance } = applySegmentDigits(seg, key, raw);
-    setSeg(nextSeg);
-    emit(nextSeg);
-    if (advance) focusNext(flatId);
-  };
+    const handleCalendarSelect = (date: Date | undefined) => {
+      if (date) {
+        setSeg(dateToSegments(date));
+        onChange?.(date);
+      }
+      setCalOpen(false);
+    };
 
-  const handleCalendarSelect = (date: Date | undefined) => {
-    if (date) {
-      setSeg(dateToSegments(date));
-      onChange?.(date);
-    }
-    setCalOpen(false);
-  };
+    const calValue = segmentsToDate(seg);
 
-  const calValue = segmentsToDate(seg);
+    return (
+      <div
+        ref={ref}
+        id={id}
+        role="group"
+        aria-label="Date input"
+        aria-invalid={error || undefined}
+        className={cn(
+          FIELD_GROUP,
+          FIELD_SIZE[size].height,
+          FIELD_SIZE[size].padding,
+          FIELD_SIZE[size].text,
+          fieldErrorClass(error),
+          error && FOCUS_RING_WITHIN_INVALID,
+          disabled && "cursor-not-allowed opacity-50",
+          className,
+        )}
+        onClick={createGroupClickFocusFirst(active, flatIds, focus)}
+      >
+        <SegmentGroup
+          order={order}
+          sep={sep}
+          seg={seg}
+          active={active}
+          disabled={disabled}
+          size={size}
+          getRef={(flatId) => refs[flatId as "month" | "day" | "year"]}
+          onChangeSeg={handleChange}
+          onKeyDownSeg={handleKeyDown}
+          onFocusSeg={(flatId) => setActive(flatId)}
+          onBlurSeg={() => setActive(null)}
+        />
 
-  return (
-    <div
-      ref={ref}
-      id={id}
-      role="group"
-      aria-label="Date input"
-      aria-invalid={error || undefined}
-      className={cn(
-        FIELD_GROUP,
-        FIELD_SIZE[size].height,
-        FIELD_SIZE[size].padding,
-        FIELD_SIZE[size].text,
-        fieldErrorClass(error),
-        error && FOCUS_RING_WITHIN_INVALID,
-        disabled && "cursor-not-allowed opacity-50",
-        className,
-      )}
-      onClick={createGroupClickFocusFirst(active, flatIds, focus)}
-    >
-      <SegmentGroup
-        order={order}
-        sep={sep}
-        seg={seg}
-        active={active}
-        disabled={disabled}
-        size={size}
-        getRef={(flatId) => refs[flatId as "month" | "day" | "year"]}
-        onChangeSeg={handleChange}
-        onKeyDownSeg={handleKeyDown}
-        onFocusSeg={(flatId) => setActive(flatId)}
-        onBlurSeg={() => setActive(null)}
-      />
+        {withCalendar && (
+          <Popover open={calOpen} onOpenChange={setCalOpen}>
+            <Popover.Trigger asChild>
+              <button
+                type="button"
+                disabled={disabled}
+                aria-label="Open calendar"
+                aria-haspopup="dialog"
+                aria-expanded={calOpen}
+                className={cn(
+                  "ml-auto flex items-center justify-center rounded-md p-0.5",
+                  "text-muted-foreground",
+                  MOTION_INTERACTIVE,
+                  "hover:bg-accent hover:text-foreground",
+                  FOCUS_RING,
+                  "disabled:pointer-events-none",
+                )}
+              >
+                <CalendarIcon className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </Popover.Trigger>
 
-      {withCalendar && (
-        <Popover open={calOpen} onOpenChange={setCalOpen}>
-          <Popover.Trigger asChild>
-            <button
-              type="button"
-              disabled={disabled}
-              aria-label="Open calendar"
-              aria-haspopup="dialog"
-              aria-expanded={calOpen}
-              className={cn(
-                "ml-auto flex items-center justify-center rounded-md p-0.5",
-                "text-muted-foreground",
-                MOTION_INTERACTIVE,
-                "hover:bg-accent hover:text-foreground",
-                FOCUS_RING,
-                "disabled:pointer-events-none",
-              )}
+            <Popover.Content
+              align="end"
+              sideOffset={6}
+              className="z-50 overflow-hidden rounded-xl border bg-popover shadow-xl"
             >
-              <CalendarIcon className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </Popover.Trigger>
-
-          <Popover.Content
-            align="end"
-            sideOffset={6}
-            className="z-50 overflow-hidden rounded-xl border bg-popover shadow-xl"
-          >
-            <Calendar
-              mode="single"
-              {...(calValue ? { selected: calValue } : {})}
-              onSelect={(value) => {
-                handleCalendarSelect(value instanceof Date ? value : undefined);
-              }}
-              defaultMonth={calValue ?? new Date()}
-              initialFocus
-            />
-          </Popover.Content>
-        </Popover>
-      )}
-    </div>
-  );
+              <Calendar
+                mode="single"
+                {...(calValue ? { selected: calValue } : {})}
+                onSelect={(value) => {
+                  handleCalendarSelect(
+                    value instanceof Date ? value : undefined,
+                  );
+                }}
+                defaultMonth={calValue ?? new Date()}
+                initialFocus
+              />
+            </Popover.Content>
+          </Popover>
+        )}
+      </div>
+    );
   },
 );
 InputDate.displayName = "Input.Date";
-
 
 /* ── Compound export ──────────────────────────────────────────────────────── */
 const InputCompound = Object.assign(Input, {
