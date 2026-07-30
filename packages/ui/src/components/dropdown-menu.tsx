@@ -113,7 +113,16 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
   }
 
   const triggerNode = triggerProps.asChild ? (
-    <Pressable>{React.Children.only(triggerProps.children) as any}</Pressable>
+    <Pressable>
+      {
+        React.Children.only(
+          triggerProps.children,
+        ) as unknown as React.ReactElement<
+          React.DOMAttributes<HTMLElement>,
+          string
+        >
+      }
+    </Pressable>
   ) : (
     <Pressable>
       <button type="button">{triggerProps.children}</button>

@@ -52,6 +52,10 @@ function splitFlatId(flatId: string): { group: Group; key: SegKey } {
 
 const EMPTY_SEG: Record<SegKey, string> = { month: "", day: "", year: "" };
 
+// refMap is always built from the same flatIds it's looked up with; this
+// fallback keeps lookups total (no non-null assertion) without ever being hit.
+const NOOP_REF: React.RefObject<HTMLInputElement | null> = { current: null };
+
 export function InputDateRange({
   id,
   value,
@@ -238,7 +242,7 @@ export function InputDateRange({
         active={active}
         disabled={disabled}
         size={size}
-        getRef={(flatId) => refMap[flatId]!}
+        getRef={(flatId) => refMap[flatId] ?? NOOP_REF}
         onChangeSeg={handleChange}
         onKeyDownSeg={handleKeyDown}
         onFocusSeg={setActive}
@@ -258,7 +262,7 @@ export function InputDateRange({
         active={active}
         disabled={disabled}
         size={size}
-        getRef={(flatId) => refMap[flatId]!}
+        getRef={(flatId) => refMap[flatId] ?? NOOP_REF}
         onChangeSeg={handleChange}
         onKeyDownSeg={handleKeyDown}
         onFocusSeg={setActive}

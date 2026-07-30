@@ -51,6 +51,7 @@ const buttonVariants = cva(
 );
 
 type AriaButtonProps = React.ComponentPropsWithoutRef<typeof AriaButton>;
+type AriaLinkProps = React.ComponentPropsWithoutRef<typeof AriaLink>;
 
 export interface ButtonProps
   extends Omit<AriaButtonProps, "className" | "children" | "isDisabled">,
@@ -107,11 +108,14 @@ const Button = React.forwardRef<
     if (href) {
       return (
         <AriaLink
-          {...(props as any)}
+          {...(props as unknown as Omit<
+            AriaLinkProps,
+            "className" | "children" | "isDisabled"
+          >)}
           ref={ref as React.Ref<HTMLAnchorElement>}
           href={href}
-          target={target}
-          rel={rel}
+          {...(target !== undefined ? { target } : {})}
+          {...(rel !== undefined ? { rel } : {})}
           className={classes}
           isDisabled={isDisabledState || loading}
         >
