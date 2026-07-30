@@ -227,7 +227,11 @@ export function InputDateRange({
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
-      onClick={() => {
+      onClick={(e) => {
+        // See input.tsx's InputDate for why this guard is required: without
+        // it, a click directly on any segment gets its focus stolen back to
+        // the first segment on every freshly-mounted field.
+        if (e.target !== e.currentTarget) return;
         if (!active) {
           const first = flatIds[0];
           if (first) focus(first);

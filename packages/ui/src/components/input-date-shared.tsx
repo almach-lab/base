@@ -49,7 +49,18 @@ export function segmentsToDate(seg: Record<SegKey, string>): Date | undefined {
   const m = parseInt(seg.month, 10);
   const d = parseInt(seg.day, 10);
   const y = parseInt(seg.year, 10);
-  if (m && d && y && seg.year.length === 4) {
+  // Every segment must be at its full length, not just numerically parseable —
+  // otherwise a still-being-typed leading digit ("1" en route to "12") reads as
+  // a complete date the moment day/year are already valid, gets emitted, and
+  // echoes back through `value` before the second keystroke can land.
+  if (
+    m &&
+    d &&
+    y &&
+    seg.month.length === SEG_LIMITS.month.len &&
+    seg.day.length === SEG_LIMITS.day.len &&
+    seg.year.length === SEG_LIMITS.year.len
+  ) {
     const date = new Date(y, m - 1, d);
     if (!Number.isNaN(date.getTime()) && date.getMonth() === m - 1) {
       return date;
@@ -105,6 +116,13 @@ export function applySegmentDigits(
     val.length === len ||
     (key === "month" && parseInt(val, 10) > 1 && val.length === 1) ||
     (key === "day" && parseInt(val, 10) > 3 && val.length === 1);
+  // A single unambiguous digit (e.g. month "2", which can't extend to a valid
+  // "2_") auto-advances without ever reaching `len` characters on its own —
+  // pad it now so segmentsToDate's exact-length check treats it as settled,
+  // the same as a value the user typed out in full.
+  if (advance && val.length < len) {
+    val = val.padStart(len, "0");
+  }
   return { seg: { ...seg, [key]: val }, advance };
 }
 

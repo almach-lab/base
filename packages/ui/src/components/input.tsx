@@ -275,7 +275,15 @@ function InputDate({
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
-      onClick={() => {
+      onClick={(e) => {
+        // Only auto-focus the first segment for clicks on the container's own
+        // padding — a click directly on a segment input already receives
+        // native focus before this handler runs, but `active` (React state)
+        // hasn't caught up yet within this same event, so without this guard
+        // every click on a freshly-mounted field reads `active` as stale
+        // `null` and steals focus back to the first segment regardless of
+        // which one was actually clicked.
+        if (e.target !== e.currentTarget) return;
         if (!active) {
           const first = flatIds[0];
           if (first) focus(first);
