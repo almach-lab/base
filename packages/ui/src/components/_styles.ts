@@ -12,6 +12,9 @@ export const FOCUS_RING_INVALID =
 export const FOCUS_RING_WITHIN =
   "focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background";
 
+export const FOCUS_RING_WITHIN_INVALID =
+  "focus-within:outline-none focus-within:ring-2 focus-within:ring-destructive focus-within:ring-offset-2 ring-offset-background";
+
 export const DISABLED =
   "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
 

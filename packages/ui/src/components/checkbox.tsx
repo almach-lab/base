@@ -6,6 +6,7 @@ import {
   Checkbox as CheckboxPrimitive,
   composeRenderProps,
 } from "react-aria-components";
+import { MOTION_INTERACTIVE } from "./_motion.js";
 import {
   CONTROL_LABEL,
   CONTROL_ROOT,
@@ -56,7 +57,7 @@ const Checkbox = React.forwardRef<HTMLLabelElement, CheckboxProps>(
           >
             <Check
               className={cn(
-                "transition-transform duration-100",
+                MOTION_INTERACTIVE,
                 isSelected ? "scale-100" : "scale-0",
               )}
               strokeWidth={3}

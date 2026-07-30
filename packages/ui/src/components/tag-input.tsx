@@ -4,7 +4,13 @@ import { cn } from "@almach/utils";
 import { X } from "lucide-react";
 import * as React from "react";
 import { MOTION_INTERACTIVE } from "./_motion.js";
-import { DISABLED, FOCUS_RING_WITHIN, fieldErrorClass } from "./_styles.js";
+import { mergeRefs } from "./_refs.js";
+import {
+  DISABLED,
+  FOCUS_RING_WITHIN,
+  FOCUS_RING_WITHIN_INVALID,
+  fieldErrorClass,
+} from "./_styles.js";
 import { badgeVariants } from "./badge.js";
 
 export interface TagInputProps {
@@ -21,18 +27,22 @@ export interface TagInputProps {
   className?: string;
 }
 
-export function TagInput({
-  id,
-  value,
-  onChange,
-  placeholder = "Add tag…",
-  max,
-  disabled,
-  error,
-  name,
-  transform,
-  className,
-}: TagInputProps) {
+export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
+  function TagInput(
+    {
+      id,
+      value,
+      onChange,
+      placeholder = "Add tag…",
+      max,
+      disabled,
+      error,
+      name,
+      transform,
+      className,
+    },
+    ref,
+  ) {
   const isControlled = value !== undefined;
   const [internalTags, setInternalTags] = React.useState<string[]>(value ?? []);
   const [input, setInput] = React.useState("");
@@ -91,7 +101,7 @@ export function TagInput({
         MOTION_INTERACTIVE,
         FOCUS_RING_WITHIN,
         fieldErrorClass(error),
-        error && "focus-within:ring-destructive",
+        error && FOCUS_RING_WITHIN_INVALID,
         DISABLED,
         disabled && "cursor-not-allowed opacity-50",
         className,
@@ -119,7 +129,7 @@ export function TagInput({
                   className={cn(
                     "flex h-3.5 w-3.5 items-center justify-center rounded-sm text-muted-foreground",
                     MOTION_INTERACTIVE,
-                    "hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+                    "hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
                   )}
                   aria-label={`Remove ${tag}`}
                 >
@@ -133,7 +143,7 @@ export function TagInput({
 
       {!isAtMax && !disabled ? (
         <input
-          ref={inputRef}
+          ref={mergeRefs(ref, inputRef)}
           id={id}
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -151,4 +161,6 @@ export function TagInput({
       ) : null}
     </div>
   );
-}
+  },
+);
+TagInput.displayName = "TagInput";

@@ -4,11 +4,13 @@ import { cn } from "@almach/utils";
 import { Check, ChevronDown, Search, X } from "lucide-react";
 import * as React from "react";
 import { MOTION_INTERACTIVE } from "./_motion.js";
+import { mergeRefs } from "./_refs.js";
 import {
   FIELD_GROUP,
   FIELD_SIZE,
   type FieldSize,
   FOCUS_RING,
+  FOCUS_RING_WITHIN_INVALID,
   fieldErrorClass,
   MENU_ITEM,
   OVERLAY_SURFACE,
@@ -285,20 +287,26 @@ function CurrencyOption({
 
 /* ── InputCurrency ────────────────────────────────────────────────────────── */
 
-export function InputCurrency({
-  id,
-  value,
-  onChange,
-  defaultCurrency = "USD",
-  currencies = CURRENCIES,
-  placeholder = "0.00",
-  renderFlag = defaultRenderFlag,
-  currencySelector = "editable",
-  disabled,
-  error,
-  size = "default",
-  className,
-}: InputCurrencyProps) {
+export const InputCurrency = React.forwardRef<
+  HTMLInputElement,
+  InputCurrencyProps
+>(function InputCurrency(
+  {
+    id,
+    value,
+    onChange,
+    defaultCurrency = "USD",
+    currencies = CURRENCIES,
+    placeholder = "0.00",
+    renderFlag = defaultRenderFlag,
+    currencySelector = "editable",
+    disabled,
+    error,
+    size = "default",
+    className,
+  },
+  ref,
+) {
   const pad = CURRENCY_INNER_PAD[size];
   const [currency, setCurrency] = React.useState(
     value?.currency ?? defaultCurrency,
@@ -376,12 +384,14 @@ export function InputCurrency({
 
   return (
     <div
+      role="group"
+      aria-invalid={error || undefined}
       className={cn(
         FIELD_GROUP,
         FIELD_SIZE[size].height,
         FIELD_SIZE[size].text,
         fieldErrorClass(error),
-        error && "focus-within:ring-destructive",
+        error && FOCUS_RING_WITHIN_INVALID,
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
@@ -430,7 +440,8 @@ export function InputCurrency({
               <span>{selectedCurrency.code}</span>
               <ChevronDown
                 className={cn(
-                  "h-3 w-3 shrink-0 text-muted-foreground transition-transform duration-150",
+                  "h-3 w-3 shrink-0 text-muted-foreground",
+                  MOTION_INTERACTIVE,
                   selectorOpen && "rotate-180",
                 )}
                 aria-hidden="true"
@@ -542,7 +553,7 @@ export function InputCurrency({
 
       {/* ── Amount input ──────────────────────────────────────────────── */}
       <input
-        ref={inputRef}
+        ref={mergeRefs(ref, inputRef)}
         id={id}
         type="text"
         inputMode="decimal"
@@ -562,6 +573,6 @@ export function InputCurrency({
       />
     </div>
   );
-}
+});
 
 InputCurrency.displayName = "Input.Currency";

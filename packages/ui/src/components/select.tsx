@@ -4,6 +4,7 @@ import { Check, ChevronDown, Search } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { MOTION_INTERACTIVE, MOTION_OVERLAY } from "./_motion.js";
+import { mergeRefs } from "./_refs.js";
 import {
   DISABLED_DATA,
   FOCUS_RING,
@@ -149,18 +150,16 @@ function SelectRoot({
   );
 }
 
-const SelectValue = ({
-  placeholder = "Select...",
-  className,
-}: {
-  placeholder?: string;
-  className?: string;
-}) => {
+const SelectValue = React.forwardRef<
+  HTMLSpanElement,
+  { placeholder?: string; className?: string }
+>(({ placeholder = "Select...", className }, ref) => {
   const { value, items } = useSelectCtx();
   const label = value ? (items.get(value) ?? value) : placeholder;
   const isPlaceholder = !value;
   return (
     <span
+      ref={ref}
       className={cn(
         "min-w-0 flex-1 truncate text-left",
         isPlaceholder && "text-muted-foreground",
@@ -170,18 +169,15 @@ const SelectValue = ({
       {label}
     </span>
   );
-};
+});
+SelectValue.displayName = "Select.Value";
 
-const SelectIndicator = ({
-  className,
-  open,
-  children,
-}: {
-  className?: string;
-  open?: boolean;
-  children?: React.ReactNode;
-}) => (
+const SelectIndicator = React.forwardRef<
+  HTMLSpanElement,
+  { className?: string; open?: boolean; children?: React.ReactNode }
+>(({ className, open, children }, ref) => (
   <span
+    ref={ref}
     className={cn(
       "pointer-events-none flex shrink-0 items-center justify-center",
       className,
@@ -190,13 +186,15 @@ const SelectIndicator = ({
     {children ?? (
       <ChevronDown
         className={cn(
-          "h-4 w-4 opacity-50 transition-transform duration-150 ease-out",
+          "h-4 w-4 opacity-50",
+          MOTION_INTERACTIVE,
           open && "rotate-180",
         )}
       />
     )}
   </span>
-);
+));
+SelectIndicator.displayName = "Select.Indicator";
 
 const SelectTrigger = React.forwardRef<
   HTMLButtonElement,
@@ -205,16 +203,7 @@ const SelectTrigger = React.forwardRef<
   const { open, setOpen, triggerRef, isDisabled, contentId } = useSelectCtx();
   return (
     <button
-      ref={(node) => {
-        triggerRef.current = node;
-        if (typeof ref === "function") {
-          ref(node);
-          return;
-        }
-        if (ref) {
-          ref.current = node;
-        }
-      }}
+      ref={mergeRefs(ref, triggerRef)}
       type="button"
       className={cn(
         selectTriggerClasses,
@@ -230,6 +219,7 @@ const SelectTrigger = React.forwardRef<
       aria-controls={open ? contentId : undefined}
       aria-expanded={open}
       aria-haspopup="listbox"
+      aria-invalid={error || undefined}
       disabled={isDisabled}
       {...props}
     >
@@ -453,16 +443,7 @@ const SelectContent = React.forwardRef<
   return createPortal(
     <div
       id={contentId}
-      ref={(node) => {
-        contentRef.current = node;
-        if (typeof ref === "function") {
-          ref(node);
-          return;
-        }
-        if (ref) {
-          ref.current = node;
-        }
-      }}
+      ref={mergeRefs(ref, contentRef)}
       role="listbox"
       className={cn(
         "fixed z-50 p-1",
@@ -535,9 +516,11 @@ function SelectSeparator({
   return <div className={cn(MENU_SEPARATOR, className)} {...props} />;
 }
 
-const SelectGroup = ({ children }: { children?: React.ReactNode }) => (
-  <div>{children}</div>
-);
+const SelectGroup = React.forwardRef<
+  HTMLDivElement,
+  { children?: React.ReactNode }
+>(({ children }, ref) => <div ref={ref}>{children}</div>);
+SelectGroup.displayName = "Select.Group";
 
 export interface SelectSearchableOption {
   value: string;
@@ -557,17 +540,23 @@ export interface SelectSearchableProps {
   className?: string;
 }
 
-function SelectSearchable({
-  options,
-  value,
-  onChange,
-  placeholder = "Select…",
-  searchPlaceholder = "Search…",
-  empty = "No results.",
-  disabled,
-  error,
-  className,
-}: SelectSearchableProps) {
+const SelectSearchable = React.forwardRef<
+  HTMLDivElement,
+  SelectSearchableProps
+>(function SelectSearchable(
+  {
+    options,
+    value,
+    onChange,
+    placeholder = "Select…",
+    searchPlaceholder = "Search…",
+    empty = "No results.",
+    disabled,
+    error,
+    className,
+  },
+  ref,
+) {
   const [open, setOpen] = React.useState(false);
   const rootRef = React.useRef<HTMLDivElement | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
@@ -611,13 +600,14 @@ function SelectSearchable({
   }, [open]);
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={mergeRefs(ref, rootRef)} className="relative">
       <button
         type="button"
         role="combobox"
         aria-expanded={open}
         aria-haspopup="listbox"
         aria-controls={open ? listboxId : undefined}
+        aria-invalid={error || undefined}
         disabled={disabled}
         className={cn(
           selectTriggerClasses,
@@ -636,7 +626,8 @@ function SelectSearchable({
         </span>
         <ChevronDown
           className={cn(
-            "size-4 shrink-0 opacity-50 transition-transform duration-150 ease-out",
+            "size-4 shrink-0 opacity-50",
+            MOTION_INTERACTIVE,
             open && "rotate-180",
           )}
         />
@@ -712,7 +703,7 @@ function SelectSearchable({
       ) : null}
     </div>
   );
-}
+});
 SelectSearchable.displayName = "Select.Searchable";
 
 const Select = Object.assign(SelectRoot, {
@@ -721,7 +712,6 @@ const Select = Object.assign(SelectRoot, {
   Trigger: SelectTrigger,
   Indicator: SelectIndicator,
   Content: SelectContent,
-  Popover: SelectContent,
   Label: SelectLabel,
   Description: SelectDescription,
   Item: SelectItem,

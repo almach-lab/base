@@ -2,8 +2,13 @@ import { cn } from "@almach/utils";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
 import * as React from "react";
-import { MOTION_OVERLAY } from "./_motion.js";
-import { MENU_ITEM, MENU_SEPARATOR } from "./_styles.js";
+import { MOTION_INTERACTIVE, MOTION_OVERLAY } from "./_motion.js";
+import {
+  DISABLED,
+  FOCUS_RING_WITHIN,
+  MENU_ITEM,
+  MENU_SEPARATOR,
+} from "./_styles.js";
 import { Dialog } from "./dialog.js";
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
@@ -60,14 +65,21 @@ const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
   React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
 >(({ className, ...props }, ref) => (
-  <div className="flex items-center gap-2 border-b px-3" cmdk-input-wrapper="">
+  <div
+    className={cn(
+      "flex items-center gap-2 border-b px-3",
+      MOTION_INTERACTIVE,
+      FOCUS_RING_WITHIN,
+    )}
+    cmdk-input-wrapper=""
+  >
     <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
         "flex h-10 w-full bg-transparent py-3 text-sm outline-none",
         "placeholder:text-muted-foreground",
-        "disabled:cursor-not-allowed disabled:opacity-50",
+        DISABLED,
         className,
       )}
       {...props}

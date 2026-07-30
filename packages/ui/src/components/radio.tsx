@@ -6,6 +6,7 @@ import {
   RadioGroup as RadioGroupPrimitive,
   Radio as RadioPrimitive,
 } from "react-aria-components";
+import { MOTION_INTERACTIVE } from "./_motion.js";
 import {
   CONTROL_DESCRIPTION,
   CONTROL_LABEL,
@@ -68,7 +69,8 @@ const RadioItem = React.forwardRef<HTMLLabelElement, RadioItemProps>(
           >
             <span
               className={cn(
-                "block size-1.5 rounded-full bg-background transition-transform duration-100",
+                "block size-1.5 rounded-full bg-background",
+                MOTION_INTERACTIVE,
                 isSelected ? "scale-100" : "scale-0",
               )}
             />

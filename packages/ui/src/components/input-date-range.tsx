@@ -3,16 +3,20 @@
 import { cn } from "@almach/utils";
 import { ArrowRight, CalendarIcon } from "lucide-react";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
 import {
   FIELD_GROUP,
   FIELD_SIZE,
   type FieldSize,
+  FOCUS_RING,
+  FOCUS_RING_WITHIN_INVALID,
   fieldErrorClass,
 } from "./_styles.js";
 import { Calendar, type DateRange } from "./calendar.js";
 import {
   applySegmentDigits,
   createFocusController,
+  createGroupClickFocusFirst,
   dateToSegments,
   makeFlatId,
   parseFormat,
@@ -56,17 +60,23 @@ const EMPTY_SEG: Record<SegKey, string> = { month: "", day: "", year: "" };
 // fallback keeps lookups total (no non-null assertion) without ever being hit.
 const NOOP_REF: React.RefObject<HTMLInputElement | null> = { current: null };
 
-export function InputDateRange({
-  id,
-  value,
-  onChange,
-  disabled,
-  error,
-  withCalendar = false,
-  size = "default",
-  format = "MM/DD/YYYY",
-  className,
-}: InputDateRangeProps) {
+export const InputDateRange = React.forwardRef<
+  HTMLDivElement,
+  InputDateRangeProps
+>(function InputDateRange(
+  {
+    id,
+    value,
+    onChange,
+    disabled,
+    error,
+    withCalendar = false,
+    size = "default",
+    format = "MM/DD/YYYY",
+    className,
+  },
+  ref,
+) {
   const { order, sep } = React.useMemo(() => parseFormat(format), [format]);
   const flatIds = React.useMemo(
     () => [
@@ -88,6 +98,13 @@ export function InputDateRange({
   );
   const [active, setActive] = React.useState<string | null>(null);
   const [calOpen, setCalOpen] = React.useState(false);
+  // emit() can omit a side's key entirely when it's still incomplete (e.g.
+  // editing "from" while "to" was already complete), which makes value?.from
+  // transition to undefined even though nothing external changed. Without
+  // this flag the sync effects below would read that as an external reset
+  // and wipe the in-progress segments the user is still typing.
+  const skipFromSyncRef = React.useRef(false);
+  const skipToSyncRef = React.useRef(false);
 
   const fromRefs = {
     month: React.useRef<HTMLInputElement>(null),
@@ -113,6 +130,10 @@ export function InputDateRange({
   );
 
   React.useEffect(() => {
+    if (skipFromSyncRef.current) {
+      skipFromSyncRef.current = false;
+      return;
+    }
     if (!value?.from) {
       setFromSeg(EMPTY_SEG);
       return;
@@ -129,6 +150,10 @@ export function InputDateRange({
   }, [value?.from]);
 
   React.useEffect(() => {
+    if (skipToSyncRef.current) {
+      skipToSyncRef.current = false;
+      return;
+    }
     if (!value?.to) {
       setToSeg(EMPTY_SEG);
       return;
@@ -153,6 +178,8 @@ export function InputDateRange({
     const next: DateRange = {};
     if (from) next.from = from;
     if (to) next.to = to;
+    skipFromSyncRef.current = true;
+    skipToSyncRef.current = true;
     onChange?.(Object.keys(next).length ? next : undefined);
   };
 
@@ -214,29 +241,22 @@ export function InputDateRange({
 
   return (
     <div
+      ref={ref}
       id={id}
       role="group"
       aria-label="Date range input"
+      aria-invalid={error || undefined}
       className={cn(
         FIELD_GROUP,
         FIELD_SIZE[size].height,
         FIELD_SIZE[size].padding,
         FIELD_SIZE[size].text,
         fieldErrorClass(error),
-        error && "focus-within:ring-destructive",
+        error && FOCUS_RING_WITHIN_INVALID,
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
-      onClick={(e) => {
-        // See input.tsx's InputDate for why this guard is required: without
-        // it, a click directly on any segment gets its focus stolen back to
-        // the first segment on every freshly-mounted field.
-        if (e.target !== e.currentTarget) return;
-        if (!active) {
-          const first = flatIds[0];
-          if (first) focus(first);
-        }
-      }}
+      onClick={createGroupClickFocusFirst(active, flatIds, focus)}
     >
       <SegmentGroup
         idPrefix="from"
@@ -284,9 +304,10 @@ export function InputDateRange({
               aria-expanded={calOpen}
               className={cn(
                 "ml-auto flex items-center justify-center rounded-md p-0.5",
-                "text-muted-foreground transition-colors",
+                "text-muted-foreground",
+                MOTION_INTERACTIVE,
                 "hover:bg-accent hover:text-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                FOCUS_RING,
                 "disabled:pointer-events-none",
               )}
             >
@@ -297,13 +318,7 @@ export function InputDateRange({
           <Popover.Content
             align="end"
             sideOffset={6}
-            className={cn(
-              "z-50 overflow-hidden rounded-xl border bg-popover shadow-xl",
-              "data-[starting-style]:animate-in data-[ending-style]:animate-out",
-              "data-[ending-style]:fade-out-0 data-[starting-style]:fade-in-0",
-              "data-[ending-style]:zoom-out-95 data-[starting-style]:zoom-in-95",
-              "data-[starting-style]:duration-150 data-[ending-style]:duration-100",
-            )}
+            className="z-50 overflow-hidden rounded-xl border bg-popover shadow-xl"
           >
             <Calendar
               mode="range"
@@ -324,5 +339,5 @@ export function InputDateRange({
       )}
     </div>
   );
-}
+});
 InputDateRange.displayName = "Input.DateRange";

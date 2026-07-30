@@ -4,10 +4,13 @@ import { cn } from "@almach/utils";
 import type { VariantProps } from "class-variance-authority";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
 import {
   FIELD_GROUP,
   FIELD_SIZE,
   type FieldSize,
+  FOCUS_RING,
+  FOCUS_RING_WITHIN_INVALID,
   fieldErrorClass,
   inputVariants,
 } from "./_styles.js";
@@ -17,6 +20,7 @@ import { InputDateRange } from "./input-date-range.js";
 import {
   applySegmentDigits,
   createFocusController,
+  createGroupClickFocusFirst,
   dateToSegments,
   makeFlatId,
   parseFormat,
@@ -153,17 +157,21 @@ export interface InputDateProps {
   className?: string;
 }
 
-function InputDate({
-  id,
-  value,
-  onChange,
-  disabled,
-  error,
-  withCalendar = false,
-  size = "default",
-  format = "MM/DD/YYYY",
-  className,
-}: InputDateProps) {
+const InputDate = React.forwardRef<HTMLDivElement, InputDateProps>(
+  function InputDate(
+    {
+      id,
+      value,
+      onChange,
+      disabled,
+      error,
+      withCalendar = false,
+      size = "default",
+      format = "MM/DD/YYYY",
+      className,
+    },
+    ref,
+  ) {
   const { order, sep } = React.useMemo(() => parseFormat(format), [format]);
   const flatIds = React.useMemo(
     () => order.map((key) => makeFlatId("", key)),
@@ -178,6 +186,12 @@ function InputDate({
   const [active, setActive] = React.useState<string | null>(null);
   const [calOpen, setCalOpen] = React.useState(false);
   const prevFormatRef = React.useRef(format);
+  // See input-date-range.tsx's matching flags: emit()'s own onChange echoes
+  // back through `value` (even a plain useState consumer stores it verbatim),
+  // and without this the sync effect below would re-derive segments from
+  // that echo and could stomp on a keystroke that landed between the emit
+  // and the resulting re-render.
+  const skipSyncRef = React.useRef(false);
 
   const refs = {
     month: React.useRef<HTMLInputElement>(null),
@@ -187,6 +201,10 @@ function InputDate({
   const { focus, focusNext, focusPrev } = createFocusController(flatIds, refs);
 
   React.useEffect(() => {
+    if (skipSyncRef.current) {
+      skipSyncRef.current = false;
+      return;
+    }
     if (!value) {
       setSeg({ month: "", day: "", year: "" });
       return;
@@ -203,6 +221,7 @@ function InputDate({
   }, [value]);
 
   const emit = (next: Record<"month" | "day" | "year", string>) => {
+    skipSyncRef.current = true;
     onChange?.(segmentsToDate(next));
   };
 
@@ -262,33 +281,22 @@ function InputDate({
 
   return (
     <div
+      ref={ref}
       id={id}
       role="group"
       aria-label="Date input"
+      aria-invalid={error || undefined}
       className={cn(
         FIELD_GROUP,
         FIELD_SIZE[size].height,
         FIELD_SIZE[size].padding,
         FIELD_SIZE[size].text,
         fieldErrorClass(error),
-        error && "focus-within:ring-destructive",
+        error && FOCUS_RING_WITHIN_INVALID,
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
-      onClick={(e) => {
-        // Only auto-focus the first segment for clicks on the container's own
-        // padding — a click directly on a segment input already receives
-        // native focus before this handler runs, but `active` (React state)
-        // hasn't caught up yet within this same event, so without this guard
-        // every click on a freshly-mounted field reads `active` as stale
-        // `null` and steals focus back to the first segment regardless of
-        // which one was actually clicked.
-        if (e.target !== e.currentTarget) return;
-        if (!active) {
-          const first = flatIds[0];
-          if (first) focus(first);
-        }
-      }}
+      onClick={createGroupClickFocusFirst(active, flatIds, focus)}
     >
       <SegmentGroup
         order={order}
@@ -315,9 +323,10 @@ function InputDate({
               aria-expanded={calOpen}
               className={cn(
                 "ml-auto flex items-center justify-center rounded-md p-0.5",
-                "text-muted-foreground transition-colors",
+                "text-muted-foreground",
+                MOTION_INTERACTIVE,
                 "hover:bg-accent hover:text-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                FOCUS_RING,
                 "disabled:pointer-events-none",
               )}
             >
@@ -328,13 +337,7 @@ function InputDate({
           <Popover.Content
             align="end"
             sideOffset={6}
-            className={cn(
-              "z-50 overflow-hidden rounded-xl border bg-popover shadow-xl",
-              "data-[starting-style]:animate-in data-[ending-style]:animate-out",
-              "data-[ending-style]:fade-out-0 data-[starting-style]:fade-in-0",
-              "data-[ending-style]:zoom-out-95 data-[starting-style]:zoom-in-95",
-              "data-[starting-style]:duration-150 data-[ending-style]:duration-100",
-            )}
+            className="z-50 overflow-hidden rounded-xl border bg-popover shadow-xl"
           >
             <Calendar
               mode="single"
@@ -350,8 +353,10 @@ function InputDate({
       )}
     </div>
   );
-}
+  },
+);
 InputDate.displayName = "Input.Date";
+
 
 /* ── Compound export ──────────────────────────────────────────────────────── */
 const InputCompound = Object.assign(Input, {

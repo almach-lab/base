@@ -2,6 +2,7 @@
 
 import { cn } from "@almach/utils";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
 import type { FieldSize } from "./_styles.js";
 
 export type SegKey = "month" | "day" | "year";
@@ -76,7 +77,14 @@ export function segmentInputClassName(
 ) {
   return cn(
     "bg-transparent text-center outline-none tabular-nums caret-transparent select-none",
-    "rounded transition-colors duration-100",
+    // select-none only blocks user drag-selection; .select() on focus (for
+    // replace-on-type) still triggers the browser's native selection paint,
+    // which can't be transition-eased and visually fights the smooth
+    // active-segment fade below. Make the native selection invisible so the
+    // only visible highlight is the eased one.
+    "selection:bg-transparent",
+    "rounded",
+    MOTION_INTERACTIVE,
     "placeholder:text-muted-foreground/50",
     SEG_WIDTH[size][key],
     active && "bg-primary/10 text-primary",
@@ -128,6 +136,23 @@ export function applySegmentDigits(
 
 export function makeFlatId(prefix: string, key: SegKey): string {
   return prefix ? `${prefix}:${key}` : key;
+}
+
+/** Click-to-focus-first-segment guard shared by Input.Date and Input.DateRange's
+ * group container: a click directly on a segment input already receives native
+ * focus before this handler runs, but `active` (React state) hasn't caught up
+ * yet within this same event, so without this guard every click on a
+ * freshly-mounted field reads `active` as stale `null` and steals focus back to
+ * the first segment regardless of which one was actually clicked. */
+export function createGroupClickFocusFirst(
+  active: string | null,
+  flatIds: string[],
+  focus: (id: string | undefined) => void,
+) {
+  return (e: React.MouseEvent<HTMLElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (!active) focus(flatIds[0]);
+  };
 }
 
 /** Flat-list focus controller — crossing group boundaries is just index +/- 1, no special-casing needed. */
