@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T12:14:59.247Z",
+  "generatedAt": "2026-07-30T06:48:17.243Z",
   "components": {
     "_styles": {
       "exports": [
@@ -70,7 +70,8 @@
         "Calendar"
       ],
       "typeExports": [
-        "CalendarProps"
+        "CalendarProps",
+        "DateRange"
       ]
     },
     "card": {
@@ -180,6 +181,14 @@
         "DateInputProps",
         "InputDateProps",
         "InputProps"
+      ]
+    },
+    "input-date-range": {
+      "exports": [
+        "InputDateRange"
+      ],
+      "typeExports": [
+        "InputDateRangeProps"
       ]
     },
     "label": {

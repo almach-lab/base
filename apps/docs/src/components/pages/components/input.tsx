@@ -1,4 +1,4 @@
-import { Input, Label } from "@almach/ui";
+import { type DateRange, Input, Label } from "@almach/ui";
 import { Eye, EyeOff, Mail, Search } from "lucide-react";
 import * as React from "react";
 import { ComponentDoc } from "../../component-doc";
@@ -7,7 +7,7 @@ export function InputPage() {
   return (
     <ComponentDoc
       name="Input"
-      description="Text field with left/right element slots, a segmented date sub-component, and a multi-currency amount input. Use Input.Date for date entry and Input.Currency for currency amounts."
+      description="Text field with left/right element slots, a segmented date sub-component, a multi-currency amount input, and a two-field date-range picker. Use Input.Date for date entry, Input.Currency for currency amounts, and Input.DateRange for a from/to date range."
       examples={[
         {
           title: "Default",
@@ -315,6 +315,84 @@ const [date, setDate] = React.useState<Date>();
           code: `<Input.Currency value={{ amount: 9999, currency: "GBP" }} disabled />`,
           centered: false,
         },
+        // ── Input.DateRange ─────────────────────────────────────────
+        {
+          title: "Input.DateRange — Default",
+          description:
+            "Two segmented date groups sharing one field. Arrow/backspace navigation flows continuously across from → to.",
+          preview: <Input.DateRange />,
+          code: `<Input.DateRange />`,
+        },
+        {
+          title: "Input.DateRange — With calendar",
+          description:
+            "Add withCalendar to show a calendar icon that opens a two-month range picker popover.",
+          preview: <CalendarDateRangeInput />,
+          code: `const [range, setRange] = React.useState<DateRange>();
+
+<Input.DateRange withCalendar value={range} onChange={setRange} />`,
+        },
+        {
+          title: "Input.DateRange — Controlled",
+          description: "Bind value and onChange to manage the range in state.",
+          preview: <ControlledDateRangeInput />,
+          code: `const [range, setRange] = React.useState<DateRange>();
+
+<Input.DateRange value={range} onChange={setRange} />`,
+        },
+        {
+          title: "Input.DateRange — With label",
+          description: "Compose with Label for accessible form fields.",
+          preview: (
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="stay">Stay dates</Label>
+              <Input.DateRange id="stay" withCalendar />
+            </div>
+          ),
+          code: `<div className="flex flex-col gap-1.5">
+  <Label htmlFor="stay">Stay dates</Label>
+  <Input.DateRange id="stay" withCalendar />
+</div>`,
+        },
+        {
+          title: "Input.DateRange — Sizes",
+          description: 'size accepts "sm" | "default" | "lg".',
+          preview: (
+            <div className="flex flex-col items-start gap-2">
+              <Input.DateRange size="sm" />
+              <Input.DateRange size="default" />
+              <Input.DateRange size="lg" />
+            </div>
+          ),
+          code: `<Input.DateRange size="sm" />
+<Input.DateRange size="default" />
+<Input.DateRange size="lg" />`,
+        },
+        {
+          title: "Input.DateRange — Error state",
+          description: "Pass error to show a red border and focus ring.",
+          preview: (
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="stay-err">Stay dates</Label>
+              <Input.DateRange id="stay-err" error />
+              <p className="text-xs text-destructive">
+                Please enter a valid date range.
+              </p>
+            </div>
+          ),
+          code: `<Input.DateRange error />`,
+        },
+        {
+          title: "Input.DateRange — Disabled",
+          description: "Dims the field and prevents interaction.",
+          preview: (
+            <Input.DateRange
+              value={{ from: new Date(2026, 5, 1), to: new Date(2026, 5, 8) }}
+              disabled
+            />
+          ),
+          code: `<Input.DateRange value={{ from: fromDate, to: toDate }} disabled />`,
+        },
       ]}
       props={[
         {
@@ -386,6 +464,12 @@ const [date, setDate] = React.useState<Date>();
           description: "Applies destructive border and focus ring.",
         },
         {
+          name: "Input.Date — size",
+          type: '"sm" | "default" | "lg"',
+          default: '"default"',
+          description: "Controls field height, padding, and text size.",
+        },
+        {
           name: "Input.Currency — value",
           type: "{ amount: number | null; currency: string }",
           description:
@@ -443,6 +527,54 @@ const [date, setDate] = React.useState<Date>();
           default: "false",
           description:
             "Disables both the amount input and the currency selector button.",
+        },
+        {
+          name: "Input.Currency — size",
+          type: '"sm" | "default" | "lg"',
+          default: '"default"',
+          description: "Controls field height, padding, and text size.",
+        },
+        {
+          name: "Input.DateRange — value",
+          type: "DateRange",
+          description:
+            "Controlled range value — { from?: Date; to?: Date }, same type used by Calendar's range mode.",
+        },
+        {
+          name: "Input.DateRange — onChange",
+          type: "(range: DateRange | undefined) => void",
+          description:
+            "Called as segments are completed. Reports a partial range while only one end is filled in.",
+        },
+        {
+          name: "Input.DateRange — format",
+          type: "string",
+          default: '"MM/DD/YYYY"',
+          description:
+            "Same MM/DD/YYYY token format as Input.Date, applied to both the from and to groups.",
+        },
+        {
+          name: "Input.DateRange — withCalendar",
+          type: "boolean",
+          default: "false",
+          description:
+            "Show a calendar icon button that opens a two-month range picker popover.",
+        },
+        {
+          name: "Input.DateRange — disabled",
+          type: "boolean",
+          description: "Disables all segments and the calendar button.",
+        },
+        {
+          name: "Input.DateRange — error",
+          type: "boolean",
+          description: "Applies destructive border and focus ring.",
+        },
+        {
+          name: "Input.DateRange — size",
+          type: '"sm" | "default" | "lg"',
+          default: '"default"',
+          description: "Controls field height, padding, and text size.",
         },
       ]}
     />
@@ -552,6 +684,49 @@ function ControlledDateInput() {
           </>
         ) : (
           "No date selected"
+        )}
+      </p>
+    </div>
+  );
+}
+
+// ── Input.DateRange Demos ─────────────────────────────────────────────────────
+
+function CalendarDateRangeInput() {
+  const [range, setRange] = React.useState<DateRange | undefined>();
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <Input.DateRange withCalendar value={range} onChange={setRange} />
+      <p className="text-sm text-muted-foreground">
+        {range?.from
+          ? `${range.from.toLocaleDateString()} – ${
+              range.to ? range.to.toLocaleDateString() : "…"
+            }`
+          : "No range selected"}
+      </p>
+    </div>
+  );
+}
+
+function ControlledDateRangeInput() {
+  const [range, setRange] = React.useState<DateRange | undefined>({
+    from: new Date(2026, 5, 1),
+    to: new Date(2026, 5, 8),
+  });
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <Input.DateRange value={range} onChange={setRange} />
+      <p className="text-sm text-muted-foreground">
+        {range?.from ? (
+          <>
+            Selected:{" "}
+            <span className="font-medium text-foreground">
+              {range.from.toLocaleDateString()} –{" "}
+              {range.to ? range.to.toLocaleDateString() : "…"}
+            </span>
+          </>
+        ) : (
+          "No range selected"
         )}
       </p>
     </div>

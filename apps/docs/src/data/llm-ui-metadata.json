@@ -30,11 +30,13 @@
       "Mark invalid state for form feedback.",
       "Use date input variant for date entry."
     ],
-    "anatomy": ["Input", "Input.Date", "Input.Currency"],
+    "anatomy": ["Input", "Input.Date", "Input.Currency", "Input.DateRange"],
     "api": [
       "Use Input for base text/number/email/password fields with optional leftElement and rightElement.",
       "Input.Date supports segmented date entry and withCalendar popover selection.",
-      "Input.Currency provides amount + currency selector with controlled and uncontrolled usage."
+      "Input.Currency provides amount + currency selector with controlled and uncontrolled usage.",
+      "Input.DateRange renders two segmented date groups (from/to) sharing one field, with an optional withCalendar two-month range picker popover. value/onChange use DateRange ({ from?: Date; to?: Date }), the same type used by Calendar's range mode.",
+      "Input.Date, Input.Currency, and Input.DateRange all accept size: \"sm\" | \"default\" | \"lg\"."
     ],
     "example": [
       "import { Input, Label } from \"@almach/ui\";",

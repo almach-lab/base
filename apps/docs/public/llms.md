@@ -1,11 +1,11 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-06-30T12:14:59.244Z
+Generated: 2026-07-30T06:48:17.241Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
 
-Total modules: 37
+Total modules: 38
 
 ## Index
 
@@ -14,7 +14,7 @@ Total modules: 37
 - avatar: 2 value export(s), 1 type export(s)
 - badge: 2 value export(s), 1 type export(s)
 - button: 2 value export(s), 1 type export(s)
-- calendar: 1 value export(s), 1 type export(s)
+- calendar: 1 value export(s), 2 type export(s)
 - card: 2 value export(s), 0 type export(s)
 - carousel: 1 value export(s), 0 type export(s)
 - chart: 29 value export(s), 0 type export(s)
@@ -26,6 +26,7 @@ Total modules: 37
 - drawer: 1 value export(s), 0 type export(s)
 - dropdown-menu: 1 value export(s), 0 type export(s)
 - input: 3 value export(s), 3 type export(s)
+- input-date-range: 1 value export(s), 1 type export(s)
 - label: 1 value export(s), 0 type export(s)
 - modal: 2 value export(s), 2 type export(s)
 - popover: 1 value export(s), 0 type export(s)
@@ -277,7 +278,7 @@ export function Example() {
 ### Exported Symbols
 
 - Values: `Calendar`
-- Types: `CalendarProps`
+- Types: `CalendarProps`, `DateRange`
 
 ## Card
 
@@ -713,17 +714,57 @@ export function EmailField() {
 - `Input`
 - `Input.Date`
 - `Input.Currency`
+- `Input.DateRange`
 
 ### API Notes
 
 - Use Input for base text/number/email/password fields with optional leftElement and rightElement.
 - Input.Date supports segmented date entry and withCalendar popover selection.
 - Input.Currency provides amount + currency selector with controlled and uncontrolled usage.
+- Input.DateRange renders two segmented date groups (from/to) sharing one field, with an optional withCalendar two-month range picker popover. value/onChange use DateRange ({ from?: Date; to?: Date }), the same type used by Calendar's range mode.
+- Input.Date, Input.Currency, and Input.DateRange all accept size: "sm" | "default" | "lg".
 
 ### Exported Symbols
 
 - Values: `DateInput`, `Input`, `inputVariants`
 - Types: `DateInputProps`, `InputDateProps`, `InputProps`
+
+## InputDateRange
+
+Module: `input-date-range`
+
+### Import
+
+```tsx
+import { InputDateRange } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { InputDateRange } from "@almach/ui";
+
+export function Example() {
+  return <InputDateRange />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `InputDateRange`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `InputDateRange`
+- Types: `InputDateRangeProps`
 
 ## Label
 
