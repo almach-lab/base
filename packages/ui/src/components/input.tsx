@@ -270,8 +270,14 @@ const InputDate = React.forwardRef<HTMLDivElement, InputDateProps>(
       flatId: string,
       key: "month" | "day" | "year",
       raw: string,
+      insertedData?: string | null,
     ) => {
-      const { seg: nextSeg, advance } = applySegmentDigits(seg, key, raw);
+      const { seg: nextSeg, advance } = applySegmentDigits(
+        seg,
+        key,
+        raw,
+        insertedData,
+      );
       setSeg(nextSeg);
       emit(nextSeg);
       if (advance) focusNext(flatId);

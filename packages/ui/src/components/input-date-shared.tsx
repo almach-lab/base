@@ -106,14 +106,35 @@ export function stepSegmentValue(
   return { ...seg, [key]: next };
 }
 
-/** Digit-entry parse+clamp; reports whether focus should advance to the next segment. */
+/**
+ * Digit-entry parse+clamp; reports whether focus should advance to the next segment.
+ *
+ * `insertedData` is the browser's own record of exactly what was just typed
+ * (from InputEvent.data), passed whenever available. When the segment was
+ * already at full length, we prefer this over diffing `raw` — a `.select()`
+ * call on focus (used so retyping a full segment replaces it) doesn't
+ * reliably collapse the cursor to a consistent position across browsers, so
+ * diffing the post-selection `raw` value can silently reconstruct the OLD
+ * value instead of the new keystroke, which then reads as "complete" and
+ * advances focus away — the segment never visibly changes and typing seems
+ * to do nothing. Reading the actually-typed character straight from the
+ * event sidesteps that ambiguity entirely. Only applies to insertions; a
+ * shrinking `raw` (backspace/delete, where `data` is null) always uses the
+ * normal diff path below.
+ */
 export function applySegmentDigits(
   seg: Record<SegKey, string>,
   key: SegKey,
   raw: string,
+  insertedData?: string | null,
 ): { seg: Record<SegKey, string>; advance: boolean } {
   const { min, max, len } = SEG_LIMITS[key];
-  const digits = raw.replace(/\D/g, "").slice(-len);
+  const wasFull = seg[key].length === len;
+  const insertedDigits = insertedData ? insertedData.replace(/\D/g, "") : "";
+  const digits =
+    wasFull && insertedDigits
+      ? insertedDigits.slice(-len)
+      : raw.replace(/\D/g, "").slice(-len);
   let val = digits;
   if (digits.length === len) {
     const n = parseInt(digits, 10);
@@ -180,7 +201,12 @@ export interface SegmentGroupProps {
   disabled?: boolean | undefined;
   size: FieldSize;
   getRef: (flatId: string) => React.RefObject<HTMLInputElement | null>;
-  onChangeSeg: (flatId: string, key: SegKey, raw: string) => void;
+  onChangeSeg: (
+    flatId: string,
+    key: SegKey,
+    raw: string,
+    insertedData?: string | null,
+  ) => void;
   onKeyDownSeg: (
     flatId: string,
     key: SegKey,
@@ -228,7 +254,14 @@ export function SegmentGroup({
               inputMode="numeric"
               aria-label={idPrefix ? `${idPrefix} ${key}` : key}
               className={segmentInputClassName(key, active === flatId, size)}
-              onChange={(e) => onChangeSeg(flatId, key, e.target.value)}
+              onChange={(e) =>
+                onChangeSeg(
+                  flatId,
+                  key,
+                  e.target.value,
+                  (e.nativeEvent as InputEvent).data,
+                )
+              }
               onKeyDown={(e) => onKeyDownSeg(flatId, key, e)}
               onFocus={(e) => {
                 onFocusSeg(flatId);

@@ -214,10 +214,20 @@ export const InputDateRange = React.forwardRef<
     if (e.key === "Backspace" && !seg[key]) focusPrev(flatId);
   };
 
-  const handleChange = (flatId: string, key: SegKey, raw: string) => {
+  const handleChange = (
+    flatId: string,
+    key: SegKey,
+    raw: string,
+    insertedData?: string | null,
+  ) => {
     const { group } = splitFlatId(flatId);
     const seg = group === "from" ? fromSeg : toSeg;
-    const { seg: nextSeg, advance } = applySegmentDigits(seg, key, raw);
+    const { seg: nextSeg, advance } = applySegmentDigits(
+      seg,
+      key,
+      raw,
+      insertedData,
+    );
     if (group === "from") {
       setFromSeg(nextSeg);
       emit(nextSeg, toSeg);
