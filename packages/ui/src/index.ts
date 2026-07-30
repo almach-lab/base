@@ -33,7 +33,7 @@ export type { BadgeProps } from "./components/badge.js";
 export { Badge, badgeVariants } from "./components/badge.js";
 export type { ButtonProps } from "./components/button.js";
 export { Button, buttonVariants } from "./components/button.js";
-export type { CalendarProps } from "./components/calendar.js";
+export type { CalendarProps, DateRange } from "./components/calendar.js";
 export { Calendar } from "./components/calendar.js";
 export { Card, Group } from "./components/card.js";
 export { Carousel } from "./components/carousel.js";
@@ -94,6 +94,8 @@ export type {
   InputProps,
 } from "./components/input.js";
 export { DateInput, Input, inputVariants } from "./components/input.js";
+export type { InputDateRangeProps } from "./components/input-date-range.js";
+export { InputDateRange } from "./components/input-date-range.js";
 export { Label } from "./components/label.js";
 export type { ViewComponent, ViewsRegistry } from "./components/modal.js";
 export { Modal, useModal } from "./components/modal.js";
