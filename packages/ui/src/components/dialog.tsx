@@ -27,8 +27,8 @@ function useDialogCtx() {
 }
 
 type DialogRootProps = {
-  open?: boolean;
-  defaultOpen?: boolean;
+  open?: boolean | undefined;
+  defaultOpen?: boolean | undefined;
   onOpenChange?: (open: boolean) => void;
   children?: React.ReactNode;
 };
@@ -318,6 +318,7 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
           }}
           className={cn(
             DIALOG_SURFACE,
+            "rounded-none md:rounded-lg",
             MOTION_OVERLAY,
             "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
             "w-[calc(100%-2rem)] max-w-lg max-h-[calc(100svh-4rem)] overflow-y-auto p-6",

@@ -223,8 +223,8 @@ function assignRef<T>(ref: React.Ref<T> | undefined, value: T) {
 }
 
 type DrawerRootProps = {
-  open?: boolean;
-  defaultOpen?: boolean;
+  open?: boolean | undefined;
+  defaultOpen?: boolean | undefined;
   onOpenChange?: (open: boolean) => void;
   children?: React.ReactNode;
 };
@@ -452,6 +452,7 @@ const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
         data-state={popupState}
         className={cn(
           DIALOG_SURFACE,
+          "border-0",
           "pointer-events-auto relative flex min-h-0 w-full flex-col px-4",
           "overflow-hidden overscroll-contain touch-none",
           "transform-gpu will-change-transform [backface-visibility:hidden]",
