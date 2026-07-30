@@ -1,6 +1,6 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-07-30T06:48:17.241Z
+Generated: 2026-07-30T07:57:11.943Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.

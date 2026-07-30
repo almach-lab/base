@@ -11,6 +11,8 @@ const OUT_JSON_PATH = resolve(
   ROOT,
   "apps/docs/public/llms-ui-api.snapshot.json",
 );
+const LLMS_TXT_SRC = resolve(ROOT, "llms.txt");
+const LLMS_TXT_PUBLIC = resolve(ROOT, "apps/docs/public/llms.txt");
 
 const mode = process.argv.includes("--check") ? "check" : "update";
 
@@ -295,6 +297,14 @@ function run() {
   console.log(`Updated baseline: ${BASELINE_PATH}`);
   console.log(`Generated markdown: ${OUT_MARKDOWN_PATH}`);
   console.log(`Generated snapshot: ${OUT_JSON_PATH}`);
+
+  // Mirror root llms.txt into the docs public dir so per-page "Copy markdown"
+  // buttons can fetch("/llms.txt") client-side and slice out their section.
+  if (existsSync(LLMS_TXT_SRC)) {
+    ensureDir(LLMS_TXT_PUBLIC);
+    writeFileSync(LLMS_TXT_PUBLIC, readFileSync(LLMS_TXT_SRC, "utf-8"));
+    console.log(`Mirrored llms.txt: ${LLMS_TXT_PUBLIC}`);
+  }
 }
 
 run();

@@ -1,6 +1,7 @@
 import { cn } from "@almach/utils";
 import type * as React from "react";
 import { docsLayout } from "../lib/docs-layout";
+import { CopyMarkdownButton } from "./docs/copy-markdown-button";
 import { DocExample } from "./docs/doc-example";
 import { DocPageHeader, DocSectionHeading } from "./docs/doc-page-header";
 
@@ -117,7 +118,11 @@ export function ComponentDoc({
 }: ComponentDocProps) {
   return (
     <article className={docsLayout.article}>
-      <DocPageHeader title={name} description={description} />
+      <DocPageHeader
+        title={name}
+        description={description}
+        action={<CopyMarkdownButton name={name} />}
+      />
 
       {children}
 
