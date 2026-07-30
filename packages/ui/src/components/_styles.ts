@@ -220,6 +220,15 @@ export const FIELD_GROUP = cn(
   DISABLED,
 );
 
+/** Shared height/padding/text scale for FIELD_GROUP-based composite controls (Input.Date, Input.DateRange, Input.Currency). */
+export const FIELD_SIZE = {
+  sm: { height: "h-8", padding: "px-2.5", text: "text-xs" },
+  default: { height: "h-9", padding: "px-3", text: "text-sm" },
+  lg: { height: "h-11", padding: "px-4", text: "text-base" },
+} as const;
+
+export type FieldSize = keyof typeof FIELD_SIZE;
+
 export const swipeTrackVariants = cva(
   "relative isolate flex h-[52px] w-full min-w-[12rem] items-center overflow-hidden rounded-full border border-border bg-muted/35 text-[13px] text-muted-foreground select-none touch-none",
 );

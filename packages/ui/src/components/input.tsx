@@ -4,9 +4,26 @@ import { cn } from "@almach/utils";
 import type { VariantProps } from "class-variance-authority";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
-import { fieldErrorClass, inputVariants } from "./_styles.js";
+import {
+  FIELD_GROUP,
+  FIELD_SIZE,
+  type FieldSize,
+  fieldErrorClass,
+  inputVariants,
+} from "./_styles.js";
 import { Calendar } from "./calendar.js";
 import { InputCurrency } from "./currency-input.js";
+import { InputDateRange } from "./input-date-range.js";
+import {
+  applySegmentDigits,
+  createFocusController,
+  dateToSegments,
+  makeFlatId,
+  parseFormat,
+  SegmentGroup,
+  segmentsToDate,
+  stepSegmentValue,
+} from "./input-date-shared.js";
 import { Popover } from "./popover.js";
 
 export interface InputProps
@@ -17,10 +34,14 @@ export interface InputProps
   error?: boolean;
 }
 
-const inputSideOffset: Record<"sm" | "default" | "lg", string> = {
-  sm: "left-2.5",
-  default: "left-3",
-  lg: "left-4",
+// Written as static literals (not built via string concat/replace) so Tailwind's
+// content scanner can actually find "right-2.5"/"right-3"/"right-4" and generate
+// the CSS for them — a runtime .replace("left", "right") produces a class name
+// Tailwind never sees in source, so the utility never gets compiled.
+const inputSideOffset: Record<"sm" | "default" | "lg", { left: string; right: string }> = {
+  sm: { left: "left-2.5", right: "right-2.5" },
+  default: { left: "left-3", right: "right-3" },
+  lg: { left: "left-4", right: "right-4" },
 };
 
 const inputPadding: Record<
@@ -74,7 +95,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <div
             className={cn(
               "pointer-events-none absolute flex items-center text-muted-foreground [&_svg]:size-4",
-              sideOffset,
+              sideOffset.left,
             )}
           >
             {leftElement}
@@ -97,7 +118,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <div
             className={cn(
               "absolute flex items-center text-muted-foreground [&_svg]:size-4",
-              sideOffset.replace("left", "right"),
+              sideOffset.right,
             )}
           >
             {rightElement}
@@ -118,6 +139,7 @@ export interface InputDateProps {
   error?: boolean;
   /** Show calendar picker button inside the input */
   withCalendar?: boolean;
+  size?: FieldSize;
   /**
    * Date format controlling segment order and separator.
    * Tokens: MM (month), DD (day), YYYY (year).
@@ -128,36 +150,6 @@ export interface InputDateProps {
   className?: string;
 }
 
-type SegKey = "month" | "day" | "year";
-const SEG_LIMITS: Record<SegKey, { min: number; max: number; len: number }> = {
-  month: { min: 1, max: 12, len: 2 },
-  day: { min: 1, max: 31, len: 2 },
-  year: { min: 1900, max: 2100, len: 4 },
-};
-
-/** Supported tokens: MM, DD, YYYY. Separator = first non-token char. */
-function parseFormat(fmt: string): { order: SegKey[]; sep: string } {
-  const sep = fmt.replace(/MM|DD|YYYY/g, "")[0] ?? "/";
-  const order: SegKey[] = fmt
-    .split(sep)
-    .map((p) => (p === "MM" ? "month" : p === "DD" ? "day" : "year"));
-  return { order, sep };
-}
-
-function dateToSegments(date: Date) {
-  return {
-    month: String(date.getMonth() + 1).padStart(2, "0"),
-    day: String(date.getDate()).padStart(2, "0"),
-    year: String(date.getFullYear()),
-  };
-}
-
-const SEG_PLACEHOLDER: Record<SegKey, string> = {
-  month: "MM",
-  day: "DD",
-  year: "YYYY",
-};
-
 function InputDate({
   id,
   value,
@@ -165,12 +157,14 @@ function InputDate({
   disabled,
   error,
   withCalendar = false,
+  size = "default",
   format = "MM/DD/YYYY",
   className,
 }: InputDateProps) {
-  const { order: SEG_ORDER, sep } = React.useMemo(
-    () => parseFormat(format),
-    [format],
+  const { order, sep } = React.useMemo(() => parseFormat(format), [format]);
+  const flatIds = React.useMemo(
+    () => order.map((key) => makeFlatId("", key)),
+    [order],
   );
 
   const [seg, setSeg] = React.useState(() =>
@@ -178,7 +172,7 @@ function InputDate({
       ? dateToSegments(value)
       : { month: "", day: "", year: "" },
   );
-  const [active, setActive] = React.useState<SegKey | null>(null);
+  const [active, setActive] = React.useState<string | null>(null);
   const [calOpen, setCalOpen] = React.useState(false);
   const prevFormatRef = React.useRef(format);
 
@@ -187,6 +181,10 @@ function InputDate({
     day: React.useRef<HTMLInputElement>(null),
     year: React.useRef<HTMLInputElement>(null),
   };
+  const { focus, focusNext, focusPrev } = createFocusController(
+    flatIds,
+    refs,
+  );
 
   React.useEffect(() => {
     if (!value) {
@@ -204,28 +202,8 @@ function InputDate({
     );
   }, [value]);
 
-  const emit = (next: typeof seg) => {
-    const m = parseInt(next.month, 10);
-    const d = parseInt(next.day, 10);
-    const y = parseInt(next.year, 10);
-    if (m && d && y && next.year.length === 4) {
-      const date = new Date(y, m - 1, d);
-      if (!Number.isNaN(date.getTime()) && date.getMonth() === m - 1) {
-        onChange?.(date);
-        return;
-      }
-    }
-    onChange?.(undefined);
-  };
-
-  const focus = (key: SegKey) => refs[key].current?.focus();
-  const focusNext = (key: SegKey) => {
-    const n = SEG_ORDER[SEG_ORDER.indexOf(key) + 1];
-    if (n) focus(n);
-  };
-  const focusPrev = (key: SegKey) => {
-    const p = SEG_ORDER[SEG_ORDER.indexOf(key) - 1];
-    if (p) focus(p);
+  const emit = (next: Record<"month" | "day" | "year", string>) => {
+    onChange?.(segmentsToDate(next));
   };
 
   // Only move focus on an actual format change while this field is active.
@@ -234,54 +212,42 @@ function InputDate({
     if (prevFormatRef.current === format) return;
     prevFormatRef.current = format;
     if (!active || disabled) return;
-    const target = SEG_ORDER.includes(active) ? active : SEG_ORDER[0];
+    const target = flatIds.includes(active) ? active : flatIds[0];
     if (target) focus(target);
-  }, [active, disabled, format, SEG_ORDER]);
+  }, [active, disabled, format, flatIds, focus]);
 
   const handleKeyDown = (
-    key: SegKey,
+    flatId: string,
+    key: "month" | "day" | "year",
     e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    const { min, max, len } = SEG_LIMITS[key];
     if (e.key === "ArrowUp" || e.key === "ArrowDown") {
       e.preventDefault();
-      const cur = parseInt(seg[key], 10) || min;
-      const next = String(
-        Math.min(Math.max(cur + (e.key === "ArrowUp" ? 1 : -1), min), max),
-      ).padStart(len, "0");
-      const nextSeg = { ...seg, [key]: next };
+      const nextSeg = stepSegmentValue(seg, key, e.key === "ArrowUp" ? 1 : -1);
       setSeg(nextSeg);
       emit(nextSeg);
       return;
     }
     if (e.key === "ArrowLeft") {
       e.preventDefault();
-      focusPrev(key);
+      focusPrev(flatId);
     }
     if (e.key === "ArrowRight" || e.key === sep) {
       e.preventDefault();
-      focusNext(key);
+      focusNext(flatId);
     }
-    if (e.key === "Backspace" && !seg[key]) focusPrev(key);
+    if (e.key === "Backspace" && !seg[key]) focusPrev(flatId);
   };
 
-  const handleChange = (key: SegKey, raw: string) => {
-    const { min, max, len } = SEG_LIMITS[key];
-    const digits = raw.replace(/\D/g, "").slice(-len);
-    let val = digits;
-    if (digits.length === len) {
-      const n = parseInt(digits, 10);
-      if (n > max) val = String(max).padStart(len, "0");
-      else if (n < min) val = String(min).padStart(len, "0");
-    }
-    const nextSeg = { ...seg, [key]: val };
+  const handleChange = (
+    flatId: string,
+    key: "month" | "day" | "year",
+    raw: string,
+  ) => {
+    const { seg: nextSeg, advance } = applySegmentDigits(seg, key, raw);
     setSeg(nextSeg);
     emit(nextSeg);
-    const shouldAdvance =
-      val.length === len ||
-      (key === "month" && parseInt(val, 10) > 1 && val.length === 1) ||
-      (key === "day" && parseInt(val, 10) > 3 && val.length === 1);
-    if (shouldAdvance) focusNext(key);
+    if (advance) focusNext(flatId);
   };
 
   const handleCalendarSelect = (date: Date | undefined) => {
@@ -292,43 +258,7 @@ function InputDate({
     setCalOpen(false);
   };
 
-  const calValue = (() => {
-    const m = parseInt(seg.month, 10),
-      d = parseInt(seg.day, 10),
-      y = parseInt(seg.year, 10);
-    if (m && d && y && seg.year.length === 4) {
-      const dt = new Date(y, m - 1, d);
-      if (!Number.isNaN(dt.getTime()) && dt.getMonth() === m - 1) return dt;
-    }
-    return undefined;
-  })();
-
-  const segClass = (key: SegKey) =>
-    cn(
-      "bg-transparent text-center outline-none tabular-nums caret-transparent select-none",
-      "rounded transition-colors duration-100",
-      "placeholder:text-muted-foreground/50",
-      key === "year" ? "w-[3.2rem]" : "w-8",
-      active === key && "bg-primary/10 text-primary",
-    );
-
-  const mkProps = (key: SegKey, ph: string) => ({
-    ref: refs[key],
-    type: "text" as const,
-    value: seg[key],
-    placeholder: ph,
-    maxLength: SEG_LIMITS[key].len,
-    disabled,
-    inputMode: "numeric" as const,
-    "aria-label": key,
-    className: segClass(key),
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-      handleChange(key, e.target.value),
-    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) =>
-      handleKeyDown(key, e),
-    onFocus: () => setActive(key),
-    onBlur: () => setActive(null),
-  });
+  const calValue = segmentsToDate(seg);
 
   return (
     <div
@@ -336,33 +266,35 @@ function InputDate({
       role="group"
       aria-label="Date input"
       className={cn(
-        "flex h-9 w-full items-center rounded-lg border border-input bg-background px-3 text-sm",
-        "ring-offset-background transition-all duration-150",
-        "focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
-        error && "border-destructive focus-within:ring-destructive",
+        FIELD_GROUP,
+        FIELD_SIZE[size].height,
+        FIELD_SIZE[size].padding,
+        FIELD_SIZE[size].text,
+        fieldErrorClass(error),
+        error && "focus-within:ring-destructive",
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
       onClick={() => {
         if (!active) {
-          const first = SEG_ORDER[0];
+          const first = flatIds[0];
           if (first) focus(first);
         }
       }}
     >
-      {SEG_ORDER.map((key, i) => (
-        <React.Fragment key={key}>
-          {i > 0 && (
-            <span
-              className="mx-0.5 select-none text-muted-foreground/40"
-              aria-hidden="true"
-            >
-              {sep}
-            </span>
-          )}
-          <input {...mkProps(key, SEG_PLACEHOLDER[key])} />
-        </React.Fragment>
-      ))}
+      <SegmentGroup
+        order={order}
+        sep={sep}
+        seg={seg}
+        active={active}
+        disabled={disabled}
+        size={size}
+        getRef={(flatId) => refs[flatId as "month" | "day" | "year"]}
+        onChangeSeg={handleChange}
+        onKeyDownSeg={handleKeyDown}
+        onFocusSeg={(flatId) => setActive(flatId)}
+        onBlurSeg={() => setActive(null)}
+      />
 
       {withCalendar && (
         <Popover open={calOpen} onOpenChange={setCalOpen}>
@@ -417,6 +349,7 @@ InputDate.displayName = "Input.Date";
 const InputCompound = Object.assign(Input, {
   Date: InputDate,
   Currency: InputCurrency,
+  DateRange: InputDateRange,
 });
 
 export { InputCompound as Input, inputVariants };

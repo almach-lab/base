@@ -6,6 +6,8 @@ import * as React from "react";
 import { MOTION_INTERACTIVE } from "./_motion.js";
 import {
   FIELD_GROUP,
+  FIELD_SIZE,
+  type FieldSize,
   FOCUS_RING,
   fieldErrorClass,
   MENU_ITEM,
@@ -84,8 +86,18 @@ export interface InputCurrencyProps {
   currencySelector?: CurrencySelectorMode;
   disabled?: boolean;
   error?: boolean;
+  size?: FieldSize;
   className?: string;
 }
+
+const CURRENCY_INNER_PAD: Record<
+  FieldSize,
+  { symbol: string; amount: string; selector: string }
+> = {
+  sm: { symbol: "pl-2", amount: "px-2", selector: "px-2.5" },
+  default: { symbol: "pl-2.5", amount: "px-2.5", selector: "px-3" },
+  lg: { symbol: "pl-3.5", amount: "px-3.5", selector: "px-4" },
+};
 
 /* ── Currency list ────────────────────────────────────────────────────────── */
 
@@ -284,8 +296,10 @@ export function InputCurrency({
   currencySelector = "editable",
   disabled,
   error,
+  size = "default",
   className,
 }: InputCurrencyProps) {
+  const pad = CURRENCY_INNER_PAD[size];
   const [currency, setCurrency] = React.useState(
     value?.currency ?? defaultCurrency,
   );
@@ -364,7 +378,8 @@ export function InputCurrency({
     <div
       className={cn(
         FIELD_GROUP,
-        "h-9",
+        FIELD_SIZE[size].height,
+        FIELD_SIZE[size].text,
         fieldErrorClass(error),
         error && "focus-within:ring-destructive",
         disabled && "cursor-not-allowed opacity-50",
@@ -374,7 +389,10 @@ export function InputCurrency({
       {/* ── Currency selector ─────────────────────────────────────────── */}
       {currencySelector === "readonly" && (
         <div
-          className="flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3 font-medium"
+          className={cn(
+            "flex h-full shrink-0 items-center gap-1.5 border-r border-input font-medium",
+            pad.selector,
+          )}
           aria-label={selectedCurrency.name}
         >
           {flagNode}
@@ -400,7 +418,8 @@ export function InputCurrency({
               aria-haspopup="listbox"
               aria-expanded={selectorOpen}
               className={cn(
-                "flex h-full shrink-0 items-center gap-1.5 border-r border-input px-3 font-medium",
+                "flex h-full shrink-0 items-center gap-1.5 border-r border-input font-medium",
+                pad.selector,
                 MOTION_INTERACTIVE,
                 FOCUS_RING,
                 "hover:bg-accent hover:text-accent-foreground",
@@ -515,7 +534,10 @@ export function InputCurrency({
 
       {/* ── Currency symbol ───────────────────────────────────────────── */}
       <span
-        className="shrink-0 select-none pl-2.5 text-muted-foreground"
+        className={cn(
+          "shrink-0 select-none text-muted-foreground",
+          pad.symbol,
+        )}
         aria-hidden="true"
       >
         {selectedCurrency.symbol}
@@ -535,7 +557,8 @@ export function InputCurrency({
         aria-label="Amount"
         aria-invalid={error}
         className={cn(
-          "h-full min-w-0 flex-1 bg-transparent px-2.5 text-right tabular-nums outline-none",
+          "h-full min-w-0 flex-1 bg-transparent text-right tabular-nums outline-none",
+          pad.amount,
           "placeholder:text-muted-foreground/60",
           "disabled:cursor-not-allowed",
         )}
