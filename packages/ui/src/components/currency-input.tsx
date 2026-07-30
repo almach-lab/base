@@ -49,7 +49,7 @@ export type CurrencySelectorMode = "editable" | "readonly" | "hidden";
 
 export interface InputCurrencyProps {
   id?: string;
-  value?: CurrencyValue;
+  value?: CurrencyValue | undefined;
   onChange?: (value: CurrencyValue) => void;
   /**
    * Default currency code used when no `value` is provided (uncontrolled).

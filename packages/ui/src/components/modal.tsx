@@ -44,8 +44,8 @@ function useModal() {
 
 interface ModalRootProps {
   children?: React.ReactNode;
-  open?: boolean;
-  defaultOpen?: boolean;
+  open?: boolean | undefined;
+  defaultOpen?: boolean | undefined;
   onOpenChange?: (open: boolean) => void;
   trigger?: React.ReactNode;
   title?: string;

@@ -16,8 +16,8 @@ import {
 import { OVERLAY_SURFACE } from "./_styles.js";
 
 interface PopoverRootProps {
-  open?: boolean;
-  defaultOpen?: boolean;
+  open?: boolean | undefined;
+  defaultOpen?: boolean | undefined;
   onOpenChange?: (open: boolean) => void;
   children?: React.ReactNode;
 }

@@ -64,8 +64,8 @@ interface TabsProps
     React.ComponentPropsWithoutRef<typeof TabsPrimitive>,
     "selectedKey" | "defaultSelectedKey"
   > {
-  value?: TabsKey;
-  defaultValue?: TabsKey;
+  value?: TabsKey | undefined;
+  defaultValue?: TabsKey | undefined;
 }
 
 const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
@@ -107,7 +107,7 @@ TabsList.displayName = "Tabs.List";
 
 interface TabsTriggerProps
   extends Omit<React.ComponentPropsWithoutRef<typeof Tab>, "id"> {
-  value?: TabsKey;
+  value?: TabsKey | undefined;
 }
 
 const TabsTrigger = React.forwardRef<HTMLDivElement, TabsTriggerProps>(
@@ -127,7 +127,7 @@ TabsTrigger.displayName = "Tabs.Trigger";
 
 interface TabsContentProps
   extends Omit<React.ComponentPropsWithoutRef<typeof TabPanel>, "id"> {
-  value?: TabsKey;
+  value?: TabsKey | undefined;
 }
 
 const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(

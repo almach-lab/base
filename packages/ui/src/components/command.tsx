@@ -25,7 +25,7 @@ CommandRoot.displayName = "Command";
 
 /* ── Dialog wrapper ───────────────────────────────────────────────────────── */
 interface CommandDialogProps {
-  open?: boolean;
+  open?: boolean | undefined;
   onOpenChange?: (open: boolean) => void;
   children: React.ReactNode;
 }

@@ -51,10 +51,10 @@ export function SidebarProvider({
   children,
   ...props
 }: React.PropsWithChildren<{
-  defaultOpen?: boolean;
-  open?: boolean;
+  defaultOpen?: boolean | undefined;
+  open?: boolean | undefined;
   onOpenChange?: (open: boolean) => void;
-  openMobile?: boolean;
+  openMobile?: boolean | undefined;
   onOpenMobileChange?: (open: boolean) => void;
   contained?: boolean;
   sidebarWidth?: string;
@@ -274,9 +274,9 @@ export function SidebarMenuButton({
   className,
   ...props
 }: React.PropsWithChildren<{
-  isActive?: boolean;
+  isActive?: boolean | undefined;
   onToggle?: () => void;
-  isOpen?: boolean;
+  isOpen?: boolean | undefined;
   asChild?: boolean;
   className?: string;
 }>) {
@@ -404,7 +404,7 @@ export function SidebarMenuItem({
   defaultOpen = false,
 }: {
   children: React.ReactNode;
-  defaultOpen?: boolean;
+  defaultOpen?: boolean | undefined;
 }) {
   const [isOpen, setIsOpen] = React.useState(defaultOpen);
 
@@ -412,7 +412,7 @@ export function SidebarMenuItem({
     if (React.isValidElement(child)) {
       return React.cloneElement(
         child as React.ReactElement<{
-          isOpen?: boolean;
+          isOpen?: boolean | undefined;
           onToggle?: () => void;
         }>,
         {

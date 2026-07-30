@@ -9,7 +9,7 @@ import { badgeVariants } from "./badge.js";
 
 export interface TagInputProps {
   id?: string;
-  value?: string[];
+  value?: string[] | undefined;
   onChange?: (tags: string[]) => void;
   placeholder?: string;
   max?: number;

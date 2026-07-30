@@ -81,8 +81,8 @@ function useSelectCtx() {
 }
 
 type SelectRootProps = {
-  value?: string;
-  defaultValue?: string;
+  value?: string | undefined;
+  defaultValue?: string | undefined;
   onValueChange?: (value: string) => void;
   isDisabled?: boolean;
   children?: React.ReactNode;
@@ -547,7 +547,7 @@ export interface SelectSearchableOption {
 
 export interface SelectSearchableProps {
   options: SelectSearchableOption[];
-  value?: string;
+  value?: string | undefined;
   onChange?: (value: string) => void;
   placeholder?: string;
   searchPlaceholder?: string;

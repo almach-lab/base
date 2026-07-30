@@ -39,7 +39,7 @@ export interface DateRange {
 
 export interface CalendarProps {
   mode?: CalendarMode;
-  selected?: Date | Date[] | DateRange;
+  selected?: Date | Date[] | DateRange | undefined;
   onSelect?: (value: Date | Date[] | DateRange | undefined) => void;
   className?: string;
   numberOfMonths?: number;
