@@ -66,10 +66,6 @@ function toJsDate(value: DateValue | null | undefined) {
   return value.toDate(getLocalTimeZone());
 }
 
-function startOfDay(date: Date) {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-}
-
 function isSameDay(a: Date, b: Date) {
   return (
     a.getFullYear() === b.getFullYear() &&
@@ -120,16 +116,7 @@ function CalendarHeader() {
   );
 }
 
-function createCellClassName(
-  mode: CalendarMode,
-  selectedDates: Date[],
-  selectedRange?: DateRange,
-) {
-  const rangeFrom = selectedRange?.from
-    ? startOfDay(selectedRange.from)
-    : undefined;
-  const rangeTo = selectedRange?.to ? startOfDay(selectedRange.to) : undefined;
-
+function createCellClassName(mode: CalendarMode, selectedDates: Date[]) {
   return (renderProps: unknown) => {
     const state = renderProps as {
       date: DateValue;
@@ -148,14 +135,13 @@ function createCellClassName(
       !!date &&
       selectedDates.some((item) => isSameDay(item, date));
 
+    // React Aria's own per-cell isSelected already reflects the live range
+    // selection (controlled or uncontrolled, including drag/hover preview) —
+    // deriving this from an externally-passed selectedRange instead meant the
+    // in-between fill silently never appeared for uncontrolled usage, since
+    // nothing fed a value back down for it to compare against.
     const isRangeSelected =
-      mode === "range" &&
-      !!date &&
-      !state.isOutsideMonth &&
-      !!rangeFrom &&
-      !!rangeTo &&
-      startOfDay(date) >= rangeFrom &&
-      startOfDay(date) <= rangeTo;
+      mode === "range" && !!state.isSelected && !state.isOutsideMonth;
 
     const dayOfWeek = date?.getDay();
     const isWeekStart = dayOfWeek === 0;
@@ -214,14 +200,12 @@ function CalendarGridView({
   months,
   mode,
   selectedDates,
-  selectedRange,
 }: {
   months: number;
   mode: CalendarMode;
   selectedDates: Date[];
-  selectedRange?: DateRange;
 }) {
-  const className = createCellClassName(mode, selectedDates, selectedRange);
+  const className = createCellClassName(mode, selectedDates);
 
   return (
     <div className={cn("flex gap-4", months > 1 && "flex-col sm:flex-row")}>
@@ -373,7 +357,6 @@ export function Calendar({
           months={numberOfMonths}
           mode={mode}
           selectedDates={[]}
-          {...(selectedRange ? { selectedRange } : {})}
         />
         {errorMessage ? (
           <Text slot="errorMessage" className="pt-2 text-sm text-destructive">
