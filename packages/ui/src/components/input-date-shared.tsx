@@ -205,7 +205,15 @@ export function SegmentGroup({
               className={segmentInputClassName(key, active === flatId, size)}
               onChange={(e) => onChangeSeg(flatId, key, e.target.value)}
               onKeyDown={(e) => onKeyDownSeg(flatId, key, e)}
-              onFocus={() => onFocusSeg(flatId)}
+              onFocus={(e) => {
+                onFocusSeg(flatId);
+                // A pre-filled segment is already at maxLength, so without
+                // selecting its text on focus, the browser's native maxLength
+                // silently blocks the first keystroke — nothing gets typed
+                // until the user manually clears it, which isn't discoverable
+                // since the caret is hidden (caret-transparent above).
+                e.target.select();
+              }}
               onBlur={onBlurSeg}
             />
           </React.Fragment>
