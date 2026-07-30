@@ -25,7 +25,7 @@ import { Popover } from "./popover.js";
 
 export interface InputDateRangeProps {
   id?: string;
-  value?: DateRange;
+  value?: DateRange | undefined;
   onChange?: (range: DateRange | undefined) => void;
   disabled?: boolean;
   error?: boolean;
