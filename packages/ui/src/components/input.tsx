@@ -38,7 +38,10 @@ export interface InputProps
 // content scanner can actually find "right-2.5"/"right-3"/"right-4" and generate
 // the CSS for them — a runtime .replace("left", "right") produces a class name
 // Tailwind never sees in source, so the utility never gets compiled.
-const inputSideOffset: Record<"sm" | "default" | "lg", { left: string; right: string }> = {
+const inputSideOffset: Record<
+  "sm" | "default" | "lg",
+  { left: string; right: string }
+> = {
   sm: { left: "left-2.5", right: "right-2.5" },
   default: { left: "left-3", right: "right-3" },
   lg: { left: "left-4", right: "right-4" },
@@ -181,10 +184,7 @@ function InputDate({
     day: React.useRef<HTMLInputElement>(null),
     year: React.useRef<HTMLInputElement>(null),
   };
-  const { focus, focusNext, focusPrev } = createFocusController(
-    flatIds,
-    refs,
-  );
+  const { focus, focusNext, focusPrev } = createFocusController(flatIds, refs);
 
   React.useEffect(() => {
     if (!value) {

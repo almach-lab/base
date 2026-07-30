@@ -16,8 +16,8 @@ import {
   dateToSegments,
   makeFlatId,
   parseFormat,
-  SegmentGroup,
   type SegKey,
+  SegmentGroup,
   segmentsToDate,
   stepSegmentValue,
 } from "./input-date-shared.js";

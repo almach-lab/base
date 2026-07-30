@@ -45,9 +45,7 @@ export function dateToSegments(date: Date): Record<SegKey, string> {
 }
 
 /** Parses a segment record into a valid Date, or undefined if incomplete/invalid. */
-export function segmentsToDate(
-  seg: Record<SegKey, string>,
-): Date | undefined {
+export function segmentsToDate(seg: Record<SegKey, string>): Date | undefined {
   const m = parseInt(seg.month, 10);
   const d = parseInt(seg.day, 10);
   const y = parseInt(seg.year, 10);
@@ -82,9 +80,10 @@ export function stepSegmentValue(
 ): Record<SegKey, string> {
   const { min, max, len } = SEG_LIMITS[key];
   const cur = parseInt(seg[key], 10) || min;
-  const next = String(
-    Math.min(Math.max(cur + direction, min), max),
-  ).padStart(len, "0");
+  const next = String(Math.min(Math.max(cur + direction, min), max)).padStart(
+    len,
+    "0",
+  );
   return { ...seg, [key]: next };
 }
 

@@ -534,10 +534,7 @@ export function InputCurrency({
 
       {/* ── Currency symbol ───────────────────────────────────────────── */}
       <span
-        className={cn(
-          "shrink-0 select-none text-muted-foreground",
-          pad.symbol,
-        )}
+        className={cn("shrink-0 select-none text-muted-foreground", pad.symbol)}
         aria-hidden="true"
       >
         {selectedCurrency.symbol}

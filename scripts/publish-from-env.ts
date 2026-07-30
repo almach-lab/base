@@ -51,11 +51,13 @@ function run(command: string, cwd?: string): string {
   }).trim();
 }
 
-function isPublished(name: string, version: string, npmrcPath: string): boolean {
+function isPublished(
+  name: string,
+  version: string,
+  npmrcPath: string,
+): boolean {
   try {
-    run(
-      `npm view ${name}@${version} version --userconfig "${npmrcPath}"`,
-    );
+    run(`npm view ${name}@${version} version --userconfig "${npmrcPath}"`);
     return true;
   } catch {
     return false;
@@ -101,9 +103,7 @@ writeFileSync(
 );
 
 const packages = onlyPackages ?? defaultPackages;
-const unknown = packages.filter(
-  (pkg) => !defaultPackages.includes(pkg),
-);
+const unknown = packages.filter((pkg) => !defaultPackages.includes(pkg));
 if (unknown.length > 0) {
   console.error(
     `[publish-from-env] Unknown package(s): ${unknown.join(", ")}. Expected: ${defaultPackages.join(", ")}`,
@@ -127,7 +127,9 @@ try {
     const name = pkgJson.name;
     const baseVersion = pkgJson.version;
     if (!name || !baseVersion) {
-      console.error(`[publish-from-env] Missing name/version in ${cwd}/package.json`);
+      console.error(
+        `[publish-from-env] Missing name/version in ${cwd}/package.json`,
+      );
       process.exit(1);
     }
 
@@ -164,9 +166,13 @@ try {
   }
 
   if (publishedCount === 0) {
-    console.log("[publish-from-env] Nothing to publish — all selected versions are already on npm.");
+    console.log(
+      "[publish-from-env] Nothing to publish — all selected versions are already on npm.",
+    );
   } else {
-    console.log(`[publish-from-env] Done. Published ${publishedCount} package(s).`);
+    console.log(
+      `[publish-from-env] Done. Published ${publishedCount} package(s).`,
+    );
   }
 } finally {
   try {
