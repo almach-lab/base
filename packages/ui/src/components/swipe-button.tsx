@@ -101,6 +101,7 @@ interface SwipeButtonCtxValue {
   handlePointerMove: (e: ReactPointerEvent<HTMLDivElement>) => void;
   handlePointerUp: (e: ReactPointerEvent<HTMLDivElement>) => void;
   handleKeyDown: (e: KeyboardEvent<HTMLDivElement>) => void;
+  handleBlur: () => void;
 }
 
 const SwipeButtonCtx = createContext<SwipeButtonCtxValue | null>(null);
@@ -664,14 +665,6 @@ function SwipeButtonRoot({
         else fireSuccess(max);
       } else {
         cancelHold();
-        onFailRef.current?.();
-        const start = getStart(max);
-        setSliderPosition(start);
-        positionRef.current = start;
-        setFillWidth(calcFillWidth(start, cw, sw, inset, reverseRef.current));
-        setProgress(calcProgress(start, max, reverseRef.current));
-        setIsSwiping(false);
-        setIsAutoSnapping(false);
       }
     },
     [
@@ -684,9 +677,42 @@ function SwipeButtonRoot({
       startHold,
       fireSuccess,
       cancelHold,
-      getStart,
     ],
   );
+
+  /** Commits the keyboard-driven position on blur: succeeds if past
+   * threshold, otherwise snaps back and reports failure once — unlike
+   * per-keystroke resetting, this lets ArrowRight presses accumulate. */
+  const handleBlur = useCallback(() => {
+    if (disabled || hasSucceeded.current || !isSwiping) return;
+    const { cw, sw, inset, max } = getDimensions();
+    if (max <= 0) return;
+
+    if (checkThreshold(positionRef.current, max)) {
+      if (holdRef.current === 0) fireSuccess(max);
+      return;
+    }
+
+    cancelHold();
+    onFailRef.current?.();
+    const start = getStart(max);
+    setSliderPosition(start);
+    positionRef.current = start;
+    setFillWidth(calcFillWidth(start, cw, sw, inset, reverseRef.current));
+    setProgress(calcProgress(start, max, reverseRef.current));
+    setIsSwiping(false);
+    setIsAutoSnapping(false);
+  }, [
+    disabled,
+    isSwiping,
+    getDimensions,
+    checkThreshold,
+    fireSuccess,
+    cancelHold,
+    getStart,
+    calcFillWidth,
+    calcProgress,
+  ]);
 
   const debugDimensions = debug ? getDimensions() : null;
 
@@ -710,6 +736,7 @@ function SwipeButtonRoot({
         handlePointerMove,
         handlePointerUp,
         handleKeyDown,
+        handleBlur,
       }}
     >
       <div
@@ -924,6 +951,7 @@ const Thumb = forwardRef<HTMLDivElement, SwipeButtonThumbProps>(
       handlePointerMove,
       handlePointerUp,
       handleKeyDown,
+      handleBlur,
       sliderRef,
       progress,
     } = useSwipeButtonCtx();
@@ -942,6 +970,7 @@ const Thumb = forwardRef<HTMLDivElement, SwipeButtonThumbProps>(
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
         onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
         className={cn(
           "absolute z-30 touch-none rounded-full",
           "flex items-center justify-center",

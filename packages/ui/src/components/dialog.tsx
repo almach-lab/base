@@ -210,12 +210,17 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
       return () => clearTimeout(timeoutId);
     }, [open, mounted]);
 
+    const setOpenRef = React.useRef(setOpen);
+    React.useEffect(() => {
+      setOpenRef.current = setOpen;
+    }, [setOpen]);
+
     React.useEffect(() => {
       if (!mounted) return;
       restoreFocusRef.current = document.activeElement as HTMLElement | null;
 
       const onKeyDown = (event: KeyboardEvent) => {
-        if (event.key === "Escape") setOpen(false);
+        if (event.key === "Escape") setOpenRef.current(false);
         if (event.key === "Tab") trapFocus(event);
       };
       window.addEventListener("keydown", onKeyDown);
@@ -225,7 +230,7 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
           triggerRef.current ?? restoreFocusRef.current ?? document.body;
         target?.focus?.();
       };
-    }, [mounted, setOpen]);
+    }, [mounted]);
 
     const trapFocus = (event: KeyboardEvent) => {
       const el = contentRef.current;

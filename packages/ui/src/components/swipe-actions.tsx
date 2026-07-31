@@ -53,6 +53,7 @@ interface SwipeCtxValue {
   open: (side: NonNullable<SwipeSide>) => void;
   close: () => void;
   triggerFullSwipe: (side: NonNullable<SwipeSide>) => void;
+  cancelPendingFullSwipeReset: () => void;
 }
 
 const SwipeCtx = React.createContext<SwipeCtxValue | null>(null);
@@ -138,17 +139,31 @@ function SwipeActionsRoot({
   );
 
   React.useLayoutEffect(() => {
-    const hasH =
-      (leftRef.current?.offsetWidth ?? 0) > 0 ||
-      (rightRef.current?.offsetWidth ?? 0) > 0;
-    const hasV =
-      (topRef.current?.offsetHeight ?? 0) > 0 ||
-      (bottomRef.current?.offsetHeight ?? 0) > 0;
-    if (hasH && hasV) setTouchAction("none");
-    else if (hasH) setTouchAction("pan-y");
-    else if (hasV) setTouchAction("pan-x");
-    else setTouchAction("auto");
-  }, []);
+    const measure = () => {
+      const hasH =
+        (leftRef.current?.offsetWidth ?? 0) > 0 ||
+        (rightRef.current?.offsetWidth ?? 0) > 0;
+      const hasV =
+        (topRef.current?.offsetHeight ?? 0) > 0 ||
+        (bottomRef.current?.offsetHeight ?? 0) > 0;
+      if (hasH && hasV) setTouchAction("none");
+      else if (hasH) setTouchAction("pan-y");
+      else if (hasV) setTouchAction("pan-x");
+      else setTouchAction("auto");
+    };
+    measure();
+
+    const observer = new ResizeObserver(measure);
+    for (const el of [
+      leftRef.current,
+      rightRef.current,
+      topRef.current,
+      bottomRef.current,
+    ]) {
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, [children]);
 
   const applyTransform = React.useCallback(
     (x: number, y: number, transition: string | false = false) => {
@@ -199,9 +214,16 @@ function SwipeActionsRoot({
     onOpenChange?.(null);
   }, [applyTransform, onOpenChange]);
 
+  const cancelPendingFullSwipeReset = React.useCallback(() => {
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
   const triggerFullSwipe = React.useCallback(
     (side: NonNullable<SwipeSide>) => {
-      if (timerRef.current !== null) clearTimeout(timerRef.current);
+      cancelPendingFullSwipeReset();
       const w = rootRef.current?.offsetWidth ?? 0;
       const h = rootRef.current?.offsetHeight ?? 0;
       const dx = side === "left" ? w : side === "right" ? -w : 0;
@@ -218,7 +240,7 @@ function SwipeActionsRoot({
         onOpenChange?.(null);
       }, 300);
     },
-    [applyTransform, onFullSwipe, onOpenChange],
+    [applyTransform, onFullSwipe, onOpenChange, cancelPendingFullSwipeReset],
   );
 
   return (
@@ -246,6 +268,7 @@ function SwipeActionsRoot({
         open,
         close,
         triggerFullSwipe,
+        cancelPendingFullSwipeReset,
       }}
     >
       <div
@@ -288,6 +311,7 @@ function SwipeActionsContent({
     open,
     close,
     triggerFullSwipe,
+    cancelPendingFullSwipeReset,
   } = useSwipeCtx();
 
   const drag = React.useRef({
@@ -303,6 +327,11 @@ function SwipeActionsContent({
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (disabled) return;
     e.currentTarget.setPointerCapture(e.pointerId);
+    // A full-swipe's snap-back timer may still be pending (see
+    // triggerFullSwipe) — cancel it so it can't fire mid-drag and yank the
+    // content back to (0,0) while this new gesture is computing from a
+    // stale origin.
+    cancelPendingFullSwipeReset();
     // Freeze spring at its current JS-tracked position (posRef is always accurate)
     applyTransform(posRef.current.x, posRef.current.y);
     drag.current = {

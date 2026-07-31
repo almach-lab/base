@@ -172,14 +172,18 @@ export const InputDateRange = React.forwardRef<
   const emit = (
     nextFrom: Record<SegKey, string>,
     nextTo: Record<SegKey, string>,
+    changedGroup: Group,
   ) => {
     const from = segmentsToDate(nextFrom);
     const to = segmentsToDate(nextTo);
     const next: DateRange = {};
     if (from) next.from = from;
     if (to) next.to = to;
-    skipFromSyncRef.current = true;
-    skipToSyncRef.current = true;
+    if (changedGroup === "from") {
+      skipFromSyncRef.current = true;
+    } else {
+      skipToSyncRef.current = true;
+    }
     onChange?.(Object.keys(next).length ? next : undefined);
   };
 
@@ -196,10 +200,10 @@ export const InputDateRange = React.forwardRef<
       const nextSeg = stepSegmentValue(seg, key, e.key === "ArrowUp" ? 1 : -1);
       if (group === "from") {
         setFromSeg(nextSeg);
-        emit(nextSeg, toSeg);
+        emit(nextSeg, toSeg, "from");
       } else {
         setToSeg(nextSeg);
-        emit(fromSeg, nextSeg);
+        emit(fromSeg, nextSeg, "to");
       }
       return;
     }
@@ -230,10 +234,10 @@ export const InputDateRange = React.forwardRef<
     );
     if (group === "from") {
       setFromSeg(nextSeg);
-      emit(nextSeg, toSeg);
+      emit(nextSeg, toSeg, "from");
     } else {
       setToSeg(nextSeg);
-      emit(fromSeg, nextSeg);
+      emit(fromSeg, nextSeg, "to");
     }
     if (advance) focusNext(flatId);
   };

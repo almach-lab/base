@@ -559,13 +559,18 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
       return () => window.clearTimeout(timeout);
     }, [open, mounted]);
 
+    const setOpenRef = React.useRef(setOpen);
+    React.useEffect(() => {
+      setOpenRef.current = setOpen;
+    }, [setOpen]);
+
     React.useEffect(() => {
       if (!mounted) return;
       restoreFocusRef.current = document.activeElement as HTMLElement | null;
 
       const onKeyDown = (event: KeyboardEvent) => {
         if (!isKeyboardDismissDisabled && event.key === "Escape")
-          setOpen(false);
+          setOpenRef.current(false);
         if (event.key === "Tab") trapFocus(event);
       };
       window.addEventListener("keydown", onKeyDown);
@@ -575,7 +580,7 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
           triggerRef.current ?? restoreFocusRef.current ?? document.body;
         target?.focus?.();
       };
-    }, [mounted, setOpen, isKeyboardDismissDisabled]);
+    }, [mounted, isKeyboardDismissDisabled]);
 
     const trapFocus = (event: KeyboardEvent) => {
       const el = contentRef.current;

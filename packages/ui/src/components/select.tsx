@@ -242,6 +242,7 @@ const SelectItem = React.forwardRef<
     isDisabled,
     highlightedValue,
     setHighlightedValue,
+    triggerRef,
   } = useSelectCtx();
   const text = extractItemLabel(children);
   React.useLayoutEffect(() => {
@@ -269,6 +270,7 @@ const SelectItem = React.forwardRef<
         if (disabled) return;
         onValueChange?.(value);
         setOpen(false);
+        triggerRef.current?.focus();
       }}
       disabled={isDisabled || disabled}
       data-value={value}
@@ -352,7 +354,10 @@ const SelectContent = React.forwardRef<
       setOpen(false);
     };
     const onEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+      }
     };
 
     window.addEventListener("resize", onWindowChange);
@@ -560,12 +565,14 @@ const SelectSearchable = React.forwardRef<
   const [open, setOpen] = React.useState(false);
   const rootRef = React.useRef<HTMLDivElement | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const triggerRef = React.useRef<HTMLButtonElement | null>(null);
   const listboxId = React.useId();
   const selected = options.find((o) => o.value === value);
 
   const handleSelect = (val: string) => {
     onChange?.(val === value ? "" : val);
     setOpen(false);
+    triggerRef.current?.focus();
   };
 
   React.useEffect(() => {
@@ -582,6 +589,7 @@ const SelectSearchable = React.forwardRef<
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
+        triggerRef.current?.focus();
       }
     };
 
@@ -602,6 +610,7 @@ const SelectSearchable = React.forwardRef<
   return (
     <div ref={mergeRefs(ref, rootRef)} className="relative">
       <button
+        ref={triggerRef}
         type="button"
         role="combobox"
         aria-expanded={open}

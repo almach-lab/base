@@ -38,6 +38,7 @@ function CarouselRoot({
   ...props
 }: CarouselProps) {
   const viewportRef = React.useRef<HTMLDivElement>(null);
+  const regionRef = React.useRef<HTMLDivElement>(null);
   const [index, setIndex] = React.useState(0);
   const [count, setCount] = React.useState(0);
 
@@ -86,7 +87,7 @@ function CarouselRoot({
   }, [index, count, loop, scrollTo]);
 
   React.useEffect(() => {
-    const el = viewportRef.current;
+    const el = regionRef.current;
     if (!el) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
@@ -116,6 +117,7 @@ function CarouselRoot({
       }}
     >
       <div
+        ref={regionRef}
         role="region"
         aria-roledescription="carousel"
         // biome-ignore lint/a11y/noNoninteractiveTabindex: carousel region needs focus for keyboard nav

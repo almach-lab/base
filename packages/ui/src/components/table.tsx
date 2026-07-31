@@ -150,6 +150,10 @@ function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize,
+  });
 
   const table = useReactTable({
     data,
@@ -160,13 +164,14 @@ function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       globalFilter,
-      pagination: { pageIndex: 0, pageSize },
+      pagination,
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
     onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     ...(sortable && { getSortedRowModel: getSortedRowModel() }),
     ...(filterable && { getFilteredRowModel: getFilteredRowModel() }),

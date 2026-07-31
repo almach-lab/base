@@ -328,6 +328,7 @@ export const InputCurrency = React.forwardRef<
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   const searchRef = React.useRef<HTMLInputElement>(null);
+  const pendingSelectionRef = React.useRef<number | null>(null);
   /** Last amount this component itself emitted via onChange — lets the sync
    * effect below tell "value changed because we typed it" apart from "value
    * changed because the parent passed in something new", so it only
@@ -386,14 +387,43 @@ export const InputCurrency = React.forwardRef<
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cursor = e.target.selectionStart ?? e.target.value.length;
+    const keptBeforeCursor = e.target.value
+      .slice(0, cursor)
+      .replace(/[^\d.]/g, "").length;
+
     const raw = e.target.value
       .replace(/[^\d.]/g, "")
       .replace(/(\..*)\./g, "$1");
-    setDisplayValue(applyThousandSeparator(raw));
+    const formatted = applyThousandSeparator(raw);
+
+    let kept = 0;
+    let nextCursor = formatted.length;
+    for (let i = 0; i < formatted.length; i++) {
+      if (/[\d.]/.test(formatted[i] ?? "")) kept++;
+      if (kept === keptBeforeCursor) {
+        nextCursor = i + 1;
+        break;
+      }
+    }
+    if (keptBeforeCursor === 0) nextCursor = 0;
+
+    pendingSelectionRef.current = nextCursor;
+    setDisplayValue(formatted);
     const amount = parseAmount(raw);
     lastEmittedAmount.current = amount;
     onChange?.({ amount, currency });
   };
+
+  React.useLayoutEffect(() => {
+    if (pendingSelectionRef.current !== null) {
+      inputRef.current?.setSelectionRange(
+        pendingSelectionRef.current,
+        pendingSelectionRef.current,
+      );
+      pendingSelectionRef.current = null;
+    }
+  }, [displayValue]);
 
   const handleBlur = () => {
     const parsed = parseAmount(displayValue);

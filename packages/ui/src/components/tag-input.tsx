@@ -143,21 +143,19 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           </div>
         ) : null}
 
-        {!isAtMax && !disabled ? (
-          <input
-            ref={mergeRefs(ref, inputRef)}
-            id={id}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onBlur={() => addTag(input)}
-            placeholder={tags.length === 0 ? placeholder : ""}
-            className="min-w-[6rem] flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-            disabled={disabled}
-            aria-invalid={error || undefined}
-            autoComplete="off"
-          />
-        ) : null}
+        <input
+          ref={mergeRefs(ref, inputRef)}
+          id={id}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onBlur={() => addTag(input)}
+          placeholder={tags.length === 0 ? placeholder : ""}
+          className="min-w-[6rem] flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+          disabled={disabled || isAtMax}
+          aria-invalid={error || undefined}
+          autoComplete="off"
+        />
         {name ? (
           <input type="hidden" name={name} value={JSON.stringify(tags)} />
         ) : null}
