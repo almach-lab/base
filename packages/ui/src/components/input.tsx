@@ -20,7 +20,7 @@ import { InputDateRange } from "./input-date-range.js";
 import {
   applySegmentDigits,
   createFocusController,
-  createGroupClickFocusFirst,
+  createGroupClickFocusNearest,
   dateToSegments,
   makeFlatId,
   parseFormat,
@@ -310,7 +310,7 @@ const InputDate = React.forwardRef<HTMLDivElement, InputDateProps>(
           disabled && "cursor-not-allowed opacity-50",
           className,
         )}
-        onClick={createGroupClickFocusFirst(active, flatIds, focus)}
+        onClick={createGroupClickFocusNearest(active, flatIds, refs, focus)}
       >
         <SegmentGroup
           order={order}

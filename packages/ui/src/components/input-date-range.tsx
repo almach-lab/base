@@ -16,7 +16,7 @@ import { Calendar, type DateRange } from "./calendar.js";
 import {
   applySegmentDigits,
   createFocusController,
-  createGroupClickFocusFirst,
+  createGroupClickFocusNearest,
   dateToSegments,
   makeFlatId,
   parseFormat,
@@ -266,7 +266,7 @@ export const InputDateRange = React.forwardRef<
         disabled && "cursor-not-allowed opacity-50",
         className,
       )}
-      onClick={createGroupClickFocusFirst(active, flatIds, focus)}
+      onClick={createGroupClickFocusNearest(active, flatIds, refMap, focus)}
     >
       <SegmentGroup
         idPrefix="from"

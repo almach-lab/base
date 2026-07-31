@@ -141,17 +141,10 @@ export function applySegmentDigits(
     if (n > max) val = String(max).padStart(len, "0");
     else if (n < min) val = String(min).padStart(len, "0");
   }
-  const advance =
-    val.length === len ||
-    (key === "month" && parseInt(val, 10) > 1 && val.length === 1) ||
-    (key === "day" && parseInt(val, 10) > 3 && val.length === 1);
-  // A single unambiguous digit (e.g. month "2", which can't extend to a valid
-  // "2_") auto-advances without ever reaching `len` characters on its own —
-  // pad it now so segmentsToDate's exact-length check treats it as settled,
-  // the same as a value the user typed out in full.
-  if (advance && val.length < len) {
-    val = val.padStart(len, "0");
-  }
+  // Advance only once the segment reaches its full length (e.g. year needs
+  // all 4 digits) — keeps focus in place for a single ambiguous digit like
+  // month "2" instead of jumping away before the user can correct it.
+  const advance = val.length === len;
   return { seg: { ...seg, [key]: val }, advance };
 }
 
@@ -159,20 +152,38 @@ export function makeFlatId(prefix: string, key: SegKey): string {
   return prefix ? `${prefix}:${key}` : key;
 }
 
-/** Click-to-focus-first-segment guard shared by Input.Date and Input.DateRange's
+/** Click-to-focus-nearest-segment guard shared by Input.Date and Input.DateRange's
  * group container: a click directly on a segment input already receives native
  * focus before this handler runs, but `active` (React state) hasn't caught up
  * yet within this same event, so without this guard every click on a
- * freshly-mounted field reads `active` as stale `null` and steals focus back to
- * the first segment regardless of which one was actually clicked. */
-export function createGroupClickFocusFirst(
+ * freshly-mounted field reads `active` as stale `null` and steals focus. A click
+ * lands here (rather than on an `<input>`) when it hits the separators, padding,
+ * or the gap between the "from" and "to" groups — picking the segment whose
+ * bounding box is horizontally closest to the click keeps that redirect
+ * pointed at whichever side the user actually meant, instead of always
+ * snapping to the first segment of the first group. */
+export function createGroupClickFocusNearest(
   active: string | null,
   flatIds: string[],
+  refs: Record<string, React.RefObject<HTMLInputElement | null>>,
   focus: (id: string | undefined) => void,
 ) {
   return (e: React.MouseEvent<HTMLElement>) => {
     if (e.target !== e.currentTarget) return;
-    if (!active) focus(flatIds[0]);
+    if (active) return;
+    const x = e.clientX;
+    let closestId: string | undefined;
+    let closestDist = Number.POSITIVE_INFINITY;
+    for (const id of flatIds) {
+      const rect = refs[id]?.current?.getBoundingClientRect();
+      if (!rect) continue;
+      const dist = Math.abs(x - (rect.left + rect.width / 2));
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestId = id;
+      }
+    }
+    focus(closestId ?? flatIds[0]);
   };
 }
 
