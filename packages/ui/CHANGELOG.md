@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 3.2.0
+
+### Minor Changes
+
+- auto release from 1a9b1e2..32ba4a4
+
 ## 3.1.0
 
 ### Minor Changes
