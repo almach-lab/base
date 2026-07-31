@@ -265,6 +265,12 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
         return;
       }
 
+      // Don't yank focus away if the user already focused something inside
+      // (e.g. tapped a field before the open animation settled).
+      if (content.contains(document.activeElement)) {
+        return;
+      }
+
       const initialFocusable = content.querySelector<HTMLElement>(
         "[autofocus], button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])",
       );
