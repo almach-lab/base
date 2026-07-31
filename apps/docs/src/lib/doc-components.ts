@@ -30,6 +30,11 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
       },
       { name: "Label", slug: "label", description: "Accessible form label." },
       {
+        name: "Month Picker",
+        slug: "month-picker",
+        description: "Month + year dropdowns for selecting an entire month.",
+      },
+      {
         name: "Radio",
         slug: "radio",
         description: "Single-selection radio group.",

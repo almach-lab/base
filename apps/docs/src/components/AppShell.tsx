@@ -108,6 +108,11 @@ const componentPages: Record<
   modal: lazy(() =>
     import("./pages/components/modal").then((m) => ({ default: m.ModalPage })),
   ),
+  "month-picker": lazy(() =>
+    import("./pages/components/month-picker").then((m) => ({
+      default: m.MonthPickerPage,
+    })),
+  ),
   popover: lazy(() =>
     import("./pages/components/popover").then((m) => ({
       default: m.PopoverPage,

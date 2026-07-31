@@ -97,6 +97,8 @@ export { DateInput, Input, inputVariants } from "./components/input.js";
 export type { InputDateRangeProps } from "./components/input-date-range.js";
 export { InputDateRange } from "./components/input-date-range.js";
 export { Label } from "./components/label.js";
+export type { MonthPickerProps } from "./components/month-picker.js";
+export { MonthPicker } from "./components/month-picker.js";
 export type { ViewComponent, ViewsRegistry } from "./components/modal.js";
 export { Modal, useModal } from "./components/modal.js";
 export { Popover } from "./components/popover.js";

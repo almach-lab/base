@@ -262,7 +262,12 @@ export const InputDateRange = React.forwardRef<
       aria-invalid={error || undefined}
       className={cn(
         FIELD_GROUP,
-        FIELD_SIZE[size].height,
+        "h-auto flex-wrap gap-y-1.5 py-2",
+        size === "sm"
+          ? "sm:h-8 sm:flex-nowrap sm:gap-y-0 sm:py-0"
+          : size === "lg"
+            ? "sm:h-11 sm:flex-nowrap sm:gap-y-0 sm:py-0"
+            : "sm:h-9 sm:flex-nowrap sm:gap-y-0 sm:py-0",
         FIELD_SIZE[size].padding,
         FIELD_SIZE[size].text,
         fieldErrorClass(error),
@@ -272,84 +277,92 @@ export const InputDateRange = React.forwardRef<
       )}
       onClick={createGroupClickFocusNearest(active, flatIds, refMap, focus)}
     >
-      <SegmentGroup
-        idPrefix="from"
-        order={order}
-        sep={sep}
-        seg={fromSeg}
-        active={active}
-        disabled={disabled}
-        size={size}
-        getRef={(flatId) => refMap[flatId] ?? NOOP_REF}
-        onChangeSeg={handleChange}
-        onKeyDownSeg={handleKeyDown}
-        onFocusSeg={setActive}
-        onBlurSeg={() => setActive(null)}
-      />
+      <div className="flex w-full items-center justify-center gap-0.5 sm:contents">
+        <SegmentGroup
+          idPrefix="from"
+          order={order}
+          sep={sep}
+          seg={fromSeg}
+          active={active}
+          disabled={disabled}
+          size={size}
+          getRef={(flatId) => refMap[flatId] ?? NOOP_REF}
+          onChangeSeg={handleChange}
+          onKeyDownSeg={handleKeyDown}
+          onFocusSeg={setActive}
+          onBlurSeg={() => setActive(null)}
+        />
+      </div>
 
-      <ArrowRight
-        aria-hidden="true"
-        className="mx-1.5 h-4 w-4 shrink-0 text-muted-foreground"
-      />
+      <div className="flex w-full items-center justify-center sm:w-auto sm:contents">
+        <ArrowRight
+          aria-hidden="true"
+          className="h-4 w-4 shrink-0 rotate-90 text-muted-foreground sm:mx-1.5 sm:rotate-0"
+        />
+      </div>
 
-      <SegmentGroup
-        idPrefix="to"
-        order={order}
-        sep={sep}
-        seg={toSeg}
-        active={active}
-        disabled={disabled}
-        size={size}
-        getRef={(flatId) => refMap[flatId] ?? NOOP_REF}
-        onChangeSeg={handleChange}
-        onKeyDownSeg={handleKeyDown}
-        onFocusSeg={setActive}
-        onBlurSeg={() => setActive(null)}
-      />
+      <div className="flex w-full items-center justify-center gap-0.5 sm:contents">
+        <SegmentGroup
+          idPrefix="to"
+          order={order}
+          sep={sep}
+          seg={toSeg}
+          active={active}
+          disabled={disabled}
+          size={size}
+          getRef={(flatId) => refMap[flatId] ?? NOOP_REF}
+          onChangeSeg={handleChange}
+          onKeyDownSeg={handleKeyDown}
+          onFocusSeg={setActive}
+          onBlurSeg={() => setActive(null)}
+        />
+      </div>
 
       {withCalendar && (
-        <Popover open={calOpen} onOpenChange={setCalOpen}>
-          <Popover.Trigger asChild>
-            <button
-              type="button"
-              disabled={disabled}
-              aria-label="Open calendar"
-              aria-haspopup="dialog"
-              aria-expanded={calOpen}
-              className={cn(
-                "ml-auto flex items-center justify-center rounded-md p-0.5",
-                "text-muted-foreground",
-                MOTION_INTERACTIVE,
-                "hover:bg-accent hover:text-foreground",
-                FOCUS_RING,
-                "disabled:pointer-events-none",
-              )}
-            >
-              <CalendarIcon className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </Popover.Trigger>
+        <div className="flex w-full justify-center sm:w-auto sm:contents">
+          <Popover open={calOpen} onOpenChange={setCalOpen}>
+            <Popover.Trigger asChild>
+              <button
+                type="button"
+                disabled={disabled}
+                aria-label="Open calendar"
+                aria-haspopup="dialog"
+                aria-expanded={calOpen}
+                className={cn(
+                  "flex items-center justify-center rounded-md p-0.5 sm:ml-auto",
+                  "text-muted-foreground",
+                  MOTION_INTERACTIVE,
+                  "hover:bg-accent hover:text-foreground",
+                  FOCUS_RING,
+                  "disabled:pointer-events-none",
+                )}
+              >
+                <CalendarIcon className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </Popover.Trigger>
 
-          <Popover.Content
-            align="end"
-            sideOffset={6}
-            className="z-50 overflow-hidden rounded-xl border bg-popover shadow-xl"
-          >
-            <Calendar
-              mode="range"
-              numberOfMonths={2}
-              {...(value ? { selected: value } : {})}
-              onSelect={(next) => {
-                handleCalendarRangeSelect(
-                  next && !(next instanceof Date) && !Array.isArray(next)
-                    ? next
-                    : undefined,
-                );
-              }}
-              defaultMonth={fromDate ?? new Date()}
-              initialFocus
-            />
-          </Popover.Content>
-        </Popover>
+            <Popover.Content
+              align="end"
+              sideOffset={6}
+              className="z-50 overflow-hidden rounded-xl border bg-popover shadow-xl"
+            >
+              <Calendar
+                mode="range"
+                numberOfMonths={2}
+                {...(value ? { selected: value } : {})}
+                onSelect={(next) => {
+                  handleCalendarRangeSelect(
+                    next && !(next instanceof Date) && !Array.isArray(next)
+                      ? next
+                      : undefined,
+                  );
+                }}
+                defaultMonth={fromDate ?? new Date()}
+                initialFocus
+              />
+            </Popover.Content>
+          </Popover>
+        </div>
       )}
     </div>
   );
