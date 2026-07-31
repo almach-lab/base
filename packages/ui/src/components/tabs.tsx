@@ -64,13 +64,17 @@ interface TabsProps extends Omit<
   "selectedKey" | "defaultSelectedKey"
 > {
   value?: TabsKey | undefined;
+  onValueChange?: (key: TabsKey) => void;
   defaultValue?: TabsKey | undefined;
 }
 
 const TabsRoot = React.forwardRef<HTMLDivElement, TabsProps>(
-  ({ value, defaultValue, ...props }, ref) => (
+  ({ value, defaultValue, onValueChange, ...props }, ref) => (
     <TabsPrimitive
       ref={ref}
+      {...(onValueChange !== undefined
+        ? { onSelectionChange: onValueChange }
+        : {})}
       {...(value !== undefined ? { selectedKey: value } : {})}
       {...(defaultValue !== undefined
         ? { defaultSelectedKey: defaultValue }
