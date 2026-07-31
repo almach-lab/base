@@ -319,6 +319,12 @@ export const InputCurrency = React.forwardRef<
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   const searchRef = React.useRef<HTMLInputElement>(null);
+  /** Last amount this component itself emitted via onChange — lets the sync
+   * effect below tell "value changed because we typed it" apart from "value
+   * changed because the parent passed in something new", so it only
+   * reformats (and clobbers in-progress text like a trailing ".") on real
+   * external updates. */
+  const lastEmittedAmount = React.useRef<number | null>(value?.amount ?? null);
 
   /* Sync controlled currency */
   React.useEffect(() => {
@@ -327,9 +333,13 @@ export const InputCurrency = React.forwardRef<
     }
   }, [value?.currency]);
 
-  /* Sync controlled amount */
+  /* Sync controlled amount — skip reformatting when the change originated
+   * from this component's own onChange call. */
   React.useEffect(() => {
-    setDisplayValue(value?.amount != null ? formatAmount(value.amount) : "");
+    const amount = value?.amount ?? null;
+    if (amount === lastEmittedAmount.current) return;
+    lastEmittedAmount.current = amount;
+    setDisplayValue(amount != null ? formatAmount(amount) : "");
   }, [value?.amount]);
 
   const selectedCurrency =
@@ -360,7 +370,9 @@ export const InputCurrency = React.forwardRef<
     setCurrency(code);
     setSelectorOpen(false);
     setSearch("");
-    onChange?.({ amount: parseAmount(displayValue), currency: code });
+    const amount = parseAmount(displayValue);
+    lastEmittedAmount.current = amount;
+    onChange?.({ amount, currency: code });
     setTimeout(() => inputRef.current?.focus(), 0);
   };
 
@@ -369,7 +381,9 @@ export const InputCurrency = React.forwardRef<
       .replace(/[^\d.]/g, "")
       .replace(/(\..*)\./g, "$1");
     setDisplayValue(applyThousandSeparator(raw));
-    onChange?.({ amount: parseAmount(raw), currency });
+    const amount = parseAmount(raw);
+    lastEmittedAmount.current = amount;
+    onChange?.({ amount, currency });
   };
 
   const handleBlur = () => {
