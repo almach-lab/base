@@ -8,4 +8,5 @@ pre-commit:
     - name: oxfmt
       glob: "*.{js,jsx,ts,tsx,mjs,cjs,mts,cts,json,jsonc,md,mdx,yml,yaml,css,astro}"
       exclude: "**/CHANGELOG.md"
-      run: bunx oxfmt --check {staged_files}
+      run: bunx oxfmt {staged_files}
+      stage_fixed: true
