@@ -1,6 +1,6 @@
 {
   "name": "@almach/forms",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "description": "Form handling with TanStack Form and Zod validation for Based UI",
   "contributors": [
     {
