@@ -217,7 +217,7 @@ export const MonthPicker = React.forwardRef<HTMLDivElement, MonthPickerProps>(
         <Button
           type="button"
           variant="outline"
-          size="icon-sm"
+          size="icon"
           aria-label="Previous month"
           isDisabled={disabled || atMin}
           onPress={() => commit(addMonths(current, -1))}
@@ -248,7 +248,7 @@ export const MonthPicker = React.forwardRef<HTMLDivElement, MonthPickerProps>(
         <Button
           type="button"
           variant="outline"
-          size="icon-sm"
+          size="icon"
           aria-label="Next month"
           isDisabled={disabled || atMax}
           onPress={() => commit(addMonths(current, 1))}
