@@ -222,8 +222,17 @@ function parseAmount(raw: string): number | null {
   return Number.isNaN(n) ? null : n;
 }
 
+/**
+ * Always formats with "." as the decimal point and "," as the thousands
+ * separator — matching what `parseAmount`/`applyThousandSeparator` assume
+ * while typing. Deliberately NOT locale-aware: `Intl.NumberFormat(undefined, …)`
+ * would pick up the browser/OS locale, and in locales where "," is the
+ * decimal separator (e.g. id-ID, most of Europe) the displayed value and the
+ * typing parser would disagree on every edit — the field looks "stuck"
+ * because each keystroke gets reinterpreted as a different number.
+ */
 function formatAmount(amount: number): string {
-  return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(amount);
