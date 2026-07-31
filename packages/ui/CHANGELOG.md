@@ -1,5 +1,12 @@
 # @almach/ui
 
+## 3.4.0
+
+### Minor Changes
+
+- auto release from 24e325c..5b9abae
+- 24e325c: Add `MonthPicker` component (month/year dropdowns with prev/next arrows) and make `Input.DateRange` stack responsively on narrow viewports instead of clipping.
+
 ## 3.3.3
 
 ### Patch Changes
@@ -120,6 +127,7 @@
   - **Shared tokens:** several components moved to `_styles.ts` shared class tokens (visual/API surface unchanged for most).
 
   ### Fixes & improvements
+
   - Swipe button pointer capture, geometry sync, and spring-back reset.
   - Drawer panel horizontal padding; currency input popover interaction.
   - Select and component standardization across the library.
