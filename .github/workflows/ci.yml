@@ -36,7 +36,7 @@ permissions: read-all
 jobs:
   ci:
     name: Check (${{ matrix.command }})
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 10
     strategy:
       fail-fast: false
