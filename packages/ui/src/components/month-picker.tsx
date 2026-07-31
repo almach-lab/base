@@ -1,10 +1,12 @@
 "use client";
 
 import { cn } from "@almach/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
+import { DISABLED_DATA, FOCUS_RING, MENU_ITEM } from "./_styles.js";
 import { Button } from "./button.js";
-import { Select } from "./select.js";
+import { Popover } from "./popover.js";
 
 export interface MonthPickerProps {
   id?: string;
@@ -30,6 +32,101 @@ function startOfMonth(date: Date): Date {
 
 function addMonths(date: Date, delta: number): Date {
   return new Date(date.getFullYear(), date.getMonth() + delta, 1);
+}
+
+const pickerTriggerClasses = cn(
+  "flex h-9 min-w-0 cursor-pointer items-center gap-1.5 rounded-md border border-input bg-background px-2.5 text-sm text-foreground shadow-xs",
+  MOTION_INTERACTIVE,
+  FOCUS_RING,
+  DISABLED_DATA,
+  "hover:bg-muted/40",
+  "data-[popup-open=true]:bg-muted/40",
+);
+
+interface PickerOption {
+  value: string;
+  label: React.ReactNode;
+  disabled?: boolean;
+}
+
+function PickerButton({
+  ariaLabel,
+  value,
+  options,
+  onSelect,
+  disabled,
+  triggerClassName,
+}: {
+  ariaLabel: string;
+  value: string;
+  options: PickerOption[];
+  onSelect: (value: string) => void;
+  disabled?: boolean;
+  triggerClassName?: string;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const selected = options.find((o) => o.value === value);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <Popover.Trigger asChild>
+        <button
+          type="button"
+          disabled={disabled}
+          aria-label={ariaLabel}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          data-popup-open={open ? "true" : undefined}
+          className={cn(pickerTriggerClasses, triggerClassName)}
+        >
+          <span className="min-w-0 flex-1 truncate text-left">
+            {selected?.label}
+          </span>
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 shrink-0 opacity-50",
+              MOTION_INTERACTIVE,
+              open && "rotate-180",
+            )}
+            aria-hidden="true"
+          />
+        </button>
+      </Popover.Trigger>
+
+      <Popover.Content
+        align="start"
+        sideOffset={6}
+        className="max-h-64 min-w-32 overflow-y-auto overscroll-contain p-1"
+      >
+        {options.map((opt) => {
+          const isSelected = opt.value === value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              role="option"
+              aria-selected={isSelected}
+              disabled={opt.disabled}
+              className={cn(
+                MENU_ITEM,
+                "w-full justify-between",
+                isSelected && "bg-accent/60",
+              )}
+              onClick={() => {
+                onSelect(opt.value);
+                setOpen(false);
+              }}
+            >
+              <span className="truncate">{opt.label}</span>
+              {isSelected && (
+                <Check className="h-4 w-4 shrink-0" aria-hidden="true" />
+              )}
+            </button>
+          );
+        })}
+      </Popover.Content>
+    </Popover>
+  );
 }
 
 export const MonthPicker = React.forwardRef<HTMLDivElement, MonthPickerProps>(
@@ -89,6 +186,26 @@ export const MonthPicker = React.forwardRef<HTMLDivElement, MonthPickerProps>(
     const atMin = !!minMonth && current <= minMonth;
     const atMax = !!maxMonth && current >= maxMonth;
 
+    const monthOptions = React.useMemo(
+      () =>
+        monthNames.map((name, i) => {
+          const candidate = new Date(year, i, 1);
+          return {
+            value: String(i),
+            label: name,
+            disabled:
+              (!!minMonth && candidate < minMonth) ||
+              (!!maxMonth && candidate > maxMonth),
+          };
+        }),
+      [monthNames, year, minMonth, maxMonth],
+    );
+
+    const yearOptions = React.useMemo(
+      () => years.map((y) => ({ value: String(y), label: y })),
+      [years],
+    );
+
     return (
       <div
         ref={ref}
@@ -109,51 +226,23 @@ export const MonthPicker = React.forwardRef<HTMLDivElement, MonthPickerProps>(
         </Button>
 
         <div className="flex min-w-0 flex-1 items-center gap-1">
-          <Select
+          <PickerButton
+            ariaLabel="Month"
             value={String(month)}
-            onValueChange={(next) => commit(new Date(year, Number(next), 1))}
-            isDisabled={!!disabled}
-          >
-            <Select.Trigger
-              aria-label="Month"
-              className="min-w-0 w-auto flex-1 basis-0"
-            >
-              <span className="min-w-0 flex-1 truncate text-left">
-                {monthNames[month]}
-              </span>
-            </Select.Trigger>
-            <Select.Content>
-              {monthNames.map((name, i) => (
-                <Select.Item
-                  key={name}
-                  value={String(i)}
-                  disabled={isOutOfRange(new Date(year, i, 1))}
-                >
-                  {name}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select>
+            options={monthOptions}
+            onSelect={(next) => commit(new Date(year, Number(next), 1))}
+            disabled={!!disabled}
+            triggerClassName="flex-1 basis-0"
+          />
 
-          <Select
+          <PickerButton
+            ariaLabel="Year"
             value={String(year)}
-            onValueChange={(next) => commit(new Date(Number(next), month, 1))}
-            isDisabled={!!disabled}
-          >
-            <Select.Trigger
-              aria-label="Year"
-              className="min-w-0 w-auto shrink-0 basis-[5.5rem]"
-            >
-              <span className="min-w-0 flex-1 truncate text-left">{year}</span>
-            </Select.Trigger>
-            <Select.Content>
-              {years.map((y) => (
-                <Select.Item key={y} value={String(y)}>
-                  {y}
-                </Select.Item>
-              ))}
-            </Select.Content>
-          </Select>
+            options={yearOptions}
+            onSelect={(next) => commit(new Date(Number(next), month, 1))}
+            disabled={!!disabled}
+            triggerClassName="shrink-0 basis-[5.5rem]"
+          />
         </div>
 
         <Button
