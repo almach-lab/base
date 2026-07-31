@@ -1,11 +1,11 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-07-30T07:57:11.943Z
+Generated: 2026-07-31T06:45:23.750Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
 
-Total modules: 38
+Total modules: 39
 
 ## Index
 
@@ -29,6 +29,7 @@ Total modules: 38
 - input-date-range: 1 value export(s), 1 type export(s)
 - label: 1 value export(s), 0 type export(s)
 - modal: 2 value export(s), 2 type export(s)
+- month-picker: 1 value export(s), 1 type export(s)
 - popover: 1 value export(s), 0 type export(s)
 - progress: 2 value export(s), 0 type export(s)
 - radio: 1 value export(s), 0 type export(s)
@@ -852,6 +853,43 @@ import { Button, Modal } from "@almach/ui";
 
 - Values: `Modal`, `useModal`
 - Types: `ViewComponent`, `ViewsRegistry`
+
+## MonthPicker
+
+Module: `month-picker`
+
+### Import
+
+```tsx
+import { MonthPicker } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { MonthPicker } from "@almach/ui";
+
+export function Example() {
+  return <MonthPicker />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `MonthPicker`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `MonthPicker`
+- Types: `MonthPickerProps`
 
 ## Popover
 

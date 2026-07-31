@@ -138,6 +138,10 @@
     "exports": ["Modal", "useModal"],
     "typeExports": ["ViewComponent", "ViewsRegistry"]
   },
+  "month-picker": {
+    "exports": ["MonthPicker"],
+    "typeExports": ["MonthPickerProps"]
+  },
   "popover": {
     "exports": ["Popover"],
     "typeExports": []

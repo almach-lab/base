@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T07:57:11.945Z",
+  "generatedAt": "2026-07-31T06:45:23.753Z",
   "components": {
     "_styles": {
       "exports": [
@@ -205,6 +205,14 @@
       "typeExports": [
         "ViewComponent",
         "ViewsRegistry"
+      ]
+    },
+    "month-picker": {
+      "exports": [
+        "MonthPicker"
+      ],
+      "typeExports": [
+        "MonthPickerProps"
       ]
     },
     "popover": {
