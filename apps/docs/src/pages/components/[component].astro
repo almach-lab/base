@@ -1,23 +1,30 @@
 ---
 import { AppShell } from "../../components/AppShell";
 import Layout from "../../layouts/Layout.astro";
-import { DOC_COMPONENT_SLUGS } from "../../lib/doc-components";
+import {
+  DOC_COMPONENT_ITEMS,
+  DOC_COMPONENT_SLUGS,
+} from "../../lib/doc-components";
 
 export function getStaticPaths() {
   return DOC_COMPONENT_SLUGS.map((component) => ({ params: { component } }));
 }
 
 const { component } = Astro.params;
-const title = component
-  .split("-")
-  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-  .join(" ");
+const item = DOC_COMPONENT_ITEMS.find((entry) => entry.slug === component);
+const title =
+  item?.name ??
+  component
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
 ---
 
-<Layout title={title} currentPath={`/components/${component}`}>
-  <AppShell
-    page="component"
-    componentSlug={component}
-    client:only="react"
-  />
+<Layout
+  title={title}
+  currentPath={`/components/${component}`}
+  ogImage={`/components/${component}/og.png`}
+  {...(item ? { description: item.description } : {})}
+>
+  <AppShell page="component" componentSlug={component} client:only="react" />
 </Layout>
