@@ -3,6 +3,7 @@
  * Run: bun lint/run.ts
  */
 
+import { readFileSync } from "node:fs";
 import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 
@@ -26,49 +27,53 @@ const SKIP_DIRS = new Set([
 
 const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".astro"]);
 
-// ── Semantic color tokens (from packages/ui/src/styles/globals.css) ─────────
+// ── Semantic color tokens ──────────────────────────────────────────────────
 
-const VALID_SEMANTIC_COLORS = new Set([
-  "background",
-  "foreground",
-  "card",
-  "card-foreground",
-  "popover",
-  "popover-foreground",
-  "primary",
-  "primary-foreground",
-  "secondary",
-  "secondary-foreground",
-  "destructive",
-  "destructive-foreground",
-  "success",
-  "success-foreground",
-  "warning",
-  "warning-foreground",
-  "muted",
-  "muted-foreground",
-  "accent",
-  "accent-foreground",
-  "border",
-  "input",
-  "ring",
-  "chart-1",
-  "chart-2",
-  "chart-3",
-  "chart-4",
-  "chart-5",
-  "sidebar",
-  "sidebar-foreground",
-  "sidebar-primary",
-  "sidebar-border",
-  "sidebar-accent",
+/** Keywords Tailwind accepts that are not design tokens. */
+const COLOR_KEYWORDS = [
   "white",
   "black",
   "transparent",
   "current",
   "inherit",
   "none",
-]);
+];
+
+const UI_GLOBALS_CSS = join(
+  ROOT,
+  "packages",
+  "ui",
+  "src",
+  "styles",
+  "globals.css",
+);
+
+/**
+ * Derives the allowlist from the `--color-*` entries in the library's
+ * `@theme inline` block, so the rule tracks the tokens that actually exist
+ * instead of a hand-maintained copy that drifts.
+ */
+function readSemanticColors(): Set<string> {
+  const names = new Set(COLOR_KEYWORDS);
+
+  let css = "";
+  try {
+    css = readFileSync(UI_GLOBALS_CSS, "utf8");
+  } catch {
+    throw new Error(
+      `lint:ui — cannot read ${UI_GLOBALS_CSS}; semantic color allowlist unavailable`,
+    );
+  }
+
+  for (const match of css.matchAll(/--color-([a-z0-9-]+)\s*:/g)) {
+    const name = match[1];
+    if (name) names.add(name);
+  }
+
+  return names;
+}
+
+const VALID_SEMANTIC_COLORS = readSemanticColors();
 
 const TAILWIND_PRIMITIVE_FAMILIES = new Set([
   "red",
@@ -133,8 +138,22 @@ const NON_COLOR_NAMES = new Set([
   "auto",
 ]);
 
-const PACKAGE_DIRS = new Set(["utils", "ui", "forms", "query", "docs"]);
-const CROSS_PKG_RE = /^((?:\.\.\/)+)([a-z0-9-]+)\//;
+/** Workspace roots, longest first so `apps/docs` wins over `apps`. */
+const WORKSPACE_ROOTS = [
+  "packages/utils",
+  "packages/ui",
+  "packages/forms",
+  "packages/query",
+  "apps/docs",
+];
+
+/** Maps a workspace root to the specifier that should be used instead. */
+const WORKSPACE_SPECIFIERS: Record<string, string> = {
+  "packages/utils": "@almach/utils",
+  "packages/ui": "@almach/ui",
+  "packages/forms": "@almach/forms",
+  "packages/query": "@almach/query",
+};
 
 // ── File discovery ──────────────────────────────────────────────────────────
 
@@ -200,9 +219,16 @@ function checkPrimitiveColors(file: string, content: string): LintIssue[] {
 
 // ── Rule: no-cross-package-imports ──────────────────────────────────────────
 
+/** Returns the workspace root a repo-relative path belongs to, if any. */
+function workspaceRootOf(relPath: string): string | null {
+  return WORKSPACE_ROOTS.find((root) => relPath.startsWith(`${root}/`)) ?? null;
+}
+
 function checkCrossPackageImports(file: string, content: string): LintIssue[] {
   const issues: LintIssue[] = [];
   const rel = relative(ROOT, file).replace(/\\/g, "/");
+  const ownRoot = workspaceRootOf(rel);
+  if (!ownRoot) return issues;
 
   const importRe =
     /(?:import|export)\s+.*?from\s+["']([^"']+)["']|import\s*\(\s*["']([^"']+)["']\s*\)/g;
@@ -215,19 +241,28 @@ function checkCrossPackageImports(file: string, content: string): LintIssue[] {
     const importPath = current[1] ?? current[2];
     if (!importPath?.startsWith("..")) continue;
 
-    const crossMatch = importPath.match(CROSS_PKG_RE);
-    if (!crossMatch) continue;
+    // Reading a sibling package's manifest is metadata, not a code import —
+    // and `package.json` is not reachable through the published exports map.
+    if (importPath.endsWith("/package.json")) continue;
 
-    const levelsUp = (crossMatch[1].match(/\.\.\//g) ?? []).length;
-    const packageDir = crossMatch[2];
-    if (levelsUp < 2) continue;
-    if (!PACKAGE_DIRS.has(packageDir)) continue;
+    // Resolve the specifier for real rather than pattern-matching it, so a
+    // path that climbs and comes back inside the same package is fine.
+    const resolved = relative(ROOT, join(file, "..", importPath)).replace(
+      /\\/g,
+      "/",
+    );
 
+    const targetRoot = workspaceRootOf(resolved);
+    if (!targetRoot || targetRoot === ownRoot) continue;
+
+    const specifier = WORKSPACE_SPECIFIERS[targetRoot];
     issues.push({
       file: rel,
       line: lineOf(content, current.index),
       rule: "no-cross-package-imports",
-      message: `Cross-package relative import \`${importPath}\`. Use \`@almach/${packageDir}\` instead.`,
+      message: specifier
+        ? `Cross-package relative import \`${importPath}\` reaches into ${targetRoot}. Use \`${specifier}\` instead.`
+        : `Cross-package relative import \`${importPath}\` reaches into ${targetRoot}.`,
     });
   }
 
