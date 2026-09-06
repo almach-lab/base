@@ -9,11 +9,15 @@ import {
   Pressable,
 } from "react-aria-components";
 import {
-  MOTION_OVERLAY,
-  MOTION_OVERLAY_ENTER,
-  MOTION_OVERLAY_EXIT,
-} from "./_motion.js";
+  type OverlayAlign,
+  type OverlaySide,
+  toOverlayPlacement,
+} from "./_placement.js";
+import { MOTION_OVERLAY_RAC, MOTION_OVERLAY_RAC_SLIDE } from "./_motion.js";
 import { OVERLAY_SURFACE } from "./_styles.js";
+
+/** Marks the trigger so outside-press dismissal can skip it. */
+const TRIGGER_ATTR = "data-almach-popover-trigger";
 
 interface PopoverRootProps {
   open?: boolean | undefined;
@@ -32,41 +36,13 @@ function PopoverTrigger(_props: PopoverTriggerProps) {
 }
 PopoverTrigger.displayName = "Popover.Trigger";
 
-type PopoverPlacement =
-  | "top"
-  | "top start"
-  | "top end"
-  | "right"
-  | "right top"
-  | "right bottom"
-  | "bottom"
-  | "bottom start"
-  | "bottom end"
-  | "left"
-  | "left top"
-  | "left bottom";
-
-function toPlacement(
-  side: "top" | "right" | "bottom" | "left" = "bottom",
-  align: "start" | "center" | "end" = "center",
-): PopoverPlacement {
-  if (align === "center") return side;
-  const cross =
-    side === "top" || side === "bottom"
-      ? align
-      : align === "start"
-        ? "top"
-        : "bottom";
-  return `${side} ${cross}` as PopoverPlacement;
-}
-
 interface PopoverContentProps extends Omit<
   AriaPopoverProps,
   "children" | "className" | "offset"
 > {
   showArrow?: boolean;
-  side?: "top" | "right" | "bottom" | "left";
-  align?: "start" | "center" | "end";
+  side?: OverlaySide;
+  align?: OverlayAlign;
   sideOffset?: number;
   /** Non-modal popovers behave like dropdowns. Modal popovers trap focus with an underlay. */
   isNonModal?: boolean;
@@ -79,14 +55,52 @@ function PopoverContent(_props: PopoverContentProps) {
 }
 PopoverContent.displayName = "Popover.Content";
 
-interface PopoverCloseProps {
+interface PopoverCloseProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   asChild?: boolean;
   children?: React.ReactNode;
 }
 
-function PopoverClose(_props: PopoverCloseProps) {
-  return null;
-}
+/** Supplied by the root so content can dismiss the popover. */
+const PopoverCloseCtx = React.createContext<(() => void) | null>(null);
+
+/**
+ * Dismisses the popover from inside its content.
+ *
+ * Used outside a Popover it renders its children inert rather than throwing,
+ * so a shared content component can be reused in a non-popover context.
+ */
+const PopoverClose = React.forwardRef<HTMLButtonElement, PopoverCloseProps>(
+  ({ asChild, children, onClick, ...props }, ref) => {
+    const close = React.useContext(PopoverCloseCtx);
+
+    if (asChild && React.isValidElement(children)) {
+      const child = children as React.ReactElement<{
+        onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+      }>;
+
+      return React.cloneElement(child, {
+        onClick: (event: React.MouseEvent<HTMLElement>) => {
+          child.props.onClick?.(event);
+          if (!event.defaultPrevented) close?.();
+        },
+      });
+    }
+
+    return (
+      <button
+        ref={ref}
+        type="button"
+        onClick={(event) => {
+          onClick?.(event);
+          if (!event.defaultPrevented) close?.();
+        }}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  },
+);
 PopoverClose.displayName = "Popover.Close";
 
 function getTriggerProps(node: React.ReactNode): PopoverTriggerProps | null {
@@ -101,12 +115,61 @@ function getContentProps(node: React.ReactNode): PopoverContentProps | null {
   return node.props as PopoverContentProps;
 }
 
+/**
+ * Closes a non-modal popover when the pointer goes down outside it.
+ *
+ * React Aria wires outside-press dismissal to `isDismissable`, which it
+ * derives as `!isNonModal` — so a non-modal popover never closes on an outside
+ * click. Going modal instead would trap focus and lock page scrolling, which
+ * is too heavy for a dropdown-style surface, so the dismissal is added here.
+ * Presses on the trigger are ignored, since React Aria already toggles there.
+ */
+function useDismissOnOutsidePress(
+  isOpen: boolean,
+  popoverRef: React.RefObject<HTMLElement | null>,
+  close: () => void,
+) {
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Element | null;
+      if (!target) return;
+
+      const popover = popoverRef.current;
+      if (popover?.contains(target)) return;
+      if (target.closest(`[${TRIGGER_ATTR}]`)) return;
+
+      close();
+    };
+
+    document.addEventListener("pointerdown", onPointerDown, true);
+    return () =>
+      document.removeEventListener("pointerdown", onPointerDown, true);
+  }, [close, isOpen, popoverRef]);
+}
+
 function PopoverRoot({
   open,
   defaultOpen,
   onOpenChange,
   children,
 }: PopoverRootProps) {
+  const [internalOpen, setInternalOpen] = React.useState(defaultOpen ?? false);
+  const popoverRef = React.useRef<HTMLElement | null>(null);
+
+  const isOpen = open ?? internalOpen;
+  const setOpen = React.useCallback(
+    (next: boolean) => {
+      if (open === undefined) setInternalOpen(next);
+      onOpenChange?.(next);
+    },
+    [onOpenChange, open],
+  );
+
+  const close = React.useCallback(() => setOpen(false), [setOpen]);
+  useDismissOnOutsidePress(isOpen, popoverRef, close);
+
   let triggerProps: PopoverTriggerProps | null = null;
   let contentProps: PopoverContentProps | null = null;
 
@@ -136,54 +199,43 @@ function PopoverRoot({
     ...popoverProps
   } = contentProps;
 
-  const placement = toPlacement(side, align);
+  const placement = toOverlayPlacement(side, align);
   const offset = sideOffset ?? (showArrow ? 12 : 8);
 
   const triggerNode = triggerProps.asChild ? (
-    <Pressable>{React.Children.only(triggerProps.children) as never}</Pressable>
+    <Pressable>
+      {
+        React.cloneElement(
+          React.Children.only(triggerProps.children) as React.ReactElement<
+            Record<string, unknown>
+          >,
+          { [TRIGGER_ATTR]: "" },
+        ) as never
+      }
+    </Pressable>
   ) : (
     <Pressable>
-      <button type="button">{triggerProps.children}</button>
+      <button type="button" {...{ [TRIGGER_ATTR]: "" }}>
+        {triggerProps.children}
+      </button>
     </Pressable>
   );
 
   return (
-    <AriaDialogTrigger
-      {...(open !== undefined ? { isOpen: open } : {})}
-      {...(defaultOpen !== undefined ? { defaultOpen } : {})}
-      {...(onOpenChange ? { onOpenChange } : {})}
-    >
+    <AriaDialogTrigger isOpen={isOpen} onOpenChange={setOpen}>
       {triggerNode}
       <AriaPopover
         {...popoverProps}
+        ref={popoverRef}
         isNonModal={isNonModal}
         placement={placement}
         offset={offset}
-        className={composeRenderProps(className, (nextClassName, renderProps) =>
+        className={composeRenderProps(className, (nextClassName) =>
           cn(
             OVERLAY_SURFACE,
             "p-4",
-            MOTION_OVERLAY,
-            MOTION_OVERLAY_ENTER.replaceAll(
-              "data-[state=open]:",
-              "data-[entering]:",
-            ),
-            MOTION_OVERLAY_EXIT.replaceAll(
-              "data-[state=closed]:",
-              "data-[exiting]:",
-            ),
-            "data-[entering]:fade-in-0 data-[entering]:zoom-in-95",
-            "data-[exiting]:fade-out-0 data-[exiting]:zoom-out-95",
-            "data-[entering]:placement-bottom:slide-in-from-top-1",
-            "data-[entering]:placement-top:slide-in-from-bottom-1",
-            "data-[entering]:placement-left:slide-in-from-right-1",
-            "data-[entering]:placement-right:slide-in-from-left-1",
-            "data-[exiting]:placement-bottom:slide-out-to-top-1",
-            "data-[exiting]:placement-top:slide-out-to-bottom-1",
-            "data-[exiting]:placement-left:slide-out-to-right-1",
-            "data-[exiting]:placement-right:slide-out-to-left-1",
-            renderProps.isEntering && "animate-in",
-            renderProps.isExiting && "animate-out",
+            MOTION_OVERLAY_RAC,
+            MOTION_OVERLAY_RAC_SLIDE,
             nextClassName,
           ),
         )}
@@ -200,7 +252,9 @@ function PopoverRoot({
             </svg>
           </OverlayArrow>
         ) : null}
-        {contentChildren}
+        <PopoverCloseCtx.Provider value={close}>
+          {contentChildren}
+        </PopoverCloseCtx.Provider>
       </AriaPopover>
     </AriaDialogTrigger>
   );
