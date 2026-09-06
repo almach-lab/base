@@ -2,7 +2,7 @@ import { cn } from "@almach/utils";
 import { ChevronDown } from "lucide-react";
 import * as React from "react";
 import { Button, Disclosure, DisclosurePanel } from "react-aria-components";
-import { MOTION_INTERACTIVE } from "./_motion.js";
+import { MOTION_COLLAPSE, MOTION_INTERACTIVE } from "./_motion.js";
 import { CONTROL_LABEL, FOCUS_RING } from "./_styles.js";
 
 interface CollapsibleRootProps extends React.ComponentPropsWithoutRef<
@@ -41,7 +41,13 @@ const CollapsibleTrigger = React.forwardRef<
     {...props}
   >
     {children}
-    <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150 ease-out group-data-[expanded]:rotate-180" />
+    <ChevronDown
+      className={cn(
+        "h-4 w-4 shrink-0 text-muted-foreground",
+        MOTION_INTERACTIVE,
+        "group-data-[expanded]:rotate-180",
+      )}
+    />
   </Button>
 ));
 CollapsibleTrigger.displayName = "Collapsible.Trigger";
@@ -54,7 +60,7 @@ const CollapsibleContent = React.forwardRef<
     ref={ref}
     className={cn(
       "grid grid-rows-[0fr] text-sm text-muted-foreground opacity-0",
-      "transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none",
+      MOTION_COLLAPSE,
       "group-data-[expanded]:grid-rows-[1fr] group-data-[expanded]:opacity-100",
       className,
     )}

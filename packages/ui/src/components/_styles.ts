@@ -38,8 +38,23 @@ export function fieldErrorClass(error?: boolean) {
     : undefined;
 }
 
+/**
+ * Keeps autofilled fields on-theme.
+ *
+ * Chrome paints `:-webkit-autofill` with its own background and text colour and
+ * ignores `background-color`, so the fill is faked with a large inset shadow
+ * and the text colour is forced. The long transition delay is the standard
+ * trick that stops the browser repainting its colour afterwards.
+ */
+export const FIELD_AUTOFILL = [
+  "autofill:[-webkit-text-fill-color:hsl(var(--foreground))]",
+  "autofill:[box-shadow:0_0_0_1000px_hsl(var(--background))_inset]",
+  "autofill:[transition:background-color_0s_600000s]",
+].join(" ");
+
 const fieldBase = [
   "flex w-full rounded-md border border-input bg-background text-foreground shadow-xs",
+  FIELD_AUTOFILL,
   MOTION_INTERACTIVE,
   "placeholder:text-muted-foreground",
   FOCUS_RING,
@@ -218,6 +233,11 @@ export const ICON_BUTTON = cn(
 
 export const FIELD_GROUP = cn(
   "flex w-full min-w-0 items-center overflow-hidden rounded-md border border-input bg-background text-sm text-foreground shadow-xs",
+  // Composite fields hold their own inner inputs, so the autofill override has
+  // to reach them from the group.
+  "[&_input]:autofill:[-webkit-text-fill-color:hsl(var(--foreground))]",
+  "[&_input]:autofill:[box-shadow:0_0_0_1000px_hsl(var(--background))_inset]",
+  "[&_input]:autofill:[transition:background-color_0s_600000s]",
   MOTION_INTERACTIVE,
   "focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background",
   DISABLED,

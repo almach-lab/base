@@ -311,7 +311,12 @@ export async function renderOgImage({
 }
 
 export function ogResponse(png: Uint8Array): Response {
-  return new Response(png, {
+  const body = png.buffer.slice(
+    png.byteOffset,
+    png.byteOffset + png.byteLength,
+  ) as ArrayBuffer;
+
+  return new Response(body, {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=31536000, immutable",

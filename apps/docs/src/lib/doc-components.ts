@@ -69,6 +69,46 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         slug: "swipe-button",
         description: "Confirm-by-swiping interaction with spring physics.",
       },
+      {
+        name: "Slider",
+        slug: "slider",
+        description: "Single-value and range slider.",
+      },
+      {
+        name: "Toggle",
+        slug: "toggle",
+        description: "Two-state button and toggle groups.",
+      },
+      {
+        name: "Number Field",
+        slug: "number-field",
+        description: "Numeric input with steppers and formatting.",
+      },
+      {
+        name: "Color Input",
+        slug: "input-color",
+        description: "Colour field with an inline popover picker.",
+      },
+      {
+        name: "Input OTP",
+        slug: "input-otp",
+        description: "One-time-code field with paste support.",
+      },
+      {
+        name: "Time Field",
+        slug: "time-field",
+        description: "Segmented time entry.",
+      },
+      {
+        name: "Color Picker",
+        slug: "color-picker",
+        description: "Area, sliders, hex field and swatches.",
+      },
+      {
+        name: "File Upload",
+        slug: "file-upload",
+        description: "Drop zone with an accessible file picker.",
+      },
     ],
   },
   {
@@ -100,6 +140,21 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         name: "Tooltip",
         slug: "tooltip",
         description: "Contextual hover hints.",
+      },
+      {
+        name: "Meter",
+        slug: "meter",
+        description: "Value within a known range.",
+      },
+      {
+        name: "Empty",
+        slug: "empty",
+        description: "Placeholder for lists with nothing in them.",
+      },
+      {
+        name: "Stepper",
+        slug: "stepper",
+        description: "Progress through a multi-step flow.",
       },
     ],
   },
@@ -135,6 +190,26 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         name: "Sidebar",
         slug: "sidebar",
         description: "Collapsible navigation sidebar with nested menus.",
+      },
+      {
+        name: "Accordion",
+        slug: "accordion",
+        description: "Stacked disclosure panels.",
+      },
+      {
+        name: "Breadcrumb",
+        slug: "breadcrumb",
+        description: "Hierarchy trail.",
+      },
+      {
+        name: "Resizable",
+        slug: "resizable",
+        description: "Draggable panel splits.",
+      },
+      {
+        name: "Toolbar",
+        slug: "toolbar",
+        description: "Grouped controls with arrow-key navigation.",
       },
     ],
   },
@@ -181,6 +256,21 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         slug: "tabs",
         description: "Pill and underline tab variants.",
       },
+      {
+        name: "Hover Card",
+        slug: "hover-card",
+        description: "Rich preview on hover and focus.",
+      },
+      {
+        name: "Menubar",
+        slug: "menubar",
+        description: "Application-style menu row.",
+      },
+      {
+        name: "Navigation Menu",
+        slug: "navigation-menu",
+        description: "Site navigation with dropdown panels.",
+      },
     ],
   },
   {
@@ -200,6 +290,16 @@ export const DOC_COMPONENT_GROUPS: DocComponentGroup[] = [
         name: "Table",
         slug: "table",
         description: "TanStack-powered data table.",
+      },
+      {
+        name: "Pagination",
+        slug: "pagination",
+        description: "Page navigation with collapsed ranges.",
+      },
+      {
+        name: "Tree",
+        slug: "tree",
+        description: "Expandable hierarchy with keyboard support.",
       },
     ],
   },

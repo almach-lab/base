@@ -1,18 +1,20 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-07-31T06:45:23.750Z
+Generated: 2026-09-06T15:54:01.666Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
 
-Total modules: 39
+Total modules: 59
 
 ## Index
 
 - _styles: 23 value export(s), 0 type export(s)
+- accordion: 2 value export(s), 4 type export(s)
 - alert: 2 value export(s), 1 type export(s)
 - avatar: 2 value export(s), 1 type export(s)
 - badge: 2 value export(s), 1 type export(s)
+- breadcrumb: 1 value export(s), 3 type export(s)
 - button: 2 value export(s), 1 type export(s)
 - calendar: 1 value export(s), 2 type export(s)
 - card: 2 value export(s), 0 type export(s)
@@ -20,24 +22,38 @@ Total modules: 39
 - chart: 29 value export(s), 0 type export(s)
 - checkbox: 2 value export(s), 0 type export(s)
 - collapsible: 1 value export(s), 0 type export(s)
+- color-picker: 2 value export(s), 3 type export(s)
 - command: 1 value export(s), 0 type export(s)
 - currency-input: 3 value export(s), 4 type export(s)
 - dialog: 1 value export(s), 0 type export(s)
 - drawer: 1 value export(s), 0 type export(s)
 - dropdown-menu: 1 value export(s), 0 type export(s)
+- empty: 2 value export(s), 1 type export(s)
+- file-upload: 2 value export(s), 1 type export(s)
+- hover-card: 1 value export(s), 3 type export(s)
 - input: 3 value export(s), 3 type export(s)
+- input-color: 1 value export(s), 2 type export(s)
 - input-date-range: 1 value export(s), 1 type export(s)
+- input-otp: 2 value export(s), 1 type export(s)
 - label: 1 value export(s), 0 type export(s)
+- menubar: 2 value export(s), 2 type export(s)
+- meter: 2 value export(s), 1 type export(s)
 - modal: 2 value export(s), 2 type export(s)
 - month-picker: 1 value export(s), 1 type export(s)
+- navigation-menu: 1 value export(s), 4 type export(s)
+- number-field: 1 value export(s), 1 type export(s)
+- pagination: 3 value export(s), 2 type export(s)
 - popover: 1 value export(s), 0 type export(s)
 - progress: 2 value export(s), 0 type export(s)
 - radio: 1 value export(s), 0 type export(s)
+- resizable: 1 value export(s), 3 type export(s)
 - scroll-area: 2 value export(s), 0 type export(s)
 - select: 1 value export(s), 2 type export(s)
 - separator: 1 value export(s), 0 type export(s)
 - sidebar: 2 value export(s), 0 type export(s)
-- skeleton: 1 value export(s), 0 type export(s)
+- skeleton: 2 value export(s), 2 type export(s)
+- slider: 3 value export(s), 1 type export(s)
+- stepper: 1 value export(s), 2 type export(s)
 - swipe-actions: 2 value export(s), 4 type export(s)
 - swipe-button: 1 value export(s), 2 type export(s)
 - switch: 1 value export(s), 1 type export(s)
@@ -45,9 +61,13 @@ Total modules: 39
 - tabs: 3 value export(s), 0 type export(s)
 - tag-input: 1 value export(s), 1 type export(s)
 - textarea: 2 value export(s), 1 type export(s)
+- time-field: 1 value export(s), 1 type export(s)
 - toast: 1 value export(s), 2 type export(s)
-- toaster: 1 value export(s), 0 type export(s)
+- toaster: 1 value export(s), 1 type export(s)
+- toggle: 4 value export(s), 2 type export(s)
+- toolbar: 2 value export(s), 1 type export(s)
 - tooltip: 1 value export(s), 0 type export(s)
+- tree: 1 value export(s), 2 type export(s)
 
 ## CONTROL_DESCRIPTION
 
@@ -85,6 +105,43 @@ export function Example() {
 
 - Values: `cardVariants`, `CONTROL_DESCRIPTION`, `CONTROL_LABEL`, `DIALOG_CONTENT`, `DIALOG_SURFACE`, `DISABLED`, `DISABLED_DATA`, `FIELD_GROUP`, `fieldErrorClass`, `FOCUS_RING`, `FOCUS_RING_INVALID`, `FOCUS_RING_WITHIN`, `ICON_BUTTON`, `MENU_ITEM`, `MENU_LABEL`, `MENU_SEPARATOR`, `OVERLAY_BACKDROP`, `OVERLAY_SURFACE`, `radioIndicatorVariants`, `swipeTrackVariants`, `switchThumbVariants`, `switchTrackVariants`, `TOOLTIP_SURFACE`
 - Types: (none)
+
+## Accordion
+
+Module: `accordion`
+
+### Import
+
+```tsx
+import { Accordion } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Accordion } from "@almach/ui";
+
+export function Example() {
+  return <Accordion />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Accordion`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Accordion`, `accordionVariants`
+- Types: `AccordionContentProps`, `AccordionItemProps`, `AccordionProps`, `AccordionTriggerProps`
 
 ## Alert
 
@@ -196,6 +253,43 @@ export function Example() {
 
 - Values: `Badge`, `badgeVariants`
 - Types: `BadgeProps`
+
+## Breadcrumb
+
+Module: `breadcrumb`
+
+### Import
+
+```tsx
+import { Breadcrumb } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Breadcrumb } from "@almach/ui";
+
+export function Example() {
+  return <Breadcrumb />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Breadcrumb`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Breadcrumb`
+- Types: `BreadcrumbItemProps`, `BreadcrumbLinkProps`, `BreadcrumbProps`
 
 ## Button
 
@@ -468,6 +562,43 @@ export function Example() {
 - Values: `Collapsible`
 - Types: (none)
 
+## ColorPicker
+
+Module: `color-picker`
+
+### Import
+
+```tsx
+import { ColorPicker } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { ColorPicker } from "@almach/ui";
+
+export function Example() {
+  return <ColorPicker />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `ColorPicker`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `ColorPicker`, `parseColor`
+- Types: `ColorPickerFieldProps`, `ColorPickerProps`, `ColorPickerSliderProps`
+
 ## Command
 
 Module: `command`
@@ -679,6 +810,117 @@ export function Example() {
 - Values: `DropdownMenu`
 - Types: (none)
 
+## Empty
+
+Module: `empty`
+
+### Import
+
+```tsx
+import { Empty } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Empty } from "@almach/ui";
+
+export function Example() {
+  return <Empty />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Empty`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Empty`, `emptyVariants`
+- Types: `EmptyProps`
+
+## FileUpload
+
+Module: `file-upload`
+
+### Import
+
+```tsx
+import { FileUpload } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { FileUpload } from "@almach/ui";
+
+export function Example() {
+  return <FileUpload />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `FileUpload`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `FileUpload`, `fileUploadVariants`
+- Types: `FileUploadProps`
+
+## HoverCard
+
+Module: `hover-card`
+
+### Import
+
+```tsx
+import { HoverCard } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { HoverCard } from "@almach/ui";
+
+export function Example() {
+  return <HoverCard />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `HoverCard`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `HoverCard`
+- Types: `HoverCardContentProps`, `HoverCardProps`, `HoverCardTriggerProps`
+
 ## Input
 
 Module: `input`
@@ -730,6 +972,43 @@ export function EmailField() {
 - Values: `DateInput`, `Input`, `inputVariants`
 - Types: `DateInputProps`, `InputDateProps`, `InputProps`
 
+## InputColor
+
+Module: `input-color`
+
+### Import
+
+```tsx
+import { InputColor } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { InputColor } from "@almach/ui";
+
+export function Example() {
+  return <InputColor />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `InputColor`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `InputColor`
+- Types: `ColorFormat`, `InputColorProps`
+
 ## InputDateRange
 
 Module: `input-date-range`
@@ -767,6 +1046,43 @@ export function Example() {
 - Values: `InputDateRange`
 - Types: `InputDateRangeProps`
 
+## InputOtp
+
+Module: `input-otp`
+
+### Import
+
+```tsx
+import { InputOtp } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { InputOtp } from "@almach/ui";
+
+export function Example() {
+  return <InputOtp />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `InputOtp`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `InputOtp`, `otpSlotVariants`
+- Types: `InputOtpProps`
+
 ## Label
 
 Module: `label`
@@ -803,6 +1119,80 @@ export function Example() {
 
 - Values: `Label`
 - Types: (none)
+
+## Menubar
+
+Module: `menubar`
+
+### Import
+
+```tsx
+import { Menubar } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Menubar } from "@almach/ui";
+
+export function Example() {
+  return <Menubar />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Menubar`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Menubar`, `menubarVariants`
+- Types: `MenubarMenuProps`, `MenubarProps`
+
+## Meter
+
+Module: `meter`
+
+### Import
+
+```tsx
+import { Meter } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Meter } from "@almach/ui";
+
+export function Example() {
+  return <Meter />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Meter`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Meter`, `meterVariants`
+- Types: `MeterProps`
 
 ## Modal
 
@@ -890,6 +1280,117 @@ export function Example() {
 
 - Values: `MonthPicker`
 - Types: `MonthPickerProps`
+
+## NavigationMenu
+
+Module: `navigation-menu`
+
+### Import
+
+```tsx
+import { NavigationMenu } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { NavigationMenu } from "@almach/ui";
+
+export function Example() {
+  return <NavigationMenu />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `NavigationMenu`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `NavigationMenu`
+- Types: `NavigationMenuEntryProps`, `NavigationMenuItemProps`, `NavigationMenuLinkProps`, `NavigationMenuProps`
+
+## NumberField
+
+Module: `number-field`
+
+### Import
+
+```tsx
+import { NumberField } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { NumberField } from "@almach/ui";
+
+export function Example() {
+  return <NumberField />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `NumberField`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `NumberField`
+- Types: `NumberFieldProps`
+
+## Pagination
+
+Module: `pagination`
+
+### Import
+
+```tsx
+import { Pagination } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Pagination } from "@almach/ui";
+
+export function Example() {
+  return <Pagination />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Pagination`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `getPaginationRange`, `Pagination`, `paginationItemVariants`
+- Types: `PaginationProps`, `PaginationRangeEntry`
 
 ## Popover
 
@@ -1007,6 +1508,43 @@ import { Radio } from "@almach/ui";
 
 - Values: `Radio`
 - Types: (none)
+
+## Resizable
+
+Module: `resizable`
+
+### Import
+
+```tsx
+import { Resizable } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Resizable } from "@almach/ui";
+
+export function Example() {
+  return <Resizable />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Resizable`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Resizable`
+- Types: `ResizableHandleProps`, `ResizablePanelProps`, `ResizableProps`
 
 ## ScrollArea
 
@@ -1289,8 +1827,82 @@ export function Example() {
 
 ### Exported Symbols
 
-- Values: `Skeleton`
-- Types: (none)
+- Values: `Skeleton`, `skeletonVariants`
+- Types: `SkeletonProps`, `SkeletonTextProps`
+
+## Slider
+
+Module: `slider`
+
+### Import
+
+```tsx
+import { Slider } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Slider } from "@almach/ui";
+
+export function Example() {
+  return <Slider />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Slider`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Slider`, `sliderThumbVariants`, `sliderTrackVariants`
+- Types: `SliderProps`
+
+## Stepper
+
+Module: `stepper`
+
+### Import
+
+```tsx
+import { Stepper } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Stepper } from "@almach/ui";
+
+export function Example() {
+  return <Stepper />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Stepper`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Stepper`
+- Types: `StepperItemProps`, `StepperProps`
 
 ## SwipeActions
 
@@ -1564,6 +2176,43 @@ export function Example() {
 - Values: `Textarea`, `textareaVariants`
 - Types: `TextareaProps`
 
+## TimeField
+
+Module: `time-field`
+
+### Import
+
+```tsx
+import { TimeField } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { TimeField } from "@almach/ui";
+
+export function Example() {
+  return <TimeField />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `TimeField`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `TimeField`
+- Types: `TimeFieldProps`
+
 ## Toast
 
 Module: `toast`
@@ -1643,7 +2292,81 @@ export function Example() {
 ### Exported Symbols
 
 - Values: `Toaster`
-- Types: (none)
+- Types: `ToasterProps`
+
+## Toggle
+
+Module: `toggle`
+
+### Import
+
+```tsx
+import { Toggle } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Toggle } from "@almach/ui";
+
+export function Example() {
+  return <Toggle />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Toggle`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Toggle`, `ToggleGroup`, `toggleGroupVariants`, `toggleVariants`
+- Types: `ToggleGroupProps`, `ToggleProps`
+
+## Toolbar
+
+Module: `toolbar`
+
+### Import
+
+```tsx
+import { Toolbar } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Toolbar } from "@almach/ui";
+
+export function Example() {
+  return <Toolbar />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Toolbar`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Toolbar`, `toolbarVariants`
+- Types: `ToolbarProps`
 
 ## Tooltip
 
@@ -1681,3 +2404,40 @@ export function Example() {
 
 - Values: `Tooltip`
 - Types: (none)
+
+## Tree
+
+Module: `tree`
+
+### Import
+
+```tsx
+import { Tree } from "@almach/ui";
+```
+
+### Quick Example
+
+```tsx
+import { Tree } from "@almach/ui";
+
+export function Example() {
+  return <Tree />;
+}
+```
+
+### Most Common Tasks
+
+- Use the exported component in controlled or uncontrolled form.
+
+### Anatomy
+
+- `Tree`
+
+### API Notes
+
+- Refer to the component page for full prop and behavior details.
+
+### Exported Symbols
+
+- Values: `Tree`
+- Types: `TreeItemProps`, `TreeProps`

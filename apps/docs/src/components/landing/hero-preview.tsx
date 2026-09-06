@@ -64,10 +64,10 @@ export function HeroPreview() {
                 />
               </div>
               <div className="flex items-center gap-1.5">
-                <Button variant="ghost" size="icon-sm" tabIndex={-1}>
+                <Button variant="ghost" size="icon-sm" excludeFromTabOrder>
                   <Bell className="h-3.5 w-3.5" aria-hidden="true" />
                 </Button>
-                <Button variant="ghost" size="icon-sm" tabIndex={-1}>
+                <Button variant="ghost" size="icon-sm" excludeFromTabOrder>
                   <Settings className="h-3.5 w-3.5" aria-hidden="true" />
                 </Button>
                 <Avatar className="h-7 w-7">
@@ -99,7 +99,7 @@ export function HeroPreview() {
                       Release notes and changelog
                     </p>
                   </div>
-                  <Switch defaultSelected tabIndex={-1} />
+                  <Switch defaultSelected excludeFromTabOrder />
                 </div>
                 <div className="flex items-center justify-between gap-4 rounded-lg border border-border/60 bg-muted/20 px-3 py-2.5">
                   <div>
@@ -108,13 +108,13 @@ export function HeroPreview() {
                       Critical dependency advisories
                     </p>
                   </div>
-                  <Switch defaultSelected tabIndex={-1} />
+                  <Switch defaultSelected excludeFromTabOrder />
                 </div>
                 <div className="flex flex-wrap gap-2 pt-1">
-                  <Button size="sm" tabIndex={-1}>
+                  <Button size="sm" excludeFromTabOrder>
                     Save changes
                   </Button>
-                  <Button variant="outline" size="sm" tabIndex={-1}>
+                  <Button variant="outline" size="sm" excludeFromTabOrder>
                     Reset
                   </Button>
                 </div>

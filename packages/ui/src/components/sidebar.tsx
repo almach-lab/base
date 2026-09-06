@@ -10,7 +10,7 @@ import {
   ModalOverlay,
 } from "react-aria-components";
 import { useIsMobile } from "../hooks/use-media-query.js";
-import { MOTION_INTERACTIVE } from "./_motion.js";
+import { MOTION_INTERACTIVE, MOTION_LAYOUT } from "./_motion.js";
 import { FOCUS_RING, OVERLAY_BACKDROP } from "./_styles.js";
 
 const SIDEBAR_WIDTH = "16rem";
@@ -197,13 +197,13 @@ export const SidebarRoot = React.forwardRef<
         className={cn(
           isContained
             ? cn(
-                "relative flex h-full flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-200",
-                MOTION_INTERACTIVE,
+                "relative flex h-full flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width]",
+                MOTION_LAYOUT,
                 desktopWidthClass,
               )
             : cn(
-                "fixed inset-y-0 left-0 z-10 flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-200",
-                MOTION_INTERACTIVE,
+                "fixed inset-y-0 left-0 z-10 flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width]",
+                MOTION_LAYOUT,
                 desktopWidthClass,
               ),
           variant === "floating" &&
@@ -355,7 +355,7 @@ export function SidebarMenuButton({
       {hasSubmenu && state === "expanded" && (
         <ChevronRight
           className={cn(
-            "size-3.5 opacity-50 transition-transform duration-200",
+            cn("size-3.5 opacity-50", MOTION_INTERACTIVE),
             isOpen && "rotate-90",
           )}
         />
@@ -384,7 +384,7 @@ export function SidebarMenuSub({
       aria-hidden={!isOpen}
       data-state={isOpen ? "open" : "closed"}
       className={cn(
-        "grid transition-all duration-200 ease-out",
+        cn("grid transition-all", MOTION_LAYOUT),
         isOpen
           ? "grid-rows-[1fr] opacity-100"
           : "grid-rows-[0fr] opacity-0 overflow-hidden",

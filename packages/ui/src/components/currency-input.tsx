@@ -3,6 +3,7 @@
 import { cn } from "@almach/utils";
 import { Check, ChevronDown, Search, X } from "lucide-react";
 import * as React from "react";
+import { browserFieldProps, type FieldBrowserProps } from "./_field.js";
 import { MOTION_INTERACTIVE } from "./_motion.js";
 import { mergeRefs } from "./_refs.js";
 import {
@@ -49,7 +50,7 @@ export interface CurrencyValue {
  */
 export type CurrencySelectorMode = "editable" | "readonly" | "hidden";
 
-export interface InputCurrencyProps {
+export interface InputCurrencyProps extends FieldBrowserProps {
   id?: string;
   value?: CurrencyValue | undefined;
   onChange?: (value: CurrencyValue) => void;
@@ -285,7 +286,8 @@ function CurrencyOption({
       <span className="flex-1 truncate text-left">{currency.name}</span>
       <Check
         className={cn(
-          "h-3.5 w-3.5 shrink-0 transition-opacity",
+          "h-3.5 w-3.5 shrink-0",
+          MOTION_INTERACTIVE,
           selected ? "opacity-100 text-primary" : "opacity-0",
         )}
         aria-hidden="true"
@@ -313,6 +315,8 @@ export const InputCurrency = React.forwardRef<
     error,
     size = "default",
     className,
+    name,
+    ...browserProps
   },
   ref,
 ) {
@@ -527,7 +531,10 @@ export const InputCurrency = React.forwardRef<
                   type="button"
                   onClick={() => setSearch("")}
                   aria-label="Clear search"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
+                  className={cn(
+                    "text-muted-foreground hover:text-foreground",
+                    MOTION_INTERACTIVE,
+                  )}
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -604,12 +611,28 @@ export const InputCurrency = React.forwardRef<
         {selectedCurrency.symbol}
       </span>
 
+      {name && (
+        <>
+          <input
+            type="hidden"
+            name={name}
+            value={value?.amount ?? parseAmount(displayValue) ?? ""}
+          />
+
+          <input type="hidden" name={`${name}Currency`} value={currency} />
+        </>
+      )}
+
       {/* ── Amount input ──────────────────────────────────────────────── */}
       <input
+        {...browserFieldProps(browserProps, {
+          autoComplete: "off",
+          spellCheck: false,
+          inputMode: "decimal",
+        })}
         ref={mergeRefs(ref, inputRef)}
         id={id}
         type="text"
-        inputMode="decimal"
         placeholder={placeholder}
         value={displayValue}
         onChange={handleAmountChange}

@@ -1,6 +1,6 @@
 import { docsLayout } from "../../lib/docs-layout";
 import { DocPageHeader } from "../docs/doc-page-header";
-import { ThemeCustomizer } from "../ThemeCustomizer";
+import { ThemeCustomizer } from "../theme/ThemeCustomizer";
 
 export function ThemePage() {
   return (
@@ -19,7 +19,7 @@ export function ThemePage() {
         }
       />
 
-      <ThemeCustomizer mode="page" />
+      <ThemeCustomizer />
     </article>
   );
 }

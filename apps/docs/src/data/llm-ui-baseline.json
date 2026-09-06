@@ -27,6 +27,15 @@
     ],
     "typeExports": []
   },
+  "accordion": {
+    "exports": ["Accordion", "accordionVariants"],
+    "typeExports": [
+      "AccordionContentProps",
+      "AccordionItemProps",
+      "AccordionProps",
+      "AccordionTriggerProps"
+    ]
+  },
   "alert": {
     "exports": ["Alert", "alertVariants"],
     "typeExports": ["AlertRootProps"]
@@ -38,6 +47,14 @@
   "badge": {
     "exports": ["Badge", "badgeVariants"],
     "typeExports": ["BadgeProps"]
+  },
+  "breadcrumb": {
+    "exports": ["Breadcrumb"],
+    "typeExports": [
+      "BreadcrumbItemProps",
+      "BreadcrumbLinkProps",
+      "BreadcrumbProps"
+    ]
   },
   "button": {
     "exports": ["Button", "buttonVariants"],
@@ -97,6 +114,14 @@
     "exports": ["Collapsible"],
     "typeExports": []
   },
+  "color-picker": {
+    "exports": ["ColorPicker", "parseColor"],
+    "typeExports": [
+      "ColorPickerFieldProps",
+      "ColorPickerProps",
+      "ColorPickerSliderProps"
+    ]
+  },
   "command": {
     "exports": ["Command"],
     "typeExports": []
@@ -122,17 +147,49 @@
     "exports": ["DropdownMenu"],
     "typeExports": []
   },
+  "empty": {
+    "exports": ["Empty", "emptyVariants"],
+    "typeExports": ["EmptyProps"]
+  },
+  "file-upload": {
+    "exports": ["FileUpload", "fileUploadVariants"],
+    "typeExports": ["FileUploadProps"]
+  },
+  "hover-card": {
+    "exports": ["HoverCard"],
+    "typeExports": [
+      "HoverCardContentProps",
+      "HoverCardProps",
+      "HoverCardTriggerProps"
+    ]
+  },
   "input": {
     "exports": ["DateInput", "Input", "inputVariants"],
     "typeExports": ["DateInputProps", "InputDateProps", "InputProps"]
+  },
+  "input-color": {
+    "exports": ["InputColor"],
+    "typeExports": ["ColorFormat", "InputColorProps"]
   },
   "input-date-range": {
     "exports": ["InputDateRange"],
     "typeExports": ["InputDateRangeProps"]
   },
+  "input-otp": {
+    "exports": ["InputOtp", "otpSlotVariants"],
+    "typeExports": ["InputOtpProps"]
+  },
   "label": {
     "exports": ["Label"],
     "typeExports": []
+  },
+  "menubar": {
+    "exports": ["Menubar", "menubarVariants"],
+    "typeExports": ["MenubarMenuProps", "MenubarProps"]
+  },
+  "meter": {
+    "exports": ["Meter", "meterVariants"],
+    "typeExports": ["MeterProps"]
   },
   "modal": {
     "exports": ["Modal", "useModal"],
@@ -141,6 +198,23 @@
   "month-picker": {
     "exports": ["MonthPicker"],
     "typeExports": ["MonthPickerProps"]
+  },
+  "navigation-menu": {
+    "exports": ["NavigationMenu"],
+    "typeExports": [
+      "NavigationMenuEntryProps",
+      "NavigationMenuItemProps",
+      "NavigationMenuLinkProps",
+      "NavigationMenuProps"
+    ]
+  },
+  "number-field": {
+    "exports": ["NumberField"],
+    "typeExports": ["NumberFieldProps"]
+  },
+  "pagination": {
+    "exports": ["getPaginationRange", "Pagination", "paginationItemVariants"],
+    "typeExports": ["PaginationProps", "PaginationRangeEntry"]
   },
   "popover": {
     "exports": ["Popover"],
@@ -153,6 +227,14 @@
   "radio": {
     "exports": ["Radio"],
     "typeExports": []
+  },
+  "resizable": {
+    "exports": ["Resizable"],
+    "typeExports": [
+      "ResizableHandleProps",
+      "ResizablePanelProps",
+      "ResizableProps"
+    ]
   },
   "scroll-area": {
     "exports": ["ScrollArea", "ScrollBar"],
@@ -171,8 +253,16 @@
     "typeExports": []
   },
   "skeleton": {
-    "exports": ["Skeleton"],
-    "typeExports": []
+    "exports": ["Skeleton", "skeletonVariants"],
+    "typeExports": ["SkeletonProps", "SkeletonTextProps"]
+  },
+  "slider": {
+    "exports": ["Slider", "sliderThumbVariants", "sliderTrackVariants"],
+    "typeExports": ["SliderProps"]
+  },
+  "stepper": {
+    "exports": ["Stepper"],
+    "typeExports": ["StepperItemProps", "StepperProps"]
   },
   "swipe-actions": {
     "exports": ["SwipeActions", "useSwipeActions"],
@@ -207,16 +297,37 @@
     "exports": ["Textarea", "textareaVariants"],
     "typeExports": ["TextareaProps"]
   },
+  "time-field": {
+    "exports": ["TimeField"],
+    "typeExports": ["TimeFieldProps"]
+  },
   "toast": {
     "exports": ["toast"],
     "typeExports": ["ToastConfirmOptions", "ToastOptions"]
   },
   "toaster": {
     "exports": ["Toaster"],
-    "typeExports": []
+    "typeExports": ["ToasterProps"]
+  },
+  "toggle": {
+    "exports": [
+      "Toggle",
+      "ToggleGroup",
+      "toggleGroupVariants",
+      "toggleVariants"
+    ],
+    "typeExports": ["ToggleGroupProps", "ToggleProps"]
+  },
+  "toolbar": {
+    "exports": ["Toolbar", "toolbarVariants"],
+    "typeExports": ["ToolbarProps"]
   },
   "tooltip": {
     "exports": ["Tooltip"],
     "typeExports": []
+  },
+  "tree": {
+    "exports": ["Tree"],
+    "typeExports": ["TreeItemProps", "TreeProps"]
   }
 }

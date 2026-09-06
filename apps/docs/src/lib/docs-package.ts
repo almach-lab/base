@@ -1,9 +1,20 @@
-export function parseScopedPackage(pkg: string) {
-  const match = pkg.match(/^@([^/]+)\/(.+)$/);
-  if (!match) {
-    return { scope: null as string | null, name: pkg };
+export interface ScopedPackage {
+  /** Leading `@scope`, or null for an unscoped package. */
+  scope: string | null;
+  /** Package name without the scope. Never empty. */
+  name: string;
+}
+
+export function parseScopedPackage(pkg: string): ScopedPackage {
+  const match = /^@([^/]+)\/(.+)$/.exec(pkg);
+  const scope = match?.[1];
+  const name = match?.[2];
+
+  if (!scope || !name) {
+    return { scope: null, name: pkg };
   }
-  return { scope: `@${match[1]}`, name: match[2] };
+
+  return { scope: `@${scope}`, name };
 }
 
 export function parsePackageEyebrow(eyebrow: string) {

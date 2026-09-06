@@ -3,12 +3,17 @@ import { X } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import {
+  MOTION_EASE_STANDARD,
+  MOTION_INTERACTIVE,
   MOTION_OVERLAY,
+  MOTION_OVERLAY_DURATION_MS,
+  MOTION_VAR_EASE,
   MOTION_VAR_OVERLAY_DURATION,
+  motionVar,
   resolveMotionDurationMs,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
-import { DIALOG_SURFACE, OVERLAY_BACKDROP } from "./_styles.js";
+import { DIALOG_SURFACE, FOCUS_RING, OVERLAY_BACKDROP } from "./_styles.js";
 
 interface DialogCtxValue {
   open: boolean;
@@ -17,8 +22,6 @@ interface DialogCtxValue {
 }
 
 const DialogCtx = React.createContext<DialogCtxValue | null>(null);
-const DIALOG_ANIMATION_MS = 260;
-const DIALOG_EASE = "cubic-bezier(0.22,1,0.36,1)";
 
 function useDialogCtx() {
   const ctx = React.useContext(DialogCtx);
@@ -186,7 +189,7 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
     React.useEffect(() => {
       const motionMs = resolveMotionDurationMs(
         MOTION_VAR_OVERLAY_DURATION,
-        DIALOG_ANIMATION_MS,
+        MOTION_OVERLAY_DURATION_MS,
       );
       if (open) {
         setMounted(true);
@@ -296,11 +299,17 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
             }
           }}
           style={{
-            transitionDuration: `var(--theme-motion-overlay-duration, ${DIALOG_ANIMATION_MS}ms)`,
-            transitionTimingFunction: `var(--theme-motion-ease-standard, ${DIALOG_EASE})`,
+            transitionDuration: motionVar(
+              MOTION_VAR_OVERLAY_DURATION,
+              `${MOTION_OVERLAY_DURATION_MS}ms`,
+            ),
+            transitionTimingFunction: motionVar(
+              MOTION_VAR_EASE,
+              MOTION_EASE_STANDARD,
+            ),
           }}
           className={cn(
-            "transition-opacity motion-reduce:transition-none",
+            MOTION_OVERLAY,
             "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
           )}
         />
@@ -322,8 +331,14 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
           data-state={state}
           onClick={(event) => event.stopPropagation()}
           style={{
-            transitionDuration: `var(--theme-motion-overlay-duration, ${DIALOG_ANIMATION_MS}ms)`,
-            transitionTimingFunction: `var(--theme-motion-ease-standard, ${DIALOG_EASE})`,
+            transitionDuration: motionVar(
+              MOTION_VAR_OVERLAY_DURATION,
+              `${MOTION_OVERLAY_DURATION_MS}ms`,
+            ),
+            transitionTimingFunction: motionVar(
+              MOTION_VAR_EASE,
+              MOTION_EASE_STANDARD,
+            ),
           }}
           className={cn(
             DIALOG_SURFACE,
@@ -340,7 +355,13 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
         >
           {children}
           {!hideClose && (
-            <DialogClose className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-lg opacity-50 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <DialogClose
+              className={cn(
+                "absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-lg opacity-50 hover:opacity-100",
+                MOTION_INTERACTIVE,
+                FOCUS_RING,
+              )}
+            >
               <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </DialogClose>

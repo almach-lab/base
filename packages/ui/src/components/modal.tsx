@@ -6,6 +6,7 @@ import { useIsMobile } from "../hooks/use-media-query.js";
 import {
   MOTION_VAR_OVERLAY_DURATION,
   resolveMotionDurationMs,
+  MOTION_EASE_STANDARD,
 } from "./_motion.js";
 import { Button } from "./button.js";
 import { Dialog } from "./dialog.js";
@@ -17,7 +18,7 @@ interface ViewsRegistry {
 }
 
 const MODAL_VIEW_TRANSITION_MS = 180;
-const MODAL_VIEW_TRANSITION_EASE = "cubic-bezier(0.22,1,0.36,1)";
+const MODAL_VIEW_TRANSITION_EASE = MOTION_EASE_STANDARD;
 
 interface ModalCtxValue {
   isMobile: boolean;

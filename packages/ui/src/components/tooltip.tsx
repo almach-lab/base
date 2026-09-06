@@ -4,7 +4,7 @@ import {
   Tooltip as TooltipPrimitive,
   TooltipTrigger as TooltipTriggerPrimitive,
 } from "react-aria-components";
-import { MOTION_OVERLAY_ENTER, MOTION_OVERLAY_EXIT } from "./_motion.js";
+import { MOTION_OVERLAY_RAC } from "./_motion.js";
 import { TOOLTIP_SURFACE } from "./_styles.js";
 
 type TooltipProviderProps = {
@@ -79,14 +79,7 @@ function TooltipRoot({ children }: { children: React.ReactNode }) {
         placement={contentProps.side ?? "top"}
         className={cn(
           TOOLTIP_SURFACE,
-          MOTION_OVERLAY_ENTER.replaceAll(
-            "data-[state=open]:",
-            "data-[entering]:",
-          ),
-          MOTION_OVERLAY_EXIT.replaceAll(
-            "data-[state=closed]:",
-            "data-[exiting]:",
-          ),
+          MOTION_OVERLAY_RAC,
           contentProps.className,
         )}
       >

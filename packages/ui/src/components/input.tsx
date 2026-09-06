@@ -4,6 +4,7 @@ import { cn } from "@almach/utils";
 import type { VariantProps } from "class-variance-authority";
 import { CalendarIcon } from "lucide-react";
 import * as React from "react";
+import { browserFieldProps, type FieldBrowserProps } from "./_field.js";
 import { MOTION_INTERACTIVE } from "./_motion.js";
 import {
   FIELD_GROUP,
@@ -15,6 +16,7 @@ import {
   inputVariants,
 } from "./_styles.js";
 import { Calendar } from "./calendar.js";
+import { InputColor } from "./input-color.js";
 import { InputCurrency } from "./currency-input.js";
 import { InputDateRange } from "./input-date-range.js";
 import {
@@ -139,7 +141,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 Input.displayName = "Input";
 
 /* ── Date Input ───────────────────────────────────────────────────────────── */
-export interface InputDateProps {
+export interface InputDateProps extends FieldBrowserProps {
   id?: string;
   value?: Date | undefined;
   onChange?: (date: Date | undefined) => void;
@@ -170,6 +172,8 @@ const InputDate = React.forwardRef<HTMLDivElement, InputDateProps>(
       size = "default",
       format = "MM/DD/YYYY",
       className,
+      name,
+      ...browserProps
     },
     ref,
   ) {
@@ -324,7 +328,19 @@ const InputDate = React.forwardRef<HTMLDivElement, InputDateProps>(
           onKeyDownSeg={handleKeyDown}
           onFocusSeg={(flatId) => setActive(flatId)}
           onBlurSeg={() => setActive(null)}
+          inputProps={browserFieldProps(browserProps, {
+            autoComplete: "off",
+            spellCheck: false,
+          })}
         />
+
+        {name && (
+          <input
+            type="hidden"
+            name={name}
+            value={segmentsToDate(seg)?.toISOString() ?? ""}
+          />
+        )}
 
         {withCalendar && (
           <Popover open={calOpen} onOpenChange={setCalOpen}>
@@ -378,6 +394,7 @@ const InputCompound = Object.assign(Input, {
   Date: InputDate,
   Currency: InputCurrency,
   DateRange: InputDateRange,
+  Color: InputColor,
 });
 
 export { InputCompound as Input, inputVariants };

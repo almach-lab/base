@@ -13,6 +13,7 @@ import {
   fieldErrorClass,
 } from "./_styles.js";
 import { Calendar, type DateRange } from "./calendar.js";
+import { browserFieldProps, type FieldBrowserProps } from "./_field.js";
 import {
   applySegmentDigits,
   createFocusController,
@@ -27,7 +28,7 @@ import {
 } from "./input-date-shared.js";
 import { Popover } from "./popover.js";
 
-export interface InputDateRangeProps {
+export interface InputDateRangeProps extends FieldBrowserProps {
   id?: string;
   value?: DateRange | undefined;
   onChange?: (range: DateRange | undefined) => void;
@@ -74,6 +75,8 @@ export const InputDateRange = React.forwardRef<
     size = "default",
     format = "MM/DD/YYYY",
     className,
+    name,
+    ...browserProps
   },
   ref,
 ) {
@@ -291,6 +294,10 @@ export const InputDateRange = React.forwardRef<
           onKeyDownSeg={handleKeyDown}
           onFocusSeg={setActive}
           onBlurSeg={() => setActive(null)}
+          inputProps={browserFieldProps(browserProps, {
+            autoComplete: "off",
+            spellCheck: false,
+          })}
         />
       </div>
 
@@ -315,8 +322,27 @@ export const InputDateRange = React.forwardRef<
           onKeyDownSeg={handleKeyDown}
           onFocusSeg={setActive}
           onBlurSeg={() => setActive(null)}
+          inputProps={browserFieldProps(browserProps, {
+            autoComplete: "off",
+            spellCheck: false,
+          })}
         />
       </div>
+
+      {name && (
+        <>
+          <input
+            type="hidden"
+            name={`${name}From`}
+            value={segmentsToDate(fromSeg)?.toISOString() ?? ""}
+          />
+          <input
+            type="hidden"
+            name={`${name}To`}
+            value={segmentsToDate(toSeg)?.toISOString() ?? ""}
+          />
+        </>
+      )}
 
       {withCalendar && (
         <div className="flex w-full justify-center sm:w-auto sm:contents">

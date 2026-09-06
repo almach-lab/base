@@ -5,8 +5,41 @@ export function SkeletonPage() {
   return (
     <ComponentDoc
       name="Skeleton"
-      description="A shimmer placeholder shown while content is loading. Size and shape it entirely via className."
+      description="A shimmer placeholder shown while content is loading. Shape presets cover the common cases; className still controls exact dimensions."
       examples={[
+        {
+          title: "Presets",
+          description:
+            "Shape variants for the shapes you reach for most often.",
+          preview: (
+            <div className="flex flex-wrap items-center gap-4">
+              <Skeleton variant="avatar" />
+              <Skeleton variant="circle" className="size-12" />
+              <Skeleton variant="text" className="w-32" />
+              <Skeleton variant="button" className="w-24" />
+              <Skeleton variant="input" className="max-w-48" />
+              <Skeleton className="size-12" />
+            </div>
+          ),
+          code: `<Skeleton variant="avatar" />
+<Skeleton variant="circle" className="size-12" />
+<Skeleton variant="text" className="w-32" />
+<Skeleton variant="button" className="w-24" />
+<Skeleton variant="input" className="max-w-48" />
+<Skeleton className="size-12" />`,
+        },
+        {
+          title: "Paragraph",
+          description:
+            "Skeleton.Text renders a stack of lines with a shortened last line.",
+          preview: (
+            <div className="w-full max-w-sm">
+              <Skeleton.Text lines={4} />
+            </div>
+          ),
+          code: `<Skeleton.Text lines={4} />`,
+          centered: false,
+        },
         {
           title: "Profile card",
           description: "A realistic loading state for a user card.",
@@ -115,10 +148,30 @@ export function SkeletonPage() {
       ]}
       props={[
         {
+          name: "variant",
+          type: '"rect" | "text" | "circle" | "button" | "input" | "avatar"',
+          default: '"rect"',
+          description:
+            "Shape preset. Each one sets a sensible radius, and some set a height too.",
+        },
+        {
           name: "className",
           type: "string",
           description:
-            "Tailwind classes to set the dimensions and border-radius of the skeleton. Width, height, and shape are entirely controlled here.",
+            "Tailwind classes for exact dimensions. Always needed for width, and for height on the rect and circle variants.",
+        },
+        {
+          name: "Skeleton.Text lines",
+          type: "number",
+          default: "3",
+          description: "Number of placeholder lines to render.",
+        },
+        {
+          name: "Skeleton.Text lastLineWidth",
+          type: "string",
+          default: '"60%"',
+          description:
+            "Width of the final line, shortened so the block reads as a paragraph.",
         },
       ]}
     />

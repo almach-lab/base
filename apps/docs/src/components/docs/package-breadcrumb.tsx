@@ -63,7 +63,7 @@ export function PackageEyebrow({
     <PackageBreadcrumb
       pkg={pkg}
       {...(suffix ? { suffix } : {})}
-      className={className}
+      {...(className !== undefined ? { className } : {})}
     />
   );
 }
