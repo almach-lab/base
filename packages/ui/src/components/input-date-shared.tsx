@@ -225,6 +225,8 @@ export interface SegmentGroupProps {
   ) => void;
   onFocusSeg: (flatId: string) => void;
   onBlurSeg: () => void;
+  /** Browser attributes forwarded onto each segment input. */
+  inputProps?: Record<string, unknown> | undefined;
 }
 
 export function SegmentGroup({
@@ -240,6 +242,7 @@ export function SegmentGroup({
   onKeyDownSeg,
   onFocusSeg,
   onBlurSeg,
+  inputProps,
 }: SegmentGroupProps) {
   return (
     <>
@@ -256,6 +259,7 @@ export function SegmentGroup({
               </span>
             )}
             <input
+              {...inputProps}
               ref={getRef(flatId)}
               type="text"
               value={seg[key]}
