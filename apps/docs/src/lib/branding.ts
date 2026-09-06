@@ -15,7 +15,6 @@ export const BRAND_OG_HEADLINE_LEAD = "Accessible, themeable components";
 export const BRAND_OG_HEADLINE_TAIL = "for modern React apps.";
 
 export const BRAND_THEME_STORAGE_KEY = "almach-theme";
-export const BRAND_EVENT_CUSTOMIZER_TOGGLE = "almach-customizer-toggle";
 export const BRAND_EVENT_THEME_MODE_CHANGED = "almach-theme-mode-changed";
 
 export const BRAND_LOGO_FILL = "#d39d2a";
