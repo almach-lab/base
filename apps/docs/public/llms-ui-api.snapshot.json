@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T06:45:23.753Z",
+  "generatedAt": "2026-09-06T15:54:01.668Z",
   "components": {
     "_styles": {
       "exports": [
@@ -29,6 +29,18 @@
       ],
       "typeExports": []
     },
+    "accordion": {
+      "exports": [
+        "Accordion",
+        "accordionVariants"
+      ],
+      "typeExports": [
+        "AccordionContentProps",
+        "AccordionItemProps",
+        "AccordionProps",
+        "AccordionTriggerProps"
+      ]
+    },
     "alert": {
       "exports": [
         "Alert",
@@ -54,6 +66,16 @@
       ],
       "typeExports": [
         "BadgeProps"
+      ]
+    },
+    "breadcrumb": {
+      "exports": [
+        "Breadcrumb"
+      ],
+      "typeExports": [
+        "BreadcrumbItemProps",
+        "BreadcrumbLinkProps",
+        "BreadcrumbProps"
       ]
     },
     "button": {
@@ -134,6 +156,17 @@
       ],
       "typeExports": []
     },
+    "color-picker": {
+      "exports": [
+        "ColorPicker",
+        "parseColor"
+      ],
+      "typeExports": [
+        "ColorPickerFieldProps",
+        "ColorPickerProps",
+        "ColorPickerSliderProps"
+      ]
+    },
     "command": {
       "exports": [
         "Command"
@@ -171,6 +204,34 @@
       ],
       "typeExports": []
     },
+    "empty": {
+      "exports": [
+        "Empty",
+        "emptyVariants"
+      ],
+      "typeExports": [
+        "EmptyProps"
+      ]
+    },
+    "file-upload": {
+      "exports": [
+        "FileUpload",
+        "fileUploadVariants"
+      ],
+      "typeExports": [
+        "FileUploadProps"
+      ]
+    },
+    "hover-card": {
+      "exports": [
+        "HoverCard"
+      ],
+      "typeExports": [
+        "HoverCardContentProps",
+        "HoverCardProps",
+        "HoverCardTriggerProps"
+      ]
+    },
     "input": {
       "exports": [
         "DateInput",
@@ -183,6 +244,15 @@
         "InputProps"
       ]
     },
+    "input-color": {
+      "exports": [
+        "InputColor"
+      ],
+      "typeExports": [
+        "ColorFormat",
+        "InputColorProps"
+      ]
+    },
     "input-date-range": {
       "exports": [
         "InputDateRange"
@@ -191,11 +261,39 @@
         "InputDateRangeProps"
       ]
     },
+    "input-otp": {
+      "exports": [
+        "InputOtp",
+        "otpSlotVariants"
+      ],
+      "typeExports": [
+        "InputOtpProps"
+      ]
+    },
     "label": {
       "exports": [
         "Label"
       ],
       "typeExports": []
+    },
+    "menubar": {
+      "exports": [
+        "Menubar",
+        "menubarVariants"
+      ],
+      "typeExports": [
+        "MenubarMenuProps",
+        "MenubarProps"
+      ]
+    },
+    "meter": {
+      "exports": [
+        "Meter",
+        "meterVariants"
+      ],
+      "typeExports": [
+        "MeterProps"
+      ]
     },
     "modal": {
       "exports": [
@@ -213,6 +311,36 @@
       ],
       "typeExports": [
         "MonthPickerProps"
+      ]
+    },
+    "navigation-menu": {
+      "exports": [
+        "NavigationMenu"
+      ],
+      "typeExports": [
+        "NavigationMenuEntryProps",
+        "NavigationMenuItemProps",
+        "NavigationMenuLinkProps",
+        "NavigationMenuProps"
+      ]
+    },
+    "number-field": {
+      "exports": [
+        "NumberField"
+      ],
+      "typeExports": [
+        "NumberFieldProps"
+      ]
+    },
+    "pagination": {
+      "exports": [
+        "getPaginationRange",
+        "Pagination",
+        "paginationItemVariants"
+      ],
+      "typeExports": [
+        "PaginationProps",
+        "PaginationRangeEntry"
       ]
     },
     "popover": {
@@ -233,6 +361,16 @@
         "Radio"
       ],
       "typeExports": []
+    },
+    "resizable": {
+      "exports": [
+        "Resizable"
+      ],
+      "typeExports": [
+        "ResizableHandleProps",
+        "ResizablePanelProps",
+        "ResizableProps"
+      ]
     },
     "scroll-area": {
       "exports": [
@@ -265,9 +403,32 @@
     },
     "skeleton": {
       "exports": [
-        "Skeleton"
+        "Skeleton",
+        "skeletonVariants"
       ],
-      "typeExports": []
+      "typeExports": [
+        "SkeletonProps",
+        "SkeletonTextProps"
+      ]
+    },
+    "slider": {
+      "exports": [
+        "Slider",
+        "sliderThumbVariants",
+        "sliderTrackVariants"
+      ],
+      "typeExports": [
+        "SliderProps"
+      ]
+    },
+    "stepper": {
+      "exports": [
+        "Stepper"
+      ],
+      "typeExports": [
+        "StepperItemProps",
+        "StepperProps"
+      ]
     },
     "swipe-actions": {
       "exports": [
@@ -331,6 +492,14 @@
         "TextareaProps"
       ]
     },
+    "time-field": {
+      "exports": [
+        "TimeField"
+      ],
+      "typeExports": [
+        "TimeFieldProps"
+      ]
+    },
     "toast": {
       "exports": [
         "toast"
@@ -344,13 +513,45 @@
       "exports": [
         "Toaster"
       ],
-      "typeExports": []
+      "typeExports": [
+        "ToasterProps"
+      ]
+    },
+    "toggle": {
+      "exports": [
+        "Toggle",
+        "ToggleGroup",
+        "toggleGroupVariants",
+        "toggleVariants"
+      ],
+      "typeExports": [
+        "ToggleGroupProps",
+        "ToggleProps"
+      ]
+    },
+    "toolbar": {
+      "exports": [
+        "Toolbar",
+        "toolbarVariants"
+      ],
+      "typeExports": [
+        "ToolbarProps"
+      ]
     },
     "tooltip": {
       "exports": [
         "Tooltip"
       ],
       "typeExports": []
+    },
+    "tree": {
+      "exports": [
+        "Tree"
+      ],
+      "typeExports": [
+        "TreeItemProps",
+        "TreeProps"
+      ]
     }
   }
 }
