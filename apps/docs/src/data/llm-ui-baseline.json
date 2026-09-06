@@ -81,11 +81,17 @@
       "Cell",
       "Chart",
       "CHART_COLORS",
+      "ChartAreaSeries",
+      "ChartBarSeries",
       "ChartContainer",
       "ChartGrid",
       "ChartLegend",
+      "ChartLineSeries",
+      "ChartPieSeries",
       "ChartPolarAxis",
       "ChartPolarGrid",
+      "ChartRadarSeries",
+      "ChartScatterSeries",
       "ChartTooltip",
       "ChartTooltipContent",
       "ChartXAxis",
@@ -104,7 +110,7 @@
       "Scatter",
       "ScatterChart"
     ],
-    "typeExports": []
+    "typeExports": ["ChartBarSeriesProps", "ChartTooltipProps"]
   },
   "checkbox": {
     "exports": ["Checkbox", "checkboxVariants"],

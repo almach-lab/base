@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T15:54:01.668Z",
+  "generatedAt": "2026-09-06T16:24:33.334Z",
   "components": {
     "_styles": {
       "exports": [
@@ -118,11 +118,17 @@
         "Cell",
         "Chart",
         "CHART_COLORS",
+        "ChartAreaSeries",
+        "ChartBarSeries",
         "ChartContainer",
         "ChartGrid",
         "ChartLegend",
+        "ChartLineSeries",
+        "ChartPieSeries",
         "ChartPolarAxis",
         "ChartPolarGrid",
+        "ChartRadarSeries",
+        "ChartScatterSeries",
         "ChartTooltip",
         "ChartTooltipContent",
         "ChartXAxis",
@@ -141,7 +147,10 @@
         "Scatter",
         "ScatterChart"
       ],
-      "typeExports": []
+      "typeExports": [
+        "ChartBarSeriesProps",
+        "ChartTooltipProps"
+      ]
     },
     "checkbox": {
       "exports": [

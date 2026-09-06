@@ -118,11 +118,16 @@
   --sidebar-ring: 217.2 91.2% 59.8%;
 
   /* Charts */
-  --chart-1: 43 90% 44%;
-  --chart-2: 199 89% 48%;
-  --chart-3: 262 80% 52%;
-  --chart-4: 160 68% 40%;
-  --chart-5: 25 95% 50%;
+  /* Categorical series, assigned in fixed order and never cycled.
+     Stepped so each hue clears 3:1 against the surface and adjacent pairs stay
+     apart under colour-vision deficiency; lightness deliberately zigzags,
+     since equal-lightness hues collapse under deuteranopia. Re-run
+     scripts/validate_palette.js from the dataviz skill after any change. */
+  --chart-1: 43 90% 30%;
+  --chart-2: 199 84% 45.5%;
+  --chart-3: 262 90% 49%;
+  --chart-4: 160 68% 37.5%;
+  --chart-5: 25 95% 47.5%;
 }
 
 .dark {
@@ -159,11 +164,13 @@
   --sidebar-ring: 217.2 91.2% 59.8%;
 
   /* Charts */
-  --chart-1: 43 92% 58%;
-  --chart-2: 198 93% 61%;
-  --chart-3: 263 85% 70%;
-  --chart-4: 160 68% 54%;
-  --chart-5: 25 95% 63%;
+  /* Selected for the dark surface rather than lightened from the light steps:
+     the previous values sat above the dark lightness band and glared. */
+  --chart-1: 43 80% 31%;
+  --chart-2: 199 89% 44.5%;
+  --chart-3: 262 70% 56.5%;
+  --chart-4: 160 78% 33.5%;
+  --chart-5: 25 100% 45%;
 }
 
 /* 3. Keyframes */

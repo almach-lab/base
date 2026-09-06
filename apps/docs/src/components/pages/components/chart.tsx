@@ -1,15 +1,9 @@
 import {
-  Area,
-  Bar,
   Cell,
   CHART_COLORS,
   Chart,
-  Line,
-  Pie,
   PolarRadiusAxis,
-  Radar,
   ReferenceLine,
-  Scatter,
 } from "@almach/ui";
 import { ComponentDoc } from "../../component-doc";
 
@@ -88,22 +82,12 @@ export function ChartPage() {
                 <Chart.YAxis />
                 <Chart.Tooltip />
                 <Chart.Legend />
-                <Line
-                  dataKey="revenue"
-                  stroke={CHART_COLORS[0]}
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line
-                  dataKey="expenses"
-                  stroke={CHART_COLORS[3]}
-                  strokeWidth={2}
-                  dot={false}
-                />
+                <Chart.LineSeries dataKey="revenue" stroke={CHART_COLORS[0]} />
+                <Chart.LineSeries dataKey="expenses" stroke={CHART_COLORS[3]} />
               </Chart.Line>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Line } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Line data={data}>
@@ -112,8 +96,8 @@ export function ChartPage() {
     <Chart.YAxis />
     <Chart.Tooltip />
     <Chart.Legend />
-    <Line dataKey="revenue" stroke={CHART_COLORS[0]} strokeWidth={2} dot={false} />
-    <Line dataKey="expenses" stroke={CHART_COLORS[3]} strokeWidth={2} dot={false} />
+    <Chart.LineSeries dataKey="revenue" stroke={CHART_COLORS[0]} />
+    <Chart.LineSeries dataKey="expenses" stroke={CHART_COLORS[3]} />
   </Chart.Line>
 </Chart.Container>`,
         },
@@ -129,25 +113,21 @@ export function ChartPage() {
                 <Chart.XAxis dataKey="month" />
                 <Chart.YAxis />
                 <Chart.Tooltip />
-                <Line
+                <Chart.LineSeries
                   dataKey="revenue"
                   stroke={CHART_COLORS[0]}
-                  strokeWidth={2}
-                  dot={false}
                   type="stepAfter"
                 />
-                <Line
+                <Chart.LineSeries
                   dataKey="expenses"
                   stroke={CHART_COLORS[2]}
-                  strokeWidth={2}
-                  dot={false}
                   type="stepAfter"
                   strokeDasharray="4 4"
                 />
               </Chart.Line>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Line } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Line data={data}>
@@ -155,8 +135,8 @@ export function ChartPage() {
     <Chart.XAxis dataKey="month" />
     <Chart.YAxis />
     <Chart.Tooltip />
-    <Line dataKey="revenue" stroke={CHART_COLORS[0]} strokeWidth={2} dot={false} type="stepAfter" />
-    <Line dataKey="expenses" stroke={CHART_COLORS[2]} strokeWidth={2} dot={false} type="stepAfter" strokeDasharray="4 4" />
+    <Chart.LineSeries dataKey="revenue" stroke={CHART_COLORS[0]} type="stepAfter" />
+    <Chart.LineSeries dataKey="expenses" stroke={CHART_COLORS[2]} type="stepAfter" strokeDasharray="4 4" />
   </Chart.Line>
 </Chart.Container>`,
         },
@@ -172,12 +152,12 @@ export function ChartPage() {
                 <Chart.YAxis />
                 <Chart.Tooltip />
                 <Chart.Legend />
-                <Bar
+                <Chart.BarSeries
                   dataKey="revenue"
                   fill={CHART_COLORS[0]}
                   radius={[4, 4, 0, 0]}
                 />
-                <Bar
+                <Chart.BarSeries
                   dataKey="expenses"
                   fill={CHART_COLORS[3]}
                   radius={[4, 4, 0, 0]}
@@ -185,7 +165,7 @@ export function ChartPage() {
               </Chart.Bar>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Bar } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Bar data={data}>
@@ -194,8 +174,8 @@ export function ChartPage() {
     <Chart.YAxis />
     <Chart.Tooltip />
     <Chart.Legend />
-    <Bar dataKey="revenue" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
-    <Bar dataKey="expenses" fill={CHART_COLORS[3]} radius={[4, 4, 0, 0]} />
+    <Chart.BarSeries dataKey="revenue" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} />
+    <Chart.BarSeries dataKey="expenses" fill={CHART_COLORS[3]} radius={[4, 4, 0, 0]} />
   </Chart.Bar>
 </Chart.Container>`,
         },
@@ -212,19 +192,19 @@ export function ChartPage() {
                 <Chart.YAxis />
                 <Chart.Tooltip />
                 <Chart.Legend />
-                <Bar
+                <Chart.BarSeries
                   dataKey="engineering"
                   stackId="a"
                   fill={CHART_COLORS[0]}
                   radius={[0, 0, 0, 0]}
                 />
-                <Bar
+                <Chart.BarSeries
                   dataKey="design"
                   stackId="a"
                   fill={CHART_COLORS[1]}
                   radius={[0, 0, 0, 0]}
                 />
-                <Bar
+                <Chart.BarSeries
                   dataKey="marketing"
                   stackId="a"
                   fill={CHART_COLORS[2]}
@@ -233,7 +213,7 @@ export function ChartPage() {
               </Chart.Bar>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Bar } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Bar data={data}>
@@ -242,9 +222,9 @@ export function ChartPage() {
     <Chart.YAxis />
     <Chart.Tooltip />
     <Chart.Legend />
-    <Bar dataKey="engineering" stackId="a" fill={CHART_COLORS[0]} />
-    <Bar dataKey="design" stackId="a" fill={CHART_COLORS[1]} />
-    <Bar dataKey="marketing" stackId="a" fill={CHART_COLORS[2]} radius={[4, 4, 0, 0]} />
+    <Chart.BarSeries dataKey="engineering" stackId="a" fill={CHART_COLORS[0]} />
+    <Chart.BarSeries dataKey="design" stackId="a" fill={CHART_COLORS[1]} />
+    <Chart.BarSeries dataKey="marketing" stackId="a" fill={CHART_COLORS[2]} radius={[4, 4, 0, 0]} />
   </Chart.Bar>
 </Chart.Container>`,
         },
@@ -260,7 +240,7 @@ export function ChartPage() {
                 <Chart.XAxis type="number" />
                 <Chart.YAxis type="category" dataKey="month" width={36} />
                 <Chart.Tooltip />
-                <Bar
+                <Chart.BarSeries
                   dataKey="engineering"
                   fill={CHART_COLORS[0]}
                   radius={[0, 4, 4, 0]}
@@ -268,7 +248,7 @@ export function ChartPage() {
               </Chart.Bar>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Bar } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Bar data={data} layout="vertical">
@@ -276,68 +256,88 @@ export function ChartPage() {
     <Chart.XAxis type="number" />
     <Chart.YAxis type="category" dataKey="month" width={36} />
     <Chart.Tooltip />
-    <Bar dataKey="engineering" fill={CHART_COLORS[0]} radius={[0, 4, 4, 0]} />
+    <Chart.BarSeries dataKey="engineering" fill={CHART_COLORS[0]} radius={[0, 4, 4, 0]} />
   </Chart.Bar>
 </Chart.Container>`,
         },
         {
-          title: "Composed Chart",
+          title: "Two measures, two charts",
           description:
-            "Combines bars and a line in one chart — ideal for showing volume alongside a trend.",
+            "Sessions and bounce rate live on different scales. Plotting them against two y-axes would invent a correlation, since the alignment of the two scales is arbitrary — so they get a chart each, stacked on a shared x-axis.",
           centered: false,
           preview: (
-            <Chart.Container height={240} className="w-full">
-              <Chart.Bar data={weeklyVisitors}>
-                <Chart.Grid />
-                <Chart.XAxis dataKey="day" />
-                <Chart.YAxis yAxisId="left" />
-                <Chart.YAxis yAxisId="right" orientation="right" />
-                <Chart.Tooltip />
-                <Chart.Legend />
-                <Bar
-                  yAxisId="left"
-                  dataKey="sessions"
-                  fill={CHART_COLORS[0]}
-                  radius={[4, 4, 0, 0]}
-                  fillOpacity={0.8}
-                />
-                <Line
-                  yAxisId="right"
-                  dataKey="bounceRate"
-                  stroke={CHART_COLORS[3]}
-                  strokeWidth={2}
-                  dot={false}
-                  type="monotone"
-                />
-                <ReferenceLine
-                  yAxisId="right"
-                  y={45}
-                  stroke={CHART_COLORS[4]}
-                  strokeDasharray="4 4"
-                  label={{
-                    value: "Target",
-                    fill: CHART_COLORS[4],
-                    fontSize: 11,
-                  }}
-                />
-              </Chart.Bar>
-            </Chart.Container>
-          ),
-          code: `import { Chart, CHART_COLORS, Bar, Line, ReferenceLine } from "@almach/ui";
+            <div className="flex w-full flex-col gap-4">
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Sessions
+                </p>
+                <Chart.Container height={150} className="w-full">
+                  <Chart.Bar data={weeklyVisitors}>
+                    <Chart.Grid />
+                    <Chart.XAxis dataKey="day" />
+                    <Chart.YAxis />
+                    <Chart.Tooltip cursor="band" />
+                    <Chart.BarSeries
+                      dataKey="sessions"
+                      fill={CHART_COLORS[0]}
+                    />
+                  </Chart.Bar>
+                </Chart.Container>
+              </div>
 
-<Chart.Container height={240}>
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Bounce rate (%)
+                </p>
+                <Chart.Container height={130} className="w-full">
+                  <Chart.Line data={weeklyVisitors}>
+                    <Chart.Grid />
+                    <Chart.XAxis dataKey="day" />
+                    <Chart.YAxis domain={[0, 100]} />
+                    <Chart.Tooltip />
+                    <ReferenceLine
+                      y={45}
+                      stroke={CHART_COLORS[4]}
+                      strokeDasharray="4 4"
+                      label={{
+                        value: "Target",
+                        fill: CHART_COLORS[4],
+                        fontSize: 11,
+                      }}
+                    />
+                    <Chart.LineSeries
+                      dataKey="bounceRate"
+                      stroke={CHART_COLORS[3]}
+                      type="monotone"
+                    />
+                  </Chart.Line>
+                </Chart.Container>
+              </div>
+            </div>
+          ),
+          code: `import { Chart, CHART_COLORS, ReferenceLine } from "@almach/ui";
+
+// Two scales never share one plot. Each measure gets its own chart, and the
+// shared x-axis still lets the eye read them together.
+<Chart.Container height={150}>
   <Chart.Bar data={data}>
     <Chart.Grid />
     <Chart.XAxis dataKey="day" />
-    <Chart.YAxis yAxisId="left" />
-    <Chart.YAxis yAxisId="right" orientation="right" />
-    <Chart.Tooltip />
-    <Chart.Legend />
-    <Bar yAxisId="left" dataKey="sessions" fill={CHART_COLORS[0]} radius={[4, 4, 0, 0]} fillOpacity={0.8} />
-    <Line yAxisId="right" dataKey="bounceRate" stroke={CHART_COLORS[3]} strokeWidth={2} dot={false} />
-    <ReferenceLine yAxisId="right" y={45} stroke={CHART_COLORS[4]} strokeDasharray="4 4"
-      label={{ value: "Target", fill: CHART_COLORS[4], fontSize: 11 }} />
+    <Chart.YAxis />
+    <Chart.Tooltip cursor="band" />
+    <Chart.BarSeries dataKey="sessions" fill={CHART_COLORS[0]} />
   </Chart.Bar>
+</Chart.Container>
+
+<Chart.Container height={130}>
+  <Chart.Line data={data}>
+    <Chart.Grid />
+    <Chart.XAxis dataKey="day" />
+    <Chart.YAxis domain={[0, 100]} />
+    <Chart.Tooltip />
+    <ReferenceLine y={45} stroke={CHART_COLORS[4]} strokeDasharray="4 4" />
+    <Chart.LineSeries dataKey="bounceRate" stroke={CHART_COLORS[3]} type="monotone" />
+  </Chart.Line>
 </Chart.Container>`,
         },
         {
@@ -365,16 +365,15 @@ export function ChartPage() {
                 <Chart.XAxis dataKey="month" />
                 <Chart.YAxis />
                 <Chart.Tooltip />
-                <Area
+                <Chart.AreaSeries
                   dataKey="revenue"
                   stroke={CHART_COLORS[0]}
                   fill="url(#fillRevenue)"
-                  strokeWidth={2}
                 />
               </Chart.Area>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Area } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Area data={data}>
@@ -388,7 +387,7 @@ export function ChartPage() {
     <Chart.XAxis dataKey="month" />
     <Chart.YAxis />
     <Chart.Tooltip />
-    <Area dataKey="revenue" stroke={CHART_COLORS[0]} fill="url(#fillRevenue)" strokeWidth={2} />
+    <Chart.AreaSeries dataKey="revenue" stroke={CHART_COLORS[0]} fill="url(#fillRevenue)" />
   </Chart.Area>
 </Chart.Container>`,
         },
@@ -431,22 +430,20 @@ export function ChartPage() {
                 <Chart.YAxis />
                 <Chart.Tooltip />
                 <Chart.Legend />
-                <Area
+                <Chart.AreaSeries
                   dataKey="revenue"
                   stroke={CHART_COLORS[0]}
                   fill="url(#fillRev2)"
-                  strokeWidth={2}
                 />
-                <Area
+                <Chart.AreaSeries
                   dataKey="expenses"
                   stroke={CHART_COLORS[3]}
                   fill="url(#fillExp2)"
-                  strokeWidth={2}
                 />
               </Chart.Area>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Area } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Area data={data}>
@@ -465,8 +462,8 @@ export function ChartPage() {
     <Chart.YAxis />
     <Chart.Tooltip />
     <Chart.Legend />
-    <Area dataKey="revenue" stroke={CHART_COLORS[0]} fill="url(#fillRevenue)" strokeWidth={2} />
-    <Area dataKey="expenses" stroke={CHART_COLORS[3]} fill="url(#fillExpenses)" strokeWidth={2} />
+    <Chart.AreaSeries dataKey="revenue" stroke={CHART_COLORS[0]} fill="url(#fillRevenue)" />
+    <Chart.AreaSeries dataKey="expenses" stroke={CHART_COLORS[3]} fill="url(#fillExpenses)" />
   </Chart.Area>
 </Chart.Container>`,
         },
@@ -476,7 +473,7 @@ export function ChartPage() {
           preview: (
             <Chart.Container height={240} className="w-full">
               <Chart.Pie>
-                <Pie
+                <Chart.PieSeries
                   data={categories}
                   dataKey="value"
                   nameKey="name"
@@ -489,28 +486,25 @@ export function ChartPage() {
                   labelLine={false}
                 >
                   {categories.map((_, i) => (
-                    <Cell
-                      key={i}
-                      fill={CHART_COLORS[i % CHART_COLORS.length]}
-                    />
+                    <Cell key={i} fill={CHART_COLORS[i]} />
                   ))}
-                </Pie>
+                </Chart.PieSeries>
                 <Chart.Tooltip />
               </Chart.Pie>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Pie, Cell } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS, Cell } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Pie>
-    <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90}
+    <Chart.PieSeries data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90}
       label={({ name, percent }) => \`\${name} \${(percent * 100).toFixed(0)}%\`}
       labelLine={false}
     >
       {data.map((_, i) => (
-        <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+        <Cell key={i} fill={CHART_COLORS[i]} />
       ))}
-    </Pie>
+    </Chart.PieSeries>
     <Chart.Tooltip />
   </Chart.Pie>
 </Chart.Container>`,
@@ -521,7 +515,7 @@ export function ChartPage() {
           preview: (
             <Chart.Container height={240} className="w-full">
               <Chart.Pie>
-                <Pie
+                <Chart.PieSeries
                   data={categories}
                   dataKey="value"
                   nameKey="name"
@@ -531,28 +525,25 @@ export function ChartPage() {
                   outerRadius={90}
                 >
                   {categories.map((_, i) => (
-                    <Cell
-                      key={i}
-                      fill={CHART_COLORS[i % CHART_COLORS.length]}
-                    />
+                    <Cell key={i} fill={CHART_COLORS[i]} />
                   ))}
-                </Pie>
+                </Chart.PieSeries>
                 <Chart.Tooltip />
                 <Chart.Legend />
               </Chart.Pie>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Pie, Cell } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS, Cell } from "@almach/ui";
 
 <Chart.Container height={240}>
   <Chart.Pie>
-    <Pie data={data} dataKey="value" nameKey="name"
+    <Chart.PieSeries data={data} dataKey="value" nameKey="name"
       cx="50%" cy="50%" innerRadius={55} outerRadius={90}
     >
       {data.map((_, i) => (
-        <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+        <Cell key={i} fill={CHART_COLORS[i]} />
       ))}
-    </Pie>
+    </Chart.PieSeries>
     <Chart.Tooltip />
     <Chart.Legend />
   </Chart.Pie>
@@ -573,13 +564,13 @@ export function ChartPage() {
                   tick={false}
                   axisLine={false}
                 />
-                <Radar
+                <Chart.RadarSeries
                   dataKey="A"
                   stroke={CHART_COLORS[0]}
                   fill={CHART_COLORS[0]}
                   fillOpacity={0.25}
                 />
-                <Radar
+                <Chart.RadarSeries
                   dataKey="B"
                   stroke={CHART_COLORS[1]}
                   fill={CHART_COLORS[1]}
@@ -589,15 +580,15 @@ export function ChartPage() {
               </Chart.Radar>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Radar, PolarRadiusAxis } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS, PolarRadiusAxis } from "@almach/ui";
 
 <Chart.Container height={260}>
   <Chart.Radar data={data}>
     <Chart.PolarGrid />
     <Chart.PolarAxis dataKey="subject" />
     <PolarRadiusAxis angle={90} domain={[0, 100]} tick={false} axisLine={false} />
-    <Radar dataKey="A" stroke={CHART_COLORS[0]} fill={CHART_COLORS[0]} fillOpacity={0.25} />
-    <Radar dataKey="B" stroke={CHART_COLORS[1]} fill={CHART_COLORS[1]} fillOpacity={0.25} />
+    <Chart.RadarSeries dataKey="A" stroke={CHART_COLORS[0]} fill={CHART_COLORS[0]} fillOpacity={0.25} />
+    <Chart.RadarSeries dataKey="B" stroke={CHART_COLORS[1]} fill={CHART_COLORS[1]} fillOpacity={0.25} />
     <Chart.Legend />
   </Chart.Radar>
 </Chart.Container>`,
@@ -613,7 +604,7 @@ export function ChartPage() {
                 <Chart.XAxis dataKey="x" type="number" name="Effort" unit="h" />
                 <Chart.YAxis dataKey="y" type="number" name="Impact" unit="%" />
                 <Chart.Tooltip cursor={{ strokeDasharray: "3 3" }} />
-                <Scatter
+                <Chart.ScatterSeries
                   data={scatterData}
                   fill={CHART_COLORS[0]}
                   fillOpacity={0.8}
@@ -621,7 +612,7 @@ export function ChartPage() {
               </Chart.Scatter>
             </Chart.Container>
           ),
-          code: `import { Chart, CHART_COLORS, Scatter } from "@almach/ui";
+          code: `import { Chart, CHART_COLORS } from "@almach/ui";
 
 const data = [
   { x: 10, y: 30 }, { x: 30, y: 20 }, { x: 45, y: 70 },
@@ -634,7 +625,7 @@ const data = [
     <Chart.XAxis dataKey="x" type="number" name="Effort" unit="h" />
     <Chart.YAxis dataKey="y" type="number" name="Impact" unit="%" />
     <Chart.Tooltip cursor={{ strokeDasharray: "3 3" }} />
-    <Scatter data={data} fill={CHART_COLORS[0]} fillOpacity={0.8} />
+    <Chart.ScatterSeries data={data} fill={CHART_COLORS[0]} fillOpacity={0.8} />
   </Chart.Scatter>
 </Chart.Container>`,
         },
