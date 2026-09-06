@@ -50,6 +50,10 @@ export type { CalendarProps, DateRange } from "./components/calendar.js";
 export { Calendar } from "./components/calendar.js";
 export { Card, Group } from "./components/card.js";
 export { Carousel } from "./components/carousel.js";
+export type {
+  ChartBarSeriesProps,
+  ChartTooltipProps,
+} from "./components/chart.js";
 export {
   Area,
   AreaChart,
@@ -59,11 +63,17 @@ export {
   Cell,
   CHART_COLORS,
   Chart,
+  ChartAreaSeries,
+  ChartBarSeries,
   ChartContainer,
   ChartGrid,
   ChartLegend,
+  ChartLineSeries,
+  ChartPieSeries,
   ChartPolarAxis,
   ChartPolarGrid,
+  ChartRadarSeries,
+  ChartScatterSeries,
   ChartTooltip,
   ChartTooltipContent,
   ChartXAxis,

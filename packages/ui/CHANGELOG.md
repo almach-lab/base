@@ -272,7 +272,6 @@
   - **Shared tokens:** several components moved to `_styles.ts` shared class tokens (visual/API surface unchanged for most).
 
   ### Fixes & improvements
-
   - Swipe button pointer capture, geometry sync, and spring-back reset.
   - Drawer panel horizontal padding; currency input popover interaction.
   - Select and component standardization across the library.
