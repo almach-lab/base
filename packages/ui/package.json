@@ -27,6 +27,10 @@
       "types": "./dist/index.d.ts"
     },
     "./styles": "./src/styles/globals.css",
+    "./accordion": {
+      "import": "./dist/components/accordion.js",
+      "types": "./dist/components/accordion.d.ts"
+    },
     "./alert": {
       "import": "./dist/components/alert.js",
       "types": "./dist/components/alert.d.ts"
@@ -38,6 +42,10 @@
     "./badge": {
       "import": "./dist/components/badge.js",
       "types": "./dist/components/badge.d.ts"
+    },
+    "./breadcrumb": {
+      "import": "./dist/components/breadcrumb.js",
+      "types": "./dist/components/breadcrumb.d.ts"
     },
     "./button": {
       "import": "./dist/components/button.js",
@@ -67,6 +75,10 @@
       "import": "./dist/components/collapsible.js",
       "types": "./dist/components/collapsible.d.ts"
     },
+    "./color-picker": {
+      "import": "./dist/components/color-picker.js",
+      "types": "./dist/components/color-picker.d.ts"
+    },
     "./command": {
       "import": "./dist/components/command.js",
       "types": "./dist/components/command.d.ts"
@@ -87,17 +99,65 @@
       "import": "./dist/components/dropdown-menu.js",
       "types": "./dist/components/dropdown-menu.d.ts"
     },
+    "./empty": {
+      "import": "./dist/components/empty.js",
+      "types": "./dist/components/empty.d.ts"
+    },
+    "./file-upload": {
+      "import": "./dist/components/file-upload.js",
+      "types": "./dist/components/file-upload.d.ts"
+    },
+    "./hover-card": {
+      "import": "./dist/components/hover-card.js",
+      "types": "./dist/components/hover-card.d.ts"
+    },
     "./input": {
       "import": "./dist/components/input.js",
       "types": "./dist/components/input.d.ts"
+    },
+    "./input-color": {
+      "import": "./dist/components/input-color.js",
+      "types": "./dist/components/input-color.d.ts"
+    },
+    "./input-date-range": {
+      "import": "./dist/components/input-date-range.js",
+      "types": "./dist/components/input-date-range.d.ts"
+    },
+    "./input-otp": {
+      "import": "./dist/components/input-otp.js",
+      "types": "./dist/components/input-otp.d.ts"
     },
     "./label": {
       "import": "./dist/components/label.js",
       "types": "./dist/components/label.d.ts"
     },
+    "./menubar": {
+      "import": "./dist/components/menubar.js",
+      "types": "./dist/components/menubar.d.ts"
+    },
+    "./meter": {
+      "import": "./dist/components/meter.js",
+      "types": "./dist/components/meter.d.ts"
+    },
     "./modal": {
       "import": "./dist/components/modal.js",
       "types": "./dist/components/modal.d.ts"
+    },
+    "./month-picker": {
+      "import": "./dist/components/month-picker.js",
+      "types": "./dist/components/month-picker.d.ts"
+    },
+    "./navigation-menu": {
+      "import": "./dist/components/navigation-menu.js",
+      "types": "./dist/components/navigation-menu.d.ts"
+    },
+    "./number-field": {
+      "import": "./dist/components/number-field.js",
+      "types": "./dist/components/number-field.d.ts"
+    },
+    "./pagination": {
+      "import": "./dist/components/pagination.js",
+      "types": "./dist/components/pagination.d.ts"
     },
     "./popover": {
       "import": "./dist/components/popover.js",
@@ -111,6 +171,10 @@
       "import": "./dist/components/radio.js",
       "types": "./dist/components/radio.d.ts"
     },
+    "./resizable": {
+      "import": "./dist/components/resizable.js",
+      "types": "./dist/components/resizable.d.ts"
+    },
     "./scroll-area": {
       "import": "./dist/components/scroll-area.js",
       "types": "./dist/components/scroll-area.d.ts"
@@ -123,13 +187,29 @@
       "import": "./dist/components/separator.js",
       "types": "./dist/components/separator.d.ts"
     },
+    "./sidebar": {
+      "import": "./dist/components/sidebar.js",
+      "types": "./dist/components/sidebar.d.ts"
+    },
     "./skeleton": {
       "import": "./dist/components/skeleton.js",
       "types": "./dist/components/skeleton.d.ts"
     },
+    "./slider": {
+      "import": "./dist/components/slider.js",
+      "types": "./dist/components/slider.d.ts"
+    },
+    "./stepper": {
+      "import": "./dist/components/stepper.js",
+      "types": "./dist/components/stepper.d.ts"
+    },
     "./swipe-actions": {
       "import": "./dist/components/swipe-actions.js",
       "types": "./dist/components/swipe-actions.d.ts"
+    },
+    "./swipe-button": {
+      "import": "./dist/components/swipe-button.js",
+      "types": "./dist/components/swipe-button.d.ts"
     },
     "./switch": {
       "import": "./dist/components/switch.js",
@@ -151,6 +231,10 @@
       "import": "./dist/components/textarea.js",
       "types": "./dist/components/textarea.d.ts"
     },
+    "./time-field": {
+      "import": "./dist/components/time-field.js",
+      "types": "./dist/components/time-field.d.ts"
+    },
     "./toast": {
       "import": "./dist/components/toast.js",
       "types": "./dist/components/toast.d.ts"
@@ -159,9 +243,21 @@
       "import": "./dist/components/toaster.js",
       "types": "./dist/components/toaster.d.ts"
     },
+    "./toggle": {
+      "import": "./dist/components/toggle.js",
+      "types": "./dist/components/toggle.d.ts"
+    },
+    "./toolbar": {
+      "import": "./dist/components/toolbar.js",
+      "types": "./dist/components/toolbar.d.ts"
+    },
     "./tooltip": {
       "import": "./dist/components/tooltip.js",
       "types": "./dist/components/tooltip.d.ts"
+    },
+    "./tree": {
+      "import": "./dist/components/tree.js",
+      "types": "./dist/components/tree.d.ts"
     }
   },
   "publishConfig": {
@@ -178,14 +274,8 @@
     "@tanstack/react-table": "^8.21.3",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
-    "date-fns": "^4.1.0",
-    "embla-carousel-autoplay": "^8.6.0",
-    "embla-carousel-react": "^8.6.0",
-    "framer-motion": "^12.0.0",
     "lucide-react": "^0.479.0",
-    "react-aria": "^3.38.0",
     "react-aria-components": "^1.6.0",
-    "react-stately": "^3.36.0",
     "recharts": "^3.8.0",
     "sonner": "^2.0.7",
     "tailwindcss": "^4.0.6",
