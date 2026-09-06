@@ -16,7 +16,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { MOTION_EASE_STANDARD } from "./_motion.js";
+import { MOTION_EASE_STANDARD, MOTION_INTERACTIVE } from "./_motion.js";
 import { FOCUS_RING, swipeTrackVariants } from "./_styles.js";
 
 const EASE = MOTION_EASE_STANDARD;
@@ -839,7 +839,7 @@ const Track = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
         className={cn(
           "absolute inset-0 z-10 flex items-center justify-center pointer-events-none rounded-full overflow-hidden",
           "px-12 text-center text-[13px] font-medium text-muted-foreground",
-          "transition-opacity duration-200",
+          MOTION_INTERACTIVE,
           succeeded ? "opacity-0" : "opacity-100",
           className,
         )}

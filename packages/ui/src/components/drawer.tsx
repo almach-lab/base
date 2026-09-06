@@ -6,9 +6,12 @@ import { createPortal } from "react-dom";
 import {
   MOTION_DURATION_BASE,
   MOTION_DURATION_SLOW,
+  MOTION_EASE_STANDARD,
   MOTION_OVERLAY,
+  MOTION_VAR_EASE,
   MOTION_VAR_INTERACTIVE_DURATION,
   MOTION_VAR_OVERLAY_DURATION,
+  motionVar,
   resolveMotionDurationMs,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
@@ -183,8 +186,7 @@ function useDrawerDrag({
       if (shouldDismiss) {
         setOpen(false);
       } else {
-        popup.style.transition =
-          "transform var(--theme-motion-interactive-duration, 200ms) var(--theme-motion-ease-standard, cubic-bezier(0.22,1,0.36,1))";
+        popup.style.transition = `transform ${motionVar(MOTION_VAR_INTERACTIVE_DURATION, "200ms")} ${motionVar(MOTION_VAR_EASE, MOTION_EASE_STANDARD)}`;
         popup.style.transform = "translate3d(0, 0, 0)";
         const cleanup = () => {
           popup.style.transition = "";

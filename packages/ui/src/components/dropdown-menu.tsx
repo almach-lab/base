@@ -20,11 +20,7 @@ import {
   type SeparatorProps,
   type SubmenuTriggerProps,
 } from "react-aria-components";
-import {
-  MOTION_OVERLAY,
-  MOTION_OVERLAY_ENTER,
-  MOTION_OVERLAY_EXIT,
-} from "./_motion.js";
+import { MOTION_OVERLAY_RAC } from "./_motion.js";
 import {
   MENU_ITEM,
   MENU_LABEL,
@@ -60,11 +56,14 @@ function toPlacement(
   return `${side} ${cross}` as DropdownPlacement;
 }
 
-interface DropdownRootProps extends Omit<AriaMenuTriggerProps, "children"> {
+export interface DropdownRootProps extends Omit<
+  AriaMenuTriggerProps,
+  "children"
+> {
   children?: React.ReactNode;
 }
 
-interface DropdownTriggerProps {
+export interface DropdownTriggerProps {
   asChild?: boolean;
   children?: React.ReactNode;
 }
@@ -74,7 +73,7 @@ function DropdownMenuTrigger(_props: DropdownTriggerProps) {
 }
 DropdownMenuTrigger.displayName = "DropdownMenu.Trigger";
 
-interface DropdownContentProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface DropdownContentProps extends React.HTMLAttributes<HTMLDivElement> {
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
   sideOffset?: number;
@@ -82,7 +81,7 @@ interface DropdownContentProps extends React.HTMLAttributes<HTMLDivElement> {
   menuProps?: Omit<AriaMenuProps<object>, "children" | "className">;
 }
 
-function DropdownMenuContent(_props: DropdownContentProps) {
+export function DropdownMenuContent(_props: DropdownContentProps) {
   return null;
 }
 DropdownMenuContent.displayName = "DropdownMenu.Content";
@@ -151,15 +150,7 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
         className={cn(
           "min-w-[12rem] overflow-hidden p-1",
           OVERLAY_SURFACE,
-          MOTION_OVERLAY,
-          MOTION_OVERLAY_ENTER.replaceAll(
-            "data-[state=open]:",
-            "data-[entering]:",
-          ),
-          MOTION_OVERLAY_EXIT.replaceAll(
-            "data-[state=closed]:",
-            "data-[exiting]:",
-          ),
+          MOTION_OVERLAY_RAC,
           className,
         )}
       >
@@ -177,7 +168,7 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
   );
 }
 
-interface DropdownMenuItemProps extends Omit<
+export interface DropdownMenuItemProps extends Omit<
   AriaMenuItemProps,
   "className" | "isDisabled"
 > {
@@ -295,7 +286,7 @@ DropdownMenuRadioItem.displayName = "DropdownMenu.RadioItem";
   }
 ).getCollectionNode;
 
-interface DropdownMenuLabelProps {
+export interface DropdownMenuLabelProps {
   className?: string;
   inset?: boolean;
   children?: React.ReactNode;
@@ -348,7 +339,7 @@ function DropdownMenuSeparator({ className, ...props }: SeparatorProps) {
   }
 ).getCollectionNode;
 
-interface DropdownMenuSectionProps<
+export interface DropdownMenuSectionProps<
   T extends object,
 > extends AriaMenuSectionProps<T> {
   title?: string;
@@ -423,15 +414,7 @@ function DropdownMenuSubTrigger(props: SubmenuTriggerProps) {
         className={cn(
           "min-w-[12rem] overflow-hidden p-1",
           OVERLAY_SURFACE,
-          MOTION_OVERLAY,
-          MOTION_OVERLAY_ENTER.replaceAll(
-            "data-[state=open]:",
-            "data-[entering]:",
-          ),
-          MOTION_OVERLAY_EXIT.replaceAll(
-            "data-[state=closed]:",
-            "data-[exiting]:",
-          ),
+          MOTION_OVERLAY_RAC,
           className,
         )}
       >

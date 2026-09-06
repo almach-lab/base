@@ -3,6 +3,7 @@
 import { cn } from "@almach/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
+import { MOTION_INTERACTIVE } from "./_motion.js";
 import { buttonVariants } from "./button.js";
 
 /* ── Context ──────────────────────────────────────────────────────────────── */
@@ -281,7 +282,7 @@ function CarouselDots({ className }: { className?: string }) {
           aria-label={`Go to slide ${i + 1}`}
           aria-current={i === index}
           className={cn(
-            "h-1.5 rounded-full transition-all duration-300",
+            cn("h-1.5 rounded-full transition-all", MOTION_INTERACTIVE),
             i === index
               ? "w-4 bg-foreground"
               : "w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/60",
