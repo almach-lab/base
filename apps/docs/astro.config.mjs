@@ -12,6 +12,23 @@ export default defineConfig({
   integrations: [react(), mdx()],
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      // `@almach/forms` and `@almach/query` are aliased to their TypeScript
+      // source below, so Vite treats them as app code rather than as
+      // pre-bundled dependencies. Their own dependencies are therefore only
+      // discovered when something imports them — and since /forms and /query
+      // are lazy routes, that happens mid-session, on first navigation.
+      // Vite then re-optimizes, invalidates the `?v=` hashes the browser is
+      // already holding, and the in-flight chunk requests fail with
+      // "504 Outdated Optimize Dep", taking the dynamic page import with them.
+      // Declaring them up front makes the dep graph deterministic at startup.
+      include: [
+        "@tanstack/react-form",
+        "@tanstack/react-query",
+        "@internationalized/date",
+        "zod",
+      ],
+    },
     resolve: {
       alias: {
         // More specific aliases must come BEFORE the general package alias
