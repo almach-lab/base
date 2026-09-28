@@ -386,8 +386,8 @@ const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
             "flow-root py-2 text-sm text-foreground",
             isMobile ? MODAL_SECTION_X.mobile : MODAL_SECTION_X.desktop,
             isMobile
-              ? "group-last/modal-body:pb-4"
-              : "group-first/modal-body:pt-6 group-last/modal-body:pb-6",
+              ? "group-last-of-type/modal-body:pb-4"
+              : "group-first-of-type/modal-body:pt-6 group-last-of-type/modal-body:pb-6",
             className,
           )}
         >

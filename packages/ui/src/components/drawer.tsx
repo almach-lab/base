@@ -4,12 +4,8 @@ import { cn } from "@almach/utils";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import {
-  MOTION_DURATION_BASE,
   MOTION_DURATION_SLOW,
-  MOTION_EASE_STANDARD,
   MOTION_OVERLAY,
-  MOTION_VAR_EASE,
-  MOTION_VAR_INTERACTIVE_DURATION,
   MOTION_VAR_OVERLAY_DURATION,
   motionVar,
   overlayTransitionStyle,
@@ -22,8 +18,30 @@ import { DIALOG_CHROME, OVERLAY_BACKDROP } from "./_styles.js";
 const DRAG_THRESHOLD_PX = 8;
 const DRAG_DISMISS_FRACTION = 0.3;
 const DRAG_VELOCITY_THRESHOLD = 0.5;
+/** A sheet travels much further than a dialog scales, so it gets its own, longer timing. */
+const DRAWER_MOTION_MS = 320;
+const MOTION_VAR_DRAWER_DURATION = "--theme-motion-drawer-duration";
+const MOTION_VAR_DRAWER_EASE = "--theme-motion-drawer-ease";
+/** The iOS sheet curve: quick to respond, long gentle settle — same as vaul. */
+const DRAWER_EASE = "cubic-bezier(0.32,0.72,0,1)";
+/** Extra time before unmounting so the last frames of the exit are never cut. */
+const UNMOUNT_BUFFER_MS = 60;
 const DRAWER_PANEL_MOTION =
-  "transition-[translate,scale,opacity,border-radius,box-shadow] [--tw-duration:var(--theme-motion-overlay-duration,0.22s)] [--tw-ease:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))] motion-reduce:transition-none";
+  "transition-[translate,scale,opacity,border-radius,box-shadow] [--tw-duration:var(--theme-motion-drawer-duration,0.32s)] [--tw-ease:var(--theme-motion-drawer-ease,cubic-bezier(0.32,0.72,0,1))] motion-reduce:transition-none";
+
+function drawerTransitionStyle(
+  property: string,
+  reducedMotion: boolean,
+): React.CSSProperties {
+  return {
+    ...overlayTransitionStyle(property, reducedMotion),
+    transitionDuration: motionVar(
+      MOTION_VAR_DRAWER_DURATION,
+      `${DRAWER_MOTION_MS}ms`,
+    ),
+    transitionTimingFunction: motionVar(MOTION_VAR_DRAWER_EASE, DRAWER_EASE),
+  };
+}
 
 type DrawerSide = "bottom" | "top" | "left" | "right";
 type DrawerBackdropVariant = "opaque" | "blur" | "transparent";
@@ -45,13 +63,11 @@ function useDrawerCtx() {
 function useDrawerDrag({
   side,
   open,
-  visible,
   isDismissable,
   setOpen,
 }: {
   side: DrawerSide;
   open: boolean;
-  visible: boolean;
   isDismissable: boolean;
   setOpen: (open: boolean) => void;
 }) {
@@ -93,12 +109,6 @@ function useDrawerDrag({
     popupRef.current.style.transform = "";
     popupRef.current.style.transition = "";
   }, [open]);
-
-  React.useEffect(() => {
-    if (visible || !popupRef.current) return;
-    popupRef.current.style.transform = "";
-    popupRef.current.style.transition = "";
-  }, [visible]);
 
   const onPointerDown = React.useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -186,9 +196,12 @@ function useDrawerDrag({
         Math.abs(velocityRef.current) > DRAG_VELOCITY_THRESHOLD;
 
       if (shouldDismiss) {
+        // Keep the dragged offset; re-enabling the class transitions lets the
+        // exit run from where the finger let go instead of snapping back.
+        popup.style.transition = "";
         setOpen(false);
       } else {
-        popup.style.transition = `transform ${motionVar(MOTION_VAR_INTERACTIVE_DURATION, "200ms")} ${motionVar(MOTION_VAR_EASE, MOTION_EASE_STANDARD)}`;
+        popup.style.transition = `transform ${motionVar(MOTION_VAR_DRAWER_DURATION, `${DRAWER_MOTION_MS}ms`)} ${motionVar(MOTION_VAR_DRAWER_EASE, DRAWER_EASE)}`;
         popup.style.transform = "translate3d(0, 0, 0)";
         const cleanup = () => {
           popup.style.transition = "";
@@ -353,10 +366,14 @@ function DrawerPortal({ children }: DrawerPortalProps) {
       setMounted(true);
       return;
     }
-    const ms = resolveMotionDurationMs(
-      MOTION_VAR_OVERLAY_DURATION,
-      MOTION_DURATION_SLOW,
-    );
+    const ms =
+      Math.max(
+        resolveMotionDurationMs(
+          MOTION_VAR_OVERLAY_DURATION,
+          MOTION_DURATION_SLOW,
+        ),
+        resolveMotionDurationMs(MOTION_VAR_DRAWER_DURATION, DRAWER_MOTION_MS),
+      ) + UNMOUNT_BUFFER_MS;
     const id = window.setTimeout(() => setMounted(false), ms);
     return () => window.clearTimeout(id);
   }, [open]);
@@ -391,6 +408,8 @@ function DrawerBackdrop({
         variant === "opaque" && "bg-black/45 backdrop-blur-none",
         variant === "transparent" && "bg-transparent backdrop-blur-none",
         MOTION_OVERLAY,
+        // Fade the backdrop on the sheet's clock so both finish together.
+        "[--tw-duration:var(--theme-motion-drawer-duration,0.32s)]",
         "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
         "supports-[-webkit-touch-callout:none]:absolute",
         className,
@@ -398,7 +417,7 @@ function DrawerBackdrop({
       {...props}
       style={{
         ...style,
-        ...overlayTransitionStyle("opacity", reducedMotion),
+        ...drawerTransitionStyle("opacity", reducedMotion),
       }}
     />
   );
@@ -494,7 +513,7 @@ const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
         {...props}
         style={{
           ...style,
-          ...overlayTransitionStyle(
+          ...drawerTransitionStyle(
             "translate, scale, opacity, border-radius, box-shadow",
             reducedMotion,
           ),
@@ -536,7 +555,6 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
     const { popupRef, dragHandlers } = useDrawerDrag({
       side,
       open,
-      visible: open,
       isDismissable,
       setOpen,
     });
@@ -551,10 +569,10 @@ const DrawerContent = React.forwardRef<HTMLDivElement, DrawerContentProps>(
         MOTION_DURATION_SLOW,
       );
       const panelMs = resolveMotionDurationMs(
-        MOTION_VAR_INTERACTIVE_DURATION,
-        MOTION_DURATION_BASE,
+        MOTION_VAR_DRAWER_DURATION,
+        DRAWER_MOTION_MS,
       );
-      const motionMs = Math.max(overlayMs, panelMs);
+      const motionMs = Math.max(overlayMs, panelMs) + UNMOUNT_BUFFER_MS;
       if (open) {
         setMounted(true);
         let raf2: number | null = null;

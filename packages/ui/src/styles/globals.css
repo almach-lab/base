@@ -105,6 +105,8 @@
   --theme-motion-interactive-duration: 0.16s;
   --theme-motion-overlay-duration: 0.22s;
   --theme-motion-ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
+  --theme-motion-drawer-duration: 0.32s;
+  --theme-motion-drawer-ease: cubic-bezier(0.32, 0.72, 0, 1);
   --theme-motion-shimmer-duration: 2s;
 
   /* Sidebar specific */
