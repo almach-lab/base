@@ -1,12 +1,17 @@
 "use client";
 
 import { cn } from "@almach/utils";
+import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { useIsMobile } from "../hooks/use-media-query.js";
+import { useAutoHeight } from "./_auto-height.js";
 import {
+  MOTION_DURATION_BASE,
+  MOTION_EASE_STANDARD,
+  MOTION_OVERLAY_DURATION_MS,
+  MOTION_VAR_INTERACTIVE_DURATION,
   MOTION_VAR_OVERLAY_DURATION,
   resolveMotionDurationMs,
-  MOTION_EASE_STANDARD,
 } from "./_motion.js";
 import { Button } from "./button.js";
 import { Dialog } from "./dialog.js";
@@ -25,14 +30,56 @@ interface ModalCtxValue {
   views: ViewsRegistry | undefined;
   view: string;
   setView: (v: string) => void;
+  titleId: string;
+  descriptionId: string;
+  hasTitle: boolean;
+  hasDescription: boolean;
+  registerTitle: () => () => void;
+  registerDescription: () => () => void;
 }
+
+const noopRegister = () => () => {};
 
 const ModalCtx = React.createContext<ModalCtxValue>({
   isMobile: false,
   views: undefined,
   view: "default",
   setView: () => {},
+  titleId: "",
+  descriptionId: "",
+  hasTitle: false,
+  hasDescription: false,
+  registerTitle: noopRegister,
+  registerDescription: noopRegister,
 });
+
+const ModalContentCtx = React.createContext<{ hideClose: boolean }>({
+  hideClose: false,
+});
+
+function useRegistration() {
+  const [count, setCount] = React.useState(0);
+  const register = React.useCallback(() => {
+    setCount((c) => c + 1);
+    return () => setCount((c) => c - 1);
+  }, []);
+  return [count > 0, register] as const;
+}
+
+const modalSizeVariants = cva("", {
+  variants: {
+    size: {
+      sm: "max-w-sm",
+      default: "max-w-lg",
+      lg: "max-w-2xl",
+      xl: "max-w-3xl",
+      "2xl": "max-w-5xl",
+    },
+  },
+  defaultVariants: { size: "default" },
+});
+
+const MODAL_SECTION_X = { desktop: "px-6", mobile: "px-5" } as const;
 
 function useModalCtx() {
   return React.useContext(ModalCtx);
@@ -72,6 +119,10 @@ function ModalRoot({
   const Root = isMobile ? Drawer : Dialog;
 
   const [view, setView] = React.useState(defaultView);
+  const titleId = React.useId();
+  const descriptionId = React.useId();
+  const [hasTitle, registerTitle] = useRegistration();
+  const [hasDescription, registerDescription] = useRegistration();
   const views =
     customViews && Object.keys(customViews).length > 0
       ? customViews
@@ -82,10 +133,44 @@ function ModalRoot({
     onViewChange?.(v);
   };
 
+  const resetTimerRef = React.useRef<number | null>(null);
+  const defaultViewRef = React.useRef(defaultView);
+  defaultViewRef.current = defaultView;
+  const onViewChangeRef = React.useRef(onViewChange);
+  onViewChangeRef.current = onViewChange;
+
+  React.useEffect(
+    () => () => {
+      if (resetTimerRef.current !== null)
+        window.clearTimeout(resetTimerRef.current);
+    },
+    [],
+  );
+
   const handleOpenChange = (nextOpen: boolean) => {
     onOpenChange?.(nextOpen);
+    if (resetTimerRef.current !== null) {
+      window.clearTimeout(resetTimerRef.current);
+      resetTimerRef.current = null;
+    }
     if (!nextOpen) {
-      handleViewChange(defaultView);
+      // Swap back to the default view only after the panel has left, so the
+      // exit zoom does not resize underneath itself.
+      const ms = Math.max(
+        resolveMotionDurationMs(
+          MOTION_VAR_OVERLAY_DURATION,
+          MOTION_OVERLAY_DURATION_MS,
+        ),
+        resolveMotionDurationMs(
+          MOTION_VAR_INTERACTIVE_DURATION,
+          MOTION_DURATION_BASE,
+        ),
+      );
+      resetTimerRef.current = window.setTimeout(() => {
+        setView(defaultViewRef.current);
+        onViewChangeRef.current?.(defaultViewRef.current);
+        resetTimerRef.current = null;
+      }, ms + 40);
     }
   };
 
@@ -120,7 +205,18 @@ function ModalRoot({
 
   return (
     <ModalCtx.Provider
-      value={{ isMobile, views, view, setView: handleViewChange }}
+      value={{
+        isMobile,
+        views,
+        view,
+        setView: handleViewChange,
+        titleId,
+        descriptionId,
+        hasTitle,
+        hasDescription,
+        registerTitle,
+        registerDescription,
+      }}
     >
       <Root {...rootProps}>{inner}</Root>
     </ModalCtx.Provider>
@@ -139,23 +235,47 @@ function ModalTrigger({ asChild, children }: ModalTriggerProps) {
   );
 }
 
-interface ModalContentProps {
+interface ModalContentProps extends VariantProps<typeof modalSizeVariants> {
   children?: React.ReactNode;
   className?: string;
   hideClose?: boolean;
 }
 const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
-  ({ children, className, hideClose }, ref) => {
-    const { isMobile } = useModalCtx();
+  ({ children, className, hideClose = false, size }, ref) => {
+    const { isMobile, titleId, descriptionId, hasTitle, hasDescription } =
+      useModalCtx();
+    const labelling = {
+      ...(hasTitle && { "aria-labelledby": titleId }),
+      ...(hasDescription && { "aria-describedby": descriptionId }),
+    };
+    const content = (
+      <ModalContentCtx.Provider value={{ hideClose }}>
+        {children}
+      </ModalContentCtx.Provider>
+    );
     if (isMobile)
       return (
-        <Drawer.Content ref={ref} className={className}>
-          {children}
+        <Drawer.Content
+          ref={ref}
+          className={cn("px-0", className)}
+          {...labelling}
+        >
+          {content}
         </Drawer.Content>
       );
     return (
-      <Dialog.Content ref={ref} className={className} hideClose={hideClose}>
-        {children}
+      <Dialog.Content
+        ref={ref}
+        hideClose={hideClose}
+        className={cn(
+          "flex flex-col gap-0 overflow-hidden border-0 p-0",
+          "max-h-[min(88svh,56rem)]",
+          modalSizeVariants({ size }),
+          className,
+        )}
+        {...labelling}
+      >
+        {content}
       </Dialog.Content>
     );
   },
@@ -167,8 +287,25 @@ function ModalHeader({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { isMobile } = useModalCtx();
-  if (isMobile) return <Drawer.Header className={className} {...props} />;
-  return <Dialog.Header className={className} {...props} />;
+  const { hideClose } = React.useContext(ModalContentCtx);
+  if (isMobile)
+    return (
+      <Drawer.Header
+        className={cn("shrink-0", MODAL_SECTION_X.mobile, className)}
+        {...props}
+      />
+    );
+  return (
+    <Dialog.Header
+      className={cn(
+        "mb-0 shrink-0 gap-1.5 space-y-0 pt-6 pb-3",
+        MODAL_SECTION_X.desktop,
+        !hideClose && "pr-14",
+        className,
+      )}
+      {...props}
+    />
+  );
 }
 
 function ModalFooter({
@@ -176,38 +313,123 @@ function ModalFooter({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { isMobile } = useModalCtx();
-  if (isMobile) return <Drawer.Footer className={className} {...props} />;
-  return <Dialog.Footer className={className} {...props} />;
+  if (isMobile)
+    return (
+      <Drawer.Footer
+        className={cn(
+          "shrink-0 pb-[max(1rem,env(safe-area-inset-bottom))]",
+          MODAL_SECTION_X.mobile,
+          className,
+        )}
+        {...props}
+      />
+    );
+  return (
+    <Dialog.Footer
+      className={cn(
+        "mt-0 shrink-0 pt-4 pb-6",
+        MODAL_SECTION_X.desktop,
+        className,
+      )}
+      {...props}
+    />
+  );
 }
 
-function ModalBody({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const { isMobile } = useModalCtx();
-  if (isMobile) return <Drawer.Body className={className} {...props} />;
-  return <div className={cn("py-2", className)} {...props} />;
+interface ModalBodyProps extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * Animate height changes of the body content. Defaults to true.
+   * `className` styles the inner content box; every other prop and `ref`
+   * land on the outer scroll container.
+   */
+  animateHeight?: boolean;
 }
+
+const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
+  (
+    {
+      className,
+      children,
+      animateHeight = true,
+      style,
+      onTransitionEnd,
+      onTransitionCancel,
+      ...props
+    },
+    ref,
+  ) => {
+    const { isMobile } = useModalCtx();
+    const autoHeight = useAutoHeight<HTMLDivElement>(animateHeight);
+    return (
+      <div
+        ref={ref}
+        data-slot={isMobile ? "drawer-body" : "modal-body"}
+        {...props}
+        onTransitionEnd={(event) => {
+          autoHeight.onTransitionEnd(event);
+          onTransitionEnd?.(event);
+        }}
+        onTransitionCancel={(event) => {
+          autoHeight.onTransitionCancel(event);
+          onTransitionCancel?.(event);
+        }}
+        style={{ ...autoHeight.style, ...style }}
+        className={cn(
+          "group/modal-body min-h-0 flex-initial overflow-x-hidden overscroll-contain",
+          autoHeight.animating ? "overflow-y-hidden" : "overflow-y-auto",
+          isMobile && "[touch-action:pan-y] [-webkit-overflow-scrolling:touch]",
+        )}
+      >
+        <div
+          ref={autoHeight.innerRef}
+          className={cn(
+            "flow-root py-2 text-sm text-foreground",
+            isMobile ? MODAL_SECTION_X.mobile : MODAL_SECTION_X.desktop,
+            isMobile
+              ? "group-last/modal-body:pb-4"
+              : "group-first/modal-body:pt-6 group-last/modal-body:pb-6",
+            className,
+          )}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  },
+);
+ModalBody.displayName = "Modal.Body";
 
 const ModalTitle = React.forwardRef<
   HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => {
-  const { isMobile } = useModalCtx();
-  if (isMobile)
-    return <Drawer.Title ref={ref} className={className} {...props} />;
-  return <Dialog.Title ref={ref} className={className} {...props} />;
+>(({ className, id, ...props }, ref) => {
+  const { isMobile, titleId, registerTitle } = useModalCtx();
+  React.useEffect(() => registerTitle(), [registerTitle]);
+  const titleProps = {
+    ...props,
+    ref,
+    id: id ?? titleId,
+    className: cn("leading-tight", className),
+  };
+  if (isMobile) return <Drawer.Title {...titleProps} />;
+  return <Dialog.Title {...titleProps} />;
 });
 ModalTitle.displayName = "Modal.Title";
 
 const ModalDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => {
-  const { isMobile } = useModalCtx();
-  if (isMobile)
-    return <Drawer.Description ref={ref} className={className} {...props} />;
-  return <Dialog.Description ref={ref} className={className} {...props} />;
+>(({ className, id, ...props }, ref) => {
+  const { isMobile, descriptionId, registerDescription } = useModalCtx();
+  React.useEffect(() => registerDescription(), [registerDescription]);
+  const descriptionProps = {
+    ...props,
+    ref,
+    id: id ?? descriptionId,
+    ...(className !== undefined && { className }),
+  };
+  if (isMobile) return <Drawer.Description {...descriptionProps} />;
+  return <Dialog.Description {...descriptionProps} />;
 });
 ModalDescription.displayName = "Modal.Description";
 
@@ -252,39 +474,15 @@ function ModalAnimatedViewContainer({
   children: React.ReactNode;
   className?: string;
 }) {
-  const transitionMs = resolveMotionDurationMs(
-    MOTION_VAR_OVERLAY_DURATION,
-    MODAL_VIEW_TRANSITION_MS,
-  );
-  const contentRef = React.useRef<HTMLDivElement>(null);
-  const [contentHeight, setContentHeight] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    const node = contentRef.current;
-    if (!node) return;
-
-    const updateHeight = () => {
-      const next = node.offsetHeight;
-      setContentHeight((prev) => (prev === next ? prev : next));
-    };
-
-    updateHeight();
-    const observer = new ResizeObserver(updateHeight);
-    observer.observe(node);
-
-    return () => observer.disconnect();
-  }, []);
-
+  const autoHeight = useAutoHeight<HTMLDivElement>();
   return (
     <div
-      className="overflow-hidden transition-[height] motion-reduce:transition-none"
-      style={{
-        transitionDuration: `var(--theme-motion-overlay-duration, ${transitionMs}ms)`,
-        transitionTimingFunction: `var(--theme-motion-ease-standard, ${MODAL_VIEW_TRANSITION_EASE})`,
-        ...(contentHeight === null ? {} : { height: `${contentHeight}px` }),
-      }}
+      className="overflow-hidden"
+      style={autoHeight.style}
+      onTransitionEnd={autoHeight.onTransitionEnd}
+      onTransitionCancel={autoHeight.onTransitionCancel}
     >
-      <div ref={contentRef} className={cn("flow-root", className)}>
+      <div ref={autoHeight.innerRef} className={cn("flow-root", className)}>
         {children}
       </div>
     </div>
@@ -483,5 +681,5 @@ const Modal = Object.assign(ModalRoot, {
   ActionButton: ModalActionButton,
 });
 
-export type { ViewComponent, ViewsRegistry };
-export { Modal, useModal };
+export type { ModalBodyProps, ModalContentProps, ViewComponent, ViewsRegistry };
+export { Modal, modalSizeVariants, useModal };

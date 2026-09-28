@@ -21,7 +21,7 @@ const DRAG_THRESHOLD_PX = 8;
 const DRAG_DISMISS_FRACTION = 0.3;
 const DRAG_VELOCITY_THRESHOLD = 0.5;
 const DRAWER_PANEL_MOTION =
-  "transition-[transform,opacity,border-radius,box-shadow] [--tw-duration:var(--theme-motion-interactive-duration,0.22s)] [--tw-ease:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))] motion-reduce:transition-none";
+  "transition-[translate,scale,opacity,border-radius,box-shadow] [--tw-duration:var(--theme-motion-overlay-duration,0.22s)] [--tw-ease:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))] motion-reduce:transition-none";
 
 type DrawerSide = "bottom" | "top" | "left" | "right";
 type DrawerBackdropVariant = "opaque" | "blur" | "transparent";

@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import {
+  MOTION_DIALOG_PANEL,
   MOTION_EASE_STANDARD,
   MOTION_INTERACTIVE,
   MOTION_OVERLAY,
@@ -343,12 +344,9 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
           className={cn(
             DIALOG_SURFACE,
             "rounded-none md:rounded-lg",
-            MOTION_OVERLAY,
+            MOTION_DIALOG_PANEL,
             "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
             "w-[calc(100%-2rem)] max-w-lg max-h-[calc(100svh-4rem)] overflow-y-auto p-6",
-            "transition-[opacity,transform] motion-reduce:transition-none motion-reduce:transform-none will-change-transform",
-            "data-[state=open]:opacity-100 data-[state=open]:scale-100",
-            "data-[state=closed]:opacity-0 data-[state=closed]:scale-[0.96]",
             className,
           )}
           {...props}

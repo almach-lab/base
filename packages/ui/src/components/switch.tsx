@@ -44,8 +44,8 @@ const Switch = React.forwardRef<HTMLLabelElement, SwitchProps>(
           <div
             className={cn(
               switchTrackVariants({ size }),
-              isSelected ? "bg-primary" : "bg-muted",
-              isHovered && (isSelected ? "bg-primary/90" : "bg-muted/80"),
+              isSelected ? "bg-primary" : "bg-input",
+              isHovered && (isSelected ? "bg-primary/90" : "bg-input/80"),
               isPressed && "scale-[0.96]",
               isFocusVisible && FOCUS_RING,
             )}

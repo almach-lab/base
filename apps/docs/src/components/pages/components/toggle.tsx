@@ -7,6 +7,7 @@ import {
   Italic,
   Underline,
 } from "lucide-react";
+import * as React from "react";
 import { ComponentDoc } from "../../component-doc";
 import { DemoRow } from "../../docs/demo";
 
@@ -82,6 +83,30 @@ export function TogglePage() {
 </ToggleGroup>`,
         },
         {
+          title: "Soft group",
+          description:
+            "Borderless shell on bg-muted with a raised selected item — matches the pill Tabs list. Good for billing periods and filters.",
+          preview: <BillingPeriodToggle />,
+          code: `const [period, setPeriod] = React.useState("monthly");
+
+<ToggleGroup
+  variant="soft"
+  selectionMode="single"
+  selectedKeys={[period]}
+  onSelectionChange={(keys) => {
+    const [next] = keys;
+    if (next !== undefined) setPeriod(String(next));
+  }}
+  disallowEmptySelection
+  aria-label="Billing period"
+>
+  <ToggleGroup.Item id="monthly" size="sm">Monthly</ToggleGroup.Item>
+  <ToggleGroup.Item id="yearly" size="sm">Yearly · save 20%</ToggleGroup.Item>
+</ToggleGroup>
+
+<p>{period === "yearly" ? "$230 billed yearly" : "$24 billed monthly"}</p>`,
+        },
+        {
           title: "Multiple selection",
           description: "Text-formatting toolbars allow several at once.",
           preview: (
@@ -119,7 +144,7 @@ export function TogglePage() {
       props={[
         {
           name: "variant",
-          type: '"default" | "outline" | "solid"',
+          type: '"default" | "outline" | "solid" | "soft"',
           default: '"default"',
           description:
             "Toggle chrome. Inside a group it defaults to match the group variant.",
@@ -142,9 +167,10 @@ export function TogglePage() {
         },
         {
           name: "ToggleGroup variant",
-          type: '"default" | "outline" | "segmented"',
+          type: '"default" | "outline" | "segmented" | "soft"',
           default: '"default"',
-          description: "Group layout. Segmented renders one shared shell.",
+          description:
+            "Group layout. Segmented renders one bordered shell; soft renders a borderless bg-muted shell with a raised selected item.",
         },
         {
           name: "ToggleGroup selectionMode",
@@ -154,5 +180,37 @@ export function TogglePage() {
         },
       ]}
     />
+  );
+}
+
+function BillingPeriodToggle() {
+  const [period, setPeriod] = React.useState("monthly");
+  return (
+    <div className="flex flex-col items-center gap-3">
+      <ToggleGroup
+        variant="soft"
+        selectionMode="single"
+        selectedKeys={[period]}
+        onSelectionChange={(keys) => {
+          const [next] = keys;
+          if (next !== undefined) setPeriod(String(next));
+        }}
+        disallowEmptySelection
+        aria-label="Billing period"
+      >
+        <ToggleGroup.Item id="monthly" size="sm">
+          Monthly
+        </ToggleGroup.Item>
+        <ToggleGroup.Item id="yearly" size="sm">
+          Yearly · save 20%
+        </ToggleGroup.Item>
+      </ToggleGroup>
+      <p className="text-sm text-muted-foreground">
+        Team plan ·{" "}
+        <span className="font-medium text-foreground">
+          {period === "yearly" ? "$230 billed yearly" : "$24 billed monthly"}
+        </span>
+      </p>
+    </div>
   );
 }
