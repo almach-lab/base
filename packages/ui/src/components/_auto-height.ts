@@ -30,6 +30,7 @@ export function useAutoHeight<T extends HTMLElement>(enabled = true) {
   const innerRef = React.useRef<T | null>(null);
   const [height, setHeight] = React.useState<number | null>(null);
   const [ready, setReady] = React.useState(false);
+  const [animateNext, setAnimateNext] = React.useState(false);
   const [animating, setAnimating] = React.useState(false);
   const heightRef = React.useRef<number | null>(null);
   const readyRef = React.useRef(false);
@@ -84,6 +85,11 @@ export function useAutoHeight<T extends HTMLElement>(enabled = true) {
     const enableTimer = window.setTimeout(() => {
       readyRef.current = !prefersReducedMotion();
       setReady(readyRef.current);
+      // The first lock matches the natural height. Arm the tween on the
+      // next frame so auto → px does not play as a size change.
+      if (readyRef.current) {
+        window.requestAnimationFrame(() => setAnimateNext(true));
+      }
     }, lockMs);
     const observer = new ResizeObserver(measure);
     observer.observe(node);
@@ -108,10 +114,10 @@ export function useAutoHeight<T extends HTMLElement>(enabled = true) {
   );
 
   const style: React.CSSProperties | undefined =
-    enabled && height !== null
+    enabled && ready && height !== null
       ? {
           height: `${height}px`,
-          transitionProperty: ready ? "height" : "none",
+          transitionProperty: animateNext ? "height" : "none",
           transitionDuration: motionVar(
             MOTION_VAR_OVERLAY_DURATION,
             AUTO_HEIGHT_FALLBACK,

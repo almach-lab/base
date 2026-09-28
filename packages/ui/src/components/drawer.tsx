@@ -12,7 +12,9 @@ import {
   MOTION_VAR_INTERACTIVE_DURATION,
   MOTION_VAR_OVERLAY_DURATION,
   motionVar,
+  overlayTransitionStyle,
   resolveMotionDurationMs,
+  usePrefersReducedMotion,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
 import { DIALOG_SURFACE, OVERLAY_BACKDROP } from "./_styles.js";
@@ -373,9 +375,11 @@ function DrawerBackdrop({
   className,
   state,
   variant = "opaque",
+  style,
   ...props
 }: DrawerBackdropProps) {
   const { open } = useDrawerCtx();
+  const reducedMotion = usePrefersReducedMotion();
   const drawerState = state ?? (open ? "open" : "closed");
   return (
     <div
@@ -392,6 +396,10 @@ function DrawerBackdrop({
         className,
       )}
       {...props}
+      style={{
+        ...style,
+        ...overlayTransitionStyle("opacity", reducedMotion),
+      }}
     />
   );
 }
@@ -437,11 +445,13 @@ const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
       state,
       showHandle = true,
       children,
+      style,
       ...props
     },
     ref,
   ) => {
     const { open } = useDrawerCtx();
+    const reducedMotion = usePrefersReducedMotion();
     const popupState = state ?? (open ? "open" : "closed");
 
     return (
@@ -482,6 +492,13 @@ const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
           className,
         )}
         {...props}
+        style={{
+          ...style,
+          ...overlayTransitionStyle(
+            "translate, scale, opacity, border-radius, box-shadow",
+            reducedMotion,
+          ),
+        }}
       >
         {showHandle && (side === "bottom" || side === "top") && (
           <DrawerHandle className="mt-3 mb-1" />

@@ -4,14 +4,13 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import {
   MOTION_DIALOG_PANEL,
-  MOTION_EASE_STANDARD,
   MOTION_INTERACTIVE,
   MOTION_OVERLAY,
   MOTION_OVERLAY_DURATION_MS,
-  MOTION_VAR_EASE,
   MOTION_VAR_OVERLAY_DURATION,
-  motionVar,
+  overlayTransitionStyle,
   resolveMotionDurationMs,
+  usePrefersReducedMotion,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
 import { DIALOG_SURFACE, FOCUS_RING, OVERLAY_BACKDROP } from "./_styles.js";
@@ -180,8 +179,9 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
 DialogContent.displayName = "Dialog.Content";
 
 const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
-  ({ className, children, hideClose, ...props }, ref) => {
+  ({ className, children, hideClose, style, ...props }, ref) => {
     const { open, setOpen, triggerRef } = useDialogCtx();
+    const reducedMotion = usePrefersReducedMotion();
     const [mounted, setMounted] = React.useState(open);
     const [isVisible, setIsVisible] = React.useState(false);
     const contentRef = React.useRef<HTMLDivElement | null>(null);
@@ -299,16 +299,7 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
               setOpen(false);
             }
           }}
-          style={{
-            transitionDuration: motionVar(
-              MOTION_VAR_OVERLAY_DURATION,
-              `${MOTION_OVERLAY_DURATION_MS}ms`,
-            ),
-            transitionTimingFunction: motionVar(
-              MOTION_VAR_EASE,
-              MOTION_EASE_STANDARD,
-            ),
-          }}
+          style={overlayTransitionStyle("opacity", reducedMotion)}
           className={cn(
             MOTION_OVERLAY,
             "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
@@ -331,16 +322,6 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
           data-dialog-content="true"
           data-state={state}
           onClick={(event) => event.stopPropagation()}
-          style={{
-            transitionDuration: motionVar(
-              MOTION_VAR_OVERLAY_DURATION,
-              `${MOTION_OVERLAY_DURATION_MS}ms`,
-            ),
-            transitionTimingFunction: motionVar(
-              MOTION_VAR_EASE,
-              MOTION_EASE_STANDARD,
-            ),
-          }}
           className={cn(
             DIALOG_SURFACE,
             "rounded-none md:rounded-lg",
@@ -350,6 +331,10 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
             className,
           )}
           {...props}
+          style={{
+            ...style,
+            ...overlayTransitionStyle("opacity, scale", reducedMotion),
+          }}
         >
           {children}
           {!hideClose && (
