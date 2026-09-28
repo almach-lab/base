@@ -218,9 +218,10 @@ export const MENU_SEPARATOR = "my-1 h-px bg-border";
 export const MENU_LABEL =
   "px-2 py-1.5 text-xs font-medium text-muted-foreground";
 
-export const DIALOG_SURFACE = cn(
-  "rounded-lg border border-border bg-background text-foreground shadow-lg outline-none",
-);
+export const DIALOG_CHROME =
+  "border border-border bg-background text-foreground shadow-lg outline-none";
+
+export const DIALOG_SURFACE = cn(DIALOG_CHROME, "rounded-lg");
 
 export const DIALOG_CONTENT = cn(
   "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 p-6",
