@@ -4,15 +4,18 @@ import { cn } from "@almach/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { useIsMobile } from "../hooks/use-media-query.js";
+import { X } from "lucide-react";
 import { useAutoHeight } from "./_auto-height.js";
 import {
   MOTION_DURATION_BASE,
   MOTION_EASE_STANDARD,
+  MOTION_INTERACTIVE,
   MOTION_OVERLAY_DURATION_MS,
   MOTION_VAR_INTERACTIVE_DURATION,
   MOTION_VAR_OVERLAY_DURATION,
   resolveMotionDurationMs,
 } from "./_motion.js";
+import { FOCUS_RING } from "./_styles.js";
 import { Button } from "./button.js";
 import { Dialog } from "./dialog.js";
 import { Drawer } from "./drawer";
@@ -53,8 +56,12 @@ const ModalCtx = React.createContext<ModalCtxValue>({
   registerDescription: noopRegister,
 });
 
-const ModalContentCtx = React.createContext<{ hideClose: boolean }>({
+const ModalContentCtx = React.createContext<{
+  hideClose: boolean;
+  registerHeader: () => () => void;
+}>({
   hideClose: false,
+  registerHeader: noopRegister,
 });
 
 function useRegistration() {
@@ -244,12 +251,15 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
   ({ children, className, hideClose = false, size }, ref) => {
     const { isMobile, titleId, descriptionId, hasTitle, hasDescription } =
       useModalCtx();
+    // With a Modal.Header the close button moves into the header row, so it
+    // lines up with the title instead of floating at a fixed corner offset.
+    const [hasHeader, registerHeader] = useRegistration();
     const labelling = {
       ...(hasTitle && { "aria-labelledby": titleId }),
       ...(hasDescription && { "aria-describedby": descriptionId }),
     };
     const content = (
-      <ModalContentCtx.Provider value={{ hideClose }}>
+      <ModalContentCtx.Provider value={{ hideClose, registerHeader }}>
         {children}
       </ModalContentCtx.Provider>
     );
@@ -266,7 +276,7 @@ const ModalContent = React.forwardRef<HTMLDivElement, ModalContentProps>(
     return (
       <Dialog.Content
         ref={ref}
-        hideClose={hideClose}
+        hideClose={hideClose || hasHeader}
         className={cn(
           "flex flex-col gap-0 overflow-hidden border-0 p-0",
           "max-h-[min(88svh,56rem)]",
@@ -287,7 +297,8 @@ function ModalHeader({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const { isMobile } = useModalCtx();
-  const { hideClose } = React.useContext(ModalContentCtx);
+  const { hideClose, registerHeader } = React.useContext(ModalContentCtx);
+  React.useEffect(() => registerHeader(), [registerHeader]);
   if (isMobile)
     return (
       <Drawer.Header
@@ -296,15 +307,31 @@ function ModalHeader({
       />
     );
   return (
-    <Dialog.Header
+    <div
       className={cn(
-        "mb-0 shrink-0 gap-1.5 space-y-0 pt-6 pb-3",
+        "flex shrink-0 items-start gap-3 pt-6 pb-3",
         MODAL_SECTION_X.desktop,
-        !hideClose && "pr-14",
-        className,
       )}
-      {...props}
-    />
+    >
+      <Dialog.Header
+        className={cn("mb-0 min-w-0 flex-1 gap-1.5 space-y-0", className)}
+        {...props}
+      />
+      {hideClose ? null : (
+        // -mt-1 centres the 32px button on the first line of a text-lg title
+        // (and on a 32px row such as a back button + title).
+        <Dialog.Close
+          className={cn(
+            "-mt-1 -mr-2 flex size-8 shrink-0 items-center justify-center rounded-lg opacity-50 hover:opacity-100",
+            MOTION_INTERACTIVE,
+            FOCUS_RING,
+          )}
+        >
+          <X className="size-4" />
+          <span className="sr-only">Close</span>
+        </Dialog.Close>
+      )}
+    </div>
   );
 }
 
