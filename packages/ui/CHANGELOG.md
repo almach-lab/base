@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 3.8.2
+
+### Patch Changes
+
+- auto release from 531e72e..f402dde
+
 ## 3.8.1
 
 ### Patch Changes
