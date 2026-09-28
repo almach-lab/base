@@ -17,7 +17,7 @@ import {
   usePrefersReducedMotion,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
-import { DIALOG_SURFACE, OVERLAY_BACKDROP } from "./_styles.js";
+import { DIALOG_CHROME, OVERLAY_BACKDROP } from "./_styles.js";
 
 const DRAG_THRESHOLD_PX = 8;
 const DRAG_DISMISS_FRACTION = 0.3;
@@ -461,7 +461,7 @@ const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
         data-placement={side}
         data-state={popupState}
         className={cn(
-          DIALOG_SURFACE,
+          DIALOG_CHROME,
           "border-0",
           "pointer-events-auto relative flex min-h-0 w-full flex-col px-4",
           "overflow-hidden overscroll-contain touch-none",
@@ -470,7 +470,7 @@ const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
           "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
           "data-[state=closed]:shadow-none",
           side === "bottom" && [
-            "w-full max-h-[85svh] rounded-t-lg origin-bottom",
+            "w-full max-h-[85svh] rounded-t-lg rounded-b-none origin-bottom",
             "data-[state=open]:translate-y-0 data-[state=open]:scale-100",
             "data-[state=closed]:translate-y-[calc(100%+0.5rem)] data-[state=closed]:scale-[0.985]",
           ],
