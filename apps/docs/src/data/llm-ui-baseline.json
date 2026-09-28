@@ -66,7 +66,7 @@
   },
   "card": {
     "exports": ["Card", "Group"],
-    "typeExports": []
+    "typeExports": ["CardProps"]
   },
   "carousel": {
     "exports": ["Carousel"],
@@ -198,8 +198,13 @@
     "typeExports": ["MeterProps"]
   },
   "modal": {
-    "exports": ["Modal", "useModal"],
-    "typeExports": ["ViewComponent", "ViewsRegistry"]
+    "exports": ["Modal", "modalSizeVariants", "useModal"],
+    "typeExports": [
+      "ModalBodyProps",
+      "ModalContentProps",
+      "ViewComponent",
+      "ViewsRegistry"
+    ]
   },
   "month-picker": {
     "exports": ["MonthPicker"],

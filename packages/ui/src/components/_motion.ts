@@ -54,13 +54,26 @@ export function motionVar(name: string, fallback: string): string {
 }
 
 /* ── Hand-rolled overlays (dialog, drawer, select) ───────────────────────── */
-/* These drive visibility from a `data-state` attribute we set ourselves. */
+/* These drive visibility from a `data-state` attribute we set ourselves.
+   Tailwind v4 `scale` / `translate` are separate CSS properties, so a
+   `transform` transition does not interpolate them and the panel pops. */
 
 export const MOTION_OVERLAY_ENTER =
   "data-[state=open]:opacity-100 data-[state=open]:scale-100";
 
 export const MOTION_OVERLAY_EXIT =
-  "data-[state=closed]:opacity-0 data-[state=closed]:scale-[0.98]";
+  "data-[state=closed]:opacity-0 data-[state=closed]:scale-95";
+
+/** Fade + zoom for a centered dialog. Translate stays put so the panel does not shift. */
+export const MOTION_DIALOG_PANEL = [
+  "origin-center",
+  "transition-[opacity,scale]",
+  "[--tw-duration:var(--theme-motion-overlay-duration,0.22s)]",
+  "[--tw-ease:var(--theme-motion-ease-standard,cubic-bezier(0.22,1,0.36,1))]",
+  "motion-reduce:transition-none",
+  MOTION_OVERLAY_ENTER,
+  MOTION_OVERLAY_EXIT,
+].join(" ");
 
 /* ── React Aria overlays (popover, tooltip, menu, hover card) ────────────── */
 /* React Aria exposes `data-entering` / `data-exiting` instead, and animates

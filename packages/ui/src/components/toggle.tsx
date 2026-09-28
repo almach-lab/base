@@ -33,6 +33,11 @@ const toggleVariants = cva(
           "data-[hovered]:bg-accent data-[hovered]:text-accent-foreground",
           "data-[selected]:bg-primary data-[selected]:text-primary-foreground",
         ],
+        soft: [
+          "bg-transparent text-muted-foreground",
+          "data-[hovered]:text-foreground",
+          "data-[selected]:bg-background data-[selected]:text-foreground data-[selected]:shadow-xs",
+        ],
       },
       size: {
         sm: "h-8 px-2.5 text-xs [&_svg]:size-3.5",
@@ -55,6 +60,8 @@ const toggleGroupVariants = cva("inline-flex items-center", {
       /** Segmented control — items sit flush inside one shared shell. */
       segmented:
         "gap-0.5 rounded-lg border border-input bg-muted/40 p-0.5 shadow-xs",
+      /** Borderless segmented control that matches the pill Tabs list. */
+      soft: "gap-1 rounded-lg bg-muted p-1",
     },
     orientation: {
       horizontal: "flex-row",
@@ -84,9 +91,11 @@ const Toggle = React.forwardRef<HTMLButtonElement, ToggleProps>(
       variant ??
       (groupStyle === "segmented"
         ? "solid"
-        : groupStyle === "outline"
-          ? "outline"
-          : "default");
+        : groupStyle === "soft"
+          ? "soft"
+          : groupStyle === "outline"
+            ? "outline"
+            : "default");
 
     return (
       <ToggleButton

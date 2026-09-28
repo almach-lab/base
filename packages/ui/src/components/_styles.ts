@@ -163,9 +163,19 @@ export const radioIndicatorVariants = cva(
   },
 );
 
-export const cardVariants = cva(
-  "rounded-lg border border-border bg-card text-card-foreground shadow-sm",
-);
+export const cardVariants = cva("rounded-lg text-card-foreground", {
+  variants: {
+    variant: {
+      default: "border border-border bg-card shadow-sm",
+      /** Borderless card lifted by its background and shadow alone. */
+      flat: "bg-card shadow-sm",
+      /** Borderless recessed surface for grouped or secondary content. */
+      muted: "bg-muted",
+      ghost: "bg-transparent",
+    },
+  },
+  defaultVariants: { variant: "default" },
+});
 
 export const alertVariants = cva(
   "relative flex w-full gap-3 rounded-lg border p-4",
@@ -200,7 +210,7 @@ export const MENU_ITEM = cn(
   "focus-visible:bg-accent focus-visible:text-accent-foreground",
   "data-[focused]:bg-accent data-[focused]:text-accent-foreground",
   DISABLED_DATA,
-  "[&_svg]:size-4 [&_svg]:shrink-0",
+  "[&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0",
 );
 
 export const MENU_SEPARATOR = "my-1 h-px bg-border";

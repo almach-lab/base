@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-06T16:24:33.334Z",
+  "generatedAt": "2026-09-28T08:59:39.173Z",
   "components": {
     "_styles": {
       "exports": [
@@ -101,7 +101,9 @@
         "Card",
         "Group"
       ],
-      "typeExports": []
+      "typeExports": [
+        "CardProps"
+      ]
     },
     "carousel": {
       "exports": [
@@ -307,9 +309,12 @@
     "modal": {
       "exports": [
         "Modal",
+        "modalSizeVariants",
         "useModal"
       ],
       "typeExports": [
+        "ModalBodyProps",
+        "ModalContentProps",
         "ViewComponent",
         "ViewsRegistry"
       ]

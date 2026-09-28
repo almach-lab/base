@@ -1,6 +1,6 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-09-06T16:24:33.326Z
+Generated: 2026-09-28T08:59:39.172Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
@@ -17,7 +17,7 @@ Total modules: 59
 - breadcrumb: 1 value export(s), 3 type export(s)
 - button: 2 value export(s), 1 type export(s)
 - calendar: 1 value export(s), 2 type export(s)
-- card: 2 value export(s), 0 type export(s)
+- card: 2 value export(s), 1 type export(s)
 - carousel: 1 value export(s), 0 type export(s)
 - chart: 35 value export(s), 2 type export(s)
 - checkbox: 2 value export(s), 0 type export(s)
@@ -38,7 +38,7 @@ Total modules: 59
 - label: 1 value export(s), 0 type export(s)
 - menubar: 2 value export(s), 2 type export(s)
 - meter: 2 value export(s), 1 type export(s)
-- modal: 2 value export(s), 2 type export(s)
+- modal: 3 value export(s), 4 type export(s)
 - month-picker: 1 value export(s), 1 type export(s)
 - navigation-menu: 1 value export(s), 4 type export(s)
 - number-field: 1 value export(s), 1 type export(s)
@@ -410,7 +410,7 @@ export function Example() {
 ### Exported Symbols
 
 - Values: `Card`, `Group`
-- Types: (none)
+- Types: `CardProps`
 
 ## Carousel
 
@@ -1241,8 +1241,8 @@ import { Button, Modal } from "@almach/ui";
 
 ### Exported Symbols
 
-- Values: `Modal`, `useModal`
-- Types: `ViewComponent`, `ViewsRegistry`
+- Values: `Modal`, `modalSizeVariants`, `useModal`
+- Types: `ModalBodyProps`, `ModalContentProps`, `ViewComponent`, `ViewsRegistry`
 
 ## MonthPicker
 

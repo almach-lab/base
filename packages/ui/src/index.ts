@@ -48,6 +48,7 @@ export type { ButtonProps } from "./components/button.js";
 export { Button, buttonVariants } from "./components/button.js";
 export type { CalendarProps, DateRange } from "./components/calendar.js";
 export { Calendar } from "./components/calendar.js";
+export type { CardProps } from "./components/card.js";
 export { Card, Group } from "./components/card.js";
 export { Carousel } from "./components/carousel.js";
 export type {
@@ -146,8 +147,13 @@ export type { MenubarMenuProps, MenubarProps } from "./components/menubar.js";
 export { Menubar, menubarVariants } from "./components/menubar.js";
 export type { MonthPickerProps } from "./components/month-picker.js";
 export { MonthPicker } from "./components/month-picker.js";
-export type { ViewComponent, ViewsRegistry } from "./components/modal.js";
-export { Modal, useModal } from "./components/modal.js";
+export type {
+  ModalBodyProps,
+  ModalContentProps,
+  ViewComponent,
+  ViewsRegistry,
+} from "./components/modal.js";
+export { Modal, modalSizeVariants, useModal } from "./components/modal.js";
 export type {
   NavigationMenuEntryProps,
   NavigationMenuItemProps,

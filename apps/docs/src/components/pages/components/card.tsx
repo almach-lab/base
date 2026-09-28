@@ -75,6 +75,63 @@ export function CardPage() {
 </Card>`,
         },
         {
+          title: "Variants",
+          description:
+            "default keeps the border. flat lifts with shadow only, muted recesses into the page, and ghost drops the surface entirely.",
+          preview: (
+            <div className="grid w-full max-w-2xl grid-cols-1 gap-3 sm:grid-cols-2">
+              {(
+                [
+                  {
+                    variant: "default",
+                    label: "Available balance",
+                    value: "$18,420.55",
+                    note: "Operating · updated 2 min ago",
+                  },
+                  {
+                    variant: "flat",
+                    label: "Pending payouts",
+                    value: "$3,112.00",
+                    note: "3 transfers arriving Friday",
+                  },
+                  {
+                    variant: "muted",
+                    label: "Reserved for tax",
+                    value: "$4,860.00",
+                    note: "Set aside automatically each month",
+                  },
+                  {
+                    variant: "ghost",
+                    label: "Card spend this month",
+                    value: "$1,294.18",
+                    note: "62% of the $2,100 budget",
+                  },
+                ] as const
+              ).map(({ variant, label, value, note }) => (
+                <Card key={variant} variant={variant}>
+                  <Card.Header
+                    className="pb-1"
+                    action={<Badge variant="secondary">{variant}</Badge>}
+                  >
+                    <Card.Description className="text-xs">
+                      {label}
+                    </Card.Description>
+                    <Card.Title className="text-xl">{value}</Card.Title>
+                  </Card.Header>
+                  <Card.Content>
+                    <p className="text-xs text-muted-foreground">{note}</p>
+                  </Card.Content>
+                </Card>
+              ))}
+            </div>
+          ),
+          code: `<Card>…</Card>                  {/* bordered, the default */}
+<Card variant="flat">…</Card>    {/* bg-card + shadow, no border */}
+<Card variant="muted">…</Card>   {/* bg-muted, no border */}
+<Card variant="ghost">…</Card>   {/* transparent */}`,
+          centered: false,
+        },
+        {
           title: "Header action",
           description: "Pass action to Card.Header for a right-side element.",
           preview: (
@@ -200,7 +257,7 @@ export function CardPage() {
               <Card.LayerRow
                 action={
                   <Switch
-                    defaultChecked
+                    defaultSelected
                     size="sm"
                     aria-label="Enable push notifications"
                   />
@@ -216,7 +273,7 @@ export function CardPage() {
               <Card.LayerRow
                 action={
                   <Switch
-                    defaultChecked
+                    defaultSelected
                     size="sm"
                     aria-label="Enable marketing emails"
                   />
@@ -230,7 +287,7 @@ export function CardPage() {
   <Card.LayerHeader action={<Settings className="h-4 w-4" />}>
     Notifications
   </Card.LayerHeader>
-  <Card.LayerRow action={<Switch defaultChecked size="sm" />}>
+  <Card.LayerRow action={<Switch defaultSelected size="sm" />}>
     Push notifications
   </Card.LayerRow>
   <Card.LayerRow action={<Switch size="sm" />}>
@@ -340,7 +397,7 @@ export function CardPage() {
   <Card.GroupRow
     label="Email alerts"
     description="Receive summaries and digests."
-    action={<Switch defaultChecked />}
+    action={<Switch defaultSelected />}
   />
   <Card.GroupRow
     label="Push notifications"
@@ -396,13 +453,13 @@ export function CardPage() {
               <Card.GroupRow
                 label="Public profile"
                 description="Anyone can view your profile."
-                action={<Switch defaultChecked />}
+                action={<Switch defaultSelected />}
               />
               <Card.GroupRow label="Show email address" action={<Switch />} />
             </Card.Group>
           ),
           code: `<Card.Group label="Privacy" hint="These settings apply to your public profile.">
-  <Card.GroupRow label="Public profile" description="Anyone can view." action={<Switch defaultChecked />} />
+  <Card.GroupRow label="Public profile" description="Anyone can view." action={<Switch defaultSelected />} />
   <Card.GroupRow label="Show email address" action={<Switch />} />
 </Card.Group>`,
           centered: false,
@@ -444,6 +501,13 @@ export function CardPage() {
       ]}
       props={[
         /* Card */
+        {
+          name: "variant",
+          type: '"default" | "flat" | "muted" | "ghost"',
+          default: '"default"',
+          description:
+            "Surface style. default is bordered; flat is bg-card with a soft shadow; muted is bg-muted; ghost is transparent. Only default has a border.",
+        },
         {
           name: "Card.Header › action",
           type: "ReactNode",
@@ -546,17 +610,17 @@ function SettingsGroup() {
       <Card.GroupRow
         label="Email alerts"
         description="Receive summaries and digests."
-        action={<Switch checked={email} onCheckedChange={setEmail} />}
+        action={<Switch isSelected={email} onChange={setEmail} />}
       />
       <Card.GroupRow
         label="Push notifications"
         description="Browser and mobile alerts."
-        action={<Switch checked={push} onCheckedChange={setPush} />}
+        action={<Switch isSelected={push} onChange={setPush} />}
       />
       <Card.GroupRow
         label="Marketing emails"
         description="Product updates and offers."
-        action={<Switch checked={marketing} onCheckedChange={setMarketing} />}
+        action={<Switch isSelected={marketing} onChange={setMarketing} />}
       />
     </Card.Group>
   );

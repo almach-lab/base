@@ -444,7 +444,14 @@ const SelectContent = React.forwardRef<
     }
   }, [open]);
 
-  if (!open) return null;
+  // Items register their labels on mount, so keep them mounted (hidden) while
+  // closed; otherwise Select.Value shows the raw value until the first open.
+  if (!open)
+    return (
+      <div hidden data-select-registry="">
+        {children}
+      </div>
+    );
   return createPortal(
     <div
       id={contentId}

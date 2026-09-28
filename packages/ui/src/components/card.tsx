@@ -1,14 +1,23 @@
 import { cn } from "@almach/utils";
+import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { MOTION_INTERACTIVE } from "./_motion.js";
 import { cardVariants } from "./_styles.js";
 
-const CardRoot = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn(cardVariants(), className)} {...props} />
-));
+export interface CardProps
+  extends
+    React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {}
+
+const CardRoot = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(cardVariants({ variant }), className)}
+      {...props}
+    />
+  ),
+);
 CardRoot.displayName = "Card";
 
 interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
