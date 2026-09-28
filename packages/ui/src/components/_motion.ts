@@ -1,3 +1,5 @@
+import * as React from "react";
+
 export const MOTION_EASE_STANDARD = "cubic-bezier(0.22,1,0.36,1)";
 
 export const MOTION_DURATION_FAST = 120;
@@ -51,6 +53,34 @@ export const MOTION_OVERLAY_DURATION_MS = 220;
 /** Builds a `var()` reference for inline styles, so no literal is duplicated. */
 export function motionVar(name: string, fallback: string): string {
   return `var(${name}, ${fallback})`;
+}
+
+/** SSR-safe reduced-motion flag. Inline transitions beat the utility class. */
+export function usePrefersReducedMotion(): boolean {
+  return React.useSyncExternalStore(
+    (onChange) => {
+      const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+      query.addEventListener("change", onChange);
+      return () => query.removeEventListener("change", onChange);
+    },
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  );
+}
+
+/** Duration and easing live inline so the panel animates without a scanned class. */
+export function overlayTransitionStyle(
+  property: string,
+  reducedMotion = false,
+): React.CSSProperties {
+  return {
+    transitionProperty: reducedMotion ? "none" : property,
+    transitionDuration: motionVar(
+      MOTION_VAR_OVERLAY_DURATION,
+      `${MOTION_OVERLAY_DURATION_MS}ms`,
+    ),
+    transitionTimingFunction: motionVar(MOTION_VAR_EASE, MOTION_EASE_STANDARD),
+  };
 }
 
 /* ── Hand-rolled overlays (dialog, drawer, select) ───────────────────────── */
