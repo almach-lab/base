@@ -1,5 +1,12 @@
 # @almach/forms
 
+## 14.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @almach/ui@3.9.0
+
 ## 13.0.0
 
 ### Patch Changes

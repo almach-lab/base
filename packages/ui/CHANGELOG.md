@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 3.9.0
+
+### Minor Changes
+
+- auto release from 973b08e..9a54a54
+
 ## 3.8.5
 
 ### Patch Changes
