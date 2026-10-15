@@ -59,22 +59,21 @@ jobs:
 
       - name: Create Release Pull Request or Publish
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2.1.2
         with:
-          version: bun changeset version
-          publish: bun run release:ci
-          commit: "chore: version packages"
-          title: "Version Packages"
-          createGithubReleases: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          version-script: bun changeset version
+          publish-script: bun run release:ci
+          commit-message: "chore: version packages"
+          pr-title: "Version Packages"
+          create-github-releases: true
 
       - name: Release summary
         if: steps.changesets.outputs.published == 'true'
         run: |
           echo "## Published" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo '${{ steps.changesets.outputs.publishedPackages }}' \
+          echo '${{ steps.changesets.outputs.published-packages }}' \
             | node -e "
                 const pkgs = JSON.parse(require('fs').readFileSync('/dev/stdin','utf8'));
                 pkgs.forEach(p => console.log('- **' + p.name + '** -> v' + p.version));
