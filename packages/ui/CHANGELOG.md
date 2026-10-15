@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 3.10.1
+
+### Patch Changes
+
+- cf862c5: Publish via npm trusted publishing (OIDC).
+
 ## 3.10.0
 
 ### Minor Changes

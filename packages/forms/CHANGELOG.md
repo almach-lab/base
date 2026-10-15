@@ -1,5 +1,11 @@
 # @almach/forms
 
+## 14.1.1
+
+### Patch Changes
+
+- cf862c5: Publish via npm trusted publishing (OIDC).
+
 ## 14.1.0
 
 ### Minor Changes
