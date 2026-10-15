@@ -18,7 +18,8 @@ jobs:
   release:
     name: Version and publish packages
     if: github.event_name == 'workflow_dispatch' || github.actor != 'github-actions[bot]'
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    # npm trusted publishing (OIDC) only supports GitHub-hosted runners.
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
       contents: write
@@ -33,8 +34,10 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          registry-url: "https://registry.npmjs.org"
+          node-version: "24"
+
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@latest
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -65,8 +68,6 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Release summary
         if: steps.changesets.outputs.published == 'true'

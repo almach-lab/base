@@ -246,7 +246,7 @@ Never manually edit `package.json` version fields — changesets handles that.
 | `ci.yml`      | Push/PR on `main` with relevant code changes | typecheck + build                                    |
 | `release.yml` | Push to `main` with package/release changes  | auto changeset generation → versioning → npm publish |
 
-Required GitHub secrets: `NPM_TOKEN`
+npm publishing uses trusted publishing (OIDC) — no `NPM_TOKEN` secret. Optional secret: `GH_PAT`.
 See `SETUP.md` for how to create and configure them.
 
 ---
