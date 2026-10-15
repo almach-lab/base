@@ -1,5 +1,11 @@
 # @almach/ui
 
+## 3.10.0
+
+### Minor Changes
+
+- auto release from 973b08e..375271f
+
 ## 3.9.0
 
 ### Minor Changes
@@ -439,7 +445,6 @@
   - **Shared tokens:** several components moved to `_styles.ts` shared class tokens (visual/API surface unchanged for most).
 
   ### Fixes & improvements
-
   - Swipe button pointer capture, geometry sync, and spring-back reset.
   - Drawer panel horizontal padding; currency input popover interaction.
   - Select and component standardization across the library.
