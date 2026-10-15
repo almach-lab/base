@@ -4,6 +4,7 @@ import { cn } from "@almach/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
 import { MOTION_INTERACTIVE } from "./_motion.js";
+import { NO_TOUCH_CALLOUT, TOUCH_TARGET } from "./_styles.js";
 import { buttonVariants } from "./button.js";
 
 /* ── Context ──────────────────────────────────────────────────────────────── */
@@ -191,6 +192,7 @@ function CarouselContent({
           "flex snap-x snap-mandatory overflow-x-auto scroll-smooth",
           "[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden",
           "cursor-grab select-none",
+          NO_TOUCH_CALLOUT,
           "-ml-4",
           className,
         )}
@@ -234,6 +236,7 @@ function CarouselPrevious({
     <button
       className={cn(
         buttonVariants({ variant: "outline", size: "icon-sm" }),
+        TOUCH_TARGET,
         "absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full shadow-sm",
         className,
       )}
@@ -257,6 +260,7 @@ function CarouselNext({
     <button
       className={cn(
         buttonVariants({ variant: "outline", size: "icon-sm" }),
+        TOUCH_TARGET,
         "absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full shadow-sm",
         className,
       )}

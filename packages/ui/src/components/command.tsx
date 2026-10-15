@@ -5,6 +5,7 @@ import * as React from "react";
 import { MOTION_INTERACTIVE, MOTION_OVERLAY } from "./_motion.js";
 import {
   DISABLED,
+  FIELD_TEXT_IOS,
   FOCUS_RING_WITHIN,
   MENU_ITEM,
   MENU_SEPARATOR,
@@ -76,8 +77,13 @@ const CommandInput = React.forwardRef<
     <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
     <CommandPrimitive.Input
       ref={ref}
+      enterKeyHint="search"
+      autoCapitalize="off"
+      autoCorrect="off"
+      spellCheck={false}
       className={cn(
         "flex h-10 w-full bg-transparent py-3 text-sm outline-none",
+        FIELD_TEXT_IOS,
         "placeholder:text-muted-foreground",
         DISABLED,
         className,

@@ -157,7 +157,7 @@ function DropdownRoot({ children, ...props }: DropdownRootProps) {
         <AriaMenu
           {...(menuProps ?? {})}
           className={cn(
-            "max-h-[min(60svh,_24rem)] overflow-y-auto overflow-x-hidden p-0.5 outline-none",
+            "max-h-[min(60svh,_24rem)] overflow-y-auto overflow-x-hidden overscroll-contain p-0.5 outline-none",
             menuClassName,
           )}
         >
@@ -421,7 +421,7 @@ function DropdownMenuSubTrigger(props: SubmenuTriggerProps) {
         <AriaMenu
           {...(menuProps ?? {})}
           className={cn(
-            "max-h-[min(60svh,_24rem)] overflow-y-auto overflow-x-hidden p-0.5 outline-none",
+            "max-h-[min(60svh,_24rem)] overflow-y-auto overflow-x-hidden overscroll-contain p-0.5 outline-none",
             menuClassName,
           )}
         >

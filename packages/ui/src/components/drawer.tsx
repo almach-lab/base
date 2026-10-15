@@ -13,7 +13,12 @@ import {
   usePrefersReducedMotion,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
-import { DIALOG_CHROME, OVERLAY_BACKDROP } from "./_styles.js";
+import {
+  DIALOG_CHROME,
+  NO_TOUCH_CALLOUT,
+  OVERLAY_BACKDROP,
+  SAFE_AREA,
+} from "./_styles.js";
 
 const DRAG_THRESHOLD_PX = 8;
 const DRAG_DISMISS_FRACTION = 0.3;
@@ -484,27 +489,36 @@ const DrawerPopup = React.forwardRef<HTMLDivElement, DrawerPopupProps>(
           "border-0",
           "pointer-events-auto relative flex min-h-0 w-full flex-col px-4",
           "overflow-hidden overscroll-contain touch-none",
+          NO_TOUCH_CALLOUT,
           "transform-gpu will-change-transform [backface-visibility:hidden]",
           DRAWER_PANEL_MOTION,
           "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
           "data-[state=closed]:shadow-none",
           side === "bottom" && [
             "w-full max-h-[85svh] rounded-t-lg rounded-b-none origin-bottom",
+            SAFE_AREA.bottom,
             "data-[state=open]:translate-y-0 data-[state=open]:scale-100",
             "data-[state=closed]:translate-y-[calc(100%+0.5rem)] data-[state=closed]:scale-[0.985]",
           ],
           side === "top" && [
             "w-full max-h-[85svh] rounded-b-lg origin-top",
+            SAFE_AREA.top,
             "data-[state=open]:translate-y-0 data-[state=open]:scale-100",
             "data-[state=closed]:-translate-y-[calc(100%+0.5rem)] data-[state=closed]:scale-[0.985]",
           ],
           side === "right" && [
             "h-full w-80 max-w-[100vw] rounded-l-lg origin-right",
+            SAFE_AREA.top,
+            SAFE_AREA.bottom,
+            "pr-[max(1rem,env(safe-area-inset-right))]",
             "data-[state=open]:translate-x-0 data-[state=open]:scale-100",
             "data-[state=closed]:translate-x-[calc(100%+0.5rem)] data-[state=closed]:scale-[0.99]",
           ],
           side === "left" && [
             "h-full w-80 max-w-[100vw] rounded-r-lg origin-left",
+            SAFE_AREA.top,
+            SAFE_AREA.bottom,
+            "pl-[max(1rem,env(safe-area-inset-left))]",
             "data-[state=open]:translate-x-0 data-[state=open]:scale-100",
             "data-[state=closed]:-translate-x-[calc(100%+0.5rem)] data-[state=closed]:scale-[0.99]",
           ],

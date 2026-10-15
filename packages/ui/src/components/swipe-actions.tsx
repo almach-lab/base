@@ -3,7 +3,7 @@
 import { cn } from "@almach/utils";
 import * as React from "react";
 import { MOTION_INTERACTIVE } from "./_motion.js";
-import { FOCUS_RING } from "./_styles.js";
+import { FOCUS_RING, NO_TOUCH_CALLOUT } from "./_styles.js";
 
 /* ── Constants ─────────────────────────────────────────────────────────────── */
 /** Snap open — slight overshoot gives a physical spring feel */
@@ -480,6 +480,7 @@ function SwipeActionsContent({
       ref={contentRef}
       className={cn(
         "relative z-10 will-change-transform select-none",
+        NO_TOUCH_CALLOUT,
         className,
       )}
       style={{ touchAction }}

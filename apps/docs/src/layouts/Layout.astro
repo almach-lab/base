@@ -41,7 +41,7 @@ const footerContainerClass =
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
@@ -157,11 +157,11 @@ const footerContainerClass =
     </script>
   </head>
 
-  <body class="bg-background font-sans text-foreground antialiased">
+  <body class="bg-background pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] font-sans text-foreground antialiased">
     {
       isHome ? (
         <div class="flex min-h-screen flex-col">
-          <header class="sticky top-0 z-40 border-b border-border/40 bg-background/90 backdrop-blur-md">
+          <header class="sticky top-0 z-40 border-b border-border/40 bg-background/90 pt-[env(safe-area-inset-top)] backdrop-blur-md">
             <LandingHeader currentPath={currentPath} />
           </header>
 
@@ -169,7 +169,7 @@ const footerContainerClass =
             <slot />
           </main>
 
-          <footer class="mt-auto border-t border-border/40">
+          <footer class="mt-auto border-t border-border/40 pb-[env(safe-area-inset-bottom)]">
             <div class={footerContainerClass}>
               <div class="flex items-center gap-2">
                 <Logo class="h-4 w-4" />

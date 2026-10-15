@@ -11,7 +11,12 @@ import {
 } from "react-aria-components";
 import { useIsMobile } from "../hooks/use-media-query.js";
 import { MOTION_INTERACTIVE, MOTION_LAYOUT } from "./_motion.js";
-import { FOCUS_RING, OVERLAY_BACKDROP } from "./_styles.js";
+import {
+  FOCUS_RING,
+  OVERLAY_BACKDROP,
+  SAFE_AREA,
+  TOUCH_TARGET,
+} from "./_styles.js";
 
 const SIDEBAR_WIDTH = "16rem";
 const SIDEBAR_WIDTH_ICON = "3.5rem";
@@ -165,6 +170,9 @@ export const SidebarRoot = React.forwardRef<
         <AriaModal
           className={cn(
             "fixed inset-y-0 left-0 w-72 max-w-[85vw] border-r border-sidebar-border bg-sidebar shadow-lg",
+            SAFE_AREA.top,
+            SAFE_AREA.bottom,
+            SAFE_AREA.left,
             "data-[entering]:animate-in data-[exiting]:animate-out",
             "data-[entering]:slide-in-from-left data-[exiting]:slide-out-to-left duration-300",
             className,
@@ -209,7 +217,7 @@ export const SidebarRoot = React.forwardRef<
           variant === "floating" &&
             (isContained
               ? "m-3 h-[calc(100%-1.5rem)] rounded-lg shadow-md"
-              : "m-3 h-[calc(100vh-1.5rem)] rounded-lg shadow-md"),
+              : "m-3 h-[calc(100dvh-1.5rem)] rounded-lg shadow-md"),
           variant === "inset" &&
             "rounded-lg border border-sidebar-border shadow-sm",
           className,
@@ -232,6 +240,7 @@ export function SidebarTrigger({ className }: { className?: string }) {
       type="button"
       onClick={toggleSidebar}
       className={cn(
+        TOUCH_TARGET,
         "flex h-8 w-8 items-center justify-center rounded-md text-sidebar-foreground/70",
         MOTION_INTERACTIVE,
         FOCUS_RING,
@@ -447,7 +456,10 @@ export function SidebarContent({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("flex-1 overflow-y-auto themed-scroll", className)}
+      className={cn(
+        "flex-1 overflow-y-auto overscroll-contain themed-scroll",
+        className,
+      )}
       {...props}
     />
   );

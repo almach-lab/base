@@ -4,7 +4,6 @@ interface ScrollSnapshot {
   bodyOverflow: string;
   htmlOverflow: string;
   bodyOverscrollBehavior: string;
-  bodyTouchAction: string;
 }
 
 let snapshot: ScrollSnapshot | null = null;
@@ -23,7 +22,6 @@ function lockBodyScroll() {
       bodyOverflow: body.style.overflow,
       htmlOverflow: html.style.overflow,
       bodyOverscrollBehavior: body.style.overscrollBehavior,
-      bodyTouchAction: body.style.touchAction,
     };
 
     body.style.overflow = "hidden";
@@ -46,7 +44,6 @@ function unlockBodyScroll() {
     body.style.overflow = snapshot.bodyOverflow;
     html.style.overflow = snapshot.htmlOverflow;
     body.style.overscrollBehavior = snapshot.bodyOverscrollBehavior;
-    body.style.touchAction = snapshot.bodyTouchAction;
   }
   snapshot = null;
 }

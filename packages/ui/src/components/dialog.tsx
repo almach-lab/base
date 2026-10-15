@@ -13,7 +13,12 @@ import {
   usePrefersReducedMotion,
 } from "./_motion.js";
 import { lockBodyScroll, unlockBodyScroll } from "./_scroll-lock.js";
-import { DIALOG_SURFACE, FOCUS_RING, OVERLAY_BACKDROP } from "./_styles.js";
+import {
+  DIALOG_SURFACE,
+  FOCUS_RING,
+  OVERLAY_BACKDROP,
+  TOUCH_TARGET,
+} from "./_styles.js";
 
 interface DialogCtxValue {
   open: boolean;
@@ -327,7 +332,7 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
             "rounded-none md:rounded-lg",
             MOTION_DIALOG_PANEL,
             "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
-            "w-[calc(100%-2rem)] max-w-lg max-h-[calc(100svh-4rem)] overflow-y-auto p-6",
+            "w-[calc(100%-2rem)] max-w-lg max-h-[calc(100svh-4rem)] overflow-y-auto overscroll-contain p-6",
             className,
           )}
           {...props}
@@ -340,7 +345,8 @@ const DialogContentInner = React.forwardRef<HTMLDivElement, DialogContentProps>(
           {!hideClose && (
             <DialogClose
               className={cn(
-                "absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-lg opacity-50 hover:opacity-100",
+                TOUCH_TARGET,
+                "absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground active:text-foreground",
                 MOTION_INTERACTIVE,
                 FOCUS_RING,
               )}
