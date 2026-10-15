@@ -3,22 +3,11 @@ set -euo pipefail
 
 
 cleanup() {
-  [[ -f bun.lock.bak ]] && mv bun.lock.bak bun.lock
   git checkout -- package.json packages/*/package.json apps/*/package.json 2>/dev/null || true
 }
 trap cleanup EXIT
 
-if [[ -f bun.lock ]]; then
-  mv bun.lock bun.lock.bak
-fi
-
-node -e "
-  const fs = require('fs');
-  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-  delete pkg.packageManager;
-  fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
-"
-
+# changesets v3 detects the bun workspace via bun.lock / packageManager; removing them hides all packages.
 node -e "
   const fs = require('fs');
   const path = require('path');
