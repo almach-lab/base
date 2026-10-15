@@ -1,5 +1,11 @@
 # @almach/query
 
+## 2.0.2
+
+### Patch Changes
+
+- cf862c5: Publish via npm trusted publishing (OIDC).
+
 ## 2.0.0
 
 ### Major Changes
