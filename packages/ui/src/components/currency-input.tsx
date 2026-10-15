@@ -9,12 +9,14 @@ import { mergeRefs } from "./_refs.js";
 import {
   FIELD_GROUP,
   FIELD_SIZE,
-  type FieldSize,
+  FIELD_TEXT_IOS,
   FOCUS_RING,
   FOCUS_RING_WITHIN_INVALID,
-  fieldErrorClass,
   MENU_ITEM,
   OVERLAY_SURFACE,
+  TOUCH_TARGET,
+  fieldErrorClass,
+  type FieldSize,
 } from "./_styles.js";
 import { Popover } from "./popover.js";
 
@@ -520,11 +522,18 @@ export const InputCurrency = React.forwardRef<
               <input
                 ref={searchRef}
                 type="text"
+                enterKeyHint="search"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search currency…"
                 aria-label="Search currencies"
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                className={cn(
+                  "flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground",
+                  FIELD_TEXT_IOS,
+                )}
               />
               {search && (
                 <button
@@ -532,6 +541,7 @@ export const InputCurrency = React.forwardRef<
                   onClick={() => setSearch("")}
                   aria-label="Clear search"
                   className={cn(
+                    TOUCH_TARGET,
                     "text-muted-foreground hover:text-foreground",
                     MOTION_INTERACTIVE,
                   )}
@@ -545,7 +555,7 @@ export const InputCurrency = React.forwardRef<
             <div
               role="listbox"
               aria-label="Select currency"
-              className="max-h-60 overflow-y-auto py-1.5"
+              className="max-h-60 overflow-y-auto overscroll-contain py-1.5"
             >
               {noResults && (
                 <p className="py-6 text-center text-sm text-muted-foreground">

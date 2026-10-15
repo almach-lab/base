@@ -2,7 +2,12 @@ import { cn } from "@almach/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { MOTION_INTERACTIVE } from "./_motion.js";
-import { DISABLED, FOCUS_RING, fieldErrorClass } from "./_styles.js";
+import {
+  DISABLED,
+  FIELD_TEXT_IOS,
+  FOCUS_RING,
+  fieldErrorClass,
+} from "./_styles.js";
 
 const otpSlotVariants = cva(
   [
@@ -16,7 +21,7 @@ const otpSlotVariants = cva(
   {
     variants: {
       size: {
-        sm: "size-8 text-sm",
+        sm: cn("size-8 text-sm", FIELD_TEXT_IOS),
         default: "size-10 text-base",
         lg: "size-12 text-lg",
       },

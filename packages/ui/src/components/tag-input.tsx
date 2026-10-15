@@ -7,6 +7,7 @@ import { MOTION_INTERACTIVE } from "./_motion.js";
 import { mergeRefs } from "./_refs.js";
 import {
   DISABLED,
+  FIELD_TEXT_IOS,
   FOCUS_RING_WITHIN,
   FOCUS_RING_WITHIN_INVALID,
   fieldErrorClass,
@@ -151,7 +152,10 @@ export const TagInput = React.forwardRef<HTMLInputElement, TagInputProps>(
           onKeyDown={handleKeyDown}
           onBlur={() => addTag(input)}
           placeholder={tags.length === 0 ? placeholder : ""}
-          className="min-w-[6rem] flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
+          className={cn(
+            "min-w-[6rem] flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed",
+            FIELD_TEXT_IOS,
+          )}
           disabled={disabled || isAtMax}
           aria-invalid={error || undefined}
           autoComplete="off"

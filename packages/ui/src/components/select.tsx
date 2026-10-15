@@ -7,13 +7,14 @@ import { MOTION_INTERACTIVE, MOTION_OVERLAY } from "./_motion.js";
 import { mergeRefs } from "./_refs.js";
 import {
   DISABLED_DATA,
+  FIELD_TEXT_IOS,
   FOCUS_RING,
   FOCUS_RING_INVALID,
-  fieldErrorClass,
-  inputVariants,
   MENU_LABEL,
   MENU_SEPARATOR,
   OVERLAY_SURFACE,
+  fieldErrorClass,
+  inputVariants,
 } from "./_styles.js";
 
 const selectTriggerClasses = cn(
@@ -667,9 +668,16 @@ const SelectSearchable = React.forwardRef<
               />
               <CommandPrimitive.Input
                 ref={inputRef}
+                enterKeyHint="search"
+                autoCapitalize="off"
+                autoCorrect="off"
+                spellCheck={false}
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder}
-                className="flex h-9 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                className={cn(
+                  "flex h-9 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground",
+                  FIELD_TEXT_IOS,
+                )}
               />
             </div>
 

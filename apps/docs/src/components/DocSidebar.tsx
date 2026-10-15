@@ -493,7 +493,7 @@ export function DocSidebar({ currentPath }: { currentPath: string }) {
           role="dialog"
           aria-modal="true"
           aria-label="Documentation navigation"
-          className="relative flex h-full w-[min(17rem,88vw)] flex-col border-r border-border/30 bg-background"
+          className="relative flex h-full w-[min(17rem,88vw)] flex-col border-r border-border/30 bg-background pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)]"
         >
           <div className="flex h-14 shrink-0 items-center justify-between border-b border-border/35 px-3.5">
             <span className="text-sm font-medium">Menu</span>

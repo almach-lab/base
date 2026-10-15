@@ -52,6 +52,27 @@ export const FIELD_AUTOFILL = [
   "autofill:[transition:background-color_0s_600000s]",
 ].join(" ");
 
+/** iOS Safari zooms the page into any focused field set below 16px. */
+export const FIELD_TEXT_IOS = "supports-[-webkit-touch-callout:none]:text-base";
+
+/** Keeps fixed edges clear of the notch, Dynamic Island and home indicator. */
+export const SAFE_AREA = {
+  top: "pt-[env(safe-area-inset-top)]",
+  bottom: "pb-[env(safe-area-inset-bottom)]",
+  left: "pl-[env(safe-area-inset-left)]",
+  right: "pr-[env(safe-area-inset-right)]",
+} as const;
+
+/**
+ * Grows the tap area to Apple's 44pt minimum on touch screens without changing
+ * the visual size. Place before positioning classes so `absolute` can win.
+ */
+export const TOUCH_TARGET =
+  "relative after:absolute after:left-1/2 after:top-1/2 after:size-11 after:-translate-x-1/2 after:-translate-y-1/2 [@media(pointer:fine)]:after:hidden";
+
+/** Stops the iOS long-press callout on surfaces that take drag gestures. */
+export const NO_TOUCH_CALLOUT = "[-webkit-touch-callout:none]";
+
 const fieldBase = [
   "flex w-full rounded-md border border-input bg-background text-foreground shadow-xs",
   FIELD_AUTOFILL,
@@ -64,8 +85,8 @@ const fieldBase = [
 export const inputVariants = cva(fieldBase, {
   variants: {
     size: {
-      sm: "h-8 text-xs file:text-xs",
-      default: "h-9 text-sm file:text-sm",
+      sm: cn("h-8 text-xs file:text-xs", FIELD_TEXT_IOS),
+      default: cn("h-9 text-sm file:text-sm", FIELD_TEXT_IOS),
       lg: "h-11 text-base file:text-base",
     },
   },
@@ -77,8 +98,8 @@ export const textareaVariants = cva(
   {
     variants: {
       size: {
-        sm: "min-h-[60px] px-2.5 py-1.5 text-xs",
-        default: "min-h-[80px] px-3 py-2 text-sm",
+        sm: cn("min-h-[60px] px-2.5 py-1.5 text-xs", FIELD_TEXT_IOS),
+        default: cn("min-h-[80px] px-3 py-2 text-sm", FIELD_TEXT_IOS),
         lg: "min-h-[100px] px-4 py-3 text-base",
       },
     },
@@ -235,6 +256,7 @@ export const TOOLTIP_SURFACE = cn(
 );
 
 export const ICON_BUTTON = cn(
+  TOUCH_TARGET,
   "inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background text-foreground",
   MOTION_INTERACTIVE,
   FOCUS_RING,
@@ -249,6 +271,7 @@ export const FIELD_GROUP = cn(
   "[&_input]:autofill:[-webkit-text-fill-color:hsl(var(--foreground))]",
   "[&_input]:autofill:[box-shadow:0_0_0_1000px_hsl(var(--background))_inset]",
   "[&_input]:autofill:[transition:background-color_0s_600000s]",
+  FIELD_TEXT_IOS,
   MOTION_INTERACTIVE,
   "focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background",
   DISABLED,
@@ -264,5 +287,5 @@ export const FIELD_SIZE = {
 export type FieldSize = keyof typeof FIELD_SIZE;
 
 export const swipeTrackVariants = cva(
-  "relative isolate flex h-[52px] w-full min-w-[12rem] items-center overflow-hidden rounded-full border border-border bg-muted/35 text-[13px] text-muted-foreground select-none touch-none",
+  "relative isolate flex h-[52px] w-full min-w-[12rem] items-center overflow-hidden rounded-full border border-border bg-muted/35 text-[13px] text-muted-foreground select-none touch-none [-webkit-touch-callout:none]",
 );

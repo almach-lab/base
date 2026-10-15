@@ -15,7 +15,7 @@ import {
   MOTION_VAR_OVERLAY_DURATION,
   resolveMotionDurationMs,
 } from "./_motion.js";
-import { FOCUS_RING } from "./_styles.js";
+import { FOCUS_RING, TOUCH_TARGET } from "./_styles.js";
 import { Button } from "./button.js";
 import { Dialog } from "./dialog.js";
 import { Drawer } from "./drawer";
@@ -322,7 +322,8 @@ function ModalHeader({
         // (and on a 32px row such as a back button + title).
         <Dialog.Close
           className={cn(
-            "-mt-1 -mr-2 flex size-8 shrink-0 items-center justify-center rounded-lg opacity-50 hover:opacity-100",
+            TOUCH_TARGET,
+            "-mt-1 -mr-2 flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground active:text-foreground",
             MOTION_INTERACTIVE,
             FOCUS_RING,
           )}
@@ -343,11 +344,7 @@ function ModalFooter({
   if (isMobile)
     return (
       <Drawer.Footer
-        className={cn(
-          "shrink-0 pb-[max(1rem,env(safe-area-inset-bottom))]",
-          MODAL_SECTION_X.mobile,
-          className,
-        )}
+        className={cn("shrink-0", MODAL_SECTION_X.mobile, className)}
         {...props}
       />
     );
@@ -403,7 +400,9 @@ const ModalBody = React.forwardRef<HTMLDivElement, ModalBodyProps>(
         style={{ ...autoHeight.style, ...style }}
         className={cn(
           "group/modal-body min-h-0 flex-initial overflow-x-hidden overscroll-contain",
-          autoHeight.animating ? "overflow-y-hidden" : "overflow-y-auto",
+          autoHeight.animating
+            ? "overflow-y-hidden"
+            : "overflow-y-auto overscroll-contain",
           isMobile && "[touch-action:pan-y] [-webkit-overflow-scrolling:touch]",
         )}
       >
