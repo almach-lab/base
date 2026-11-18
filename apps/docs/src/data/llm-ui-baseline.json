@@ -133,7 +133,12 @@
     "typeExports": []
   },
   "currency-input": {
-    "exports": ["CURRENCIES", "CurrencyFlagBadge", "InputCurrency"],
+    "exports": [
+      "CURRENCIES",
+      "CurrencyFlagBadge",
+      "CurrencyFlagEmoji",
+      "InputCurrency"
+    ],
     "typeExports": [
       "CurrencyDef",
       "CurrencySelectorMode",
