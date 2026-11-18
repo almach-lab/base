@@ -1,5 +1,16 @@
 # @almach/ui
 
+## 3.12.0
+
+### Minor Changes
+
+- auto release from 9f883c3..96195aa
+- 7ffbee8: New `CurrencySelect`: the currency picker on its own (`variant="field"` for a full-width field, `"inline"` for a compact flag + code trigger), sharing one searchable list with `Input.Currency`: a bottom sheet on phones, a popover elsewhere. The list's group labels are now sentence case ("Popular", "All currencies") instead of uppercase eyebrows, and every row keeps its flag column aligned.
+
+### Patch Changes
+
+- 10150fd: `Input.Currency`: the currency list scrolls in the phone sheet again. The sheet body is now the only scroller (a nested scroll area wouldn't pan inside the sheet on iOS), with the search bar pinned to its top.
+
 ## 3.11.0
 
 ### Minor Changes
