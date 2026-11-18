@@ -106,6 +106,7 @@ export type {
 export { ColorPicker, parseColor } from "./components/color-picker.js";
 export type {
   CurrencyDef,
+  CurrencyPickerLabels,
   CurrencySelectProps,
   CurrencySelectorMode,
   CurrencyValue,

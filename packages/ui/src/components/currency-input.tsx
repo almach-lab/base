@@ -91,6 +91,8 @@ export interface InputCurrencyProps extends FieldBrowserProps {
    * - `"hidden"`   — entire selector hidden, only symbol + amount shown
    */
   currencySelector?: CurrencySelectorMode;
+  /** Text in the currency picker, for translation. */
+  labels?: CurrencyPickerLabels | undefined;
   disabled?: boolean;
   error?: boolean;
   size?: FieldSize;
@@ -282,6 +284,33 @@ function applyThousandSeparator(raw: string): string {
   return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + decPart;
 }
 
+/* ── Labels ───────────────────────────────────────────────────────────────── */
+
+/** Text in the currency picker, for translation. */
+export interface CurrencyPickerLabels {
+  /** Sheet and list title. @default "Currency" */
+  title?: string;
+  /** @default "Search currency…" */
+  search?: string;
+  /** @default "Clear search" */
+  clearSearch?: string;
+  /** @default "No currencies found." */
+  empty?: string;
+  /** @default "Popular" */
+  popular?: string;
+  /** @default "All currencies" */
+  all?: string;
+}
+
+const DEFAULT_LABELS: Required<CurrencyPickerLabels> = {
+  title: "Currency",
+  search: "Search currency…",
+  clearSearch: "Clear search",
+  empty: "No currencies found.",
+  popular: "Popular",
+  all: "All currencies",
+};
+
 /* ── CurrencyOption ───────────────────────────────────────────────────────── */
 
 interface CurrencyOptionProps {
@@ -352,7 +381,7 @@ interface CurrencyPickerProps {
   renderFlag: (countryCode: string, currency: CurrencyDef) => React.ReactNode;
   /** A single button; it anchors the popover on desktop. */
   trigger: React.ReactElement<React.ButtonHTMLAttributes<HTMLButtonElement>>;
-  title: string;
+  labels?: CurrencyPickerLabels | undefined;
 }
 
 /** The searchable currency list: a bottom sheet on phones, a popover elsewhere. */
@@ -364,8 +393,10 @@ function CurrencyPicker({
   currencies,
   renderFlag,
   trigger,
-  title,
+  labels: labelOverrides,
 }: CurrencyPickerProps) {
+  const labels = { ...DEFAULT_LABELS, ...labelOverrides };
+  const title = labels.title;
   const isMobile = useIsMobile();
   const [search, setSearch] = React.useState("");
   const searchRef = React.useRef<HTMLInputElement>(null);
@@ -424,8 +455,8 @@ function CurrencyPicker({
           spellCheck={false}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search currency…"
-          aria-label="Search currencies"
+          placeholder={labels.search}
+          aria-label={labels.search}
           className={cn(
             "flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground",
             FIELD_TEXT_IOS,
@@ -435,7 +466,7 @@ function CurrencyPicker({
           <button
             type="button"
             onClick={() => setSearch("")}
-            aria-label="Clear search"
+            aria-label={labels.clearSearch}
             className={cn(
               TOUCH_TARGET,
               "text-muted-foreground hover:text-foreground",
@@ -458,19 +489,19 @@ function CurrencyPicker({
       >
         {noResults && (
           <p className="py-6 text-center text-sm text-muted-foreground">
-            No currencies found.
+            {labels.empty}
           </p>
         )}
         {popularList.length > 0 && (
           <>
-            {!q && <CurrencyGroupLabel>Popular</CurrencyGroupLabel>}
+            {!q && <CurrencyGroupLabel>{labels.popular}</CurrencyGroupLabel>}
             {popularList.map(option)}
           </>
         )}
         {otherList.length > 0 && (
           <>
             {!q && popularList.length > 0 && (
-              <CurrencyGroupLabel>All currencies</CurrencyGroupLabel>
+              <CurrencyGroupLabel>{labels.all}</CurrencyGroupLabel>
             )}
             {otherList.map(option)}
           </>
@@ -541,8 +572,10 @@ export interface CurrencySelectProps {
    * - `"inline"`: compact flag + code, for tight spots such as a conversion row.
    */
   variant?: "field" | "inline";
-  /** Title of the sheet and the list. */
+  /** Title of the sheet and the list. Shorthand for `labels.title`. */
   title?: string;
+  /** Text in the picker, for translation. */
+  labels?: CurrencyPickerLabels | undefined;
   disabled?: boolean;
   error?: boolean;
   size?: FieldSize;
@@ -565,7 +598,8 @@ export const CurrencySelect = React.forwardRef<
     currencies = CURRENCIES,
     renderFlag = defaultRenderFlag,
     variant = "field",
-    title = "Currency",
+    title,
+    labels,
     disabled,
     error,
     size = "default",
@@ -648,7 +682,7 @@ export const CurrencySelect = React.forwardRef<
       currencies={currencies}
       renderFlag={renderFlag}
       trigger={trigger}
-      title={title}
+      labels={{ ...labels, ...(title ? { title } : {}) }}
     />
   );
 });
@@ -670,6 +704,7 @@ export const InputCurrency = React.forwardRef<
     placeholder = "0.00",
     renderFlag = defaultRenderFlag,
     currencySelector = "editable",
+    labels,
     disabled,
     error,
     size = "default",
@@ -808,7 +843,7 @@ export const InputCurrency = React.forwardRef<
           onSelect={selectCurrency}
           currencies={currencies}
           renderFlag={renderFlag}
-          title="Currency"
+          labels={labels}
           trigger={
             <button
               type="button"
