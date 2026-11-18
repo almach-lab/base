@@ -307,17 +307,17 @@ function CurrencyOption({
       onClick={() => onSelect(currency.code)}
       className={cn(
         MENU_ITEM,
-        "w-full justify-start px-3",
+        "w-full justify-start gap-3 px-3",
         roomy ? "py-2.5" : "py-1.5",
         selected && "bg-accent text-accent-foreground",
       )}
     >
-      {currency.countryCode && (
-        <span className="shrink-0">
-          {renderFlag(currency.countryCode, currency)}
-        </span>
-      )}
-      <span className="w-10 shrink-0 font-mono text-xs font-semibold tabular-nums text-muted-foreground">
+      <span className="flex w-5 shrink-0 justify-center">
+        {currency.countryCode
+          ? renderFlag(currency.countryCode, currency)
+          : null}
+      </span>
+      <span className="w-10 shrink-0 text-xs font-semibold tabular-nums text-muted-foreground">
         {currency.code}
       </span>
       <span className="flex-1 truncate text-left">{currency.name}</span>
@@ -332,6 +332,328 @@ function CurrencyOption({
     </button>
   );
 }
+
+/* ── CurrencyPicker (list + surface shared by CurrencySelect and Input.Currency) ── */
+
+function CurrencyGroupLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="px-3 pb-1 pt-2 text-xs font-medium text-muted-foreground">
+      {children}
+    </div>
+  );
+}
+
+interface CurrencyPickerProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  value: string;
+  onSelect: (code: string) => void;
+  currencies: CurrencyDef[];
+  renderFlag: (countryCode: string, currency: CurrencyDef) => React.ReactNode;
+  /** A single button; it anchors the popover on desktop. */
+  trigger: React.ReactElement<React.ButtonHTMLAttributes<HTMLButtonElement>>;
+  title: string;
+}
+
+/** The searchable currency list: a bottom sheet on phones, a popover elsewhere. */
+function CurrencyPicker({
+  open,
+  onOpenChange,
+  value,
+  onSelect,
+  currencies,
+  renderFlag,
+  trigger,
+  title,
+}: CurrencyPickerProps) {
+  const isMobile = useIsMobile();
+  const [search, setSearch] = React.useState("");
+  const searchRef = React.useRef<HTMLInputElement>(null);
+
+  const changeOpen = (next: boolean) => {
+    onOpenChange(next);
+    if (!next) setSearch("");
+    else if (!isMobile) setTimeout(() => searchRef.current?.focus(), 50);
+  };
+
+  const select = (code: string) => {
+    onSelect(code);
+    changeOpen(false);
+  };
+
+  const q = search.trim().toLowerCase();
+  const matches = (c: CurrencyDef) =>
+    !q ||
+    c.code.toLowerCase().includes(q) ||
+    c.name.toLowerCase().includes(q) ||
+    c.symbol.toLowerCase().includes(q) ||
+    (c.countryCode?.toLowerCase().includes(q) ?? false);
+  const popularList = currencies.filter((c) => c.popular && matches(c));
+  const otherList = currencies.filter((c) => !c.popular && matches(c));
+  const noResults = popularList.length === 0 && otherList.length === 0;
+
+  const option = (c: CurrencyDef) => (
+    <CurrencyOption
+      key={c.code}
+      currency={c}
+      selected={c.code === value}
+      onSelect={select}
+      renderFlag={renderFlag}
+      roomy={isMobile}
+    />
+  );
+
+  const list = (
+    <>
+      <div
+        className={cn(
+          "flex items-center gap-2 border-b px-3 py-2",
+          isMobile && "sticky top-0 z-10 bg-background",
+        )}
+      >
+        <Search
+          className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <input
+          ref={searchRef}
+          type="text"
+          enterKeyHint="search"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck={false}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search currency…"
+          aria-label="Search currencies"
+          className={cn(
+            "flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground",
+            FIELD_TEXT_IOS,
+          )}
+        />
+        {search && (
+          <button
+            type="button"
+            onClick={() => setSearch("")}
+            aria-label="Clear search"
+            className={cn(
+              TOUCH_TARGET,
+              "text-muted-foreground hover:text-foreground",
+              MOTION_INTERACTIVE,
+            )}
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+
+      <div
+        role="listbox"
+        aria-label={title}
+        className={cn(
+          "pb-1.5",
+          // In the sheet, Drawer.Body is the one scroller: a nested one does not pan inside the sheet on iOS.
+          !isMobile && "max-h-64 overflow-y-auto overscroll-contain",
+        )}
+      >
+        {noResults && (
+          <p className="py-6 text-center text-sm text-muted-foreground">
+            No currencies found.
+          </p>
+        )}
+        {popularList.length > 0 && (
+          <>
+            {!q && <CurrencyGroupLabel>Popular</CurrencyGroupLabel>}
+            {popularList.map(option)}
+          </>
+        )}
+        {otherList.length > 0 && (
+          <>
+            {!q && popularList.length > 0 && (
+              <CurrencyGroupLabel>All currencies</CurrencyGroupLabel>
+            )}
+            {otherList.map(option)}
+          </>
+        )}
+      </div>
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <>
+        {React.cloneElement(trigger, {
+          onClick: () => changeOpen(true),
+          "aria-expanded": open,
+        })}
+        <Drawer open={open} onOpenChange={changeOpen}>
+          <Drawer.Content aria-label={title}>
+            <Drawer.Header>
+              <Drawer.Title>{title}</Drawer.Title>
+            </Drawer.Header>
+            <Drawer.Body className="px-0 pb-4 text-foreground">
+              {list}
+            </Drawer.Body>
+          </Drawer.Content>
+        </Drawer>
+      </>
+    );
+  }
+
+  return (
+    <Popover open={open} onOpenChange={changeOpen}>
+      <Popover.Trigger asChild>
+        {React.cloneElement(trigger, { "aria-expanded": open })}
+      </Popover.Trigger>
+      <Popover.Content
+        align="start"
+        sideOffset={6}
+        className={cn(
+          OVERLAY_SURFACE,
+          "w-[min(18rem,calc(100vw-2rem))] overflow-hidden p-0",
+        )}
+      >
+        {list}
+      </Popover.Content>
+    </Popover>
+  );
+}
+
+function findCurrency(currencies: CurrencyDef[], code: string): CurrencyDef {
+  return (
+    currencies.find((c) => c.code === code) ??
+    currencies[0] ??
+    ({ code: "USD", symbol: "$", name: "US Dollar" } satisfies CurrencyDef)
+  );
+}
+
+/* ── CurrencySelect ───────────────────────────────────────────────────────── */
+
+export interface CurrencySelectProps {
+  id?: string;
+  value: string;
+  onValueChange: (code: string) => void;
+  /** Override the full currency list. Defaults to the built-in CURRENCIES. */
+  currencies?: CurrencyDef[];
+  renderFlag?: (countryCode: string, currency: CurrencyDef) => React.ReactNode;
+  /**
+   * - `"field"` (default): a full-width field with flag, code and name.
+   * - `"inline"`: compact flag + code, for tight spots such as a conversion row.
+   */
+  variant?: "field" | "inline";
+  /** Title of the sheet and the list. */
+  title?: string;
+  disabled?: boolean;
+  error?: boolean;
+  size?: FieldSize;
+  className?: string;
+  "aria-label"?: string;
+}
+
+/**
+ * A currency picker on its own, with the same searchable list as
+ * `Input.Currency`: a bottom sheet on phones, a popover elsewhere.
+ */
+export const CurrencySelect = React.forwardRef<
+  HTMLButtonElement,
+  CurrencySelectProps
+>(function CurrencySelect(
+  {
+    id,
+    value,
+    onValueChange,
+    currencies = CURRENCIES,
+    renderFlag = defaultRenderFlag,
+    variant = "field",
+    title = "Currency",
+    disabled,
+    error,
+    size = "default",
+    className,
+    "aria-label": ariaLabel,
+  },
+  ref,
+) {
+  const [open, setOpen] = React.useState(false);
+  const selected = findCurrency(currencies, value);
+  const flag = selected.countryCode
+    ? renderFlag(selected.countryCode, selected)
+    : null;
+  const label = ariaLabel ?? `Currency: ${selected.name}. Click to change.`;
+
+  const trigger =
+    variant === "inline" ? (
+      <button
+        ref={ref}
+        id={id}
+        type="button"
+        disabled={disabled}
+        aria-label={label}
+        aria-haspopup="listbox"
+        className={cn(
+          "inline-flex shrink-0 items-center gap-1.5 rounded-md px-1.5 py-1 font-medium",
+          MOTION_INTERACTIVE,
+          FOCUS_RING,
+          "hover:bg-accent hover:text-accent-foreground",
+          "disabled:pointer-events-none disabled:opacity-50",
+          className,
+        )}
+      >
+        {flag}
+        <span>{selected.code}</span>
+        <ChevronDown
+          className="h-3 w-3 shrink-0 text-muted-foreground"
+          aria-hidden="true"
+        />
+      </button>
+    ) : (
+      <button
+        ref={ref}
+        id={id}
+        type="button"
+        disabled={disabled}
+        aria-label={label}
+        aria-haspopup="listbox"
+        aria-invalid={error || undefined}
+        className={cn(
+          FIELD_GROUP,
+          FIELD_SIZE[size].height,
+          FIELD_SIZE[size].text,
+          fieldErrorClass(error),
+          "w-full items-center gap-2 px-3 text-left",
+          MOTION_INTERACTIVE,
+          FOCUS_RING,
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          className,
+        )}
+      >
+        <span className="flex w-5 shrink-0 justify-center">{flag}</span>
+        <span className="shrink-0 font-medium">{selected.code}</span>
+        <span className="min-w-0 flex-1 truncate text-muted-foreground">
+          {selected.name}
+        </span>
+        <ChevronDown
+          className="h-4 w-4 shrink-0 text-muted-foreground"
+          aria-hidden="true"
+        />
+      </button>
+    );
+
+  return (
+    <CurrencyPicker
+      open={open}
+      onOpenChange={(next) => !disabled && setOpen(next)}
+      value={selected.code}
+      onSelect={onValueChange}
+      currencies={currencies}
+      renderFlag={renderFlag}
+      trigger={trigger}
+      title={title}
+    />
+  );
+});
+
+CurrencySelect.displayName = "CurrencySelect";
 
 /* ── InputCurrency ────────────────────────────────────────────────────────── */
 
@@ -358,7 +680,6 @@ export const InputCurrency = React.forwardRef<
   ref,
 ) {
   const pad = CURRENCY_INNER_PAD[size];
-  const isMobile = useIsMobile();
   const [currency, setCurrency] = React.useState(
     value?.currency ?? defaultCurrency,
   );
@@ -366,10 +687,8 @@ export const InputCurrency = React.forwardRef<
     value?.amount != null ? formatAmount(value.amount) : "",
   );
   const [selectorOpen, setSelectorOpen] = React.useState(false);
-  const [search, setSearch] = React.useState("");
 
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const searchRef = React.useRef<HTMLInputElement>(null);
   const pendingSelectionRef = React.useRef<number | null>(null);
   /** Last amount this component itself emitted via onChange — lets the sync
    * effect below tell "value changed because we typed it" apart from "value
@@ -394,34 +713,10 @@ export const InputCurrency = React.forwardRef<
     setDisplayValue(amount != null ? formatAmount(amount) : "");
   }, [value?.amount]);
 
-  const selectedCurrency =
-    currencies.find((c) => c.code === currency) ??
-    currencies[0] ??
-    ({ code: "USD", symbol: "$", name: "US Dollar" } satisfies CurrencyDef);
-
-  const filterList = React.useCallback(
-    (list: CurrencyDef[]) => {
-      if (!search) return list;
-      const q = search.toLowerCase();
-      return list.filter(
-        (c) =>
-          c.code.toLowerCase().includes(q) ||
-          c.name.toLowerCase().includes(q) ||
-          c.symbol.toLowerCase().includes(q) ||
-          (c.countryCode?.toLowerCase().includes(q) ?? false),
-      );
-    },
-    [search],
-  );
-
-  const popularList = filterList(currencies.filter((c) => c.popular));
-  const otherList = filterList(currencies.filter((c) => !c.popular));
-  const noResults = popularList.length === 0 && otherList.length === 0;
+  const selectedCurrency = findCurrency(currencies, currency);
 
   const selectCurrency = (code: string) => {
     setCurrency(code);
-    setSelectorOpen(false);
-    setSearch("");
     const amount = parseAmount(displayValue);
     lastEmittedAmount.current = amount;
     onChange?.({ amount, currency: code });
@@ -472,156 +767,10 @@ export const InputCurrency = React.forwardRef<
     if (parsed !== null) setDisplayValue(formatAmount(parsed));
   };
 
-  const changeSelectorOpen = (open: boolean) => {
-    if (disabled) return;
-    setSelectorOpen(open);
-    if (!open) setSearch("");
-    else if (!isMobile) setTimeout(() => searchRef.current?.focus(), 50);
-  };
-
   /* Shared currency badge (trigger + readonly) */
   const flagNode = selectedCurrency.countryCode
     ? renderFlag(selectedCurrency.countryCode, selectedCurrency)
     : null;
-
-  const triggerButton = (
-    <button
-      type="button"
-      disabled={disabled}
-      aria-label={`Currency: ${selectedCurrency.name}. Click to change.`}
-      aria-haspopup="listbox"
-      aria-expanded={selectorOpen}
-      onClick={isMobile ? () => changeSelectorOpen(true) : undefined}
-      className={cn(
-        "flex h-full shrink-0 items-center gap-1.5 border-r border-input font-medium",
-        pad.selector,
-        MOTION_INTERACTIVE,
-        FOCUS_RING,
-        "hover:bg-accent hover:text-accent-foreground",
-        "disabled:pointer-events-none",
-      )}
-    >
-      {flagNode}
-      <span>{selectedCurrency.code}</span>
-      <ChevronDown
-        className={cn(
-          "h-3 w-3 shrink-0 text-muted-foreground",
-          MOTION_INTERACTIVE,
-          selectorOpen && "rotate-180",
-        )}
-        aria-hidden="true"
-      />
-    </button>
-  );
-
-  const currencyList = (
-    <>
-      {/* Search bar */}
-      <div
-        className={cn(
-          "flex items-center gap-2 border-b px-3 py-2",
-          isMobile && "sticky top-0 z-10 bg-background",
-        )}
-      >
-        <Search
-          className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
-          aria-hidden="true"
-        />
-        <input
-          ref={searchRef}
-          type="text"
-          enterKeyHint="search"
-          autoCapitalize="off"
-          autoCorrect="off"
-          spellCheck={false}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search currency…"
-          aria-label="Search currencies"
-          className={cn(
-            "flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground",
-            FIELD_TEXT_IOS,
-          )}
-        />
-        {search && (
-          <button
-            type="button"
-            onClick={() => setSearch("")}
-            aria-label="Clear search"
-            className={cn(
-              TOUCH_TARGET,
-              "text-muted-foreground hover:text-foreground",
-              MOTION_INTERACTIVE,
-            )}
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        )}
-      </div>
-
-      {/* Currency list */}
-      <div
-        role="listbox"
-        aria-label="Select currency"
-        className={cn(
-          "py-1.5",
-          // In the sheet, Drawer.Body is the one scroller (a nested one won't pan inside the sheet on iOS).
-          !isMobile && "max-h-60 overflow-y-auto overscroll-contain",
-        )}
-      >
-        {noResults && (
-          <p className="py-6 text-center text-sm text-muted-foreground">
-            No currencies found.
-          </p>
-        )}
-
-        {/* Popular group */}
-        {popularList.length > 0 && (
-          <>
-            <div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Popular
-            </div>
-            {popularList.map((c) => (
-              <CurrencyOption
-                key={c.code}
-                currency={c}
-                selected={c.code === currency}
-                onSelect={selectCurrency}
-                renderFlag={renderFlag}
-                roomy={isMobile}
-              />
-            ))}
-          </>
-        )}
-
-        {/* Divider */}
-        {popularList.length > 0 && otherList.length > 0 && (
-          <div className="mx-2 my-1.5 h-px bg-border" aria-hidden="true" />
-        )}
-
-        {/* All currencies group */}
-        {otherList.length > 0 && (
-          <>
-            {!search && (
-              <div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                All currencies
-              </div>
-            )}
-            {otherList.map((c) => (
-              <CurrencyOption
-                key={c.code}
-                currency={c}
-                selected={c.code === currency}
-                onSelect={selectCurrency}
-                renderFlag={renderFlag}
-                roomy={isMobile}
-              />
-            ))}
-          </>
-        )}
-      </div>
-    </>
-  );
 
   return (
     <div
@@ -651,36 +800,44 @@ export const InputCurrency = React.forwardRef<
         </div>
       )}
 
-      {currencySelector === "editable" &&
-        (isMobile ? (
-          <>
-            {triggerButton}
-            <Drawer open={selectorOpen} onOpenChange={changeSelectorOpen}>
-              <Drawer.Content aria-label="Select currency">
-                <Drawer.Header>
-                  <Drawer.Title>Currency</Drawer.Title>
-                </Drawer.Header>
-                <Drawer.Body className="px-0 pb-4 text-foreground">
-                  {currencyList}
-                </Drawer.Body>
-              </Drawer.Content>
-            </Drawer>
-          </>
-        ) : (
-          <Popover open={selectorOpen} onOpenChange={changeSelectorOpen}>
-            <Popover.Trigger asChild>{triggerButton}</Popover.Trigger>
-            <Popover.Content
-              align="start"
-              sideOffset={6}
+      {currencySelector === "editable" && (
+        <CurrencyPicker
+          open={selectorOpen}
+          onOpenChange={(next) => !disabled && setSelectorOpen(next)}
+          value={currency}
+          onSelect={selectCurrency}
+          currencies={currencies}
+          renderFlag={renderFlag}
+          title="Currency"
+          trigger={
+            <button
+              type="button"
+              disabled={disabled}
+              aria-label={`Currency: ${selectedCurrency.name}. Click to change.`}
+              aria-haspopup="listbox"
               className={cn(
-                OVERLAY_SURFACE,
-                "w-[min(16rem,calc(100vw-2rem))] overflow-hidden p-0",
+                "flex h-full shrink-0 items-center gap-1.5 border-r border-input font-medium",
+                pad.selector,
+                MOTION_INTERACTIVE,
+                FOCUS_RING,
+                "hover:bg-accent hover:text-accent-foreground",
+                "disabled:pointer-events-none",
               )}
             >
-              {currencyList}
-            </Popover.Content>
-          </Popover>
-        ))}
+              {flagNode}
+              <span>{selectedCurrency.code}</span>
+              <ChevronDown
+                className={cn(
+                  "h-3 w-3 shrink-0 text-muted-foreground",
+                  MOTION_INTERACTIVE,
+                  selectorOpen && "rotate-180",
+                )}
+                aria-hidden="true"
+              />
+            </button>
+          }
+        />
+      )}
 
       {/* ── Currency symbol ───────────────────────────────────────────── */}
       <span

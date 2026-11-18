@@ -1,4 +1,4 @@
-import { Input, Label } from "@almach/ui";
+import { CurrencySelect, Input, Label } from "@almach/ui";
 import * as React from "react";
 import { ComponentDoc } from "../../component-doc";
 
@@ -139,6 +139,17 @@ export function CurrencyInputPage() {
 <Input.Currency />`,
         },
         {
+          title: "CurrencySelect",
+          description:
+            'The selector on its own, with the same list: a bottom sheet on phones, a popover elsewhere. Use variant="inline" for a compact flag + code trigger.',
+          preview: <CurrencySelectExample />,
+          code: `const [currency, setCurrency] = React.useState("EUR");
+
+<CurrencySelect value={currency} onValueChange={setCurrency} />
+<CurrencySelect variant="inline" value={currency} onValueChange={setCurrency} />`,
+          centered: false,
+        },
+        {
           title: "Custom currency list",
           description: "Supply a custom currencies array to restrict options.",
           preview: <CustomCurrenciesExample />,
@@ -228,6 +239,30 @@ const LIMITED = CURRENCIES.filter((c) =>
 }
 
 /* ── Demos ────────────────────────────────────────────────────────────────── */
+
+function CurrencySelectExample() {
+  const [currency, setCurrency] = React.useState("EUR");
+  return (
+    <div className="flex w-full max-w-xs flex-col gap-3">
+      <div className="space-y-1.5">
+        <Label htmlFor="currency-select-demo">Default currency</Label>
+        <CurrencySelect
+          id="currency-select-demo"
+          value={currency}
+          onValueChange={setCurrency}
+        />
+      </div>
+      <div className="flex items-center justify-between rounded-md bg-muted px-3 py-2 text-sm">
+        <CurrencySelect
+          variant="inline"
+          value={currency}
+          onValueChange={setCurrency}
+        />
+        <span className="tabular-nums">120.00</span>
+      </div>
+    </div>
+  );
+}
 
 function ControlledExample() {
   const [val, setVal] = React.useState({ amount: 1234.5, currency: "EUR" });

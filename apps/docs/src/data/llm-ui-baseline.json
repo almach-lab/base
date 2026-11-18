@@ -137,11 +137,13 @@
       "CURRENCIES",
       "CurrencyFlagBadge",
       "CurrencyFlagEmoji",
+      "CurrencySelect",
       "InputCurrency"
     ],
     "typeExports": [
       "CurrencyDef",
       "CurrencySelectorMode",
+      "CurrencySelectProps",
       "CurrencyValue",
       "InputCurrencyProps"
     ]
