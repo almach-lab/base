@@ -517,7 +517,12 @@ export const InputCurrency = React.forwardRef<
   const currencyList = (
     <>
       {/* Search bar */}
-      <div className="flex items-center gap-2 border-b px-3 py-2">
+      <div
+        className={cn(
+          "flex items-center gap-2 border-b px-3 py-2",
+          isMobile && "sticky top-0 z-10 bg-background",
+        )}
+      >
         <Search
           className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
           aria-hidden="true"
@@ -559,8 +564,9 @@ export const InputCurrency = React.forwardRef<
         role="listbox"
         aria-label="Select currency"
         className={cn(
-          "overflow-y-auto overscroll-contain py-1.5",
-          isMobile ? "max-h-[min(28rem,60dvh)]" : "max-h-60",
+          "py-1.5",
+          // In the sheet, Drawer.Body is the one scroller (a nested one won't pan inside the sheet on iOS).
+          !isMobile && "max-h-60 overflow-y-auto overscroll-contain",
         )}
       >
         {noResults && (
