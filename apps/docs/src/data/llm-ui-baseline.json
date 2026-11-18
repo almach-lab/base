@@ -142,6 +142,7 @@
     ],
     "typeExports": [
       "CurrencyDef",
+      "CurrencyPickerLabels",
       "CurrencySelectorMode",
       "CurrencySelectProps",
       "CurrencyValue",

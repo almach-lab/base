@@ -1,6 +1,6 @@
 # Almach UI LLM API Snapshot
 
-Generated: 2026-11-18T04:25:59.066Z
+Generated: 2026-11-18T04:34:41.400Z
 
 This file is generated from `packages/ui/src/index.ts` and docs metadata.
 Use this as the primary LLM-oriented API reference.
@@ -24,7 +24,7 @@ Total modules: 59
 - collapsible: 1 value export(s), 0 type export(s)
 - color-picker: 2 value export(s), 3 type export(s)
 - command: 1 value export(s), 0 type export(s)
-- currency-input: 5 value export(s), 5 type export(s)
+- currency-input: 5 value export(s), 6 type export(s)
 - dialog: 1 value export(s), 0 type export(s)
 - drawer: 1 value export(s), 0 type export(s)
 - dropdown-menu: 1 value export(s), 0 type export(s)
@@ -671,7 +671,7 @@ export function Example() {
 ### Exported Symbols
 
 - Values: `CURRENCIES`, `CurrencyFlagBadge`, `CurrencyFlagEmoji`, `CurrencySelect`, `InputCurrency`
-- Types: `CurrencyDef`, `CurrencySelectorMode`, `CurrencySelectProps`, `CurrencyValue`, `InputCurrencyProps`
+- Types: `CurrencyDef`, `CurrencyPickerLabels`, `CurrencySelectorMode`, `CurrencySelectProps`, `CurrencyValue`, `InputCurrencyProps`
 
 ## Dialog
 

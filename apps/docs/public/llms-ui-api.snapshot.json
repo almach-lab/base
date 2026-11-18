@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T04:25:59.069Z",
+  "generatedAt": "2026-11-18T04:34:41.402Z",
   "components": {
     "_styles": {
       "exports": [
@@ -194,6 +194,7 @@
       ],
       "typeExports": [
         "CurrencyDef",
+        "CurrencyPickerLabels",
         "CurrencySelectorMode",
         "CurrencySelectProps",
         "CurrencyValue",
