@@ -491,7 +491,7 @@ const [date, setDate] = React.useState<Date>();
         {
           name: "Input.Currency — renderFlag",
           type: "(countryCode: string, currency: CurrencyDef) => ReactNode",
-          default: "<CurrencyFlagBadge />",
+          default: "<CurrencyFlagEmoji /> (emoji flag, code badge when none)",
           description:
             "Custom flag renderer — use CDN images, SVG libraries, or any React node. countryCode is ISO 3166-1 alpha-2.",
         },

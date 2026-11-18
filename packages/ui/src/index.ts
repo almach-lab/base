@@ -113,6 +113,7 @@ export type {
 export {
   CURRENCIES,
   CurrencyFlagBadge,
+  CurrencyFlagEmoji,
   InputCurrency,
 } from "./components/currency-input.js";
 export { Dialog } from "./components/dialog.js";

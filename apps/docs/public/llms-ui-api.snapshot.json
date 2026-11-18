@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-28T08:59:39.173Z",
+  "generatedAt": "2026-11-18T03:54:18.052Z",
   "components": {
     "_styles": {
       "exports": [
@@ -188,6 +188,7 @@
       "exports": [
         "CURRENCIES",
         "CurrencyFlagBadge",
+        "CurrencyFlagEmoji",
         "InputCurrency"
       ],
       "typeExports": [

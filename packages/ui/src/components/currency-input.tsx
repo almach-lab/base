@@ -3,6 +3,7 @@
 import { cn } from "@almach/utils";
 import { Check, ChevronDown, Search, X } from "lucide-react";
 import * as React from "react";
+import { useIsMobile } from "../hooks/use-media-query.js";
 import { browserFieldProps, type FieldBrowserProps } from "./_field.js";
 import { MOTION_INTERACTIVE } from "./_motion.js";
 import { mergeRefs } from "./_refs.js";
@@ -18,6 +19,7 @@ import {
   fieldErrorClass,
   type FieldSize,
 } from "./_styles.js";
+import { Drawer } from "./drawer.js";
 import { Popover } from "./popover.js";
 
 /* ── Types ────────────────────────────────────────────────────────────────── */
@@ -212,8 +214,38 @@ export function CurrencyFlagBadge({ countryCode }: { countryCode: string }) {
   );
 }
 
+const REGION_NAMES = (() => {
+  try {
+    return new Intl.DisplayNames(["en"], { type: "region" });
+  } catch {
+    return null;
+  }
+})();
+
+function flagEmoji(countryCode: string): string | null {
+  const code = countryCode.toUpperCase();
+  if (!/^[A-Z]{2}$/.test(code) || REGION_NAMES?.of(code) === code) return null;
+  return String.fromCodePoint(
+    ...[...code].map((letter) => 0x1f1e6 + letter.charCodeAt(0) - 65),
+  );
+}
+
+/**
+ * Default flag renderer: the country's emoji flag (EU for the euro), or the
+ * two-letter badge when the code has no flag.
+ */
+export function CurrencyFlagEmoji({ countryCode }: { countryCode: string }) {
+  const flag = flagEmoji(countryCode);
+  if (!flag) return <CurrencyFlagBadge countryCode={countryCode} />;
+  return (
+    <span className="inline-block text-base leading-none" aria-hidden="true">
+      {flag}
+    </span>
+  );
+}
+
 function defaultRenderFlag(countryCode: string): React.ReactNode {
-  return <CurrencyFlagBadge countryCode={countryCode} />;
+  return <CurrencyFlagEmoji countryCode={countryCode} />;
 }
 
 /* ── Number helpers ───────────────────────────────────────────────────────── */
@@ -257,6 +289,7 @@ interface CurrencyOptionProps {
   selected: boolean;
   onSelect: (code: string) => void;
   renderFlag: (countryCode: string, currency: CurrencyDef) => React.ReactNode;
+  roomy?: boolean;
 }
 
 function CurrencyOption({
@@ -264,6 +297,7 @@ function CurrencyOption({
   selected,
   onSelect,
   renderFlag,
+  roomy,
 }: CurrencyOptionProps) {
   return (
     <button
@@ -273,7 +307,8 @@ function CurrencyOption({
       onClick={() => onSelect(currency.code)}
       className={cn(
         MENU_ITEM,
-        "w-full justify-start px-3 py-1.5",
+        "w-full justify-start px-3",
+        roomy ? "py-2.5" : "py-1.5",
         selected && "bg-accent text-accent-foreground",
       )}
     >
@@ -323,6 +358,7 @@ export const InputCurrency = React.forwardRef<
   ref,
 ) {
   const pad = CURRENCY_INNER_PAD[size];
+  const isMobile = useIsMobile();
   const [currency, setCurrency] = React.useState(
     value?.currency ?? defaultCurrency,
   );
@@ -436,10 +472,150 @@ export const InputCurrency = React.forwardRef<
     if (parsed !== null) setDisplayValue(formatAmount(parsed));
   };
 
+  const changeSelectorOpen = (open: boolean) => {
+    if (disabled) return;
+    setSelectorOpen(open);
+    if (!open) setSearch("");
+    else if (!isMobile) setTimeout(() => searchRef.current?.focus(), 50);
+  };
+
   /* Shared currency badge (trigger + readonly) */
   const flagNode = selectedCurrency.countryCode
     ? renderFlag(selectedCurrency.countryCode, selectedCurrency)
     : null;
+
+  const triggerButton = (
+    <button
+      type="button"
+      disabled={disabled}
+      aria-label={`Currency: ${selectedCurrency.name}. Click to change.`}
+      aria-haspopup="listbox"
+      aria-expanded={selectorOpen}
+      onClick={isMobile ? () => changeSelectorOpen(true) : undefined}
+      className={cn(
+        "flex h-full shrink-0 items-center gap-1.5 border-r border-input font-medium",
+        pad.selector,
+        MOTION_INTERACTIVE,
+        FOCUS_RING,
+        "hover:bg-accent hover:text-accent-foreground",
+        "disabled:pointer-events-none",
+      )}
+    >
+      {flagNode}
+      <span>{selectedCurrency.code}</span>
+      <ChevronDown
+        className={cn(
+          "h-3 w-3 shrink-0 text-muted-foreground",
+          MOTION_INTERACTIVE,
+          selectorOpen && "rotate-180",
+        )}
+        aria-hidden="true"
+      />
+    </button>
+  );
+
+  const currencyList = (
+    <>
+      {/* Search bar */}
+      <div className="flex items-center gap-2 border-b px-3 py-2">
+        <Search
+          className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
+          aria-hidden="true"
+        />
+        <input
+          ref={searchRef}
+          type="text"
+          enterKeyHint="search"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck={false}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search currency…"
+          aria-label="Search currencies"
+          className={cn(
+            "flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground",
+            FIELD_TEXT_IOS,
+          )}
+        />
+        {search && (
+          <button
+            type="button"
+            onClick={() => setSearch("")}
+            aria-label="Clear search"
+            className={cn(
+              TOUCH_TARGET,
+              "text-muted-foreground hover:text-foreground",
+              MOTION_INTERACTIVE,
+            )}
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+
+      {/* Currency list */}
+      <div
+        role="listbox"
+        aria-label="Select currency"
+        className={cn(
+          "overflow-y-auto overscroll-contain py-1.5",
+          isMobile ? "max-h-[min(28rem,60dvh)]" : "max-h-60",
+        )}
+      >
+        {noResults && (
+          <p className="py-6 text-center text-sm text-muted-foreground">
+            No currencies found.
+          </p>
+        )}
+
+        {/* Popular group */}
+        {popularList.length > 0 && (
+          <>
+            <div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Popular
+            </div>
+            {popularList.map((c) => (
+              <CurrencyOption
+                key={c.code}
+                currency={c}
+                selected={c.code === currency}
+                onSelect={selectCurrency}
+                renderFlag={renderFlag}
+                roomy={isMobile}
+              />
+            ))}
+          </>
+        )}
+
+        {/* Divider */}
+        {popularList.length > 0 && otherList.length > 0 && (
+          <div className="mx-2 my-1.5 h-px bg-border" aria-hidden="true" />
+        )}
+
+        {/* All currencies group */}
+        {otherList.length > 0 && (
+          <>
+            {!search && (
+              <div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                All currencies
+              </div>
+            )}
+            {otherList.map((c) => (
+              <CurrencyOption
+                key={c.code}
+                currency={c}
+                selected={c.code === currency}
+                onSelect={selectCurrency}
+                renderFlag={renderFlag}
+                roomy={isMobile}
+              />
+            ))}
+          </>
+        )}
+      </div>
+    </>
+  );
 
   return (
     <div
@@ -469,149 +645,36 @@ export const InputCurrency = React.forwardRef<
         </div>
       )}
 
-      {currencySelector === "editable" && (
-        <Popover
-          open={selectorOpen}
-          onOpenChange={(open: boolean) => {
-            if (disabled) return;
-            setSelectorOpen(open);
-            if (!open) setSearch("");
-            else setTimeout(() => searchRef.current?.focus(), 50);
-          }}
-        >
-          <Popover.Trigger asChild>
-            <button
-              type="button"
-              disabled={disabled}
-              aria-label={`Currency: ${selectedCurrency.name}. Click to change.`}
-              aria-haspopup="listbox"
-              aria-expanded={selectorOpen}
+      {currencySelector === "editable" &&
+        (isMobile ? (
+          <>
+            {triggerButton}
+            <Drawer open={selectorOpen} onOpenChange={changeSelectorOpen}>
+              <Drawer.Content aria-label="Select currency">
+                <Drawer.Header>
+                  <Drawer.Title>Currency</Drawer.Title>
+                </Drawer.Header>
+                <Drawer.Body className="px-0 pb-4 text-foreground">
+                  {currencyList}
+                </Drawer.Body>
+              </Drawer.Content>
+            </Drawer>
+          </>
+        ) : (
+          <Popover open={selectorOpen} onOpenChange={changeSelectorOpen}>
+            <Popover.Trigger asChild>{triggerButton}</Popover.Trigger>
+            <Popover.Content
+              align="start"
+              sideOffset={6}
               className={cn(
-                "flex h-full shrink-0 items-center gap-1.5 border-r border-input font-medium",
-                pad.selector,
-                MOTION_INTERACTIVE,
-                FOCUS_RING,
-                "hover:bg-accent hover:text-accent-foreground",
-                "disabled:pointer-events-none",
+                OVERLAY_SURFACE,
+                "w-[min(16rem,calc(100vw-2rem))] overflow-hidden p-0",
               )}
             >
-              {flagNode}
-              <span>{selectedCurrency.code}</span>
-              <ChevronDown
-                className={cn(
-                  "h-3 w-3 shrink-0 text-muted-foreground",
-                  MOTION_INTERACTIVE,
-                  selectorOpen && "rotate-180",
-                )}
-                aria-hidden="true"
-              />
-            </button>
-          </Popover.Trigger>
-
-          <Popover.Content
-            align="start"
-            sideOffset={6}
-            className={cn(OVERLAY_SURFACE, "w-64 overflow-hidden p-0")}
-          >
-            {/* Search bar */}
-            <div className="flex items-center gap-2 border-b px-3 py-2">
-              <Search
-                className="h-3.5 w-3.5 shrink-0 text-muted-foreground"
-                aria-hidden="true"
-              />
-              <input
-                ref={searchRef}
-                type="text"
-                enterKeyHint="search"
-                autoCapitalize="off"
-                autoCorrect="off"
-                spellCheck={false}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search currency…"
-                aria-label="Search currencies"
-                className={cn(
-                  "flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground",
-                  FIELD_TEXT_IOS,
-                )}
-              />
-              {search && (
-                <button
-                  type="button"
-                  onClick={() => setSearch("")}
-                  aria-label="Clear search"
-                  className={cn(
-                    TOUCH_TARGET,
-                    "text-muted-foreground hover:text-foreground",
-                    MOTION_INTERACTIVE,
-                  )}
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              )}
-            </div>
-
-            {/* Currency list */}
-            <div
-              role="listbox"
-              aria-label="Select currency"
-              className="max-h-60 overflow-y-auto overscroll-contain py-1.5"
-            >
-              {noResults && (
-                <p className="py-6 text-center text-sm text-muted-foreground">
-                  No currencies found.
-                </p>
-              )}
-
-              {/* Popular group */}
-              {popularList.length > 0 && (
-                <>
-                  <div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Popular
-                  </div>
-                  {popularList.map((c) => (
-                    <CurrencyOption
-                      key={c.code}
-                      currency={c}
-                      selected={c.code === currency}
-                      onSelect={selectCurrency}
-                      renderFlag={renderFlag}
-                    />
-                  ))}
-                </>
-              )}
-
-              {/* Divider */}
-              {popularList.length > 0 && otherList.length > 0 && (
-                <div
-                  className="mx-2 my-1.5 h-px bg-border"
-                  aria-hidden="true"
-                />
-              )}
-
-              {/* All currencies group */}
-              {otherList.length > 0 && (
-                <>
-                  {!search && (
-                    <div className="px-3 pb-1 pt-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      All currencies
-                    </div>
-                  )}
-                  {otherList.map((c) => (
-                    <CurrencyOption
-                      key={c.code}
-                      currency={c}
-                      selected={c.code === currency}
-                      onSelect={selectCurrency}
-                      renderFlag={renderFlag}
-                    />
-                  ))}
-                </>
-              )}
-            </div>
-          </Popover.Content>
-        </Popover>
-      )}
+              {currencyList}
+            </Popover.Content>
+          </Popover>
+        ))}
 
       {/* ── Currency symbol ───────────────────────────────────────────── */}
       <span

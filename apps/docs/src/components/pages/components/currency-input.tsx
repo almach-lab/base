@@ -186,7 +186,7 @@ const LIMITED = CURRENCIES.filter((c) =>
         {
           name: "renderFlag",
           type: "(countryCode: string, currency: CurrencyDef) => ReactNode",
-          default: "<CurrencyFlagBadge />",
+          default: "<CurrencyFlagEmoji /> (emoji flag, code badge when none)",
           description:
             "Custom flag renderer. Receives the ISO 3166-1 alpha-2 country code and the full CurrencyDef. Use for CDN images, SVG flag libraries, or any React node. Return null to hide.",
         },
