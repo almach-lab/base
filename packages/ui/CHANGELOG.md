@@ -1,5 +1,12 @@
 # @almach/ui
 
+## 3.13.0
+
+### Minor Changes
+
+- auto release from 2568cbc..1686189
+- ba0d720: `Input.Currency` and `CurrencySelect` take `labels` (`CurrencyPickerLabels`: title, search, clear search, empty, popular, all) so the currency picker can be translated.
+
 ## 3.12.0
 
 ### Minor Changes
