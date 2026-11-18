@@ -106,6 +106,7 @@ export type {
 export { ColorPicker, parseColor } from "./components/color-picker.js";
 export type {
   CurrencyDef,
+  CurrencySelectProps,
   CurrencySelectorMode,
   CurrencyValue,
   InputCurrencyProps,
@@ -114,6 +115,7 @@ export {
   CURRENCIES,
   CurrencyFlagBadge,
   CurrencyFlagEmoji,
+  CurrencySelect,
   InputCurrency,
 } from "./components/currency-input.js";
 export { Dialog } from "./components/dialog.js";
